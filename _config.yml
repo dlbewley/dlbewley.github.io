@@ -4,6 +4,8 @@ defaults:
       path: "" # all files
     values:
       layout: "default"
+    disqus:
+      shorname: dlbewleygithubio
 
 permalink: /blog/:year/:month/:day/:title
 pygments: true
