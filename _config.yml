@@ -1,9 +1,12 @@
----
 defaults:
   -
     scope:
       path: "" # all files
     values:
       layout: "default"
-    site:
-      url: "//dlbewley.github.io/"
+
+permalink: /blog/:year/:month/:day/:title
+pygments: true
+
+site:
+  - url: "//dlbewley.github.io/"
