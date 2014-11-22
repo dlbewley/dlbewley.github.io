@@ -10,10 +10,10 @@
 <ul id="posts">
   {% for post in site.posts %}
     <li>
-      <h2>{{ post.title }}</h2>
+      <a href="{{ post.url }}">{{ post.title }}</a>
       {{ post.author }}
     </li>
   {% endfor %}
 </ul>
 
-{{ site.posts }}
+{{ site }}
