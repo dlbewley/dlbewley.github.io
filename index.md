@@ -6,7 +6,9 @@ title: "Hello World"
 
 - Sup yall
 
-# Posts I think #
+{{ page.title }}
+
+# Posts #
 
 <ul id="posts">
   {% for post in site.posts %}
