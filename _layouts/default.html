@@ -1,0 +1,10 @@
+<!DOCTYPE HTML>
+<html lang="en">
+  <head>
+    <title>{% if page.title %}{{ page.title }} &mdash; {% endif %}{{ page.author }}</title>
+  </head>
+  <body>
+    {{ content }}
+  </body>
+  {% include disqus.html %}
+</html>
