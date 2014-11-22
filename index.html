@@ -3,7 +3,7 @@ layout: default
 title: "Hello World"
 ---
 
-site.url: {{site.url}}
+<p>site.url: {{site.url}}</p>
 
 <div id="home">
   <h1>Blog Posts</h1>
@@ -13,16 +13,6 @@ site.url: {{site.url}}
     {% endfor %}
   </ul>
 </div>
-
-
-<div id="debug">
-  <ul>
-  {% for sect in site %}
-	<li>{{ site.sect }}</li>
-  {% endfor %}
-  </ul>
-</div>
-
 
 <h1>Posts</h1>
 
