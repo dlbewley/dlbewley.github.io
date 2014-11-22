@@ -12,13 +12,17 @@ title: "Hello World"
   </ul>
 </div>
 
-# Hello #
 
-- Sup yall
+<div id="debug">
+  <ul>
+  {% for sect in site %}
+	<li>{{ site.sect }}</li>
+  {% endfor %}
+  </ul>
+</div>
 
-{{ page.title }}
 
-# Posts #
+<h1>Posts</h1>
 
 <ul id="posts">
   {% for post in site.posts %}
@@ -30,4 +34,3 @@ title: "Hello World"
   {% endfor %}
 </ul>
 
-{{ site }}
