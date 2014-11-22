@@ -5,3 +5,5 @@ defaults:
       path: "" # all files
     values:
       layout: "default"
+    site:
+      url: "//dlbewley.github.io/"
