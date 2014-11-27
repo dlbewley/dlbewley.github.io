@@ -9,7 +9,7 @@ defaults:
   -
     scope:
       path: ""
-      type: "posts" 
+      type: "posts"
     values:
       layout: "post"
       author: "Dale Bewley"
