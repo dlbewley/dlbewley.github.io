@@ -69,17 +69,19 @@ This will prompt you with a GUI dialog asking you to install the command line de
 Install Homebrew
 ---
 - Install Homebrew
-<pre class="brush: bash">
+
+```bash
 ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-</pre>
+```
 
 - Inspect and update brew install. 
-<pre class="brush: bash">
+
+```bash
 # This step will possibly point out permissions problems to be fixed.
 brew doctor
 brew update
 brew help
-</pre>
+```
 
 - Install some brew packages
 <pre class="brush: bash">
@@ -89,9 +91,10 @@ brew install bash-completion ssh-copy-id wget
 Install Python
 ===
 Install the latest 2.7.x Python with Homebrew.
-<pre class="brush: bash">
+
+```bash
 brew install python --with-brewed-openssl
-</pre>
+```
 
 Setup Virtenv
 ===
@@ -175,20 +178,22 @@ cd ~/src/flaskapp/wsgi/app
 Create applications files. Pay attention Openshift has some particular requirements.
 
 - *~/src/flaskapp/wsgi/app/\_\_init\_\_.py*
-<pre class="brush: python">
+
+```python
 from flask import Flask  
 app = Flask(__name__)  
 from app import views
-</pre>
+```
 
 - *~/src/flaskapp/wsgi/app/views.py*
-<pre class="brush: python">
+
+```python
 from app import app
 @app.route('/')
 @app.route('/index')
 def index():
     return "Hello, World!"
-</pre>
+```
 
 - *~/src/flaskapp/wsgi/application* - This application file is required by OpenShift
 
