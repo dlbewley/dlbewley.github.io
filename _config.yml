@@ -8,9 +8,10 @@ defaults:
       shortname: dlbewleygithubio
   -
     scope:
-      path: "post" # all files
+      path: ""
+      type: "posts" 
     values:
-      layout: "default"
+      layout: "post"
       author: "Dale Bewley"
 
 permalink: /blog/:year/:month/:day/:title
