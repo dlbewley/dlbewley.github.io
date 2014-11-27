@@ -4,8 +4,8 @@ defaults:
       path: "" # all files
     values:
       layout: "default"
-    disqus:
-      shortname: dlbewleygithubio
+      disqus:
+        shortname: dlbewleygithubio
   -
     scope:
       path: ""
