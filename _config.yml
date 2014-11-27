@@ -9,6 +9,8 @@ defaults:
   -
     scope:
       path: "post" # all files
+    values:
+      layout: "default"
       author: "Dale Bewley"
 
 permalink: /blog/:year/:month/:day/:title
@@ -18,5 +20,5 @@ pygments: true
 # http://dafoster.net/projects/rdiscount/
 markdown: rdiscount
 
-site:
-  - url: "//dlbewley.github.io/"
+#site:
+#  - url: "//dlbewley.github.io/"

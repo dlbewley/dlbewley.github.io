@@ -32,7 +32,8 @@ Ready the system for Homebrew
 - Now Setup shell environment
 Some of these settings are only relevant to later steps, but go ahead and put them all in now.
  - vim ~/.bash_profile
-<pre class="brush: bash">
+
+```bash
 # Set architecture flags
 export ARCHFLAGS="-arch x86_64"
 # Ensure user-installed binaries take precedence
@@ -50,17 +51,19 @@ export PIP_DOWNLOAD_CACHE=$HOME/.pip/cache
 
 # Load .bashrc if it exists
 test -f ~/.bashrc && source ~/.bashrc
-</pre> 
+```
 
 - Source those changes. Ignore the *-bash: brew: command not found* error.
-<pre class="brush: bash">
+
+```bash
 . ~/.bash_profile
-</pre>
+```
 
 - Install command line developer tools or Xcode. You'll need to be on the actual console, so don't do this step over SSH.
-<pre class="brush: bash">
+
+```bash
 xcode-select --install
-</pre>
+```
 
 This will prompt you with a GUI dialog asking you to install the command line developer tools. Click the *Install* button.
 
@@ -190,7 +193,8 @@ def index():
 </pre>
 
 - *~/src/flaskapp/wsgi/application* - This application file is required by OpenShift
-<pre class="brush: python">
+
+```python
 #!/usr/bin/python
 import os
 import sys
@@ -207,7 +211,7 @@ except IOError:
     pass
 
 from run import app as application
-</pre>
+```
 
  - *~/src/flaskapp/wsgi/run.py* - Called by *application*.
 <pre class="brush: python">
