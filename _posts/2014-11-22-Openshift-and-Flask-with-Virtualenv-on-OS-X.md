@@ -168,36 +168,37 @@ install_requires=['Flask','flask-wtf','flask-babel','markdown','flup'],
 Create Hello World Flask App
 ---
 Create the required directories
-<pre class="brush: bash">
+
+{% highlight bash %}
 cd ~/src/flaskapp/wsgi
 mkdir -p app/{static,templates}
 mkdir tmp
 cd ~/src/flaskapp/wsgi/app
-</pre>
+{% endhighlight %}
 
 Create applications files. Pay attention Openshift has some particular requirements.
 
 - *~/src/flaskapp/wsgi/app/\_\_init\_\_.py*
 
-```python
+{% highlight python %}
 from flask import Flask  
 app = Flask(__name__)  
 from app import views
-```
+{% endhighlight %}
 
 - *~/src/flaskapp/wsgi/app/views.py*
 
-```python
+{% highlight python %}
 from app import app
 @app.route('/')
 @app.route('/index')
 def index():
     return "Hello, World!"
-```
+{% endhighlight %}
 
 - *~/src/flaskapp/wsgi/application* - This application file is required by OpenShift
 
-```python
+{% highlight python %}
 #!/usr/bin/python
 import os
 import sys
@@ -214,7 +215,7 @@ except IOError:
     pass
 
 from run import app as application
-```
+{% endhighlight %}
 
  - *~/src/flaskapp/wsgi/run.py* - Called by *application*.
 <pre class="brush: python">
