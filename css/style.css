@@ -5,7 +5,7 @@ layout: none
 body {
   margin: 0;
   padding: 0;
-  background: #151515 url("{{ site.github.owner_gravatar_url }}") 0 0;
+  background: #151515 url("{{ site.github.owner_gravatar_url }}") top right no-repeat;
   color: #eaeaea;
   font: 16px;
   line-height: 1.5;
