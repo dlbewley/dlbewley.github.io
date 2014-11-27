@@ -13,6 +13,8 @@ defaults:
     values:
       layout: "post"
       author: "Dale Bewley"
+      disqus:
+        enabled: true
 
 permalink: /blog/:year/:month/:day/:title
 
