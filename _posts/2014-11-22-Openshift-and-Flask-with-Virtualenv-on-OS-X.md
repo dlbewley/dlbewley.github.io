@@ -1,10 +1,7 @@
 ---
 title: Openshift and Flask with Virtualenv on OS X
-layout: post
 ---
 
-
-===
 Create a flask app for Openshift with a matching local python virtualenv to perform local testing.
 
 In this case we'll use Python 2.7 on Mac OS X 10.9.
