@@ -1,19 +1,20 @@
-defaults:
-  -
-    scope:
-      path: "" # all files
-    values:
-      layout: "default"
-      disqus:
-        shortname: dlbewleygithubio
-  -
-    scope:
-      path: ""
-      type: "posts"
-    values:
-      layout: "post"
-      disqus:
-        enabled: true
+#defaults:
+#  -
+#    scope:
+#      path: "" # all files
+#    values:
+#      layout: "default"
+#      disqus:
+#        shortname: dlbewleygithubio
+#  -
+#    scope:
+#      path: ""
+#      type: "posts"
+#    values:
+#      layout: "post"
+#      disqus:
+#        enabled: true
+#
 
 permalink: /blog/:year/:month/:day/:title
 
@@ -30,5 +31,5 @@ redcarpet:
 # http://dafoster.net/projects/rdiscount/
 #markdown: rdiscount
 
-#site:
-#  - url: "//dlbewley.github.io/"
+site:
+  - url: "//dlbewley.github.io/"
