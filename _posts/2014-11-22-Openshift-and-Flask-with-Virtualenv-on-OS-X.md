@@ -101,11 +101,11 @@ Setup Virtenv
 
 Use pip to install virtualenv.
 
-{% highlight bash
+{% highlight bash %}
 # override the requirement we set in .bash_profile above. just this once.
 PIP_REQUIRE_VIRTUALENV=false pip install virtualenv
 mkdir -p ~/src ~/Projects ~/Virtualenvs
-{% highlight 
+{% endhighlight  %}
  
 Setup Openshift
 ===
@@ -114,16 +114,16 @@ Interaction with Openshift is via [the website](http://www.openshift.com) and vi
 
 - Install rhc
 
-{% highlight bash
+{% highlight bash %}
 sudo gem install rhc
-{% highlight 
+{% endhighlight  %}
 
 - Configure rhc. 
 > *You'll need to have a username and login for [Openshift](http://www.openshift.com) before proceeding.*
 
-{% highlight bash
+{% highlight bash %}
 rhc setup
-{% highlight 
+{% endhighlight %}
 
 Create an Openshift App and Configure for Virtualenv
 ---
@@ -131,85 +131,85 @@ It is helpful to have a virtualenv on your development machine(s) which matches 
 
 - Create an Openshift app named Flaskapp.
 
-{% highlight bash
+{% highlight bash %}
 cd ~/src
 rhc app create flaskapp python-2.7
-{% highlight 
+{% endhighlight  %}
 
 - Clone App locally into ~/src/flaskapp if you created the app using the web site instead of rhc.
 
-{% highlight bash
+{% highlight bash %}
 rhc git-clone flaskapp
-{% highlight 
+{% endhighlight  %}
 
 - Setup venv inside flaskapp. This 
 
-{% highlight bash
+{% highlight bash %}
 cd ~/src/flaskapp/wsgi/
 # create venv/ dir
 virualenv venv --python-python2.7
 # activate this virtual env
 . venv/bin/activate
-{% highlight 
+{% endhighlight  %}
 
 - Tell git to ignore your venv/ dir.
 
-{% highlight bash
+{% highlight bash %}
 echo 'venv/' >> ~/src/flaskapp/.gitignore
-{% highlight 
+{% endhighlight  %}
 
 - Install Flask in the new venv.
-{% highlight bash
+{% highlight bash %}
 pip install flask flask-wtf flask-babel markdown flup 
-{% highlight 
+{% endhighlight  %}
 
 - Tell our app's setup.py about our python module requirements.
 
-{% highlight bash
+{% highlight bash %}
 cd ~/src/flaskapp
 vim setup.py
-{% highlight 
+{% endhighlight  %}
 
 - Modify the *install_requires* line to look like this:
 
-{% highlight python
+{% highlight python %}
 install_requires=['Flask','flask-wtf','flask-babel','markdown','flup'],
-{% highlight 
+{% endhighlight  %}
 
 Create Hello World Flask App
 ---
 Create the required directories
 
-{% highlight bash
+{% highlight bash %}
 cd ~/src/flaskapp/wsgi
 mkdir -p app/{static,templates}
 mkdir tmp
 cd ~/src/flaskapp/wsgi/app
-{% highlight 
+{% endhighlight  %}
 
 Create applications files. Pay attention Openshift has some particular requirements.
 
 - *~/src/flaskapp/wsgi/app/\_\_init\_\_.py*
 
-{% highlight python
+{% highlight python %}
 from flask import Flask  
 app = Flask(__name__)  
 from app import views
-{% highlight 
+{% endhighlight  %}
 
 - *~/src/flaskapp/wsgi/app/views.py*
 
-{% highlight python
+{% highlight python %}
 from app import app
 @app.route('/')
 @app.route('/index')
 def index():
     return "Hello, World!"
-{% highlight 
+{% endhighlight  %}
 
 - *~/src/flaskapp/wsgi/application* - This application file is required by OpenShift
 
-{% highlight python
+{% highlight python %}
 #!/usr/bin/python
 import os
 import sys
@@ -226,37 +226,37 @@ except IOError:
     pass
 
 from run import app as application
-{% highlight 
+{% endhighlight  %}
 
  - *~/src/flaskapp/wsgi/run.py* - Called by *application*.
 
-{% highlight python
+{% highlight python %}
 from app import app
 if __name__ == "__main__":
     app.run(debug = True) #We will set debug false in production 
-{% highlight 
+{% endhighlight  %}
 
 Test Flaskapp on localhost
 ===
 Activate venv and run the app.
 
-{% highlight bash
+{% highlight bash %}
 cd ~/src/flaskapp/
 . venv/bin/activate
 python run.py
 curl http://localhost:5000/index
-{% highlight 
+{% endhighlight %}
 
 Deploy Flaskapp to Openshift
 ===
 After making local changes, commit them to git, and push them to the origin. Openshift will then automagically install the required flask modules and spin up your Flaskapp.
 
-{% highlight bash
+{% highlight bash %}
 cd ~/src/flaskapp
 git add .
 git commit -a -m 'Firstsies'
 git push
-{% highlight 
+{% endhighlight  %}
 
 Now go check out your new app on [Openshift](http://www.openshift.com)
 
