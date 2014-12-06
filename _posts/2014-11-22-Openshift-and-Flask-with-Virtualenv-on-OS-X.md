@@ -157,9 +157,10 @@ vim setup.py
 </pre>
 
 - Modify the *install_requires* line to look like this:
-<pre class="brush: bash">
+
+```python
 install_requires=['Flask','flask-wtf','flask-babel','markdown','flup'],
-</pre>
+```
 
 Create Hello World Flask App
 ---
