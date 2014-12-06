@@ -31,7 +31,7 @@ Ready the system for Homebrew
 Some of these settings are only relevant to later steps, but go ahead and put them all in now.
  - vim ~/.bash_profile
 
-~~~bash
+{% highlight bash %}
 # Set architecture flags
 export ARCHFLAGS="-arch x86_64"
 # Ensure user-installed binaries take precedence
@@ -49,19 +49,19 @@ export PIP_DOWNLOAD_CACHE=$HOME/.pip/cache
 
 # Load .bashrc if it exists
 test -f ~/.bashrc && source ~/.bashrc
-~~~
+{% endhighlight  %}
 
 - Source those changes. Ignore the *-bash: brew: command not found* error.
 
-~~~bash
+{% highlight bash %}
 . ~/.bash_profile
-~~~
+{% endhighlight %}
 
 - Install command line developer tools or Xcode. You'll need to be on the actual console, so don't do this step over SSH.
 
-~~~bash
+{% highlight bash %}
 xcode-select --install
-~~~
+{% endhighlight %}
 
 This will prompt you with a GUI dialog asking you to install the command line developer tools. Click the *Install* button.
 
@@ -70,42 +70,42 @@ Install Homebrew
 ---
 - Install Homebrew
 
-~~~bash
+{% highlight bash %}
 ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-~~~
+{% endhighlight %}
 
 - Inspect and update brew install. 
 
-~~~bash
+{% highlight bash %}
 # This step will possibly point out permissions problems to be fixed.
 brew doctor
 brew update
 brew help
-~~~
+{% endhighlight  %}
 
 - Install some brew packages
-~~~bash
+{% highlight bash %}
 brew install bash-completion ssh-copy-id wget
-~~~
+{% endhighlight %}
 
 Install Python
 ===
 Install the latest 2.7.x Python with Homebrew.
 
-~~~bash
+{% highlight bash %}
 brew install python --with-brewed-openssl
-~~~
+{% endhighlight %}
 
 Setup Virtenv
 ===
 
 Use pip to install virtualenv.
 
-~~~bash
+{% highlight bash
 # override the requirement we set in .bash_profile above. just this once.
 PIP_REQUIRE_VIRTUALENV=false pip install virtualenv
 mkdir -p ~/src ~/Projects ~/Virtualenvs
-~~~
+{% highlight 
  
 Setup Openshift
 ===
@@ -114,16 +114,16 @@ Interaction with Openshift is via [the website](http://www.openshift.com) and vi
 
 - Install rhc
 
-~~~bash
+{% highlight bash
 sudo gem install rhc
-~~~
+{% highlight 
 
 - Configure rhc. 
 > *You'll need to have a username and login for [Openshift](http://www.openshift.com) before proceeding.*
 
-~~~bash
+{% highlight bash
 rhc setup
-~~~
+{% highlight 
 
 Create an Openshift App and Configure for Virtualenv
 ---
@@ -131,85 +131,85 @@ It is helpful to have a virtualenv on your development machine(s) which matches 
 
 - Create an Openshift app named Flaskapp.
 
-~~~bash
+{% highlight bash
 cd ~/src
 rhc app create flaskapp python-2.7
-~~~
+{% highlight 
 
 - Clone App locally into ~/src/flaskapp if you created the app using the web site instead of rhc.
 
-~~~bash
+{% highlight bash
 rhc git-clone flaskapp
-~~~
+{% highlight 
 
 - Setup venv inside flaskapp. This 
 
-~~~bash
+{% highlight bash
 cd ~/src/flaskapp/wsgi/
 # create venv/ dir
 virualenv venv --python-python2.7
 # activate this virtual env
 . venv/bin/activate
-~~~
+{% highlight 
 
 - Tell git to ignore your venv/ dir.
 
-~~~bash
+{% highlight bash
 echo 'venv/' >> ~/src/flaskapp/.gitignore
-~~~
+{% highlight 
 
 - Install Flask in the new venv.
-~~~bash
+{% highlight bash
 pip install flask flask-wtf flask-babel markdown flup 
-~~~
+{% highlight 
 
 - Tell our app's setup.py about our python module requirements.
 
-~~~bash
+{% highlight bash
 cd ~/src/flaskapp
 vim setup.py
-~~~
+{% highlight 
 
 - Modify the *install_requires* line to look like this:
 
-~~~python
+{% highlight python
 install_requires=['Flask','flask-wtf','flask-babel','markdown','flup'],
-~~~
+{% highlight 
 
 Create Hello World Flask App
 ---
 Create the required directories
 
-~~~bash
+{% highlight bash
 cd ~/src/flaskapp/wsgi
 mkdir -p app/{static,templates}
 mkdir tmp
 cd ~/src/flaskapp/wsgi/app
-~~~
+{% highlight 
 
 Create applications files. Pay attention Openshift has some particular requirements.
 
 - *~/src/flaskapp/wsgi/app/\_\_init\_\_.py*
 
-~~~python
+{% highlight python
 from flask import Flask  
 app = Flask(__name__)  
 from app import views
-~~~
+{% highlight 
 
 - *~/src/flaskapp/wsgi/app/views.py*
 
-~~~python
+{% highlight python
 from app import app
 @app.route('/')
 @app.route('/index')
 def index():
     return "Hello, World!"
-~~~
+{% highlight 
 
 - *~/src/flaskapp/wsgi/application* - This application file is required by OpenShift
 
-~~~python
+{% highlight python
 #!/usr/bin/python
 import os
 import sys
@@ -226,37 +226,37 @@ except IOError:
     pass
 
 from run import app as application
-~~~
+{% highlight 
 
  - *~/src/flaskapp/wsgi/run.py* - Called by *application*.
 
-~~~python
+{% highlight python
 from app import app
 if __name__ == "__main__":
     app.run(debug = True) #We will set debug false in production 
-~~~
+{% highlight 
 
 Test Flaskapp on localhost
 ===
 Activate venv and run the app.
 
-~~~bash
+{% highlight bash
 cd ~/src/flaskapp/
 . venv/bin/activate
 python run.py
 curl http://localhost:5000/index
-~~~
+{% highlight 
 
 Deploy Flaskapp to Openshift
 ===
 After making local changes, commit them to git, and push them to the origin. Openshift will then automagically install the required flask modules and spin up your Flaskapp.
 
-~~~bash
+{% highlight bash
 cd ~/src/flaskapp
 git add .
 git commit -a -m 'Firstsies'
 git push
-~~~
+{% highlight 
 
 Now go check out your new app on [Openshift](http://www.openshift.com)
 
