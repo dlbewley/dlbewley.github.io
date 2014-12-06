@@ -13,10 +13,14 @@ defaults:
 
 permalink: /blog/:year/:month/:day/:title
 
-pygments: true
+#pygments: true
+
+markdown: redcarpet2
+redcarpet:
+  extensions: ["no_intra_emphasis", "fenced_code_blocks", "autolink", "tables", "with_toc_data"]
 
 # http://dafoster.net/projects/rdiscount/
-markdown: rdiscount
+#markdown: rdiscount
 
 site:
   - url: "//dlbewley.github.io/"
