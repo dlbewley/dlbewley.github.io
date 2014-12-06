@@ -84,9 +84,9 @@ brew help
 ```
 
 - Install some brew packages
-<pre class="brush: bash">
+```bash
 brew install bash-completion ssh-copy-id wget
-</pre>
+```
 
 Install Python
 ===
