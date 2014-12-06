@@ -1,10 +1,5 @@
-<!DOCTYPE HTML>
-<html lang="en">
-  <head>
-    <title>{% if page.title %}{{ page.title }} &mdash; {% endif %}{{ page.author }}</title>
-  </head>
+{% include header.html %}
   <body>
     {{ content }}
   </body>
-  {% include disqus.html %}
-</html>
+{% include footer.html %}

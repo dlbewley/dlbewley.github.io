@@ -3,8 +3,6 @@ title: Openshift and Flask with Virtualenv on OS X
 layout: post
 ---
 
-
-===
 Create a flask app for Openshift with a matching local python virtualenv to perform local testing.
 
 In this case we'll use Python 2.7 on Mac OS X 10.9.
@@ -32,7 +30,8 @@ Ready the system for Homebrew
 - Now Setup shell environment
 Some of these settings are only relevant to later steps, but go ahead and put them all in now.
  - vim ~/.bash_profile
-<pre class="brush: bash">
+
+```bash
 # Set architecture flags
 export ARCHFLAGS="-arch x86_64"
 # Ensure user-installed binaries take precedence
@@ -50,17 +49,19 @@ export PIP_DOWNLOAD_CACHE=$HOME/.pip/cache
 
 # Load .bashrc if it exists
 test -f ~/.bashrc && source ~/.bashrc
-</pre> 
+```
 
 - Source those changes. Ignore the *-bash: brew: command not found* error.
-<pre class="brush: bash">
+
+```bash
 . ~/.bash_profile
-</pre>
+```
 
 - Install command line developer tools or Xcode. You'll need to be on the actual console, so don't do this step over SSH.
-<pre class="brush: bash">
+
+```bash
 xcode-select --install
-</pre>
+```
 
 This will prompt you with a GUI dialog asking you to install the command line developer tools. Click the *Install* button.
 
@@ -68,17 +69,19 @@ This will prompt you with a GUI dialog asking you to install the command line de
 Install Homebrew
 ---
 - Install Homebrew
-<pre class="brush: bash">
+
+```bash
 ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-</pre>
+```
 
 - Inspect and update brew install. 
-<pre class="brush: bash">
+
+```bash
 # This step will possibly point out permissions problems to be fixed.
 brew doctor
 brew update
 brew help
-</pre>
+```
 
 - Install some brew packages
 <pre class="brush: bash">
@@ -88,9 +91,10 @@ brew install bash-completion ssh-copy-id wget
 Install Python
 ===
 Install the latest 2.7.x Python with Homebrew.
-<pre class="brush: bash">
+
+```bash
 brew install python --with-brewed-openssl
-</pre>
+```
 
 Setup Virtenv
 ===
@@ -165,33 +169,37 @@ install_requires=['Flask','flask-wtf','flask-babel','markdown','flup'],
 Create Hello World Flask App
 ---
 Create the required directories
-<pre class="brush: bash">
+
+{% highlight bash %}
 cd ~/src/flaskapp/wsgi
 mkdir -p app/{static,templates}
 mkdir tmp
 cd ~/src/flaskapp/wsgi/app
-</pre>
+{% endhighlight %}
 
 Create applications files. Pay attention Openshift has some particular requirements.
 
 - *~/src/flaskapp/wsgi/app/\_\_init\_\_.py*
-<pre class="brush: python">
+
+{% highlight python %}
 from flask import Flask  
 app = Flask(__name__)  
 from app import views
-</pre>
+{% endhighlight %}
 
 - *~/src/flaskapp/wsgi/app/views.py*
-<pre class="brush: python">
+
+{% highlight python %}
 from app import app
 @app.route('/')
 @app.route('/index')
 def index():
     return "Hello, World!"
-</pre>
+{% endhighlight %}
 
 - *~/src/flaskapp/wsgi/application* - This application file is required by OpenShift
-<pre class="brush: python">
+
+{% highlight python %}
 #!/usr/bin/python
 import os
 import sys
@@ -208,7 +216,7 @@ except IOError:
     pass
 
 from run import app as application
-</pre>
+{% endhighlight %}
 
  - *~/src/flaskapp/wsgi/run.py* - Called by *application*.
 <pre class="brush: python">
