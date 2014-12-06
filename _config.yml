@@ -12,11 +12,14 @@ defaults:
       type: "posts"
     values:
       layout: "post"
-      author: "Dale Bewley"
       disqus:
         enabled: true
 
 permalink: /blog/:year/:month/:day/:title
+
+author:
+  name: Dale Bewley
+  email: dale@bewley.net
 
 #pygments: true
 
