@@ -5,4 +5,10 @@ layout: slate
     <info datetime="{{ page.date | date: "%Y-%m-%d" }}">
       {{ page.date | date: "%b %d, %Y" }}
     </info>
-	{{ content }}
+					{{ content }}
+
+	  <ul class="posts">
+	    {% for post in site.related_posts %}
+	      <li><span>{{ post.date | date_to_string }}</span> &raquo; <a href="{{ post.url }}">{{ post.title }}</a></li>
+	    {% endfor %}
+	  </ul>
