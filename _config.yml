@@ -1,11 +1,11 @@
 defaults:
-  scope:
-    path: "" # all files
-  values:
-    layout: "slate"
-    author:
-      name: Dale Bewley
-      email: dale@bewley.net
+  - scope:
+      path: "" # all files
+    values:
+      layout: "slate"
+      author:
+        name: Dale Bewley
+        email: dale@bewley.net
 
 
 #      disqus:
