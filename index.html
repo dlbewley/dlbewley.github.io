@@ -18,7 +18,7 @@ title: Dale Bewley's Github House
   <h1>Repositories</h1>
   <ul class="repos">
     {% for repo in site.github.public_repositories %}
-      <li><span>{{ repo.name }} {{ repo.html_url }} {{ repo.homepage }}</span></li>
+      <li><span><a href="{{ site.github.url }}/{{ repo.name }}">{{ repo.name }}</a> {{ repo.html_url }} {{ repo.homepage }}</span></li>
     {% endfor %}
   </ul>
 </div>
