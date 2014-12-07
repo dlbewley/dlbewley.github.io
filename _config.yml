@@ -1,9 +1,13 @@
 defaults:
-  -
-    scope:
-      path: "" # all files
-    values:
-      layout: "slate"
+  scope:
+    path: "" # all files
+  values:
+    layout: "slate"
+    author:
+      name: Dale Bewley
+      email: dale@bewley.net
+
+
 #      disqus:
 #        shortname: dlbewleygithubio
 #  -
@@ -17,10 +21,6 @@ defaults:
 #
 
 permalink: /blog/:year/:month/:day/:title
-
-author:
-  name: Dale Bewley
-  email: dale@bewley.net
 
 pygments: true
 #markdown: redcarpet2
