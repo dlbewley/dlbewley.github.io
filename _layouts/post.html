@@ -1,15 +1,8 @@
 ---
-layout: default
+layout: slate
 ---
-<div class="content{% if page.photo_url %} photo-post{% endif %}">
-  <div class="post single">
     <h1>{{ page.title }}</h1>
     <info datetime="{{ page.date | date: "%Y-%m-%d" }}">
       {{ page.date | date: "%b %d, %Y" }}
     </info>
-    <div class="body">
 	{{ content }}
-    </div>
-    <div class="breaker"></div>
-  </div>
-</div>
