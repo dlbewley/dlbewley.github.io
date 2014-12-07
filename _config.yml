@@ -1,9 +1,9 @@
-#defaults:
-#  -
-#    scope:
-#      path: "" # all files
-#    values:
-#      layout: "default"
+defaults:
+  -
+    scope:
+      path: "" # all files
+    values:
+      layout: "default"
 #      disqus:
 #        shortname: dlbewleygithubio
 #  -
