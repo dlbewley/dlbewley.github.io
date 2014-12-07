@@ -3,7 +3,7 @@ defaults:
     scope:
       path: "" # all files
     values:
-      layout: "default"
+      layout: "slate"
 #      disqus:
 #        shortname: dlbewleygithubio
 #  -
