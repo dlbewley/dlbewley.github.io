@@ -6,19 +6,17 @@ defaults:
       author:
         name: Dale Bewley
         email: dale@bewley.net
+      disqus:
+        shortname: dlbewleygithubio
+        enabled: false
 
-
-#      disqus:
-#        shortname: dlbewleygithubio
-#  -
-#    scope:
-#      path: ""
-#      type: "posts"
-#    values:
-#      layout: "post"
-#      disqus:
-#        enabled: true
-#
+  - scope:
+      path: ""
+      type: "posts"
+    values:
+      layout: "post"
+      disqus:
+        enabled: true
 
 permalink: /blog/:year/:month/:day/:title
 
