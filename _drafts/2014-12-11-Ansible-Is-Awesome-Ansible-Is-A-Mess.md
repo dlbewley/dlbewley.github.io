@@ -7,7 +7,7 @@ OK, maybe I'm just describing me and my environment.
 
 Playbooks, look in the current directory to find roles, libraries, and inventories, so naturally you put everything in one big git repo. How do you manage this? How do you allow others to use it and contribute to it? What do you name all those inventories and playbooks? There must be a way to fix this by tweaking [ansible.cfg](http://docs.ansible.com/intro_configuration.html) or something, right?
 
-There is are no masters
+There are no masters
 ===
 
 Ansible does not use an agent on the managed host, and it doesn't have a central server (unless you use [Ansible Tower](http://docs.ansible.com/tower.html), kinda). Basically anyone on your team who can install ansible on their workstation, has credentials on the host to be managed, and has access to your bits can use the big mess you just made. So naturally you put your mess in a big git repo to make it accessible.
@@ -35,7 +35,6 @@ git commit -m firstsies
 
 TODO how do you rename the dir ansible-role-foo and still reference foo?
 
-http://docs.ansible.com/playbooks_roles.html#role-dependencies
 
 Ansible Galaxy
 ===
@@ -52,13 +51,10 @@ You can use these roles in a couple of ways.
 
 But maybe you don't trust strangers. Then what?
 
-As of ansible 1.8 you can designate 
-Ansible-galaxy seems to be a great way to access roles.
+In addition to `requirements.txt` which assumes [ansible-galaxy](http://galaxy.ansible.com/) as the source of the role, as of v1.8 there is support for a `requirements.yml` which let's you point at a `.tar.gz` somewhere else.
 
-
-Using the `ansible-galaxy` command you can install 
-
-- tar.gz
+TODO maybe just listing dependencies is a thing too
+http://docs.ansible.com/playbooks_roles.html#role-dependencies
 
 Working with Other Admins
 ===
