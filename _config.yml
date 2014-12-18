@@ -27,3 +27,9 @@ pygments: true
 
 site:
   url: "//dlbewley.github.io/"
+# Includes an icon in the footer for each user name you enter
+footer-links:
+  github: dlbewley
+  twitter: dlbewley
+  linkedin: 60564658
+#https://www.linkedin.com/profile/view?id=60564658
