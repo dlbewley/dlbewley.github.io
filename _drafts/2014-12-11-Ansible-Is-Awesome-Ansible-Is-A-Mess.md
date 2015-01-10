@@ -1,5 +1,4 @@
-Ansible is Awesome! Ansible is a Mess! (draft)
-===
+# Ansible is Awesome! Ansible is a Mess! (draft) #
 
 So you found [Ansible](http://www.ansible.com), and you were like "Woah! Ansible is awesome!". You tried to follow the [best practices](http://docs.ansible.com/playbooks_best_practices.html) for writing playbooks, you created [roles](http://docs.ansible.com/playbooks_roles.html), and maybe your wrote a [filter plugin](http://docs.ansible.com/developing_plugins.html) or a [custom module](http://docs.ansible.com/developing_modules.html) for configuring an application unique to your environment. Then you started to feel like that things may have gotten out of hand and you've created a mess!
 
@@ -7,8 +6,7 @@ OK, maybe I'm just describing me and my environment.
 
 Playbooks, look in the current directory to find roles, libraries, and inventories, so naturally you put everything in one big git repo. How do you manage this? How do you allow others to use it and contribute to it? What do you name all those inventories and playbooks? There must be a way to fix this by tweaking [ansible.cfg](http://docs.ansible.com/intro_configuration.html) or something, right?
 
-There are no masters
-===
+# There are no masters #
 
 Ansible does not use an agent on the managed host, and it doesn't have a central server (unless you use [Ansible Tower](http://docs.ansible.com/tower.html), kinda). Basically anyone on your team who can install ansible on their workstation, has credentials on the host to be managed, and has access to your bits can use the big mess you just made. So naturally you put your mess in a big git repo to make it accessible.
 
@@ -17,10 +15,10 @@ But how do you break this down into managable pieces usable from anywhere, and w
 **How do you:**
 - scalably manage roles?
 - keep track of your playbooks?
-- make sure all the above available on demand by other admins?
+- make sure all the above are available on demand by other admins?
 
-Creating Roles
-===
+# Creating Roles #
+
 I've found it is usually better to follow convention even when it may be overkill, because it makes it easier for others and future-you to figure out what's going on. _Never underestimate the value of standards and conventions!_ Sometimes coming to a convention isn't easy though. Ansible does make it easy to create a skeleton for your role that is consistent with the rest of the world. 
 
 Just start by running `ansible-galaxy init role_name`. Most likely you want to create a git repo out of that role, so do that too.
@@ -36,8 +34,7 @@ git commit -m firstsies
 TODO how do you rename the dir ansible-role-foo and still reference foo?
 
 
-Ansible Galaxy
-===
+# Ansible Galaxy #
 
 [Ansible Galaxy](http://galaxy.ansible.com/) is essentially a framework that makes it super simple to use a stranger's role in your playbook. Roles are refrenced as `stranger_name.role_name`.
 
@@ -56,8 +53,43 @@ In addition to `requirements.txt` which assumes [ansible-galaxy](http://galaxy.a
 TODO maybe just listing dependencies is a thing too
 http://docs.ansible.com/playbooks_roles.html#role-dependencies
 
-Working with Other Admins
-===
+Holy shite what is this?
+- https://github.com/mirskytech/ansible-role-manager
+
+# Examples #
+
+Role `zimbra-mbox` requires roles `zimbra-common`.
+
+- `zimbra-mbox` will be at 
+  http://gitlab.domain.com/dlbewley/zimbra-mbox/tree/master
+
+- `zimbra-common` will be at 
+  http://gitlab.domain.com/dlbewley/zimbra-common/tree/master
+
+
+See: https://github.com/ansible/ansible/blob/devel/bin/ansible-galaxy `fetch_role()`. Basically it assumes it will be downloading a `.tar.gz` of a git repo, most likely from github.
+
+
+```
+    # first grab the file and save it to a temp location
+    if '://' in role_name:
+        archive_url = role_name
+    else: 
+        archive_url = 'https://github.com/%s/%s/archive/%s.tar.gz' % (role_data["github_user"], role_data["github_repo"], target)
+    print "- downloading role from %s" % archive_url
+```
+
+Gitlab tar.gz url looks like this:
+  http://gitlab.domain.com/dlbewley/zimbra-common/repository/archive.tar.gz?ref=master
+
+This doesn't work for me tho. I get:
+
+```
+ansible-playbook -i hosts -u root test-playbook.yml
+ERROR: cannot find role in /Users/dlbewley/src/ansible/roles/http:/gitlab.domain.com/dlbewley/zimbra-mbox.git or /Users/dlbewley/src/ansible/http:/gitlab.domain.com/dlbewley/zimbra-mbox.git or /usr/local/etc/ansible/roles/http:/gitlab.domain.com/dlbewley/zimbra-mbox.git
+```
+
+# Working with Other Admins #
 
 Now how do you manage your systems?
 
@@ -68,3 +100,12 @@ You might run ansible from a laptop, your workstation, a VM. Your colleagues may
 Inventory
 ---
 http://docs.ansible.com/developing_inventory.html
+
+
+Methods to share roles:
+---
+
+Some basic concepts to flesh out
+
+- Install roles to a dir (`/usr/share/ansible/roles`? and update `roles_path` in your `[ansible.cfg](http://docs.ansible.com/intro_configuration.html#roles-path)`)
+- Use [ansible-role-manager](https://github.com/mirskytech/ansible-role-manager) and _freeze_ your playbooks and deps.

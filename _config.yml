@@ -27,6 +27,10 @@ pygments: true
 #redcarpet:
 #  extensions: ["no_intra_emphasis", "fenced_code_blocks", "autolink", "tables", "with_toc_data"]
 
+collections:
+  drafts:
+    layout: "draft"
+
 site:
   url: "//dlbewley.github.io/"
 # Includes an icon in the footer for each user name you enter
