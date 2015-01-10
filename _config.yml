@@ -23,9 +23,10 @@ defaults:
 permalink: /blog/:year/:month/:day/:title
 
 pygments: true
-#markdown: redcarpet2
-#redcarpet:
-#  extensions: ["no_intra_emphasis", "fenced_code_blocks", "autolink", "tables", "with_toc_data"]
+markdown: HTMLPipeline
+html_pipeline:
+  filters:
+    - "markdownfilter"
 
 collections:
   drafts:
