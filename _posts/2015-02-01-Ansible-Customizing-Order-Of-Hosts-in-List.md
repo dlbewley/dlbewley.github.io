@@ -9,7 +9,7 @@ The LDAP servers are used by all the other servers to store configuration and pr
 
 There are 2 values relevant to LDAP server lists and they have values like this:
 
-{% highlight yaml %}
+{% highlight %}
 ldap_master_url = "ldap://zimbra-ldap-master-01"
 ldap_url        = "ldap://zimbra-ldap-01 ldap://zimbra-ldap-02 ldap://zimbra-ldap-master-01"
 {% endhighlight %}
