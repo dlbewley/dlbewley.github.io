@@ -2,6 +2,20 @@
 layout: post
 ---
 
+Zimbra is a email / collaboration suite that is typically deployed cluster or clusters filling roles like LDAP master, LDAP replica, Proxy, MTA, Mailstore, etc.
+
+The LDAP servers are used by all the other servers to store configuration and provisioning data. Servers in the cluster understand where to find the LDAP master (read/write) and LDAP replicas (read only) though values defined in `/opt/zimbra/conf/localconfig.xml`.
+
+There are 2 values relevant to LDAP server location stored there: `ldap_url`, `ldap_master_url`. They have values like:
+
+```
+ldap_url: ldap://zimbra-ldap-01 ldap://zimbra-ldap-02 ldap://zimbra-ldap-master-01
+ldap_master_url: ldap://zimbra-ldap-master-01
+```
+
+That should be easy enough to construct based on group memberships, right? Unfortunately there is a bit of complexity lurking here. LDAP replica servers should always list themselves first in the `ldap_url`, and the `ldap_url` should end with an LDAP master. LDAP master servers should always list themselves first in `ldap_master_url`.
+
+This is what I cam up with.
 
 ```
 ---
@@ -52,4 +66,4 @@ layout: post
   set_fact:
     zimbra_ldap_url: 'ldap://{{ ldap_replica_sans_me | join(" ldap://") }} {{ zimbra_ldap_master_url }}'
   when: '"zimbra-ldap" not in group_names'
-``
+```
