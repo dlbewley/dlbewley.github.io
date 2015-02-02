@@ -1,4 +1,5 @@
 ---
+title: Using Ansible Filters to Customizing Order Of Hosts in List
 layout: post
 ---
 
@@ -15,9 +16,11 @@ ldap_master_url: ldap://zimbra-ldap-master-01
 
 That should be easy enough to construct based on group memberships, right? Unfortunately there is a bit of complexity lurking here. LDAP replica servers should always list themselves first in the `ldap_url`, and the `ldap_url` should end with an LDAP master. LDAP master servers should always list themselves first in `ldap_master_url`.
 
-This is what I cam up with.
+This is what I came up with.
 
-```
+The result is 2 fact variables for each host: `zimbra_ldap_url` and `zimbra_ldap_master_url`. Those facts can later be applied with `zmlocalconfig`. I wrote a Ansible module to do that as well. Maybe I will be able to post that at some point.
+
+{% highlight yaml %}
 ---
 # file: roles/zimbra/tasks/zimbra-define-ldap-urls.yml
 # Just set facts: zimbra_ldap_master_url, zimbra_ldap_url
@@ -66,4 +69,4 @@ This is what I cam up with.
   set_fact:
     zimbra_ldap_url: 'ldap://{{ ldap_replica_sans_me | join(" ldap://") }} {{ zimbra_ldap_master_url }}'
   when: '"zimbra-ldap" not in group_names'
-```
+{% endhighlight %}
