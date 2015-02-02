@@ -1,6 +1,9 @@
 ---
 title: Using Ansible Filters to Customize the Order Of Hosts in a List
 layout: post
+tags:
+  - ansible
+  - zimbra
 ---
 
 Zimbra is a email / collaboration suite that is typically deployed in a cluster or clusters of dedicated servers which fill roles like LDAP master, LDAP replica, Proxy, MTA, Mailstore, etc.
