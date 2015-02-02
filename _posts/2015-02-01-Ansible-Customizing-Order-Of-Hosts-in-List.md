@@ -21,6 +21,7 @@ This is what I came up with.
 The result is 2 fact variables for each host: `zimbra_ldap_url` and `zimbra_ldap_master_url`. Those facts can later be applied with the `zmlocalconfig` command. (I wrote a Ansible module to do that as well. Maybe I will be able to post that at some point.)
 
 {% highlight yaml %}
+{% raw %}
 ---
 # file: roles/zimbra/tasks/zimbra-define-ldap-urls.yml
 # Just set facts: zimbra_ldap_master_url, zimbra_ldap_url
@@ -34,16 +35,16 @@ The result is 2 fact variables for each host: `zimbra_ldap_url` and `zimbra_ldap
 
 - name: Shuffled list of LDAP masters other than me
   set_fact: 
-    ldap_master_sans_me: "\{\{ groups['zimbra-ldap-master'] | difference(ansible_fqdn) | shuffle \}\}"
+    ldap_master_sans_me: "{{ groups['zimbra-ldap-master'] | difference(ansible_fqdn) | shuffle }}"
 
 - name: Define LDAP Master URL for Masters
   set_fact:
-    zimbra_ldap_master_url: 'ldap://\{\{ [ ansible_fqdn ] | union(ldap_master_sans_me) | join(" ldap://") \}\}'
+    zimbra_ldap_master_url: 'ldap://{{ [ ansible_fqdn ] | union(ldap_master_sans_me) | join(" ldap://") }}'
   when: '"zimbra-ldap-master" in group_names'
 
 - name: Define LDAP Master URL for Non-masters
   set_fact:
-    zimbra_ldap_master_url: 'ldap://\{\{ ldap_master_sans_me | join(" ldap://") \}\}'
+    zimbra_ldap_master_url: 'ldap://{{ ldap_master_sans_me | join(" ldap://") }}'
   when: '"zimbra-ldap-master" not in group_names'
 
 
@@ -53,20 +54,21 @@ The result is 2 fact variables for each host: `zimbra_ldap_url` and `zimbra_ldap
 
 - name: Shuffled list of LDAP replicas other than me
   set_fact: 
-    ldap_replica_sans_me: "\{\{ groups['zimbra-ldap-replica'] | difference(ansible_fqdn) | shuffle \}\}"
+    ldap_replica_sans_me: "{{ groups['zimbra-ldap-replica'] | difference(ansible_fqdn) | shuffle }}"
 
 - name: Define LDAP URL for LDAP replicas
   set_fact:
-    zimbra_ldap_url: 'ldap://\{\{ [ ansible_fqdn ] | union(ldap_replica_sans_me) | join(" ldap://") \}\} \{\{ zimbra_ldap_master_url \}\}'
+    zimbra_ldap_url: 'ldap://{{ [ ansible_fqdn ] | union(ldap_replica_sans_me) | join(" ldap://") }} {{ zimbra_ldap_master_url }}'
   when: '"zimbra-ldap-replica" in group_names'
 
 - name: Define LDAP URL for LDAP masters
   set_fact:
-    zimbra_ldap_url: 'ldap://\{\{ [ ansible_fqdn ] | union(ldap_replica_sans_me) | union(ldap_master_sans_me) | join(" ldap://") \}\}'
+    zimbra_ldap_url: 'ldap://{{ [ ansible_fqdn ] | union(ldap_replica_sans_me) | union(ldap_master_sans_me) | join(" ldap://") }}'
   when: '"zimbra-ldap-master" in group_names'
 
 - name: Define LDAP URL for non-LDAP servers
   set_fact:
-    zimbra_ldap_url: 'ldap://\{\{ ldap_replica_sans_me | join(" ldap://") \}\} \{\{ zimbra_ldap_master_url \}\}'
+    zimbra_ldap_url: 'ldap://{{ ldap_replica_sans_me | join(" ldap://") }} {{ zimbra_ldap_master_url }}'
   when: '"zimbra-ldap" not in group_names'
+{% endraw %}
 {% endhighlight %}
