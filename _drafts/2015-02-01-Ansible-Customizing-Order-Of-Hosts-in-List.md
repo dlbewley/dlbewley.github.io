@@ -2,7 +2,7 @@
 layout: post
 ---
 
-Zimbra is a email / collaboration suite that is typically deployed cluster or clusters filling roles like LDAP master, LDAP replica, Proxy, MTA, Mailstore, etc.
+Zimbra is a email / collaboration suite that is typically deployed in a cluster or clusters of dedicated servers which fill roles like LDAP master, LDAP replica, Proxy, MTA, Mailstore, etc.
 
 The LDAP servers are used by all the other servers to store configuration and provisioning data. Servers in the cluster understand where to find the LDAP master (read/write) and LDAP replicas (read only) though values defined in `/opt/zimbra/conf/localconfig.xml`.
 
