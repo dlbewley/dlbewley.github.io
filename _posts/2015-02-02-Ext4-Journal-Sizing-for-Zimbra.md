@@ -59,7 +59,7 @@ Directory Hash Seed:      2394798b-a767-4a9c-b92f-dabd75e5f1e4
 Journal backup:           inode blocks
 {% endhighlight %}
 
-After a little googling, I found [this page](http://blog.dailystuff.nl/2012/07/getting-ext34-journal-size/) that suggested `debugfs`. It looks like the default size for this 1TB filesystem was 128M.
+After a little googling, I found [this page](http://blog.dailystuff.nl/2012/07/getting-ext34-journal-size/) that suggested `dumpe2fs`. It looks like the default size for this 1TB filesystem was 128M.
 
 {% highlight text %}
 [root@zimbra-mbox-10 ~]# dumpe2fs /dev/mapper/VGzstore-LVstore | grep ^Journal
