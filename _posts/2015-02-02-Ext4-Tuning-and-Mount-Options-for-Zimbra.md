@@ -1,5 +1,5 @@
 ---
-title: Tuning EXT4 Journal Parameters for Zimbra
+title: Tuning ext4 Creation and Mount Options for Zimbra
 layout: post
 tags: [ zimbra ]
 ---
@@ -19,7 +19,7 @@ Filesystem Options | Reference    | Description
 -------------------|--------------|-----------
 `-O dir_index`     | Dir_index    | Use hashed b-trees to speed up lookups in large directories.
 `-m 2`             | Reserve      | By default 5% of space is reserved. That can be a lot on a big filesystem.
-`-i 10240`         | Inode Size   | Bytes per inode?
+`-i 10240`         | Bytes per Inode | An inode will be created for every X bytes. So X should be your average file size.
 `-J size=400`      | Journal Size | Journal size can influence metadata performance.
     
 
@@ -28,9 +28,45 @@ Mount Options      | Reference    | Description
 `noatime`          | Noatime      | Do not update access time
 `dirsync`          | Dirsync      | Immediately flush directory operations
 
+# Zimbra Filesystems #
+
+How fine grained do you split up the filesystems?
+
+Dir                | I/O Type         | Latency Sensitivity | Function
+-------------------|--------------------------------------------------
+/opt/zimbra        |                  | Low                 | Application
+/opt/zimbra/backup | Sustained writes | Low                 | Nightly dump of all other dirs
+/opt/zimbra/data   |                  | High                | Metadata in MySQL
+/opt/zimbra/redo   | Sustained writes | High                | Transaction log of all activity
+/opt/zimbra/index  | High Random      | High                | Lucene full text index
+/opt/zimbra/store  | High Random      | High                |
+
 # Filesystem Options #
 
 I'm ignoring that fact that anything other than ext4 exists.
+
+## Bytes per Inode ##
+
+Zimbra stores message blobs as individual files, as opposed to one file per mail folder (ala mbox). Therefore the inode usage can be very high. You may have tons of space free, but if you run out of inodes, pack it in. Use `df -i` to examine your inode usage.
+
+Zimbra suggests `-i 10240` option. This says create 1 inode for every 10k of space on the filesystem. This assumes that you expect to fill the filesystem up with 10k files. How big is your average message?
+
+How many inodes do I have on my filesystem?
+
+{% highlight text %}
+[root@zimbra-mbox-10 ~]# tune2fs -l /dev/mapper/VGzstore-LVstore | grep 'Inode count'
+Inode count:              67108864
+{% endhighlight %}
+
+If I use the `-i 10240` option, how many inodes will I have then? You can find out with `mke2fs` in dry run mode. See line 4 below.
+
+{% highlight text linenos %}
+[root@zimbra-mbox-10 ~]# umount /opt/zimbra/store
+[root@zimbra-mbox-10 ~]# mke2fs -n -i 10240  /dev/mapper/VGzstore-LVstore | grep inodes
+mke2fs 1.41.12 (17-May-2010)
+67108864 inodes, 268435456 blocks
+8192 inodes per group
+{% endhighlight %}
 
 ## Journal Size ##
 
