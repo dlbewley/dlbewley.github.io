@@ -11,7 +11,7 @@ If I've already created a filesystem, so how do I find out the size of the exist
 
 Looks like `tune2fs -l` doesn't do the trick.
 
-```
+{% highlight %}
 [root@zimbra-mbox-10 ~]# tune2fs -l /dev/mapper/VGzstore-LVstore
 tune2fs 1.41.12 (17-May-2010)
 Filesystem volume name:   <none>
@@ -58,11 +58,11 @@ Journal inode:            8
 Default directory hash:   half_md4
 Directory Hash Seed:      2394798b-a767-4a9c-b92f-dabd75e5f1e4
 Journal backup:           inode blocks
-```
+{% endhighlight %}
 
 After a little googling, I found [this page](http://blog.dailystuff.nl/2012/07/getting-ext34-journal-size/) that suggested `debugfs`. It looks like the default size for this 1TB filesystem was 128M.
 
-```
+{% highlight %}
 [root@zimbra-mbox-10 ~]# dumpe2fs /dev/mapper/VGzstore-LVstore | grep ^Journal
 dumpe2fs 1.41.12 (17-May-2010)
 Journal inode:            8
@@ -72,8 +72,10 @@ Journal size:             128M
 Journal length:           32768
 Journal sequence:         0x00000001
 Journal start:            0
-```
+{% endhighlight %}
 
 What size is actually a good size? Well, [this article](http://www.linux-mag.com/id/7666/) suggested that 256MB may be a good number. Also somewhat arbitrary.
 
 Let's just go with 256MB for now. I don't believe you can adjust the journal size after the fact, but in my case it doesn't matter. I'm going to recreate it.
+
+I'll of course use the ansible [filesystem module](http://docs.ansible.com/filesystem_module.html) and add a value of `-J size=256` in the `opts` parameter.
