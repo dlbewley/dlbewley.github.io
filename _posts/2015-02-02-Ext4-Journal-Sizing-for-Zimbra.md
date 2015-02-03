@@ -1,8 +1,7 @@
 ---
 title: Tuning EXT4 Journal Parameters for Zimbra
 layout: post
-tags:
-  - zimbra
+tags: [ zimbra ]
 ---
 
 Journal size reportedly can have a great impact on metadata operations. [Zimbra suggests](http://wiki.zimbra.com/index.php?title=Performance_Tuning_Guidelines_for_Large_Deployments) an arbitrary 400M for journal size for filesystems. 
@@ -11,7 +10,7 @@ If I've already created a filesystem, so how do I find out the size of the exist
 
 Looks like `tune2fs -l` doesn't do the trick.
 
-{% highlight %}
+{% highlight text %}
 [root@zimbra-mbox-10 ~]# tune2fs -l /dev/mapper/VGzstore-LVstore
 tune2fs 1.41.12 (17-May-2010)
 Filesystem volume name:   <none>
@@ -62,7 +61,7 @@ Journal backup:           inode blocks
 
 After a little googling, I found [this page](http://blog.dailystuff.nl/2012/07/getting-ext34-journal-size/) that suggested `debugfs`. It looks like the default size for this 1TB filesystem was 128M.
 
-{% highlight %}
+{% highlight text %}
 [root@zimbra-mbox-10 ~]# dumpe2fs /dev/mapper/VGzstore-LVstore | grep ^Journal
 dumpe2fs 1.41.12 (17-May-2010)
 Journal inode:            8
