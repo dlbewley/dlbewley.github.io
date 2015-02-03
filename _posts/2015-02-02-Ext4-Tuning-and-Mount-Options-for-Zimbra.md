@@ -62,11 +62,15 @@ If I use the `-i 10240` option, how many inodes will I have then? You can find o
 
 {% highlight text linenos %}
 [root@zimbra-mbox-10 ~]# umount /opt/zimbra/store
-[root@zimbra-mbox-10 ~]# mke2fs -n -i 10240  /dev/mapper/VGzstore-LVstore | grep inodes
+[root@zimbra-mbox-10 ~]# mke2fs -n -i 10240 /dev/mapper/VGzstore-LVstore | grep inodes
 mke2fs 1.41.12 (17-May-2010)
-67108864 inodes, 268435456 blocks
-8192 inodes per group
+107479040 inodes, 268435456 blocks
+13120 inodes per group
 {% endhighlight %}
+
+Wow! That is support for up to 107 million files. 
+
+What sort of overhead does a very high inode count induce on a filesystem?
 
 ## Journal Size ##
 
