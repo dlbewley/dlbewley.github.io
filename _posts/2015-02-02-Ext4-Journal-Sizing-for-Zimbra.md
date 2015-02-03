@@ -5,7 +5,7 @@ tags:
   - zimbra
 ---
 
-[Zimbra suggests](http://wiki.zimbra.com/index.php?title=Performance_Tuning_Guidelines_for_Large_Deployments) an arbitrary 400M for journal size for filesystems. Journal size reportedly can have a great impact on metadata operations.
+Journal size reportedly can have a great impact on metadata operations. [Zimbra suggests](http://wiki.zimbra.com/index.php?title=Performance_Tuning_Guidelines_for_Large_Deployments) an arbitrary 400M for journal size for filesystems. 
 
 If I've already created a filesystem, so how do I find out the size of the existing journal?
 
