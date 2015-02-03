@@ -9,7 +9,7 @@ defaults:
         email: dale@bewley.net
       disqus:
         shortname: dlbewleygithubio
-        enabled: false
+        enabled: true
 
   # posts
   - scope:
