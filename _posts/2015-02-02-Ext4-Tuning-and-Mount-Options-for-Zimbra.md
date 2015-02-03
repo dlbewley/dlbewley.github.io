@@ -19,7 +19,7 @@ Filesystem Options | Reference    | Description
 -------------------|--------------|-----------
 `-O dir_index`     | Dir_index    | Use hashed b-trees to speed up lookups in large directories.
 `-m 2`             | Reserve      | By default 5% of space is reserved. That can be a lot on a big filesystem.
-`-i 10240`         | Bytes per Inode | An inode will be created for every X bytes. So X should be your average file size.
+`-i 10240`         | Bytes per Inode or `inode_ratio` | An inode will be created for every X bytes. So X should be your average file size.
 `-J size=400`      | Journal Size | Journal size can influence metadata performance.
     
 
@@ -49,7 +49,7 @@ I'm ignoring that fact that anything other than ext4 exists.
 
 Zimbra stores message blobs as individual files, as opposed to one file per mail folder (ala mbox). Therefore the inode usage can be very high. You may have tons of space free, but if you run out of inodes, pack it in. Use `df -i` to examine your inode usage.
 
-Zimbra suggests `-i 10240` option. This says create 1 inode for every 10k of space on the filesystem. This assumes that you expect to fill the filesystem up with 10k files. How big is your average message?
+Zimbra suggests `-i 10240` option. This says create 1 inode for every 10k of space on the filesystem. This assumes that you expect to fill the filesystem up with 10k files. 
 
 How many inodes do I have on my filesystem?
 
@@ -68,9 +68,21 @@ mke2fs 1.41.12 (17-May-2010)
 13120 inodes per group
 {% endhighlight %}
 
-Wow! That is support for up to 107 million files. 
+Wow! That is support for up to 107 million files.
 
-What sort of overhead does a very high inode count induce on a filesystem?
+How big is your average message? It looks like in my case we are looking at about 190 million emails split across numerous servers, and an average message size of 106KB. So an inode per 10KB is pretty generous. I can probably increase that number. 
+
+Doing the math, it looks like by default I'm getting one inode per 16K. This is borne out in `/etc/mk2fs.conf`.
+
+{% highlight text %}
+[defaults]
+        base_features = sparse_super,filetype,resize_inode,dir_index,ext_attr
+        blocksize = 4096
+        inode_size = 256
+        inode_ratio = 16384
+{% endhighlight %}
+
+So the default may be just fine. I could even raise the number, but I won't.
 
 ## Journal Size ##
 
