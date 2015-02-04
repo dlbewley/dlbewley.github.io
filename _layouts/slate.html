@@ -22,7 +22,7 @@
       </section>
     </div>
 
-{% include disqus.html %}
+{% if page.disqus.enabled %}{% include disqus.html %}{% endif %}
 
 {% include footer_slate.html %}
 

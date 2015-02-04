@@ -9,7 +9,7 @@ defaults:
         email: dale@bewley.net
       disqus:
         shortname: dlbewleygithubio
-        enabled: true
+        enabled: false
 
   # posts
   - scope:
@@ -33,7 +33,7 @@ collections:
     layout: "draft"
 
 site:
-  url: "//dlbewley.github.io/"
+  url: "//guifreelife.com/"
 # Includes an icon in the footer for each user name you enter
 footer_links:
   github: dlbewley

@@ -13,5 +13,3 @@ layout: slate
 	      <li><span>{{ post.date | date_to_string }}</span> &raquo; <a href="{{ post.url }}">{{ post.title }}</a></li>
 	    {% endfor %}
 	  </ul>
-
-  {% if disqus.enabled %}{% include disqus.html %}{% endif %}
