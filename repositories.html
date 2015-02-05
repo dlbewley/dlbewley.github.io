@@ -10,13 +10,14 @@ downloads: true
 
 <div id="home">
 
-  <div id="posts">
-    <h1>Blog Posts</h1>
-    <ul class="posts">
-      {% for post in site.posts %}
-        <li><span>{{ post.date | date_to_string }}</span> &raquo; <a href="{{ post.url }}">{{ post.title }}</a></li>
+  <div id="repos">
+    <h1>Repositories</h1>
+    <ul class="repos">
+      {% for repo in site.github.public_repositories %}
+        <li><span><a href="{{ repo.homepage }}">{{ repo.name }}</a></span></li>
       {% endfor %}
     </ul>
   </div>
+
 </div>
 
