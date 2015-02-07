@@ -1,7 +1,7 @@
 ---
 title: Tuning ext4 Creation and Mount Options for Zimbra
 layout: post
-tags: [ zimbra ]
+tags: [ ansible, zimbra ]
 ---
 
 [Zimbra](http://www.zimbra.com/) is a email collaboration suite. Its various compontents perform MTA duties, message store, full text indexing. In a large environment, the number of files and I/O operations can really add up. How we ensure the filesystem is ready to support it?
@@ -194,3 +194,10 @@ Let's just go with 256MB for now. I don't believe you can adjust the journal siz
 
 I'll of course use the ansible [filesystem module](http://docs.ansible.com/filesystem_module.html) and add a value of `-J size=256` in the `opts` parameter.
 
+# Summary #
+
+So, in the end I'll be using Ansible [filesystem](http://docs.ansible.com/filesystem_module.html) and [mount](http://docs.ansible.com/mount_module.html) modules to setup filesytems whith a journal size of 256MB, and a reserve of 1%, and use noatime and dirsync mount options. I create a dictionary like this to do that.
+
+{% highlight yaml %}
+todo
+{% endhighlight %}
