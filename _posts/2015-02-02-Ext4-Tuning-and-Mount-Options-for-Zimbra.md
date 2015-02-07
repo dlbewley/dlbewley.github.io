@@ -4,54 +4,87 @@ layout: post
 tags: [ zimbra ]
 ---
 
-_Under Construction_
+[Zimbra](http://www.zimbra.com/) is a email collaboration suite. Its various compontents perform MTA duties, message store, full text indexing. In a large environment, the number of files and I/O operations can really add up. How we ensure the filesystem is ready to support it?
 
-[Zimbra](http://www.zimbra.com/) is a email collaboration suite. Its various compontents perform MTA duties, message store, full text indexing. In a large environment the number of files and operations can really add up. How do we ensure the filesystem is ready to support it?
+# Zimbras Recommendations #
 
-# Recommendations #
+Zimbra [offers some guidance](http://wiki.zimbra.com/index.php?title=Performance_Tuning_Guidelines_for_Large_Deployments#File_System) for tuning the filesystem. Tips like:
 
-Zimbra [offers some guidance](http://wiki.zimbra.com/index.php?title=Performance_Tuning_Guidelines_for_Large_Deployments#File_System) for tuning the filesystem.
+- Mount file systems with the `noatime` option.
 
-> Mount your file systems with the noatime option. By default, the atime option is enabled and updates the last access time data for files. Mounting your file systems with the noatime option reduces write load on the disk subsystem.
-> You should enable dirsync for ext3/ext4 file systems (or equivalent method for a non-ext3/non-ext4 file system). Zimbra mailbox server uses fsync(2) as necessary to ensure that data in files are flushed from buffers to disk. Eg, when an incoming message is received, fsync is called on the blob store message file before the MTA is given an acknowledgment that the message was received/delivered by the MBS. However, when Zimbra mailbox server or MTA creates new files, such as during message delivery, the update to the directory containing the file must be flushed to disk. Even if the data in the file is flushed with fsync, the file entry in the directory might be lost if server crashes before the directory update is flushed to disk. With the ext3/ext4 file system, to have directory updates be written to disk automatically and atomically, you can update directory attributes by running chattr +D dir on all the relevant directories. If you are doing this for the first time, you should consider running chattr -R +D to recursively update a whole tree of directories; future sub-directories will inherit the attribute from parent directory. We recommend dirsync be enabled for all blob stores, Lucene search index directories, and MTA queues.
+  It generally is not important to know the last access time of all the files, so the extra write ops are wasteful.
 
-Filesystem Options | Reference    | Description
--------------------|--------------|-----------
-`-O dir_index`     | Dir_index    | Use hashed b-trees to speed up lookups in large directories.
-`-m 2`             | Reserve      | By default 5% of space is reserved. That can be a lot on a big filesystem.
-`-i 10240`         | Bytes per Inode or `inode_ratio` | An inode will be created for every X bytes. So X should be your average file size.
-`-J size=400`      | Journal Size | Journal size can influence metadata performance.
-    
+- Enable `dirsync` for ext3/ext4 file systems. (mailstores, indexes, MTA queues)
+
+  The mailbox and MTA fsync for files, but it is possible to lose the directory entry for the file in  crash.
+  It is also possible to affect this with `chattr -R +d`.
+
+  More [dirsync info](http://lwn.net/2002/0214/a/dirsync.php3).
 
 Mount Options      | Reference    | Description
 -------------------|--------------|-----------
 `noatime`          | Noatime      | Do not update access time
 `dirsync`          | Dirsync      | Immediately flush directory operations
 
+The following filesystem creation options are recommended.
+
+Filesystem Options | Reference    | Description
+-------------------|--------------|-----------
+`-O dir_index`     | Dir_index    | Use hashed b-trees to speed up lookups in large directories.
+`-m 2`             | Reserve      | By default 5% of space is reserved. That can be a lot on a big filesystem.
+`-i 10240`         | Bytes per Inode or `inode_ratio` | An inode will be created for every _X_ bytes. So _X_ should be your average file size.
+`-J size=400`      | Journal Size | Journal size can influence metadata performance, so boost the size.
+    
+
 # Zimbra Filesystems #
 
-How fine grained do you split up the filesystems?
+How fine grained do you split up the filesystems? Below are some key directories within Zimbra which may or may not be candidates for unique filesystems.
 
 Dir                | I/O Type         | Latency Sensitivity | Function
 -------------------|--------------------------------------------------
-/opt/zimbra        |                  | Low                 | Application
-/opt/zimbra/backup | Sustained writes | Low                 | Nightly dump of all other dirs
-/opt/zimbra/data   |                  | High                | Metadata in MySQL
-/opt/zimbra/redo   | Sustained writes | High                | Transaction log of all activity
+/opt/zimbra        | Random           | Low                 | Application root
+/opt/zimbra/backup | High write       | Low                 | Nightly dump of all other dirs. (Use a NFS mount)
+/opt/zimbra/db     | Random           | High                | Message metadata in MySQL. Disambiguates message blob location and tags etc
+/opt/zimbra/data   | Random           | High                | Data for amavisd, clamav, LDAP, postfix MTA, etc
 /opt/zimbra/index  | High Random      | High                | Lucene full text index
-/opt/zimbra/store  | High Random      | High                |
+/opt/zimbra/redolog| High Write       | High                | Transaction log of all activity
+/opt/zimbra/store  | Random           | High                | Message blob store
 
-# Filesystem Options #
+# Separating out Filesystems #
 
-I'm ignoring that fact that anything other than ext4 exists.
+For starters I'm going to go with:
+
+- /opt/zimbra
+  Nothing special. Just noatime
+- /opt/zimbra/backup
+  Backups will go to a NFS filer. I'm not concerned about the filesystem config there. That a job for the NAS admin.
+
+- /opt/zimbra/index
+- /opt/zimbra/redolog
+- /opt/zimbra/store
+
+
+# Selecting Filesystem Options #
+
+Based on those recommendations, let's decide which to follow, and how.
+
+I will be working on RHEL 6, and I'm ignoring that fact that anything other than ext4 exists.
+
+## Directory Index ##
+
+The dir_index option speeds up directories with large numbers of files. It turns out this is on by default in `/etc/mke2fs.conf`. You can confirm by looking for `dir_index` in the filesystem features in the output of `tune2fs`. So, nothing to do here.
+
+{% highlight text %}
+Filesystem features:      has_journal ext_attr resize_inode dir_index filetype needs_recovery extent flex_bg sparse_super large_file huge_file uninit_bg dir_nlink extra_isize
+{% endhighlight %}
 
 ## Bytes per Inode ##
 
-Zimbra stores message blobs as individual files, as opposed to one file per mail folder (ala mbox). Therefore the inode usage can be very high. You may have tons of space free, but if you run out of inodes, pack it in. Use `df -i` to examine your inode usage.
+Inodes store metadata about files. Every file consumes an inode and you can't add more inodes. Zimbra stores message blobs as individual files, as opposed to one file per mail folder (ala mbox). Therefore the inode usage can be very high. You may have tons of space free, but if you run out of inodes, pack it in. Use `df -i` to examine your inode usage.
 
-Zimbra suggests `-i 10240` option. This says create 1 inode for every 10k of space on the filesystem. This assumes that you expect to fill the filesystem up with 10k files. 
+Zimbra suggests `-i 10240` mke2fs option. This says create 1 inode for every 10KB of space on the filesystem. This assumes that you expect to fill the filesystem up with 10KB files. 
 
-How many inodes do I have on my filesystem?
+How many inodes do I have on my test filesystem?
 
 {% highlight text %}
 [root@zimbra-mbox-10 ~]# tune2fs -l /dev/mapper/VGzstore-LVstore | grep 'Inode count'
@@ -70,7 +103,7 @@ mke2fs 1.41.12 (17-May-2010)
 
 Wow! That is support for up to 107 million files.
 
-How big is your average message? It looks like in my case we are looking at about 190 million emails split across numerous servers, and an average message size of 106KB. So an inode per 10KB is pretty generous. I can probably increase that number. 
+How big is your average message? It looks like in my case we are looking at about 190 million emails split across numerous servers, and an average message size of 106KB. So an inode per 10KB is pretty generous. I can probably increase that ratio, and lower the inode count. 
 
 Doing the math, it looks like by default I'm getting one inode per 16K. This is borne out in `/etc/mk2fs.conf`.
 
@@ -161,12 +194,3 @@ Let's just go with 256MB for now. I don't believe you can adjust the journal siz
 
 I'll of course use the ansible [filesystem module](http://docs.ansible.com/filesystem_module.html) and add a value of `-J size=256` in the `opts` parameter.
 
-# Mount Options #
-
-## Noatime ##
-
-More like, no brainer! Am I right?!
-
-## Dirsync ##
-
-http://lwn.net/2002/0214/a/dirsync.php3
