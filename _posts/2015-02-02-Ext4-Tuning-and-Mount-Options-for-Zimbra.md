@@ -6,9 +6,9 @@ tags: [ ansible, zimbra ]
 
 [Zimbra](http://www.zimbra.com/) is a email collaboration suite. Its various compontents perform MTA duties, message store, full text indexing. In a large environment, the number of files and I/O operations can really add up. How we ensure the filesystem is ready to support it?
 
-# Zimbras Recommendations #
+# Zimbra's Recommendations #
 
-Zimbra [offers some guidance](http://wiki.zimbra.com/index.php?title=Performance_Tuning_Guidelines_for_Large_Deployments#File_System) for tuning the filesystem. Tips like:
+Zimbra [offers some guidance](http://wiki.zimbra.com/index.php?title=Performance_Tuning_Guidelines_for_Large_Deployments#File_System) for tuning the filesystem, with tips like:
 
 - Mount file systems with the `noatime` option.
 
@@ -21,20 +21,21 @@ Zimbra [offers some guidance](http://wiki.zimbra.com/index.php?title=Performance
 
   More [dirsync info](http://lwn.net/2002/0214/a/dirsync.php3).
 
-Mount Options      | Reference    | Description
--------------------|--------------|-----------
-`noatime`          | Noatime      | Do not update access time
-`dirsync`          | Dirsync      | Immediately flush directory operations
+Mount Options      | Description
+-------------------|------------
+`noatime`          | Do not update access time
+`dirsync`          | Immediately flush directory operations
 
-The following filesystem creation options are recommended.
+The following filesystem creation options are also recommended.
 
-Filesystem Options | Reference    | Description
--------------------|--------------|-----------
-`-O dir_index`     | Dir_index    | Use hashed b-trees to speed up lookups in large directories.
-`-m 2`             | Reserve      | By default 5% of space is reserved. That can be a lot on a big filesystem.
-`-i 10240`         | Bytes per Inode or `inode_ratio` | An inode will be created for every _X_ bytes. So _X_ should be your average file size.
-`-J size=400`      | Journal Size | Journal size can influence metadata performance, so boost the size.
-    
+Filesystem Options | Description
+-------------------|------------
+`-O dir_index`     | Use hashed b-trees to speed up lookups in large directories.
+`-m 2`             | By default 5% of space is reserved. That can be a lot on a big filesystem.
+`-i 10240`         | Bytes per Inode or `inode_ratio`. An inode will be created for every _X_ bytes. So _X_ should be your average file size.
+`-J size=400`      | Journal size can influence metadata performance, so boost the size.
+
+How many filesystems do we need? Which filesystems need which options? Let's see what directories make good candidates for separation.
 
 # Zimbra Filesystems #
 
@@ -46,6 +47,7 @@ Dir                | I/O Type         | Latency Sensitivity | Function
 /opt/zimbra/backup | High write       | Low                 | Nightly dump of all other dirs. (Use a NFS mount)
 /opt/zimbra/db     | Random           | High                | Message metadata in MySQL. Disambiguates message blob location and tags etc
 /opt/zimbra/data   | Random           | High                | Data for amavisd, clamav, LDAP, postfix MTA, etc
+/opt/zimbra/data/amavisd/tmp | Random | High                | Temp files created when Amavisd feeds mail to ClamAV and Spamassassin can be sped up with a [RAM disk](http://wiki.zimbra.com/wiki/SpamAssassin_Customizations#2._Put_Amavis.27s_Temp_Dir_on_a_RAM_Disk)
 /opt/zimbra/index  | High Random      | High                | Lucene full text index
 /opt/zimbra/redolog| High Write       | High                | Transaction log of all activity
 /opt/zimbra/store  | Random           | High                | Message blob store
@@ -55,10 +57,9 @@ Dir                | I/O Type         | Latency Sensitivity | Function
 For starters I'm going to go with:
 
 - /opt/zimbra
-  Nothing special. Just noatime
+  Nothing special yet. Just noatime.
 - /opt/zimbra/backup
   Backups will go to a NFS filer. I'm not concerned about the filesystem config there. That a job for the NAS admin.
-
 - /opt/zimbra/index
 - /opt/zimbra/redolog
 - /opt/zimbra/store
@@ -199,5 +200,48 @@ I'll of course use the ansible [filesystem module](http://docs.ansible.com/files
 So, in the end I'll be using Ansible [filesystem](http://docs.ansible.com/filesystem_module.html) and [mount](http://docs.ansible.com/mount_module.html) modules to setup filesytems whith a journal size of 256MB, and a reserve of 1%, and use noatime and dirsync mount options. I create a dictionary like this to do that.
 
 {% highlight yaml %}
-todo
+zimbra_storage:
+  nfs:
+    backup:
+      export: nfs-server:/zimbra/backup
+      path: /opt/zimbra/backup
+  devices:
+    opt_disk:
+      dev: /dev/sdb
+      size: 500G
+      vg: VGzopt
+      volumes:
+        opt:
+          name: LVzimbra
+          path: /opt/zimbra
+          size: 50G
+          fs_type: ext4
+          fs_opts:
+          mount_opts: "noatime"
+        index:
+          name: LVindex
+          path: /opt/zimbra/index
+          size: 100G
+          fs_type: ext4
+          fs_opts: "-J size=256"
+          mount_opts: "noatime,dirsync"
+        redo:
+          name: LVredo
+          path: /opt/zimbra/redolog
+          size: 200G
+          fs_type: ext4
+          fs_opts:
+          mount_opts: "noatime"
+    store_disk:
+      dev: /dev/sdc
+      size: 2T
+      vg: VGzstore
+      volumes:
+        store:
+          name: LVstore
+          path: /opt/zimbra/store
+          size: 1T
+          fs_type: ext4
+          fs_opts: "-J size=256 -m 1"
+          mount_opts: "noatime,dirsync"
 {% endhighlight %}
