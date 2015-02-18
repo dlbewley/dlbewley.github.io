@@ -12,9 +12,9 @@ Strangely, [this page](https://wiki.zimbra.com/wiki/Ajcody-Apple-Mac-Issues#EWS_
 
 Really?! I hope that's not true. I haven't heard it anywhere else.
 
-Let's try it anyway. If you created an "exchange" account in Mail.app on Yosemite, it crashed almost immediately after startup. The only way to use your existing accounts Mail.app at all was to turn off the account in the Internet Accounts setting before starting Mail.app. That [bug #94779](https://bugzilla.zimbra.com/show_bug.cgi?id=94779) was fixed in [ZCS 8.6.0](https://files.zimbra.com/website/docs/8.6/ZCS_860_NE_ReleaseNotes_UpgradeInst.pdf).
+I'm gonna try it anyway. After creating an "exchange" account in Mail.app on Yosemite, it crashed almost immediately after startup. The only way to use existing accounts in Mail.app is to turn off the account in the Internet Accounts setting before starting Mail.app. That [bug #94779](https://bugzilla.zimbra.com/show_bug.cgi?id=94779) was fixed in [ZCS 8.6.0](https://files.zimbra.com/website/docs/8.6/ZCS_860_NE_ReleaseNotes_UpgradeInst.pdf).
 
-Cool, upgrade to [ZCS 8.6.0](https://files.zimbra.com/website/docs/8.6/ZCS_860_NE_ReleaseNotes_UpgradeInst.pdf) and now Mail.app runs more than a few seconds! Unfortunately, it will not complete downloading my entire account before it crashes. It seems like there is a parse error caused by the content of a particular message. The crash looks a bit like this:
+Cool, so I'll upgrade to [ZCS 8.6.0](https://files.zimbra.com/website/docs/8.6/ZCS_860_NE_ReleaseNotes_UpgradeInst.pdf). At first things seem awesome. Mail.app now runs more than a few seconds! Unfortunately, it will not complete downloading my entire 2GB account before it crashes. It seems like there is a parse error caused by the content of a particular message. The crash looks like this:
 
 ```
 Process:               Mail [67048]
@@ -68,13 +68,13 @@ Application Specific Backtrace 1:
 
 Is this an Apple bug or a Zimbra bug? The relevant Zimbra [bug is 97198](https://bugzilla.zimbra.com/show_bug.cgi?id=97198).
 
-So, turn up the EWS logging to _debug_ like this:
+Before that crash above, I turned up the EWS logging to _debug_ like this:
 
 ```
 [zimbra@zimbra log]$ zmprov addAccountLogger email@domain.net zimbra.ews debug
 ```
 
-Below are the last few lines of `ews.log` when my client crashed. They aren't all that interesting.
+Below are the last few lines of `ews.log` when my client crashed above. They aren't all that interesting.
 
 ```
 2015-02-17 20:18:46,068 INFO  [qtp509886383-240825:https://10.1.200.23:443/ews/Exchange.asmx] [name=email@domain.net;ip=10.1.200.220;ua=MacOSX/(C)ExchangeWebServices/()Mail/();EWSOperation=syncFolderItem;Folder=29346;EwsClientReqSyncState={43CD6044-B74C-3886-821D-7388FA4F7435}1;] ews - Start syncFolderItem

@@ -217,7 +217,7 @@ zimbra_storage:
           size: 50G
           fs_type: ext4
           fs_opts:
-          mount_opts: "noatime"
+          mount_opts: "noatime,dirsync"
         index:
           name: LVindex
           path: /opt/zimbra/index
