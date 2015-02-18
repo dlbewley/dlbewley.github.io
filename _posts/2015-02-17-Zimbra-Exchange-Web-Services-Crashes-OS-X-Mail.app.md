@@ -16,7 +16,7 @@ I'm gonna try it anyway. After creating an "exchange" account in Mail.app on Yos
 
 Cool, so I'll upgrade to [ZCS 8.6.0](https://files.zimbra.com/website/docs/8.6/ZCS_860_NE_ReleaseNotes_UpgradeInst.pdf). At first things seem awesome. Mail.app now runs more than a few seconds! Unfortunately, it will not complete downloading my entire 2GB account before it crashes. It seems like there is a parse error caused by the content of a particular message. The crash looks like this:
 
-```
+{% highlight text %}
 Process:               Mail [67048]
 Path:                  /Applications/Mail.app/Contents/MacOS/Mail
 Identifier:            com.apple.mail
@@ -64,19 +64,19 @@ Application Specific Backtrace 1:
 13  libdispatch.dylib                   0x00007fff906e5fe4 _dispatch_worker_thread3 + 91
 14  libsystem_pthread.dylib             0x00007fff94234637 _pthread_wqthread + 729
 15  libsystem_pthread.dylib             0x00007fff9423240d start_wqthread + 13
-```
+{% endhighlight %}
 
 Is this an Apple bug or a Zimbra bug? The relevant Zimbra [bug is 97198](https://bugzilla.zimbra.com/show_bug.cgi?id=97198).
 
 Before that crash above, I turned up the EWS logging to _debug_ like this:
 
-```
+{% highlight text %}
 [zimbra@zimbra log]$ zmprov addAccountLogger email@domain.net zimbra.ews debug
-```
+{% endhighlight %}
 
 Below are the last few lines of `ews.log` when my client crashed above. They aren't all that interesting.
 
-```
+{% highlight text %}
 2015-02-17 20:18:46,068 INFO  [qtp509886383-240825:https://10.1.200.23:443/ews/Exchange.asmx] [name=email@domain.net;ip=10.1.200.220;ua=MacOSX/(C)ExchangeWebServices/()Mail/();EWSOperation=syncFolderItem;Folder=29346;EwsClientReqSyncState={43CD6044-B74C-3886-821D-7388FA4F7435}1;] ews - Start syncFolderItem
 2015-02-17 20:18:46,068 WARN  [qtp509886383-240825:https://10.1.200.23:443/ews/Exchange.asmx] [name=email@domain.net;ip=10.1.200.220;ua=MacOSX/(C)ExchangeWebServices/()Mail/();EWSOperation=syncFolderItem;Folder=29346;EwsClientReqSyncState={43CD6044-B74C-3886-821D-7388FA4F7435}1;] ews - SyncKey error: {43CD6044-B74C-3886-821D-7388FA4F7435}1; resetting device
 2015-02-17 20:18:46,068 INFO  [qtp509886383-240825:https://10.1.200.23:443/ews/Exchange.asmx] [name=email@domain.net;ip=10.1.200.220;ua=MacOSX/(C)ExchangeWebServices/()Mail/();EWSOperation=syncFolderItem;Folder=29346;EwsClientReqSyncState={43CD6044-B74C-3886-821D-7388FA4F7435}1;] ews - End syncFolderItem: 1
@@ -87,17 +87,17 @@ Below are the last few lines of `ews.log` when my client crashed above. They are
 2015-02-17 20:18:46,117 DEBUG [qtp509886383-240827:https://10.1.200.23:443/ews/Exchange.asmx] [name=email@domain.net;ip=10.1.200.220;ua=MacOSX/(C)ExchangeWebServices/()Mail/();] ews - Received GetItem from Item :30922
 2015-02-17 20:18:46,119 DEBUG [qtp509886383-240827:https://10.1.200.23:443/ews/Exchange.asmx] [name=email@domain.net;ip=10.1.200.220;ua=MacOSX/(C)ExchangeWebServices/()Mail/();] ews - Received GetItem from Item :30923
 2015-02-17 20:18:46,122 INFO  [qtp509886383-240827:https://10.1.200.23:443/ews/Exchange.asmx] [name=email@domain.net;ip=10.1.200.220;ua=MacOSX/(C)ExchangeWebServices/()Mail/();] ews - End getItem
-```
+{% endhighlight %}
 
 Turn down the log level before you forget.
 
-```
+{% highlight text %}
 [zimbra@zimbra log]$ zmprov removeAccountLogger email@domain.net zimbra.ews debug
-```
+{% endhighlight %}
 
 Let's use [zmmailbox](http://wiki.zimbra.com/wiki/Zmmailbox) to see what is in that message.
 
-```
+{% highlight text %}
 [zimbra@zimbra ~]$ zmmailbox -z -m email@domain.net getMessage 30923
 Id: 30923
 Conversation-Id: -30923
@@ -115,11 +115,11 @@ see the newsletter follow this link:
 http://www.ciscopress.com/newsletters/whatsnew.asp?ni=28&st=47442
 
 
-```
+{% endhighlight %}
 
 Let's see if we can find more info by [looking at the metadata](http://wiki.zimbra.com/wiki/Account_mailbox_database_structure).
 
-```
+{% highlight text %}
 [zimbra@zimbra ~]$ zmprov getMailboxInfo email@domain.net
 mailboxId: 3
 quotaUsed: 2157095161
@@ -154,6 +154,6 @@ mod_metadata: 53822
  mod_content: 53822
         uuid: NULL
 1 row in set (0.19 sec)
-```
+{% endhighlight %}
 
 I don't see anything obvious...
