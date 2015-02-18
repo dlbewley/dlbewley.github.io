@@ -156,4 +156,41 @@ mod_metadata: 53822
 1 row in set (0.19 sec)
 {% endhighlight %}
 
-I don't see anything obvious...
+I don't see anything obvious. I tried running it again after the crash the last line was:
+
+{% highlight text %}
+2015-02-17 21:56:49,493 INFO  [qtp509886383-241423:https://10.1.200.23:443/ews/Exchange.asmx] [name=email@domain.net;ip=10.1.200.220;ua=MacOSX/(C)ExchangeWebServices/()Mail/();EWSOperation=syncFolderItem;Folder=29386;EwsClientReqSyncState={0A66AD5A-2B6B-31F0-8B10-D9F44BB8D80F}1;] ews - End syncFolderItem: 1
+{% endhighlight %}
+
+Looking at the message in the db shows some strange metadata including _xd.EWS_INITIAL_SYNC119:d39:MacOSX/(B)ExchangeWebServices..._. Is that normal?
+
+{% highlight text %}
+MariaDB [mboxgroup3]> select * from mail_item where id=29386 \G;
+*************************** 1. row ***************************
+  mailbox_id: 3
+          id: 29386
+        type: 1
+   parent_id: 29312
+   folder_id: 29312
+prev_folders: NULL
+    index_id: NULL
+     imap_id: NULL
+        date: 1404996989
+        size: 1
+     locator: NULL
+ blob_digest: NULL
+      unread: 0
+       flags: 0
+        tags: 0
+   tag_names: NULL
+      sender: NULL
+  recipients: NULL
+     subject: buy.com
+        name: buy.com
+    metadata: d3:das5:false3:i4ri172463e5:mdveri17e4:mseqi50951e2:szi1878e4:unxti29388e1:vi10e2:vti5e19:xd.EWS_INITIAL_SYNC119:d39:MacOSX/(B)ExchangeWebServices/()Mail/()10:29386_true39:MacOSX/(F)ExchangeWebServices/()Mail/()10:29386_true1:vi10eee
+mod_metadata: 443180
+ change_date: 1424226936
+ mod_content: 50948
+        uuid: 1d41121e-182f-43c7-a1c0-0b4c81a3dcae
+{% endhighlight %}
+
