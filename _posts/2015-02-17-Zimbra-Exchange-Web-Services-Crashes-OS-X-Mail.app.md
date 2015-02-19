@@ -10,7 +10,7 @@ Strangely, [this page](https://wiki.zimbra.com/wiki/Ajcody-Apple-Mac-Issues#EWS_
 
 > ZCS 8.5 targeted EWS support ONLY with Outlook for Mac's. There was no testing or expectation that the native mac apps would work with the EWS configuration type.
 
-Really?! I hope that's not true. This [blog post](https://blog.zimbra.com/blog/archives/2014/08/zimbra-collaboration-8-5-anytime-anywhere-device.html) seems to concurr, onfortunately.
+Really?! I hope that's not true. This [blog post](https://blog.zimbra.com/blog/archives/2014/08/zimbra-collaboration-8-5-anytime-anywhere-device.html) seems to concurr, unfortunately.
 
 I'm gonna try it anyway. After creating an "exchange" account in Mail.app on Yosemite, it crashed almost immediately after startup. The only way to use existing accounts in Mail.app is to turn off the account in the Internet Accounts setting before starting Mail.app. That [bug #94779](https://bugzilla.zimbra.com/show_bug.cgi?id=94779) was fixed in [ZCS 8.6.0](https://files.zimbra.com/website/docs/8.6/ZCS_860_NE_ReleaseNotes_UpgradeInst.pdf).
 
