@@ -52,6 +52,7 @@ I then tried 2 options:
 - [Option 2: Use git filter-branch - Clone and Prune](#option2)
 
 <a name="option1"></a>
+
 # Option 1: Use git subtree - Split and Pull #
 
 I tried doing a `git-subtree` split and that worked great for the first directory I split: `runtime/roles/zimbra`. One drawback is the files in `zimbra/` wind up in the root of the new repo instead of `roles/zimbra` as I want. 
@@ -160,6 +161,7 @@ git rm groupvars/zimbra-test
 {% endhighlight %}
 
 <a name="option2"></a>
+
 # Option 2: Use git filter-branch - Clone and Prune #
 
 Instead of cherry pick the directorires I want, another option is to clone the repo and prune away what I don't want.
