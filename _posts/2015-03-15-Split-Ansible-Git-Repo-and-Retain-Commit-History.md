@@ -10,7 +10,7 @@ Starting with a jumbled git repo of various [Ansible](http://www.ansible.com/) r
 
 I have an `ansible-test` repo with a tree that looks roughly like this:
 
-```
+{% highlight text %}
 .
 ├── adhoc/
 │   ├── rolling-reboot.yml
@@ -35,7 +35,7 @@ I have an `ansible-test` repo with a tree that looks roughly like this:
     │   └── zmprov
     ├── foo.yml
     └── zimbra-playbook.yml
-```
+{% endhighlight %}
 
 I want to split that so that the Zimbra role, it's playbook, and any _'runtime'_ context like group_vars, and libraries are managed together in a new repo called `playbook-zimbra`.
 
@@ -60,33 +60,33 @@ I was only able to keep the commit history of the first branch I split, but when
 
 - With the orig repo in `~/src/ansible-test` I created a new clone in `~/src/testing/ansible-test`
 
-```
+{% highlight bash %}
 mkdir ~/src/testing
 cd ~/src/testing
 git clone ~/src/ansible-test 
 cd ~/src/testing/ansible-test
-```
+{% endhighlight %}
 
 - Make branches holding the commits we care about
 
-```
+{% highlight bash %}
 git subtree split --prefix=runtime/roles/zimbra  --branch=zimbra
 git subtree split --prefix=runtime/library       --branch=library
 git subtree split --prefix=runtime/group_vars    --branch=groupvars
-```
+{% endhighlight %}
 
 - Create a new repo to pull these branches into
 
-```
+{% highlight bash %}
 cd ~/src/testing
 mkdir playbook-zimbra
 cd playbook-zimbra
 git init
-```
+{% endhighlight %}
 
 - Pull in the branches and rebase the files into the subdir that was in the original repo. All these git moves  feel very wrong.
 
-```
+{% highlight bash %}
 git pull ~/src/testing/ansible-test zimbra
 mkdir -p roles/zimbra
 git add roles
@@ -103,11 +103,11 @@ for f in \
 	git mv $f roles/zimbra
 done
 git commit -m 'restore dir lost in split'
-```
+{% endhighlight %}
 
 - Continue merging in the other branches created by `git subtree`.
 
-```
+{% highlight bash %}
 git co -b library
 
 git pull ~/src/testing/ansible-test library
@@ -134,7 +134,7 @@ done
 #git rm foo-group
 git rm trac*
 git commit -m 'restore dir lost in split'
-```
+{% endhighlight %}
 
 ## Clean up the old original repo ##
 
@@ -142,22 +142,22 @@ Now back in the original `ansible-test` repo, let's get rid of the things we jus
 
 - Remove the temp branches
 
-```
+{% highlight bash %}
 cd ~/src/testing/ansible-test
 git branch -D zimbra
 git branch -D library
 git branch -D groupvars
-```
+{% endhighlight %}
 
 - Remove the extracted directories. They are still in the commit history, which is fine, but we don't want any more commits on them.
 
-```
+{% highlight bash %}
 cd ~/src/testing/ansible-test
 git rm -rf library
 git rm -rf roles/zimbra
 git rm groupvars/zimbra-prod
 git rm groupvars/zimbra-test
-```
+{% endhighlight %}
 
 <a name="option2"></a>
 # Option 2: Use git filter-branch - Clone and Prune #
@@ -166,54 +166,54 @@ Instead of cherry pick the directorires I want, another option is to clone the r
 
 - With the orig repo in `~/src/ansible-test` I created a new clone in `~/src/testing/ansible-test`
 
-```
+{% highlight bash %}
 mkdir ~/src/testing
 cd ~/src/testing
 git clone ~/src/ansible-test 
 cd ~/src/testing/ansible-test
-```
+{% endhighlight %}
 
 - The least common denominator directory in my old `ansible-test` repo is the `runtime/` directory. So, I'll start by doing a split there to a new branch called `runtime`.
 
-```
+{% highlight bash %}
 cd ~/src/testing/ansible-test
 git subtree split --prefix=runtime  --branch=runtime
-```
+{% endhighlight %}
 
 - Create a new repo and pull in the runtime branch
 
-```
+{% highlight bash %}
 cd ~/src/testing
 mkdir playbook-zimbra
 cd playbook-zimbra
 git init
 git pull ~/src/testing/ansible-test runtime
-```
+{% endhighlight %}
 
 - Now filter away the commits we don't want.
 
-```
+{% highlight bash %}
 git filter-branch --tree-filter 'rm -rf roles/foo-role group_vars/foo-group library/foo-lib foo.yml' HEAD
 rm -rf .git/refs/original
-```
+{% endhighlight %}
 
 - And finalize the location of the playbooks and ansible config.
 
-```
+{% highlight bash %}
 git mv roles/zimbra/ansible.cfg .
 git mv roles/zimbra/hosts* .
 git mv roles/zimbra/*yml .
 git commit -m 'move playbook config out of role dir'
-```
+{% endhighlight %}
 
 - Commit and push to origin out on github, gitlab, etc.
 
-```
+{% highlight bash %}
 git remote add origin gitlab@gitlab:ansible/playbook-zimbra.git
 git push -u origin master
 git checkout -b develop
 git push -u origin develop
-```
+{% endhighlight %}
 
 ## Clean up the old original repo ##
 
@@ -221,12 +221,12 @@ Now back in the original `ansible-test` repo, get rid of the things now in the `
 
 - Remove the extracted directories. They are still in the commit history, which is fine, but we don't want any more commits on them.
 
-```
+{% highlight bash %}
 cd ~/src/testing/ansible-test/runtime
 git rm -rf library
 git rm -rf roles/zimbra
 git rm groupvars/zimbra-prod
 git rm groupvars/zimbra-test
 commit -m 'move to playbook-zimbra repo'
-```
+{% endhighlight %}
 
