@@ -247,6 +247,7 @@ Activate venv and run the app.
 {% highlight bash %}
 cd ~/src/flaskapp/
 . venv/bin/activate
+python setup.py install
 python run.py
 curl http://localhost:5000/index
 {% endhighlight %}
