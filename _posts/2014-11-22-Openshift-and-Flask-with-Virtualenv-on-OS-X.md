@@ -146,7 +146,16 @@ rhc app create flaskapp python-2.7
 rhc git-clone flaskapp
 {% endhighlight  %}
 
-- Setup venv inside flaskapp. This 
+- Tell git to ignore the `venv/` dir and other artifacts we are about to create.
+
+{% highlight bash %}
+echo 'venv/' >> ~/src/flaskapp/.gitignore
+echo '*.egg-info/' >> ~/src/flaskapp/.gitignore
+echo 'dist/' >> ~/src/flaskapp/.gitignore
+git commit -am .gitignore 'ignore artifacts'
+{% endhighlight  %}
+
+- Setup a venv with the required python version inside `flaskapp`
 
 {% highlight bash %}
 cd ~/src/flaskapp/
@@ -156,22 +165,15 @@ virtualenv --python=python2.7 venv
 . venv/bin/activate
 {% endhighlight  %}
 
-- Tell git to ignore your venv/ dir and other artifacts.
+- Install Flask in the new venv we just activated.
 
-{% highlight bash %}
-echo 'venv/' >> ~/src/flaskapp/.gitignore
-echo '*.egg-info/' >> ~/src/flaskapp/.gitignore
-echo 'dist/' >> ~/src/flaskapp/.gitignore
-{% endhighlight  %}
-
-- Install Flask in the new venv.
 {% highlight bash %}
 pip install flask flask-wtf flask-babel markdown flup 
-# or just use setup.py
+# later we can just just use setup.py
 python setup.py install
 {% endhighlight  %}
 
-- Tell our app's setup.py about our python module requirements.
+- Tell our app's `setup.py` about our python module requirements.
 
 {% highlight bash %}
 cd ~/src/flaskapp
