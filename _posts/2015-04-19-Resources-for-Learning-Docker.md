@@ -8,6 +8,7 @@ tags:
 # Tutorials #
 
 - [Docker's 10min Tutorial](https://docker.com/tryit/)
+- [Andrew Baker's Introduction to Docker](http://docker.atbaker.me/exercises/exercise_0.html)
 
 # Books #
 
