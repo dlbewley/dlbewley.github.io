@@ -1,3 +1,10 @@
+---
+title: How To Scale Up Ansible Playbooks and Roles in a Managable Way
+layout: post
+tags:
+ - ansible
+---
+
 # Ansible is Awesome! Ansible is a Mess! #
 
 So you found [Ansible](http://www.ansible.com), and you were all Woah! Ansible is awesome! Ansibilize all the things! Then you created a git repo and started hacking.
@@ -15,8 +22,8 @@ Ansible does not use an agent on the managed host, and it doesn't have a central
 - How to you separate your playbooks and your roles?
 - How do you properly create roles?
 - How do you access roles created by others on your team or on [Ansible Galaxy](http://galaxy.ansible.com/)?
-- use your own roles along with other people's roles in the same playbook?
-- make sure all the above are available on demand by other admins?
+- How do you use your own roles along with other people's roles in the same playbook?
+- How do you make sure all the above are available to your other admins?
 
 # Playbook Repos Provide a Context #
 
