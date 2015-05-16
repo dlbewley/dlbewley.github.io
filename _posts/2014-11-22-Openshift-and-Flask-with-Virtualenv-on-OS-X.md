@@ -1,5 +1,5 @@
 ---
-title: Openshift and Flask with Virtualenv on OS X
+title: Openshift V2 and Flask with Virtualenv on OS X
 layout: post
 tags:
  - python
