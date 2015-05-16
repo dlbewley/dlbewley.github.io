@@ -102,7 +102,7 @@ There are tools or at least a tool, called [Ansible Role Manager](http://mirskyt
 
 Something like this will allow you to type `make install` to resolve your `requirements.yml`:
 
-{% highlight make %}
+{% highlight makefile %}
 .PHONY: galaxy-install ping
 
 install: galaxy-install
