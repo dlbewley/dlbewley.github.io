@@ -1,7 +1,7 @@
 ---
 layout: slate
 ---
-    <h1>{{ page.title }}</h1>
+    {% if page.subtitle %}<h1>{{ page.subtitle }}</h1>{% endif %}
     <info datetime="{{ page.date | date: "%Y-%m-%d" }}">
       {{ page.date | date: "%b %d, %Y" }}
     </info>
