@@ -29,7 +29,7 @@ Ansible does not use an agent on the managed host, and it doesn't have a central
 
 Most of my use of Ansible is for provisioning of services rather than deploying a specific application. So, my ansible bits are not inside of an application's git repo. How should they be tracked then?
 
-How about creating a repo called `playbook-<task>`, so for provisioning something large like a multi-server Zimbra install, I create a repo called `playbook-zimbra`. The playbook repo will of course have at least one playbook yaml file, but it also defines what I call an ansible runtime context: config file, inventory file, group variables, host variables, roles, libraries, etc.
+How about creating a repo called `playbook-task`, so for provisioning something large like a multi-server Zimbra install, I create a repo called `playbook-zimbra`. The playbook repo will of course have at least one playbook yaml file, but it also defines what I call an ansible runtime context: config file, inventory file, group variables, host variables, roles, libraries, etc.
 
 When creating a role within a playbook, the goal should be to make it as general as possible. Once a role is able to define its own reasonable defaults and parameterize all options as variables, it should be [split out](http://guifreelife.com/blog/2015/03/15/Split-Ansible-Git-Repo-and-Retain-Commit-History/) of the playbook repo into its own repo.
 
