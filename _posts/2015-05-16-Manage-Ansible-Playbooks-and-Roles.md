@@ -102,7 +102,7 @@ There are tools or at least a tool, called [Ansible Role Manager](http://mirskyt
 
 Something like this will allow you to type `make install` to resolve your `requirements.yml`:
 
-{% highlight makefile %}
+{% highlight %}
 .PHONY: galaxy-install ping
 
 install: galaxy-install
@@ -122,7 +122,7 @@ If you are working on a playbook which may have roles stored along side it, and 
 
 Remember, I just said that that `ansible-galaxy install` places roles in the first directory in your `roles_path`? Just create a ansible.cfg in your playbook directory that looks something like this:
 
-{% highlight ini %}
+{% highlight %}
 [defaults]
 remote_user = root
 inventory_file = hosts
