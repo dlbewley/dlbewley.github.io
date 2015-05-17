@@ -194,3 +194,5 @@ mod_metadata: 443180
         uuid: 1d41121e-182f-43c7-a1c0-0b4c81a3dcae
 {% endhighlight %}
 
+**EDIT** 2015-05-16 This is still a problem for me with ZCS 8.6.0p2 and OSX 10.10.3.
+
