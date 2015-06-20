@@ -41,7 +41,7 @@ Ansible does make it easy to create a skeleton for your role that is consistent 
 
 Just start by running `ansible-galaxy init role_name`. Most likely you want to create a git repo out of that role, so do that too.
 
-{% highlight %}
+{% highlight bash %}
 cd ~/src
 ansible-galaxy init foorole
 cd foorole
@@ -54,7 +54,7 @@ git push -u origin master
 
 Now you have a git repo named _foorole_. You might rename the repo to _ansible-foorole_, but I prefer to push the repo with the name of _foorole_ and only name my working directory _ansible-foorole_.
 
-{% highlight %}
+{% highlight bash %}
 # create a foorole repo on github then push to it
 git remote add origin git@github.com:dlbewley/foorole.git
 git push -u origin master
@@ -102,7 +102,7 @@ There are tools or at least a tool, called [Ansible Role Manager](http://mirskyt
 
 Something like this will allow you to type `make install` to resolve your `requirements.yml`:
 
-{% highlight %}
+{% highlight makefile %}
 .PHONY: galaxy-install ping
 
 install: galaxy-install
@@ -122,7 +122,7 @@ If you are working on a playbook which may have roles stored along side it, and 
 
 Remember, I just said that that `ansible-galaxy install` places roles in the first directory in your `roles_path`? Just create a ansible.cfg in your playbook directory that looks something like this:
 
-{% highlight %}
+{% highlight ini %}
 [defaults]
 remote_user = root
 inventory_file = hosts
