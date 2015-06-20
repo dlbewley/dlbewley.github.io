@@ -104,7 +104,7 @@ Conversation-Id: -30923
 Folder: /certification/cisco/certification
 Subject: CCNP Cert Kits and Podcasts, Plus Cisco M-Learning
 From: Cisco Press <newsletter@ciscopress.com>
-To: <email@DOMAIN.NET>
+To: <email@domain.net>
 Date: Mon, 12 Apr 2010 23:31:52 -0700 (PDT)
 Size: 27.73 KB
 
@@ -145,10 +145,10 @@ prev_folders: NULL
         tags: 0
    tag_names: NULL
       sender: Cisco Press
-  recipients: email@DOMAIN.NET
+  recipients: email@domain.net
      subject: CCNP Cert Kits and Podcasts, Plus Cisco M-Learning
         name: NULL
-    metadata: d1:f153:This newsletter has been formatted to be displayed in an HTML e-mail client. If you are seeing this message your e-mail client does not support HTML. ...1:s41:"Cisco Press" <newsletter@ciscopress.com>1:t15:email@DOMAIN.NET1:vi10ee
+    metadata: d1:f153:This newsletter has been formatted to be displayed in an HTML e-mail client. If you are seeing this message your e-mail client does not support HTML. ...1:s41:"Cisco Press" <newsletter@ciscopress.com>1:t15:email@domain.net1:vi10ee
 mod_metadata: 53822
  change_date: 1404997612
  mod_content: 53822
@@ -196,3 +196,95 @@ mod_metadata: 443180
 
 **EDIT** 2015-05-16 This is still a problem for me with ZCS 8.6.0p2 and OSX 10.10.3.
 
+{% highlight text %}
+2015-05-16 20:58:29,928 DEBUG [qtp509886383-295806:https://10.1.200.23:443/ews/Exchange.asmx] [name=email@domain.net;ip=10.1.200.220;ua=MacOSX/(D)ExchangeWebServices/()Mail/();] ews - Received GetItem from Item :30923
+2015-05-16 20:58:29,930 INFO  [qtp509886383-295806:https://10.1.200.23:443/ews/Exchange.asmx] [name=email@domain.net;ip=10.1.200.220;ua=MacOSX/(D)ExchangeWebServices/()Mail/();] ews - End getItem
+2015-05-16 20:58:30,090 INFO  [qtp509886383-295810:https://10.1.200.23:443/ews/Exchange.asmx] [] ews - User: email has been successfully authorized.
+{% endhighlight %}
+
+Is there anything noticably odd about item 30923? I can't find anything.
+
+{% highlight json %}
+mbox email@domain.net> getmessage 30923
+Id: 30923
+Conversation-Id: -30923
+Folder: /certification/cisco/certification
+Subject: CCNP Cert Kits and Podcasts, Plus Cisco M-Learning
+From: Cisco Press <newsletter@ciscopress.com>
+To: <email@domain.net>
+Date: Mon, 12 Apr 2010 23:31:52 -0700 (PDT)
+Size: 27.73 KB
+
+This newsletter has been formatted to be displayed in an HTML e-mail client.
+If you are seeing this message your e-mail client does not support HTML.  To
+see the newsletter follow this link:
+
+http://www.ciscopress.com/newsletters/whatsnew.asp?ni=28&st=47442
+
+
+mbox email@domain.net> getmessage -v 30923
+{
+     "addresses": [
+          {
+               "address": "newsletter@ciscopress.com",
+               "display": "Cisco",
+               "fullAddressQuoted": "\"Cisco Press\" <newsletter@ciscopress.com>",
+               "personal": "Cisco Press",
+               "type": "f"
+          },
+          {
+               "address": "email@domain.net",
+               "display": "email",
+               "fullAddressQuoted": "<email@domain.net>",
+               "type": "t"
+          }
+     ],
+     "conversationId": "-30923",
+     "folderId": "30878",
+     "fragment": "This newsletter has been formatted to be displayed in an HTML e-mail client. If you are seeing this message your e-mail client does not support HTML. ...",
+     "hasAttachment": false,
+     "hasFlags": false,
+     "hasTags": false,
+     "id": "30923",
+     "isDeleted": false,
+     "isDraft": false,
+     "isFlagged": false,
+     "isForwarded": false,
+     "isHighPriority": false,
+     "isInvite": false,
+     "isLowPriority": false,
+     "isNotificationSent": false,
+     "isRepliedTo": false,
+     "isSentByMe": false,
+     "isUnread": false,
+     "messageIdHeader": "<20100413065246.CFEC591690@domain.net>",
+     "mimeStructure": {
+          "children": [
+               {
+                    "children": [],
+                    "content": "This newsletter has been formatted to be displayed in an HTML e-mail client.\nIf you are seeing this message your e-mail client does not support HTML.  To\nsee the newsletter follow this link:\n\nhttp://www.ciscopress.com/newsletters/whatsnew.asp?ni=28&st=47442\n",
+                    "contentType": "text/plain",
+                    "isBody": true,
+                    "partName": "1",
+                    "size": 263
+               },
+               {
+                    "children": [],
+                    "contentType": "text/html",
+                    "isBody": false,
+                    "partName": "2",
+                    "size": 26226
+               }
+          ],
+          "contentType": "multipart/alternative",
+          "isBody": false,
+          "partName": "TEXT",
+          "size": 0
+     },
+     "receivedDate": 1271140312000,
+     "requestHeaders": {},
+     "sentDate": 1271140312000,
+     "size": 28400,
+     "subject": "CCNP Cert Kits and Podcasts, Plus Cisco M-Learning"
+}
+{% endhighlight %}
