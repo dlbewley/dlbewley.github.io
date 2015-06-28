@@ -84,7 +84,7 @@ ok: [node2]
 ok: [node1]
 
 TASK: [openshift_node | Check scheduleable state] *****************************
-{% highlight plain }
+{% endhighlight %}
 
 The task looks like this:
 
