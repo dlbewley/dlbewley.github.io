@@ -22,7 +22,7 @@ OpenShift Origin is an opensource platform as a service. It is the upstream proj
 
 - Now following the instructions in [README_vagrant.md](https://github.com/openshift/openshift-ansible/blob/master/README_vagrant.md) create three boxes that will form the OpenShift cluster. One master and two nodes.
 
-{% highlight shell %}
+{% highlight bash %}
 cd ~/src && git@github.com:openshift/openshift-ansible.git
 cd openshift-ansible
 # Download the virtual boxes, but don't run ansible yet
@@ -45,7 +45,7 @@ There are now 3 machines (boxes) which where added to `/etc/hosts` by vagrant.
 
 They are running
 
-{% highlight shell %}
+{% highlight bash %}
 vagrant status
 Current machine states:
 
@@ -56,7 +56,7 @@ master                    running (virtualbox)
 
 They can be accessed over ssh I can ssh to them using their short vagrant names like this
 
-{% highlight shell %}
+{% highlight bash %}
 vagrant ssh master
 vagrant ssh node1
 vagrant ssh node2
@@ -70,7 +70,7 @@ On to the provisioning step.
 
 - Run the [byo/config.yml](https://github.com/openshift/openshift-ansible/blob/master/playbooks/byo/config.yml) Ansible playbook on the cluster by way of the vagrant provision command
 
-{% highlight shell %}
+{% highlight bash %}
 vagrant provision
 {% endhighlight %}
 
@@ -101,7 +101,7 @@ The task looks like this:
 
 I'm not sure why it hangs, because at the same time I can run that same command without a hang.
 
-{% highlight shell %}
+{% highlight bash %}
 mac$ vagrant ssh master
 [vagrant@ose3-master log]$ oc get node
 NAME                     LABELS                                          STATUS
@@ -119,7 +119,7 @@ ose3-node2.example.com   kubernetes.io/hostname=ose3-node2.example.com   Ready
 
 Also I get an _ok_ from the healthcheck
 
-{% highlight shell %}
+{% highlight bash %}
 vagrant ssh master
 curl -k https://ose3-master.example.com:8443/healthz
 ok
@@ -137,7 +137,7 @@ I'm not yet aware what side effects this may create, but it allows the playbook 
 
 - Re-run the provisioning step and Ansible
 
-{% highlight shell %}
+{% highlight bash %}
 vagrant reload --provision
 {% endhighlight %}
 
@@ -159,7 +159,7 @@ Off to see [getting started](https://github.com/openshift/origin#getting-started
 
 - Create a docker regitsry. _this fails_
 
-{% highlight shell %}
+{% highlight bash %}
 vagrant ssh master
 [vagrant@ose3-master ~]$ oadm registry --credentials=./openshift.local.config/master/openshift-registry.kubeconfig
 [vagrant@ose3-master ~]$ oc get pods
@@ -169,7 +169,7 @@ docker-registry-1-deploy   0/1       Pending   0          47s
 
 - Login as test / test then create a project and an app. This will peform a docker build, but will fail when it attempts to push to the registry above.
 
-{% highlight shell %}
+{% highlight text %}
 vagrant ssh master
 [vagrant@ose3-master ~]$ oc login
 Username: test
