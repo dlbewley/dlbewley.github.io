@@ -8,7 +8,7 @@ tags:
  - vagrant
 ---
 
-The [OpenShift Origin](http://www.openshift.org/) project provides [Ansible](http://www.ansible.com) playbooks and roles for installing OpenShift on various infratructure. I'm going to try out the example using [Vagrant](http://www.vagrantup.com) and [VirtualBox](https://www.virtualbox.org/) on my Mac. I'm not very familiar with Vagrant of OpenShift v3 yet, so I'm just going to think out load and see how it goes.
+The [OpenShift Origin](http://www.openshift.org/) project provides [Ansible](http://www.ansible.com) playbooks and roles for installing OpenShift on various infratructure. I'm going to try out the example using [Vagrant](http://www.vagrantup.com) and [VirtualBox](https://www.virtualbox.org/) on my Mac. I'm not very familiar with Vagrant of OpenShift v3 yet, so I'm just going to think out loud and see how it goes.
 
 ## Some Background ##
 
