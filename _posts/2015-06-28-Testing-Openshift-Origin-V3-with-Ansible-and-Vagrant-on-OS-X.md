@@ -74,16 +74,24 @@ On to the provisioning step.
 vagrant provision
 {% endhighlight %}
 
-### Bug! Playbook Hangs ###
+### Bug! Playbook Hangs on openshift_node role ###
 
 I found that [this task file](https://github.com/openshift/openshift-ansible/blob/master/roles/openshift_node/tasks/main.yml) will eventually hang on the _Check scheduleable state_ task for some reason.
 
 {% highlight text %}
 TASK: [openshift_node | Start and enable openshift-node] **********************
-ok: [node2]
-ok: [node1]
+changed: [node2]
+changed: [node1]
 
 TASK: [openshift_node | Check scheduleable state] *****************************
+failed: [node1 -> master] => {"attempts": 10, "changed": true, "cmd": ["oc", "get", "node", "ose3-node1.example.com"], "delta": "0:00:00.237067", "end": "2015-06-29 04:40:36.806024", "failed": true, "rc": 1, "start": "2015-06-29 04:40:36.568957", "warnings": []}
+stderr: Error from server: minion "ose3-node1.example.com" not found
+msg: Task failed as maximum retries was encountered
+failed: [node2 -> master] => {"attempts": 10, "changed": true, "cmd": ["oc", "get", "node", "ose3-node2.example.com"], "delta": "0:00:00.234398", "end": "2015-06-29 04:40:38.116159", "failed": true, "rc": 1, "start": "2015-06-29 04:40:37.881761", "warnings": []}
+stderr: Error from server: minion "ose3-node2.example.com" not found
+msg: Task failed as maximum retries was encountered
+
+FATAL: all hosts have already failed -- aborting
 {% endhighlight %}
 
 The task looks like this:
@@ -98,6 +106,29 @@ The task looks like this:
   retries: 10
   delay: 5
 {% endhighlight %}
+
+Logging into the master and trying the command does fail.
+
+{% highlight bash %}
+$ vagrant ssh master
+[vagrant@ose3-master ~]$ oc get node ose3-node1.example.com
+Error from server: minion "ose3-node1.example.com" not found
+[vagrant@ose3-master ~]$ oc get node ose3-node2.example.com
+Error from server: minion "ose3-node2.example.com" not found
+[vagrant@ose3-master ~]$ oc get nodes
+NAME      LABELS    STATUS
+{% endhighlight %}
+
+Try running `vagrant provision` again and it seems to hang indefinitely until hitting `^C`.
+
+{% highlight text %}
+TASK: [openshift_node | Start and enable openshift-node] **********************
+ok: [node2]
+ok: [node1]
+
+TASK: [openshift_node | Check scheduleable state] *****************************
+{% endhighlight %}
+
 
 I'm not sure why it hangs, because at the same time I can run that same command without a hang.
 
