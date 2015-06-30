@@ -170,6 +170,10 @@ I'm not yet aware what side effects this may create, but it allows the playbook 
 
 - Re-run the provisioning step and Ansible
 
+{% highlight bash %}
+vagrant reload --provision
+{% endhighlight %}
+
 ## Update New Pull 2015-06-29 ##
 
 After a fresh pull today I hang up with this:
@@ -214,10 +218,6 @@ Seems to be caused by the following in [this commit](https://github.com/openshif
                                       | oo_collect('openshift_hostname') 
                                       | difference(openshift_unscheduleable_nodes) }}"
 {% endraw %}
-{% endhighlight %}
-
-{% highlight bash %}
-vagrant reload --provision
 {% endhighlight %}
 
 ### Bug! Vagrant Hostnames ###
