@@ -97,6 +97,7 @@ FATAL: all hosts have already failed -- aborting
 The task looks like this:
 
 {% highlight yaml %}
+{% raw %}
 - name: Check scheduleable state
   delegate_to: "{{ openshift_first_master }}"
   command: >
@@ -105,6 +106,7 @@ The task looks like this:
   until: ond_get_node.rc == 0
   retries: 10
   delay: 5
+{% endraw %}
 {% endhighlight %}
 
 Logging into the master and trying the command does fail.
