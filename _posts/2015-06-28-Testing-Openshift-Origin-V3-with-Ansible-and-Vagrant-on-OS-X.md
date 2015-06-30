@@ -170,6 +170,52 @@ I'm not yet aware what side effects this may create, but it allows the playbook 
 
 - Re-run the provisioning step and Ansible
 
+## Update New Pull 2015-06-29 ##
+
+After a fresh pull today I hang up with this:
+
+{% highlight text %}
+PLAY [Set scheduleability] ****************************************************
+
+GATHERING FACTS ***************************************************************
+ok: [master]
+
+TASK: [set_fact ] *************************************************************
+fatal: [master] => Traceback (most recent call last):
+  File "/usr/local/Cellar/ansible/1.9.1/libexec/lib/python2.7/site-packages/ansible/runner/__init__.py", line 582, in _executor
+    exec_rc = self._executor_internal(host, new_stdin)
+  File "/usr/local/Cellar/ansible/1.9.1/libexec/lib/python2.7/site-packages/ansible/runner/__init__.py", line 785, in _executor_internal
+    return self._executor_internal_inner(host, self.module_name, self.module_args, inject, port, complex_args=complex_args)
+  File "/usr/local/Cellar/ansible/1.9.1/libexec/lib/python2.7/site-packages/ansible/runner/__init__.py", line 1009, in _executor_internal_inner
+    complex_args = template.template(self.basedir, complex_args, inject, fail_on_undefined=self.error_on_undefined_vars)
+  File "/usr/local/Cellar/ansible/1.9.1/libexec/lib/python2.7/site-packages/ansible/utils/template.py", line 138, in template
+    d[k] = template(basedir, v, templatevars, lookup_fatal, depth, expand_lists, convert_bare, fail_on_undefined, filter_fatal)
+  File "/usr/local/Cellar/ansible/1.9.1/libexec/lib/python2.7/site-packages/ansible/utils/template.py", line 122, in template
+    varname = template_from_string(basedir, varname, templatevars, fail_on_undefined)
+  File "/usr/local/Cellar/ansible/1.9.1/libexec/lib/python2.7/site-packages/ansible/utils/template.py", line 371, in template_from_string
+    res = jinja2.utils.concat(rf)
+  File "<template>", line 13, in root
+  File "/Users/dlbewley/src/openshift-ansible/filter_plugins/oo_filters.py", line 80, in oo_collect
+    retval = [FilterModule.get_attr(d, attribute) for d in data]
+  File "/Users/dlbewley/src/openshift-ansible/filter_plugins/oo_filters.py", line 38, in get_attr
+    ptr = ptr[attr]
+KeyError: 'openshift_hostname'
+
+
+FATAL: all hosts have already failed -- aborting
+{% endhighlight%}
+
+Seems to be caused by the following in [this commit](https://github.com/openshift/openshift-ansible/commit/a27076bee3e8f93681f5d5e1c4b072084f6847b6)
+{% highlight yaml %}
+{% raw %}
+  - set_fact:
+      openshift_scheduleable_nodes: "{{ hostvars
+                                      | oo_select_keys(groups['oo_nodes_to_config'])
+                                      | oo_collect('openshift_hostname') 
+                                      | difference(openshift_unscheduleable_nodes) }}"
+{% endraw %}
+{% endhighlight %}
+
 {% highlight bash %}
 vagrant reload --provision
 {% endhighlight %}
@@ -190,7 +236,7 @@ _I haven't finished going through this bit_
 
 Off to see [getting started](https://github.com/openshift/origin#getting-started). 
 
-- Create a docker regitsry. _this fails_
+- Create a docker registry. _this fails_
 
 {% highlight bash %}
 vagrant ssh master
