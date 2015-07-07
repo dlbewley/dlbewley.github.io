@@ -26,6 +26,7 @@ OpenShift Origin is an opensource platform as a service. It is the upstream proj
 cd ~/src && git@github.com:openshift/openshift-ansible.git
 cd openshift-ansible
 # Download the virtual boxes, but don't run ansible yet
+vagrant plugin install vagrant-hostmaster
 vagrant up --no-provision
 # Later we will provision like this:
 # vagrant provision
@@ -65,6 +66,14 @@ vagrant ssh node2
 Not only that, port 8443 on the Mac is forwarded to port 8443 on the master node. (_Hold that thought! There's a problem with redirects and FQDN later._)
 
 On to the provisioning step.
+
+**NOTE** Before you continue! I [finally realized](https://github.com/openshift/openshift-ansible/pull/319#issuecomment-119374507) that at this point NetworkManager is erroneously taking over responsiblity for the `enp0s8` interface, and the `192.168.100.x` addresses will disappear in short order. Subsequently the playbook will fail. I'm not sure the best way to fix this. The workaround is to simply reboot the nodes at this point. Otherwise you can do this for all three boxes.
+
+{% highlight bash %}
+vagrant ssh master
+sudo systemctl restart NetworkManager
+sudo systemctl restart network
+{% endhighlight %}
 
 ## Provisioning with Ansible ##
 
