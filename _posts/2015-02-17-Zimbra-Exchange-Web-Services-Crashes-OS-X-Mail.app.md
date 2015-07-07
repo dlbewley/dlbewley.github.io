@@ -288,3 +288,24 @@ mbox email@domain.net> getmessage -v 30923
      "subject": "CCNP Cert Kits and Podcasts, Plus Cisco M-Learning"
 }
 {% endhighlight %}
+
+**EDIT** 2015-07-07 I found out that you can get pretty extensive logging of the traffic between Mail.app and Zimbra EWS like this:
+
+{% highlight shell %}
+/Applications/Mail.app/Contents/MacOS/Mail -LogHTTPActivity YES -LogMaximumBytes 512 \
+  -LogEWSAutodiscoveryActivity YES >& ~/Desktop/EWSConnectionLog.txt
+{% endhighlight %}
+
+From that log I found the following character sets. Presumably one of these is not acceptible to `MailFramework/EWS/MFEWSMessage.m`
+
+{% highlight shell %}
+grep Character EWSConnectionLog.txt | awk -F'>' '{print $1}' | sort -u
+                            <ns2:MimeContent CharacterSet="ISO-8859-1"
+                            <ns2:MimeContent CharacterSet="US-ASCII"
+                            <ns2:MimeContent CharacterSet="UTF-8"
+                            <ns2:MimeContent CharacterSet="X-UNKNOWN"
+                            <ns2:MimeContent CharacterSet="iso-8859-1"
+                            <ns2:MimeContent CharacterSet="us-ascii"
+                            <ns2:MimeContent CharacterSet="utf-8"
+                            <ns2:MimeContent CharacterSet="windows-1252"
+{% endhighlight %}
