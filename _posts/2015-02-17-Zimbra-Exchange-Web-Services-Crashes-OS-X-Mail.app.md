@@ -299,6 +299,7 @@ mbox email@domain.net> getmessage -v 30923
 From that log I found the following character sets. Presumably one of these is not acceptible to `MailFramework/EWS/MFEWSMessage.m`
 
 {% highlight shell %}
+{% raw %}
 grep Character EWSConnectionLog.txt | awk -F'>' '{print $1}' | sort -u
                             <ns2:MimeContent CharacterSet="ISO-8859-1"
                             <ns2:MimeContent CharacterSet="US-ASCII"
@@ -308,4 +309,5 @@ grep Character EWSConnectionLog.txt | awk -F'>' '{print $1}' | sort -u
                             <ns2:MimeContent CharacterSet="us-ascii"
                             <ns2:MimeContent CharacterSet="utf-8"
                             <ns2:MimeContent CharacterSet="windows-1252"
+{% endraw %}
 {% endhighlight %}
