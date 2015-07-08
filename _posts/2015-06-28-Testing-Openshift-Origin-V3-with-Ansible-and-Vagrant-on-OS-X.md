@@ -83,109 +83,57 @@ sudo systemctl restart network
 vagrant provision
 {% endhighlight %}
 
-### Bug! Playbook Hangs on openshift_node role ###
+### Bug! Playbook Hangs on openshift_manage_node role ###
 
-I found that [this task file](https://github.com/openshift/openshift-ansible/blob/master/roles/openshift_node/tasks/main.yml) will eventually hang on the _Check scheduleable state_ task for some reason.
 
 {% highlight text %}
-TASK: [openshift_node | Start and enable openshift-node] **********************
-changed: [node2]
-changed: [node1]
+...
+PLAY [Set scheduleability] ****************************************************
 
-TASK: [openshift_node | Check scheduleable state] *****************************
-failed: [node1 -> master] => {"attempts": 10, "changed": true, "cmd": ["oc", "get", "node", "ose3-node1.example.com"], "delta": "0:00:00.237067", "end": "2015-06-29 04:40:36.806024", "failed": true, "rc": 1, "start": "2015-06-29 04:40:36.568957", "warnings": []}
-stderr: Error from server: minion "ose3-node1.example.com" not found
-msg: Task failed as maximum retries was encountered
-failed: [node2 -> master] => {"attempts": 10, "changed": true, "cmd": ["oc", "get", "node", "ose3-node2.example.com"], "delta": "0:00:00.234398", "end": "2015-06-29 04:40:38.116159", "failed": true, "rc": 1, "start": "2015-06-29 04:40:37.881761", "warnings": []}
-stderr: Error from server: minion "ose3-node2.example.com" not found
-msg: Task failed as maximum retries was encountered
+GATHERING FACTS ***************************************************************
+ok: [master]
+
+TASK: [set_fact ] *************************************************************
+ok: [master]
+
+TASK: [openshift_manage_node | Handle unscheduleable node] ********************
+skipping: [master]
+
+TASK: [openshift_manage_node | Handle scheduleable node] **********************
+failed: [master] => (item=ose3-node1.example.com) => {"changed": true, "cmd": ["oadm", "manage-node", "ose3-node1.example.com", "--schedulable=true"], "delta": "0:00:00.359376", "end": "2015-07-07 23:28:36.050071", "item": "ose3-node1.example.com", "rc": 1, "start": "2015-07-07 23:28:35.690695", "warnings": []}
+stderr: error: No nodes found
+failed: [master] => (item=ose3-node2.example.com) => {"changed": true, "cmd": ["oadm", "manage-node", "ose3-node2.example.com", "--schedulable=true"], "delta": "0:00:00.354480", "end": "2015-07-07 23:28:36.698472", "item": "ose3-node2.example.com", "rc": 1, "start": "2015-07-07 23:28:36.343992", "warnings": []}
+stderr: error: No nodes found
 
 FATAL: all hosts have already failed -- aborting
+
+PLAY RECAP ********************************************************************
+           to retry, use: --limit @/Users/dlbewley/config.retry
+
+localhost                  : ok=5    changed=0    unreachable=0    failed=0
+master                     : ok=59   changed=27   unreachable=0    failed=1
+node1                      : ok=46   changed=20   unreachable=0    failed=0
+node2                      : ok=46   changed=20   unreachable=0    failed=0
 {% endhighlight %}
 
-The task looks like this:
-
-{% highlight yaml %}
-{% raw %}
-- name: Check scheduleable state
-  delegate_to: "{{ openshift_first_master }}"
-  command: >
-    {{ openshift.common.client_binary }} get node {{ openshift.common.hostname }}
-  register: ond_get_node
-  until: ond_get_node.rc == 0
-  retries: 10
-  delay: 5
-{% endraw %}
-{% endhighlight %}
-
-Logging into the master and trying the command does fail.
-
-{% highlight bash %}
-$ vagrant ssh master
-[vagrant@ose3-master ~]$ oc get node ose3-node1.example.com
-Error from server: minion "ose3-node1.example.com" not found
-[vagrant@ose3-master ~]$ oc get node ose3-node2.example.com
-Error from server: minion "ose3-node2.example.com" not found
-[vagrant@ose3-master ~]$ oc get nodes
-NAME      LABELS    STATUS
-{% endhighlight %}
-
-Try running `vagrant provision` again and it seems to hang indefinitely until hitting `^C`.
+Even though this works:
 
 {% highlight text %}
-TASK: [openshift_node | Start and enable openshift-node] **********************
-ok: [node2]
-ok: [node1]
-
-TASK: [openshift_node | Check scheduleable state] *****************************
-{% endhighlight %}
-
-
-I'm not sure why it hangs, because at the same time I can run that same command without a hang.
-
-{% highlight bash %}
-mac$ vagrant ssh master
-[vagrant@ose3-master log]$ oc get node
+[vagrant@ose3-master ~]$ oc get nodes
 NAME                     LABELS                                          STATUS
 ose3-node1.example.com   kubernetes.io/hostname=ose3-node1.example.com   Ready
 ose3-node2.example.com   kubernetes.io/hostname=ose3-node2.example.com   Ready
-
-[vagrant@ose3-master log]$ oc get node ose3-node1.example.com
-NAME                     LABELS                                          STATUS
-ose3-node1.example.com   kubernetes.io/hostname=ose3-node1.example.com   Ready
-
-[vagrant@ose3-master log]$ oc get node ose3-node2.example.com
+[vagrant@ose3-master ~]$ oadm manage-node ose3-node2.example.com --schedulable=true
 NAME                     LABELS                                          STATUS
 ose3-node2.example.com   kubernetes.io/hostname=ose3-node2.example.com   Ready
+[vagrant@ose3-master ~]$ oadm manage-node ose3-node1.example.com --schedulable=true
+NAME                     LABELS                                          STATUS
+ose3-node1.example.com   kubernetes.io/hostname=ose3-node1.example.com   Ready
 {% endhighlight %}
 
-Also I get an _ok_ from the healthcheck
+That is in [this task file](https://github.com/openshift/openshift-ansible/blob/master/roles/openshift_manage_node/tasks/main.yml).
 
-{% highlight bash %}
-vagrant ssh master
-curl -k https://ose3-master.example.com:8443/healthz
-ok
-{% endhighlight %}
-
-### "Workaround" for the Hang ###
-
-I'm not yet aware what side effects this may create, but it allows the playbook continue.
-
-- Comment out the last 3 tasks in the [openshift_node role](https://github.com/openshift/openshift-ansible/blob/master/roles/openshift_node/tasks/main.yml).
-
-	- _Check scheduleable state_
-	- _Handle unscheduleable node_
-	- _Handle scheduleable node_
-
-- Re-run the provisioning step and Ansible
-
-{% highlight bash %}
-vagrant reload --provision
-{% endhighlight %}
-
-## Update New Pull 2015-06-29 ##
-
-After a fresh pull today I hang up with this:
+Try running `vagrant provision` again and it succeeds. I need to complete a fresh test.
 
 {% highlight text %}
 PLAY [Set scheduleability] ****************************************************
@@ -194,44 +142,34 @@ GATHERING FACTS ***************************************************************
 ok: [master]
 
 TASK: [set_fact ] *************************************************************
-fatal: [master] => Traceback (most recent call last):
-  File "/usr/local/Cellar/ansible/1.9.1/libexec/lib/python2.7/site-packages/ansible/runner/__init__.py", line 582, in _executor
-    exec_rc = self._executor_internal(host, new_stdin)
-  File "/usr/local/Cellar/ansible/1.9.1/libexec/lib/python2.7/site-packages/ansible/runner/__init__.py", line 785, in _executor_internal
-    return self._executor_internal_inner(host, self.module_name, self.module_args, inject, port, complex_args=complex_args)
-  File "/usr/local/Cellar/ansible/1.9.1/libexec/lib/python2.7/site-packages/ansible/runner/__init__.py", line 1009, in _executor_internal_inner
-    complex_args = template.template(self.basedir, complex_args, inject, fail_on_undefined=self.error_on_undefined_vars)
-  File "/usr/local/Cellar/ansible/1.9.1/libexec/lib/python2.7/site-packages/ansible/utils/template.py", line 138, in template
-    d[k] = template(basedir, v, templatevars, lookup_fatal, depth, expand_lists, convert_bare, fail_on_undefined, filter_fatal)
-  File "/usr/local/Cellar/ansible/1.9.1/libexec/lib/python2.7/site-packages/ansible/utils/template.py", line 122, in template
-    varname = template_from_string(basedir, varname, templatevars, fail_on_undefined)
-  File "/usr/local/Cellar/ansible/1.9.1/libexec/lib/python2.7/site-packages/ansible/utils/template.py", line 371, in template_from_string
-    res = jinja2.utils.concat(rf)
-  File "<template>", line 13, in root
-  File "/Users/dlbewley/src/openshift-ansible/filter_plugins/oo_filters.py", line 80, in oo_collect
-    retval = [FilterModule.get_attr(d, attribute) for d in data]
-  File "/Users/dlbewley/src/openshift-ansible/filter_plugins/oo_filters.py", line 38, in get_attr
-    ptr = ptr[attr]
-KeyError: 'openshift_hostname'
+ok: [master]
 
+TASK: [openshift_manage_node | Handle unscheduleable node] ********************
+skipping: [master]
 
-FATAL: all hosts have already failed -- aborting
-{% endhighlight%}
+TASK: [openshift_manage_node | Handle scheduleable node] **********************
+changed: [master] => (item=ose3-node1.example.com)
+changed: [master] => (item=ose3-node2.example.com)
 
-Seems to be caused by the following in [this commit](https://github.com/openshift/openshift-ansible/commit/a27076bee3e8f93681f5d5e1c4b072084f6847b6)
-{% highlight yaml %}
-{% raw %}
-  - set_fact:
-      openshift_scheduleable_nodes: "{{ hostvars
-                                      | oo_select_keys(groups['oo_nodes_to_config'])
-                                      | oo_collect('openshift_hostname') 
-                                      | difference(openshift_unscheduleable_nodes) }}"
-{% endraw %}
+PLAY RECAP ********************************************************************
+localhost                  : ok=5    changed=0    unreachable=0    failed=0
+master                     : ok=52   changed=1    unreachable=0    failed=0
+node1                      : ok=41   changed=0    unreachable=0    failed=0
+node2                      : ok=41   changed=0    unreachable=0    failed=0
 {% endhighlight %}
 
-### Bug! Vagrant Hostnames ###
 
-OK great that seemed to work, and the master can be reached at https://127.0.0.1:8443/console but how can I reach https://ose3-master.example.com:8443/console ?
+## Sanity Check OpenShift ##
+
+Expect an _ok_ from the healthcheck
+
+{% highlight bash %}
+vagrant ssh node2 
+[vagrant@ose3-node2 ~]$ curl -k https://ose3-master.example.com:8443/healthz
+ok
+{% endhighlight %}
+
+The OpenShift console can be reached at https://127.0.0.1:8443/console but how can I reach https://ose3-master.example.com:8443/console ?
 
 For now I just added the name to my localhost line in `/etc/hosts`, but is there a better way to do this automatically with Vagrant?
 
