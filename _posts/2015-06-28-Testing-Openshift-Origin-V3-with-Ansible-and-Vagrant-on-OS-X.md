@@ -177,6 +177,8 @@ For now I just added the name to my localhost line in `/etc/hosts`, but is there
 127.0.0.1	localhost ose3-master.example.com
 {% endhighlight %}
 
+![console screenshot](/images/openshift-console-0.png)
+
 ## Configure OpenShift ##
 
 _I haven't finished going through this bit_
