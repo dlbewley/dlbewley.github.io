@@ -8,11 +8,11 @@ tags:
  - vagrant
 ---
 
-The [OpenShift Origin](http://www.openshift.org/) project provides [Ansible](http://www.ansible.com) playbooks and roles for installing OpenShift on various infratructure. I'm going to try out the example using [Vagrant](http://www.vagrantup.com) and [VirtualBox](https://www.virtualbox.org/) on my Mac. I'm not very familiar with Vagrant of OpenShift v3 yet, so I'm just going to think out loud and see how it goes.
+The [OpenShift Origin](http://www.openshift.org/) project provides [Ansible](http://www.ansible.com) playbooks and roles for installing OpenShift on various infratructure. I'm going to try out the example using [Vagrant](http://www.vagrantup.com) and [VirtualBox](https://www.virtualbox.org/) on my Mac. I'm not very familiar with Vagrant or OpenShift v3 yet, so I'm just going to think out loud and see how it goes.
 
 ## Some Background ##
 
-OpenShift Origin is an opensource platform as a service. It is the upstream project for Red Hat's [OpenShift Online](https://www.openshift.com/) and [OpenShift Enterprise](https://enterprise.openshift.com/). Version 3 of the OpenShift platform is a complete rewrite _just_ launched in June 2015. It now utilizes [Docker](http://www.docker.com) as the container engine and [Kubernetes](http://kubernetes.io/) as the orchestrator. The Enterprise edition uses [Red Hat Atomic Enterprise Platform](https://access.redhat.com/products/red-hat-atomic-enterprise-platform) as the underlying OS. The example used in this post will create Vagrant CentOS boxes.
+OpenShift Origin is an opensource PaaS (platform as a service). It is the upstream project for Red Hat's [OpenShift Online](https://www.openshift.com/) and [OpenShift Enterprise](https://enterprise.openshift.com/). Version 3 of the OpenShift platform is a complete rewrite _just_ launched in June 2015. It now utilizes [Docker](http://www.docker.com) as the container engine and [Kubernetes](http://kubernetes.io/) as the orchestrator. The Enterprise edition uses [Red Hat Atomic Enterprise Platform](https://access.redhat.com/products/red-hat-atomic-enterprise-platform) as the underlying OS. The example used in this post will create Vagrant CentOS boxes.
 
 ## Initial Setup ##
 
@@ -25,25 +25,27 @@ OpenShift Origin is an opensource platform as a service. It is the upstream proj
 {% highlight bash %}
 cd ~/src && git@github.com:openshift/openshift-ansible.git
 cd openshift-ansible
-# Download the virtual boxes, but don't run ansible yet
+# Install the requisite vagrant plugins
 vagrant plugin install vagrant-hostmaster
+# Create the virtual boxes, but don't run ansible yet
 vagrant up --no-provision
+
 # Later we will provision like this:
-# vagrant provision
+#  vagrant provision
 # When we want to try again it will look like this
-# vagrant reload --provision
+#  vagrant reload --provision
 {% endhighlight %}
 
 There are now 3 machines (boxes) which where added to `/etc/hosts` by vagrant.
 
 {% highlight text %}
+tail -5 /etc/hosts
 ## vagrant-hostmanager-start id: bfad3436-5a92-4f03-b555-55bd186dd0ba
 192.168.100.200	ose3-node1.example.com
 192.168.100.201	ose3-node2.example.com
 192.168.100.100	ose3-master.example.com
 ## vagrant-hostmanager-end
 {% endhighlight %}
-
 
 You can see they are running
 
