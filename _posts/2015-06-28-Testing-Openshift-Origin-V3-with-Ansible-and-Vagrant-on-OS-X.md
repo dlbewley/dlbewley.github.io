@@ -44,7 +44,10 @@ There are now 3 machines (boxes) which where added to `/etc/hosts` by vagrant.
 ## vagrant-hostmanager-end
 {% endhighlight %}
 
-They are running
+
+You can see they are running
+
+![virtual box screenshot](/images/openshift-virtualbox-0.png)
 
 {% highlight bash %}
 vagrant status
@@ -55,7 +58,7 @@ node2                     running (virtualbox)
 master                    running (virtualbox)
 {% endhighlight %}
 
-They can be accessed over ssh I can ssh to them using their short vagrant names like this
+They can be accessed over ssh using their short vagrant names like this:
 
 {% highlight bash %}
 vagrant ssh master
@@ -63,7 +66,7 @@ vagrant ssh node1
 vagrant ssh node2
 {% endhighlight %}
 
-Not only that, port 8443 on the Mac is forwarded to port 8443 on the master node. (_Hold that thought! There's a problem with redirects and FQDN later._)
+Not only that, but port 8443 on the Mac localhost is forwarded to port 8443 on the master node. Nothing is listening on the master just yet though.
 
 On to the provisioning step.
 
