@@ -88,8 +88,7 @@ sudo systemctl restart network
 vagrant provision
 {% endhighlight %}
 
-### Bug! Playbook Hangs on openshift_manage_node role ###
-
+### Bug! Playbook Fails on _Handle scheduleable node_ ###
 
 {% highlight text %}
 ...
@@ -121,7 +120,7 @@ node1                      : ok=46   changed=20   unreachable=0    failed=0
 node2                      : ok=46   changed=20   unreachable=0    failed=0
 {% endhighlight %}
 
-Even though this works:
+Doing the same thing by hand does work though:
 
 {% highlight text %}
 [vagrant@ose3-master ~]$ oc get nodes
@@ -163,7 +162,6 @@ node1                      : ok=41   changed=0    unreachable=0    failed=0
 node2                      : ok=41   changed=0    unreachable=0    failed=0
 {% endhighlight %}
 
-
 ## Sanity Check OpenShift ##
 
 Expect an _ok_ from the healthcheck
@@ -184,21 +182,55 @@ For now I just added the name to my localhost line in `/etc/hosts`, but is there
 
 ![console screenshot](/images/openshift-console-0.png)
 
+OpenShift console command `oc` is similar to `kubectl`. Let's blindly try a few commands.
+
+{% highlight bash %}
+[vagrant@ose3-master ~]$ oc get nodes
+NAME                     LABELS                                          STATUS
+ose3-node1.example.com   kubernetes.io/hostname=ose3-node1.example.com   Ready
+ose3-node2.example.com   kubernetes.io/hostname=ose3-node2.example.com   Ready
+[vagrant@ose3-master ~]$ oc get services
+NAME            LABELS                                    SELECTOR   IP(S)        PORT(S)
+kubernetes      component=apiserver,provider=kubernetes   <none>     172.30.0.2   443/TCP
+kubernetes-ro   component=apiserver,provider=kubernetes   <none>     172.30.0.1   80/TCP
+[vagrant@ose3-master ~]$ oc get replicationcontrollers
+CONTROLLER   CONTAINER(S)   IMAGE(S)   SELECTOR   REPLICAS
+[vagrant@ose3-master ~]$ oc get all
+NAME      TYPE      SOURCE
+NAME      TYPE      STATUS    POD
+NAME      DOCKER REPO   TAGS      UPDATED
+NAME      TRIGGERS   LATEST VERSION
+CONTROLLER   CONTAINER(S)   IMAGE(S)   SELECTOR   REPLICAS
+NAME      HOST/PORT   PATH      SERVICE   LABELS
+NAME            LABELS                                    SELECTOR   IP(S)        PORT(S)
+kubernetes      component=apiserver,provider=kubernetes   <none>     172.30.0.2   443/TCP
+kubernetes-ro   component=apiserver,provider=kubernetes   <none>     172.30.0.1   80/TCP
+NAME      READY     REASON    RESTARTS   AGE
+{% endhighlight %}
+
 ## Configure OpenShift ##
 
 _I haven't finished going through this bit_
 
-Off to see [getting started](https://github.com/openshift/origin#getting-started). 
+No to walk through the OpenShift [getting started](https://github.com/openshift/origin#getting-started) docs.
 
-- Create a docker registry. _this fails_
+- Create a docker registry. **BUG** _this fails_
 
 {% highlight bash %}
 vagrant ssh master
-[vagrant@ose3-master ~]$ oadm registry --credentials=./openshift.local.config/master/openshift-registry.kubeconfig
+[vagrant@ose3-master ~]$ sudo oadm registry --credentials=/etc/openshift/master/openshift-registry.kubeconfig
+deploymentconfigs/docker-registry
+services/docker-registry
+
 [vagrant@ose3-master ~]$ oc get pods
 NAME                       READY     REASON    RESTARTS   AGE
-docker-registry-1-deploy   0/1       Pending   0          47s
+docker-registry-1-deploy   0/1       Pending   0          10s
+
+[vagrant@ose3-master ~]$ oc get pods
+NAME                       READY     REASON                                                             RESTARTS   AGE
+docker-registry-1-deploy   0/1       Image: openshift/origin-deployer:v1.0.0 is not ready on the node   0          46s
 {% endhighlight %}
+
 
 - Login as test / test then create a project and an app. This will peform a docker build, but will fail when it attempts to push to the registry above.
 
