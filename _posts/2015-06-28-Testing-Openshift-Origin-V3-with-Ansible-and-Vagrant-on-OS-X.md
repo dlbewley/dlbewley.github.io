@@ -146,7 +146,9 @@ Now to walk through the OpenShift [getting started](https://github.com/openshift
 
 ### Create Docker Registry ###
 
-- Create a docker registry. **BUG** _this fails_
+**BUG** _this fails_
+
+- Create a docker registry.
 
 {% highlight bash %}
 $ vagrant ssh master
@@ -187,9 +189,11 @@ docker-registry-1-deploy   0/1       ExitCode:255   0          2m
 
 ### Create OpenShift App ###
 
+**BUG** _this fails_
+
 - Login as _test_ / _test_ then create a project and an app. This will peform a docker build, but will fail when it attempts to push to the registry above.
 
-{% highlight bash %}
+{% highlight text %}
 $ vagrant ssh master
 [vagrant@ose3-master ~]$ oc login
 Username: test
@@ -239,7 +243,7 @@ database-1-deploy           0/1       ExitCode:255   0          1m
 ruby-sample-build-1-build   0/1       ExitCode:255   0          1m
 {% endhighlight %}
 
-### Check out the View OpenShift UI ###
+### Check out the OpenShift Console ###
 
 - Add admin user to the _test_ Project.
 
@@ -253,4 +257,6 @@ Be sure you updated your hosts file as described above then browse to one of the
 - https://localhost:8443/console/
 - https://ose3-master.example.com:8443/console/
 
-![openshift console test screenshot](/images/openshift-console-test-0.png) openshift-console-test-0.png
+Once you click into the _test_ project you'll see broken services like this.
+
+![openshift console test screenshot](/images/openshift-console-test-0.png)
