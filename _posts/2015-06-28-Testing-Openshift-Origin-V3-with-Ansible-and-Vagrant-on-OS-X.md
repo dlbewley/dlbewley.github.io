@@ -72,20 +72,18 @@ Not only that, but port 8443 on the Mac localhost is forwarded to port 8443 on t
 
 On to the provisioning step.
 
-**NOTE** See [this issue before continuing](https://github.com/openshift/openshift-ansible/issues/331). If it isn't resolved when you read this, just reboot each virtual machine before continuing.
-
 ## Provisioning with Ansible ##
 
-- Run the [byo/config.yml](https://github.com/openshift/openshift-ansible/blob/master/playbooks/byo/config.yml) Ansible playbook on the cluster by way of the vagrant provision command
+**WARNING** Before you continue, check if these issues are closed yet. If not, apply the patches referenced by them.
+
+- [Issue 331](https://github.com/openshift/openshift-ansible/issues/331)
+- [Issue 336](https://github.com/openshift/openshift-ansible/issues/336)
+
+Run the [byo/config.yml](https://github.com/openshift/openshift-ansible/blob/master/playbooks/byo/config.yml) Ansible playbook on the cluster by way of the vagrant provision command
 
 {% highlight bash %}
 vagrant provision
 {% endhighlight %}
-
-### Bug! Playbook Fails on _Handle scheduleable node_ ###
-
-See [this issue](https://github.com/openshift/openshift-ansible/issues/336#issuecomment-120087896)
-
 ## Sanity Check OpenShift ##
 
 Expect an _ok_ from the healthcheck
