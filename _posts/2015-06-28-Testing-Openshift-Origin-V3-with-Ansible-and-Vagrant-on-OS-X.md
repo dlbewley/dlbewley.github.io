@@ -36,6 +36,19 @@ $ vagrant up --no-provision
 #  vagrant reload --provision
 {% endhighlight %}
 
+- You may want to go ahead and put this into a filed called `reset.sh` so you can more easily test over and over.
+
+{% highlight bash %}
+cat <<EOF > rest.sh
+#!/bin/bash
+for node in node1 node2 master; do
+  vagrant destroy -f $node;
+done
+vagrant up --no-provision
+vagrant provision
+EOF
+{% endhighlight %}
+
 There are now 3 machines (boxes) which where added to `/etc/hosts` by vagrant.
 
 {% highlight text %}
