@@ -26,9 +26,9 @@ OpenShift Origin is an opensource PaaS (platform as a service). It is the upstre
 cd ~/src && git@github.com:openshift/openshift-ansible.git
 cd openshift-ansible
 # Install the requisite vagrant plugins
-vagrant plugin install vagrant-hostmaster
+$ vagrant plugin install vagrant-hostmaster
 # Create the virtual boxes, but don't run ansible yet
-vagrant up --no-provision
+$ vagrant up --no-provision
 
 # Later we will provision like this:
 #  vagrant provision
@@ -52,7 +52,7 @@ You can see they are running
 ![virtual box screenshot](/images/openshift-virtualbox-0.png)
 
 {% highlight bash %}
-vagrant status
+$ vagrant status
 Current machine states:
 
 node1                     running (virtualbox)
@@ -63,9 +63,9 @@ master                    running (virtualbox)
 They can be accessed over ssh using their short vagrant names like this:
 
 {% highlight bash %}
-vagrant ssh master
-vagrant ssh node1
-vagrant ssh node2
+$ vagrant ssh master
+$ vagrant ssh node1
+$ vagrant ssh node2
 {% endhighlight %}
 
 Not only that, but port 8443 on the Mac localhost is forwarded to port 8443 on the master node. Nothing is listening on the master just yet though.
@@ -82,14 +82,14 @@ On to the provisioning step.
 Run the [byo/config.yml](https://github.com/openshift/openshift-ansible/blob/master/playbooks/byo/config.yml) Ansible playbook on the cluster by way of the vagrant provision command
 
 {% highlight bash %}
-vagrant provision
+$ vagrant provision
 {% endhighlight %}
 ## Sanity Check OpenShift ##
 
 Expect an _ok_ from the healthcheck
 
 {% highlight bash %}
-vagrant ssh node2 
+$ vagrant ssh node2 
 [vagrant@ose3-node2 ~]$ curl -k https://ose3-master.example.com:8443/healthz
 ok
 {% endhighlight %}
@@ -99,7 +99,10 @@ The OpenShift console can be reached at https://127.0.0.1:8443/console but how c
 For now I just added the name to my localhost line in `/etc/hosts`, but is there a better way to do this automatically with Vagrant?
 
 {% highlight text %}
-127.0.0.1	localhost ose3-master.example.com
+$ grep localhost /etc/hosts
+# localhost is used to configure the loopback interface
+127.0.0.1 localhost ose3-master.example.com
+::1             localhost
 {% endhighlight %}
 
 ![console screenshot](/images/openshift-console-0.png)
@@ -107,7 +110,7 @@ For now I just added the name to my localhost line in `/etc/hosts`, but is there
 OpenShift console command `oc` is similar to `kubectl`. Let's blindly try a few commands.
 
 {% highlight bash %}
-vagrant ssh master
+$ vagrant ssh master
 
 [vagrant@ose3-master ~]$ oc get nodes
 NAME                     LABELS                                          STATUS
@@ -146,7 +149,7 @@ Now to walk through the OpenShift [getting started](https://github.com/openshift
 - Create a docker registry. **BUG** _this fails_
 
 {% highlight bash %}
-vagrant ssh master
+$ vagrant ssh master
 [vagrant@ose3-master ~]$ export CURL_CA_BUNDLE=/etc/openshift/master/ca.crt
 [vagrant@ose3-master ~]$ export KUBECONFIG=/etc/openshift/master/admin.kubeconfig
 [vagrant@ose3-master ~]$ sudo chmod +r /etc/openshift/master/openshift-registry.kubeconfig
@@ -184,10 +187,10 @@ docker-registry-1-deploy   0/1       ExitCode:255   0          2m
 
 ### Create OpenShift App ###
 
-- Login as test / test then create a project and an app. This will peform a docker build, but will fail when it attempts to push to the registry above.
+- Login as _test_ / _test_ then create a project and an app. This will peform a docker build, but will fail when it attempts to push to the registry above.
 
-{% highlight text %}
-vagrant ssh master
+{% highlight bash %}
+$ vagrant ssh master
 [vagrant@ose3-master ~]$ oc login
 Username: test
 Authentication required for https://ose3-master.example.com:8443 (openshift)
@@ -210,28 +213,44 @@ buildconfigs/ruby-sample-build
 deploymentconfigs/frontend
 services/database
 deploymentconfigs/database
-Service "frontend" created at 172.30.184.9 with port mappings 5432->8080.
+Service "frontend" created at 172.30.228.57 with port mappings 5432->8080.
 A build was created - you can run `oc start-build ruby-sample-build` to start it.
-Service "database" created at 172.30.219.1 with port mappings 5434->3306.
+Service "database" created at 172.30.167.96 with port mappings 5434->3306.
 
 [vagrant@ose3-master ~]$ oc status
 In project test
 
-service database (172.30.219.1:5434 -> 3306)
+service database (172.30.167.96:5434 -> 3306)
   database deploys docker.io/openshift/mysql-55-centos7:latest
-    #1 deployment pending 50 seconds ago
+    #1 deployment pending 25 seconds ago
 
-service frontend (172.30.184.9:5432 -> 8080)
+service frontend (172.30.228.57:5432 -> 8080)
   frontend deploys origin-ruby-sample:latest <-
     builds https://github.com/openshift/ruby-hello-world.git with test/ruby-20-centos7:latest
-    build 1 pending for 38 seconds
+    build 1 running for 20 seconds
     #1 deployment waiting on image or update
 
 To see more information about a Service or DeploymentConfig, use 'oc describe service <name>' or 'oc describe dc <name>'.
-You can use 'oc get all' to see lists of each of the types described above.			
+You can use 'oc get all' to see lists of each of the types described above.
+
+[vagrant@ose3-master ~]$ oc get pods
+NAME                        READY     REASON         RESTARTS   AGE
+database-1-deploy           0/1       ExitCode:255   0          1m
+ruby-sample-build-1-build   0/1       ExitCode:255   0          1m
 {% endhighlight %}
 
-Be sure to check out the console and login as admin / admin or test / test
+### Check out the View OpenShift UI ###
+
+- Add admin user to the _test_ Project.
+
+{% highlight %}
+$ vagrant ssh master
+[vagrant@ose3-master ~]$ oadm policy add-role-to-user admin admin -n test
+{% endhighlight %}
+
+Be sure you updated your hosts file as described above then browse to one of the following and login as _admin_ / _admin_: 
 
 - https://localhost:8443/console/
-- https://ose3-msater.example.com:8443/console/
+- https://ose3-master.example.com:8443/console/
+
+![openshift console test screenshot](/images/openshift-console-test-0.png)
