@@ -243,7 +243,7 @@ ruby-sample-build-1-build   0/1       ExitCode:255   0          1m
 
 - Add admin user to the _test_ Project.
 
-{% highlight %}
+{% highlight bash %}
 $ vagrant ssh master
 [vagrant@ose3-master ~]$ oadm policy add-role-to-user admin admin -n test
 {% endhighlight %}
@@ -253,4 +253,4 @@ Be sure you updated your hosts file as described above then browse to one of the
 - https://localhost:8443/console/
 - https://ose3-master.example.com:8443/console/
 
-![openshift console test screenshot](/images/openshift-console-test-0.png)
+![openshift console test screenshot](/images/openshift-console-test-0.png) openshift-console-test-0.png
