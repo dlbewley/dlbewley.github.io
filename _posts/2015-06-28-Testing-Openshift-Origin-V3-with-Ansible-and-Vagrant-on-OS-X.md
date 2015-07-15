@@ -72,13 +72,7 @@ Not only that, but port 8443 on the Mac localhost is forwarded to port 8443 on t
 
 On to the provisioning step.
 
-**NOTE** Before you continue! I [finally realized](https://github.com/openshift/openshift-ansible/pull/319#issuecomment-119374507) that at this point NetworkManager is erroneously taking over responsiblity for the `enp0s8` interface, and the `192.168.100.x` addresses will disappear in short order. Subsequently the playbook will fail. I'm not sure the best way to fix this. The workaround is to simply reboot the nodes at this point. Otherwise you can do this for all three boxes.
-
-{% highlight bash %}
-vagrant ssh master
-sudo systemctl restart NetworkManager
-sudo systemctl restart network
-{% endhighlight %}
+**NOTE** See [this issue before continuing](https://github.com/openshift/openshift-ansible/issues/331). If it isn't resolved when you read this, just reboot each virtual machine before continuing.
 
 ## Provisioning with Ansible ##
 
@@ -90,77 +84,7 @@ vagrant provision
 
 ### Bug! Playbook Fails on _Handle scheduleable node_ ###
 
-{% highlight text %}
-...
-PLAY [Set scheduleability] ****************************************************
-
-GATHERING FACTS ***************************************************************
-ok: [master]
-
-TASK: [set_fact ] *************************************************************
-ok: [master]
-
-TASK: [openshift_manage_node | Handle unscheduleable node] ********************
-skipping: [master]
-
-TASK: [openshift_manage_node | Handle scheduleable node] **********************
-failed: [master] => (item=ose3-node1.example.com) => {"changed": true, "cmd": ["oadm", "manage-node", "ose3-node1.example.com", "--schedulable=true"], "delta": "0:00:00.359376", "end": "2015-07-07 23:28:36.050071", "item": "ose3-node1.example.com", "rc": 1, "start": "2015-07-07 23:28:35.690695", "warnings": []}
-stderr: error: No nodes found
-failed: [master] => (item=ose3-node2.example.com) => {"changed": true, "cmd": ["oadm", "manage-node", "ose3-node2.example.com", "--schedulable=true"], "delta": "0:00:00.354480", "end": "2015-07-07 23:28:36.698472", "item": "ose3-node2.example.com", "rc": 1, "start": "2015-07-07 23:28:36.343992", "warnings": []}
-stderr: error: No nodes found
-
-FATAL: all hosts have already failed -- aborting
-
-PLAY RECAP ********************************************************************
-           to retry, use: --limit @/Users/dlbewley/config.retry
-
-localhost                  : ok=5    changed=0    unreachable=0    failed=0
-master                     : ok=59   changed=27   unreachable=0    failed=1
-node1                      : ok=46   changed=20   unreachable=0    failed=0
-node2                      : ok=46   changed=20   unreachable=0    failed=0
-{% endhighlight %}
-
-Doing the same thing by hand does work though:
-
-{% highlight text %}
-[vagrant@ose3-master ~]$ oc get nodes
-NAME                     LABELS                                          STATUS
-ose3-node1.example.com   kubernetes.io/hostname=ose3-node1.example.com   Ready
-ose3-node2.example.com   kubernetes.io/hostname=ose3-node2.example.com   Ready
-[vagrant@ose3-master ~]$ oadm manage-node ose3-node2.example.com --schedulable=true
-NAME                     LABELS                                          STATUS
-ose3-node2.example.com   kubernetes.io/hostname=ose3-node2.example.com   Ready
-[vagrant@ose3-master ~]$ oadm manage-node ose3-node1.example.com --schedulable=true
-NAME                     LABELS                                          STATUS
-ose3-node1.example.com   kubernetes.io/hostname=ose3-node1.example.com   Ready
-{% endhighlight %}
-
-That is in [this task file](https://github.com/openshift/openshift-ansible/blob/master/roles/openshift_manage_node/tasks/main.yml).
-
-Try running `vagrant provision` again and it succeeds. I need to complete a fresh test.
-
-{% highlight text %}
-PLAY [Set scheduleability] ****************************************************
-
-GATHERING FACTS ***************************************************************
-ok: [master]
-
-TASK: [set_fact ] *************************************************************
-ok: [master]
-
-TASK: [openshift_manage_node | Handle unscheduleable node] ********************
-skipping: [master]
-
-TASK: [openshift_manage_node | Handle scheduleable node] **********************
-changed: [master] => (item=ose3-node1.example.com)
-changed: [master] => (item=ose3-node2.example.com)
-
-PLAY RECAP ********************************************************************
-localhost                  : ok=5    changed=0    unreachable=0    failed=0
-master                     : ok=52   changed=1    unreachable=0    failed=0
-node1                      : ok=41   changed=0    unreachable=0    failed=0
-node2                      : ok=41   changed=0    unreachable=0    failed=0
-{% endhighlight %}
+See [this issue](https://github.com/openshift/openshift-ansible/issues/336#issuecomment-120087896)
 
 ## Sanity Check OpenShift ##
 
@@ -185,16 +109,21 @@ For now I just added the name to my localhost line in `/etc/hosts`, but is there
 OpenShift console command `oc` is similar to `kubectl`. Let's blindly try a few commands.
 
 {% highlight bash %}
+vagrant ssh master
+
 [vagrant@ose3-master ~]$ oc get nodes
 NAME                     LABELS                                          STATUS
 ose3-node1.example.com   kubernetes.io/hostname=ose3-node1.example.com   Ready
 ose3-node2.example.com   kubernetes.io/hostname=ose3-node2.example.com   Ready
+
 [vagrant@ose3-master ~]$ oc get services
 NAME            LABELS                                    SELECTOR   IP(S)        PORT(S)
 kubernetes      component=apiserver,provider=kubernetes   <none>     172.30.0.2   443/TCP
 kubernetes-ro   component=apiserver,provider=kubernetes   <none>     172.30.0.1   80/TCP
+
 [vagrant@ose3-master ~]$ oc get replicationcontrollers
 CONTROLLER   CONTAINER(S)   IMAGE(S)   SELECTOR   REPLICAS
+
 [vagrant@ose3-master ~]$ oc get all
 NAME      TYPE      SOURCE
 NAME      TYPE      STATUS    POD
@@ -212,13 +141,20 @@ NAME      READY     REASON    RESTARTS   AGE
 
 _I haven't finished going through this bit_
 
-No to walk through the OpenShift [getting started](https://github.com/openshift/origin#getting-started) docs.
+Now to walk through the OpenShift [getting started](https://github.com/openshift/origin#getting-started) docs.
+
+### Create Docker Registry ###
 
 - Create a docker registry. **BUG** _this fails_
 
 {% highlight bash %}
 vagrant ssh master
-[vagrant@ose3-master ~]$ sudo oadm registry --credentials=/etc/openshift/master/openshift-registry.kubeconfig
+[vagrant@ose3-master ~]$ export CURL_CA_BUNDLE=/etc/openshift/master/ca.crt
+[vagrant@ose3-master ~]$ export KUBECONFIG=/etc/openshift/master/admin.kubeconfig
+[vagrant@ose3-master ~]$ sudo chmod +r /etc/openshift/master/openshift-registry.kubeconfig
+[vagrant@ose3-master ~]$ sudo chmod +r $KUBECONFIG
+
+[vagrant@ose3-master ~]$ oadm registry --create --credentials=/etc/openshift/master/openshift-registry.kubeconfig --config=$KUBECONFIG
 deploymentconfigs/docker-registry
 services/docker-registry
 
@@ -227,10 +163,28 @@ NAME                       READY     REASON    RESTARTS   AGE
 docker-registry-1-deploy   0/1       Pending   0          10s
 
 [vagrant@ose3-master ~]$ oc get pods
-NAME                       READY     REASON                                                             RESTARTS   AGE
-docker-registry-1-deploy   0/1       Image: openshift/origin-deployer:v1.0.0 is not ready on the node   0          46s
+NAME                       READY     REASON         RESTARTS   AGE
+docker-registry-1-deploy   0/1       ExitCode:255   0          2m
+
+[vagrant@ose3-master ~]$ oc get all
+NAME      TYPE      SOURCE
+NAME      TYPE      STATUS    POD
+NAME      DOCKER REPO   TAGS      UPDATED
+NAME              TRIGGERS       LATEST VERSION
+docker-registry   ConfigChange   1
+CONTROLLER          CONTAINER(S)   IMAGE(S)                                  SELECTOR                                                                                REPLICAS
+docker-registry-1   registry       openshift/origin-docker-registry:v1.0.0   deployment=docker-registry-1,deploymentconfig=docker-registry,docker-registry=default   0
+NAME      HOST/PORT   PATH      SERVICE   LABELS
+NAME              LABELS                                    SELECTOR                  IP(S)           PORT(S)
+docker-registry   docker-registry=default                   docker-registry=default   172.30.70.190   5000/TCP
+kubernetes        component=apiserver,provider=kubernetes   <none>                    172.30.0.2      443/TCP
+kubernetes-ro     component=apiserver,provider=kubernetes   <none>                    172.30.0.1      80/TCP
+NAME                       READY     REASON         RESTARTS   AGE
+docker-registry-1-deploy   0/1       ExitCode:255   0          2m
 {% endhighlight %}
 
+
+### Create OpenShift App ###
 
 - Login as test / test then create a project and an app. This will peform a docker build, but will fail when it attempts to push to the registry above.
 
@@ -279,7 +233,7 @@ To see more information about a Service or DeploymentConfig, use 'oc describe se
 You can use 'oc get all' to see lists of each of the types described above.			
 {% endhighlight %}
 
-Be sure to check out the console and login as test / test
+Be sure to check out the console and login as admin / admin or test / test
 
 - https://localhost:8443/console/
 - https://ose3-msater.example.com:8443/console/
