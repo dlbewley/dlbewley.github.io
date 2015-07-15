@@ -39,14 +39,12 @@ $ vagrant up --no-provision
 - You may want to go ahead and put this into a filed called `reset.sh` so you can more easily test over and over.
 
 {% highlight bash %}
-cat <<EOF > rest.sh
 #!/bin/bash
 for node in node1 node2 master; do
   vagrant destroy -f $node;
 done
 vagrant up --no-provision
 vagrant provision
-EOF
 {% endhighlight %}
 
 There are now 3 machines (boxes) which where added to `/etc/hosts` by vagrant.
@@ -60,7 +58,7 @@ tail -5 /etc/hosts
 ## vagrant-hostmanager-end
 {% endhighlight %}
 
-You can see they are running
+You can in the VirtualBox GUI that they are running.
 
 ![virtual box screenshot](/images/openshift-virtualbox-0.png)
 
