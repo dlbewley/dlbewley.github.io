@@ -155,7 +155,7 @@ or the [vagrant deploy docs](https://github.com/openshift/origin/blob/master/CON
 
 ### Create Docker Registry ###
 
-**BUG** _this fails_
+**BUG** This fails. See Issue [#391](https://github.com/openshift/openshift-ansible/issues/391)
 
 - Create a docker registry.
 
