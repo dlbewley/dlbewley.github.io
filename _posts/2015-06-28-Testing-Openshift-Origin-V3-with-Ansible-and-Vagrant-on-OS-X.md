@@ -85,16 +85,13 @@ On to the provisioning step.
 
 ## Provisioning with Ansible ##
 
-**WARNING** Before you continue, check if these issues are closed yet. If not, apply the patches referenced by them.
-
-- [Issue 331](https://github.com/openshift/openshift-ansible/issues/331)
-- [Issue 336](https://github.com/openshift/openshift-ansible/issues/336)
-
-Run the [byo/config.yml](https://github.com/openshift/openshift-ansible/blob/master/playbooks/byo/config.yml) Ansible playbook on the cluster by way of the vagrant provision command
+Run the [byo/config.yml](https://github.com/openshift/openshift-ansible/blob/master/playbooks/byo/config.yml) Ansible playbook on the cluster by way of the `vagrant provision` command.
+This basically implements the tasks from [README_origin.md](https://github.com/openshift/openshift-ansible/blob/master/README_origin.md), so read that for background.
 
 {% highlight bash %}
 $ vagrant provision
 {% endhighlight %}
+
 ## Sanity Check OpenShift ##
 
 Expect an _ok_ from the healthcheck
@@ -151,9 +148,10 @@ NAME      READY     REASON    RESTARTS   AGE
 
 ## Configure OpenShift ##
 
-_I haven't finished going through this bit_
-
-Now to walk through the OpenShift [getting started](https://github.com/openshift/origin#getting-started) docs.
+Now to walk through the OpenShift [getting started](https://github.com/openshift/origin#getting-started) docs,
+and reference the [troubleshooting doc](https://github.com/openshift/origin/blob/master/docs/debugging-openshift.md)
+or the [redhat beta docs](https://access.redhat.com/beta/documentation/en/openshift-enterprise-30-administrator-guide)
+or the [vagrant deploy docs](https://github.com/openshift/origin/blob/master/CONTRIBUTING.adoc#develop-on-virtual-machine-using-vagrant).
 
 ### Create Docker Registry ###
 
@@ -163,22 +161,23 @@ Now to walk through the OpenShift [getting started](https://github.com/openshift
 
 {% highlight bash %}
 $ vagrant ssh master
-[vagrant@ose3-master ~]$ export CURL_CA_BUNDLE=/etc/openshift/master/ca.crt
+#[vagrant@ose3-master ~]$ export CURL_CA_BUNDLE=/etc/openshift/master/ca.crt
 [vagrant@ose3-master ~]$ export KUBECONFIG=/etc/openshift/master/admin.kubeconfig
-[vagrant@ose3-master ~]$ sudo chmod +r /etc/openshift/master/openshift-registry.kubeconfig
-[vagrant@ose3-master ~]$ sudo chmod +r $KUBECONFIG
+[vagrant@ose3-master ~]$ export CREDENTIALS=/etc/openshift/master/openshift-registry.kubeconfig
+[vagrant@ose3-master ~]$ sudo chmod +r $KUBECONFIG $CREDENTIALS
 
-[vagrant@ose3-master ~]$ oadm registry --create --credentials=/etc/openshift/master/openshift-registry.kubeconfig --config=$KUBECONFIG
+[vagrant@ose3-master ~]$ oadm registry --create --credentials=$CREDENTIALS --config=$KUBECONFIG
 deploymentconfigs/docker-registry
 services/docker-registry
 
 [vagrant@ose3-master ~]$ oc get pods
-NAME                       READY     REASON    RESTARTS   AGE
-docker-registry-1-deploy   0/1       Pending   0          10s
-
+NAME                       READY     STATUS    RESTARTS   AGE
+docker-registry-1-deploy   0/1       Pending   0          9s
 [vagrant@ose3-master ~]$ oc get pods
-NAME                       READY     REASON         RESTARTS   AGE
-docker-registry-1-deploy   0/1       ExitCode:255   0          2m
+NAME                       READY     STATUS         RESTARTS   AGE
+docker-registry-1-deploy   0/1       ExitCode:255   0          59s
+[vagrant@ose3-master ~]$ oc logs docker-registry-1-deploy
+F0724 20:24:14.746997       1 deployer.go:64] couldn't get deployment default/docker-registry-1: Get https://ose3-master.example.com:8443/api/v1/namespaces/default/replicationcontrollers/docker-registry-1: dial tcp: lookup ose3-master.example.com: no such host
 
 [vagrant@ose3-master ~]$ oc get all
 NAME      TYPE      SOURCE
@@ -187,16 +186,14 @@ NAME      DOCKER REPO   TAGS      UPDATED
 NAME              TRIGGERS       LATEST VERSION
 docker-registry   ConfigChange   1
 CONTROLLER          CONTAINER(S)   IMAGE(S)                                  SELECTOR                                                                                REPLICAS
-docker-registry-1   registry       openshift/origin-docker-registry:v1.0.0   deployment=docker-registry-1,deploymentconfig=docker-registry,docker-registry=default   0
+docker-registry-1   registry       openshift/origin-docker-registry:v1.0.3   deployment=docker-registry-1,deploymentconfig=docker-registry,docker-registry=default   0
 NAME      HOST/PORT   PATH      SERVICE   LABELS
 NAME              LABELS                                    SELECTOR                  IP(S)           PORT(S)
-docker-registry   docker-registry=default                   docker-registry=default   172.30.70.190   5000/TCP
-kubernetes        component=apiserver,provider=kubernetes   <none>                    172.30.0.2      443/TCP
-kubernetes-ro     component=apiserver,provider=kubernetes   <none>                    172.30.0.1      80/TCP
-NAME                       READY     REASON         RESTARTS   AGE
-docker-registry-1-deploy   0/1       ExitCode:255   0          2m
+docker-registry   docker-registry=default                   docker-registry=default   172.30.162.65   5000/TCP
+kubernetes        component=apiserver,provider=kubernetes   <none>                    172.30.0.1      443/TCP
+NAME                       READY     STATUS         RESTARTS   AGE
+docker-registry-1-deploy   0/1       ExitCode:255   0          4m
 {% endhighlight %}
-
 
 ### Create OpenShift App ###
 
