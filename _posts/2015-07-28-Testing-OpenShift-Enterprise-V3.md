@@ -301,9 +301,10 @@ time="2015-07-24T19:29:46-04:00" level=info msg="Starting upload purge in 24h0m0
 
 ## Deploy a router ##
 
-See [Deploy Router](https://docs.openshift.com/enterprise/3.0/admin_guide/install/deploy_router.html)
+Now [Deploy](https://docs.openshift.com/enterprise/3.0/admin_guide/install/deploy_router.html) a [Router](https://access.redhat.com/beta/documentation/en/openshift-enterprise-30-architecture/chapter-3-core-concepts#routes) which is basically a haproxy instance, but it possible to use an external load balancer like an F5 .
 
 - To see what the router would look like run:
+
 {% highlight bash %}
 oadm router -o yaml \
     --credentials='/etc/openshift/master/openshift-router.kubeconfig' \
@@ -401,13 +402,13 @@ By default `/etc/openshift/master/master-config.yaml` denys all. Let's allow any
 systemctl restart openshift-master
 {% endhighlight %}
 
+# Test the Developer UI #
+
 ## Create Project ##
 
 - [Login to Console](https://ose3-master.example.com:8443)
 - Create a project called _eval_
 - Create a _cakephp example app_
-
-# Test out Developer UI #
 
 [What’s Next?](https://docs.openshift.com/enterprise/3.0/admin_guide/install/first_steps.html#what-s-next)
 
