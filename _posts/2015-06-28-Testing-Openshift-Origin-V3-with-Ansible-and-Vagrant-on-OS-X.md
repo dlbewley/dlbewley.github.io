@@ -8,7 +8,7 @@ tags:
  - vagrant
 ---
 
-The [OpenShift Origin](http://www.openshift.org/) project provides [Ansible](http://www.ansible.com) playbooks and roles for installing OpenShift on various infratructure. I'm going to try out the example using [Vagrant](http://www.vagrantup.com) and [VirtualBox](https://www.virtualbox.org/) on my Mac. I'm not very familiar with Vagrant or OpenShift v3 yet, so I'm just going to think out loud and see how it goes.
+The [OpenShift Origin](http://www.openshift.org/) project provides [Ansible](http://www.ansible.com) playbooks and roles for installing OpenShift on various infratructure. I'm going to try out the example using [Vagrant](http://www.vagrantup.com) and [VirtualBox](https://www.virtualbox.org/) on my Mac. I'm not very familiar with Vagrant or OpenShift v3 yet, so I'm just going to think out loud and see how it goes. I've also recently started [testing OpenShift Enterprise](/blog/2015/07/28/Testing-OpenShift-Enterprise-V3).
 
 ## Some Background ##
 
@@ -161,7 +161,6 @@ or the [vagrant deploy docs](https://github.com/openshift/origin/blob/master/CON
 
 {% highlight bash %}
 $ vagrant ssh master
-#[vagrant@ose3-master ~]$ export CURL_CA_BUNDLE=/etc/openshift/master/ca.crt
 [vagrant@ose3-master ~]$ export KUBECONFIG=/etc/openshift/master/admin.kubeconfig
 [vagrant@ose3-master ~]$ export CREDENTIALS=/etc/openshift/master/openshift-registry.kubeconfig
 [vagrant@ose3-master ~]$ sudo chmod +r $KUBECONFIG $CREDENTIALS
