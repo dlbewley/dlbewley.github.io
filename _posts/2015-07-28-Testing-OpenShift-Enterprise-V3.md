@@ -7,7 +7,7 @@ tags:
  - RHEV
 ---
 
-So much for testing [OpenShift Origin with Vagrant on OS X](Testing-Openshift-Origin-V3-with-Ansible-and-Vagrant-on-OS-X). Let's evaluate OpenShift Enterprise v3 on RHEL! First go get yourself an eval license. The OpenShift VMs will run RHEL7.1 and ride on top of RHEV 3.4.
+So much for testing [OpenShift Origin with Vagrant on OS X](/blog/2015/06/28/Testing-Openshift-Origin-V3-with-Ansible-and-Vagrant-on-OS-X). Let's evaluate OpenShift Enterprise v3 on RHEL! First go get yourself an eval license. The OpenShift VMs will run RHEL7.1 and ride on top of RHEV 3.4.
 
 # Links #
 
@@ -21,7 +21,7 @@ So much for testing [OpenShift Origin with Vagrant on OS X](Testing-Openshift-Or
 
 [Prereqs](https://docs.openshift.com/enterprise/3.0/admin_guide/install/prerequisites.html) are:
 
-[Three VMs](https://docs.openshift.com/enterprise/3.0/admin_guide/install/prerequisites.html#system-requirements) running Stock RHEL7.1 with upstream subscriptions
+[Three VMs](https://docs.openshift.com/enterprise/3.0/admin_guide/install/prerequisites.html#system-requirements) running Stock RHEL7.1 with valid subscriptions:
 
 - ose3-master 2vCPU, 8G RAM 30G disk
 - ose3-node1 1vCPU, 8G RAM 15G disk 15G [second disk](https://docs.openshift.com/enterprise/3.0/admin_guide/install/prerequisites.html#configuring-docker-storage) for docker images
@@ -273,7 +273,7 @@ See [Admin Guide Overview](http://docs.openshift.com/enterprise/latest/admin_gui
 
 - Create a Docker Registry on _ose3-master_
 
-{% highlight bash %}
+{% highlight text %}
 [root@ose3-master ~]#  oadm registry --config=/etc/openshift/master/admin.kubeconfig \
     --credentials=/etc/openshift/master/openshift-registry.kubeconfig \
     --images='registry.access.redhat.com/openshift3/ose-${component}:${version}'
@@ -325,7 +325,7 @@ services/router1
 
 Can not access [haproxy stats](http://ose3-node1.example.com:1936) unless you turn off iptables **BUG**
 
-{% highlight bash %}
+{% highlight text  %}
 [root@ose3-master ~]# oc get pods
 NAME                      READY     REASON    RESTARTS   AGE
 docker-registry-1-udgkk   1/1       Running   0          45m
