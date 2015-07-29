@@ -36,7 +36,7 @@ $ vagrant up --no-provision
 #  vagrant reload --provision
 {% endhighlight %}
 
-- You may want to go ahead and put this into a filed called `reset.sh` so you can more easily test over and over.
+- You may want to go ahead and put this into a file called `reset.sh` so you can more easily test over and over.
 
 {% highlight bash %}
 #!/bin/bash
@@ -193,6 +193,61 @@ docker-registry   docker-registry=default                   docker-registry=defa
 kubernetes        component=apiserver,provider=kubernetes   <none>                    172.30.0.1      443/TCP
 NAME                       READY     STATUS         RESTARTS   AGE
 docker-registry-1-deploy   0/1       ExitCode:255   0          4m
+{% endhighlight %}
+
+### Fix DNS Issue ##
+
+The [vagrant plugin hostmanager](https://github.com/smdahlen/vagrant-hostmanager) sets up the hosts files on the nodes, but as this RedHat [knowledgebase article](https://access.redhat.com/solutions/1520803) points out, the resolver also needs to work.
+
+The [vagrant dnsmasq plugin](https://github.com/mattes/vagrant-dnsmasq), may be a fix, but since I had some ruby problems I tried the [vagrant landrush plugin](https://github.com/phinze/landrush) instead.
+
+{% highlight bash %}
+brew install landrush
+vagrant plugin install vagrant-landrush
+{% endhighlight %}
+
+Then update the `Vagrantfile` like this:
+
+{% highlight diff %}
+diff --git a/Vagrantfile b/Vagrantfile
+index a832ae8..bfa13ac 100644
+--- a/Vagrantfile
++++ b/Vagrantfile
+@@ -11,6 +11,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+   deployment_type = ENV['OPENSHIFT_DEPLOYMENT_TYPE'] || 'origin'
+   num_nodes = (ENV['OPENSHIFT_NUM_NODES'] || 2).to_i
+
++  config.landrush.enabled = true
++  config.landrush.tld = 'example.com'
+   config.hostmanager.enabled = true
+   config.hostmanager.manage_host = true
+   config.hostmanager.include_offline = true
+@@ -39,6 +41,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+     config.vm.define "node#{node_index}" do |node|
+       node.vm.hostname = "ose3-node#{node_index}.example.com"
+       node.vm.network :private_network, ip: "192.168.100.#{200 + n}"
++      node.landrush.host_ip_address =  "192.168.100.#{200 + n}"
+       config.vm.provision "shell", inline: "nmcli connection reload; systemctl restart network.service"
+     end
+   end
+@@ -47,6 +50,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+     master.vm.hostname = "ose3-master.example.com"
+     master.vm.network :private_network, ip: "192.168.100.100"
+     master.vm.network :forwarded_port, guest: 8443, host: 8443
++    master.landrush.host_ip_address = "192.168.100.100"
+     config.vm.provision "shell", inline: "nmcli connection reload; systemctl restart network.service"
+     master.vm.provision "ansible" do |ansible|
+       ansible.limit = 'all'
+{% endhighlight %}
+
+DNS works better, but registry creation still fails with a host lookup failure.
+
+{% highlight text %}
+[vagrant@ose3-master ~]$ oc get pods
+NAME                       READY     STATUS         RESTARTS   AGE
+docker-registry-1-deploy   0/1       ExitCode:255   0          4m
+[vagrant@ose3-master ~]$ oc logs docker-registry-1-deploy
+F0726 02:41:00.845168       1 deployer.go:64] couldn't get deployment default/docker-registry-1: Get https://ose3-master.example.com:8443/api/v1/namespaces/default/replicationcontrollers/docker-registry-1: dial tcp: lookup ose3-master.example.com: no such host
 {% endhighlight %}
 
 ### Create OpenShift App ###
