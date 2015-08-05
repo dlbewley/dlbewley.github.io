@@ -329,10 +329,6 @@ deploymentconfigs/router1
 services/router1
 {% endhighlight %}
 
-**NOTE!**
-
-Can not access [haproxy stats](http://ose3-node1.example.com:1936) unless you turn off iptables **BUG**
-
 {% highlight text  %}
 [root@ose3-master ~]# oc get pods
 NAME                      READY     REASON    RESTARTS   AGE
