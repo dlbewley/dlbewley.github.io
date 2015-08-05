@@ -7,7 +7,7 @@ tags:
  - RHEV
 ---
 
-So much for testing [OpenShift Origin with Vagrant on OS X](/blog/2015/06/28/Testing-Openshift-Origin-V3-with-Ansible-and-Vagrant-on-OS-X). Let's evaluate OpenShift Enterprise v3 on RHEL! First go get yourself an eval license. The OpenShift VMs will run RHEL7.1 and ride on top of RHEV 3.4.
+So much for testing [OpenShift Origin with Vagrant on OS X](/blog/2015/06/28/Testing-Openshift-Origin-V3-with-Ansible-and-Vagrant-on-OS-X), because [it doesn't work](https://github.com/openshift/openshift-ansible/issues/391). Let's evaluate OpenShift Enterprise v3 on RHEL! First go get yourself an eval license. The OpenShift VMs will run RHEL7.1 and ride on top of RHEV 3.4.
 
 # Links #
 
@@ -98,6 +98,13 @@ yum -y install \
   wget git net-tools bind-utils iptables-services bridge-utils \
   docker
 yum -y update
+{% endhighlight %}
+
+It may be helpful to keep journald logs around across reboots while we are still testing.
+
+{% highlight bash %}
+mkdir /var/log/journal
+systemctl restart systemd-journald
 {% endhighlight %}
 
 # Configure OpenShift #
