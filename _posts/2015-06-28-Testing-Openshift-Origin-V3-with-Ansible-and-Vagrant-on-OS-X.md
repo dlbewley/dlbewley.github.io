@@ -102,17 +102,6 @@ $ vagrant ssh node2
 ok
 {% endhighlight %}
 
-The OpenShift console can be reached at https://127.0.0.1:8443/console but how can I reach https://ose3-master.example.com:8443/console ?
-
-For now I just added the name to my localhost line in `/etc/hosts`, but is there a better way to do this automatically with Vagrant?
-
-{% highlight text %}
-$ grep localhost /etc/hosts
-# localhost is used to configure the loopback interface
-127.0.0.1 localhost ose3-master.example.com
-::1             localhost
-{% endhighlight %}
-
 ![console screenshot](/images/openshift-console-0.png)
 
 OpenShift console command `oc` is similar to `kubectl`. Let's blindly try a few commands.
@@ -121,29 +110,29 @@ OpenShift console command `oc` is similar to `kubectl`. Let's blindly try a few 
 $ vagrant ssh master
 
 [vagrant@ose3-master ~]$ oc get nodes
-NAME                     LABELS                                          STATUS
-ose3-node1.example.com   kubernetes.io/hostname=ose3-node1.example.com   Ready
-ose3-node2.example.com   kubernetes.io/hostname=ose3-node2.example.com   Ready
+NAME                      LABELS                                           STATUS                     AGE
+ose3-master.example.com   kubernetes.io/hostname=ose3-master.example.com   Ready,SchedulingDisabled   11h
+ose3-node1.example.com    kubernetes.io/hostname=ose3-node1.example.com    Ready                      11h
+ose3-node2.example.com    kubernetes.io/hostname=ose3-node2.example.com    Ready                      11h
 
 [vagrant@ose3-master ~]$ oc get services
-NAME            LABELS                                    SELECTOR   IP(S)        PORT(S)
-kubernetes      component=apiserver,provider=kubernetes   <none>     172.30.0.2   443/TCP
-kubernetes-ro   component=apiserver,provider=kubernetes   <none>     172.30.0.1   80/TCP
-
-[vagrant@ose3-master ~]$ oc get replicationcontrollers
-CONTROLLER   CONTAINER(S)   IMAGE(S)   SELECTOR   REPLICAS
+NAME         CLUSTER_IP   EXTERNAL_IP   PORT(S)   SELECTOR   AGE
+kubernetes   172.30.0.1   <none>        443/TCP   <none>     11h
 
 [vagrant@ose3-master ~]$ oc get all
 NAME      TYPE      SOURCE
 NAME      TYPE      STATUS    POD
 NAME      DOCKER REPO   TAGS      UPDATED
 NAME      TRIGGERS   LATEST VERSION
-CONTROLLER   CONTAINER(S)   IMAGE(S)   SELECTOR   REPLICAS
-NAME      HOST/PORT   PATH      SERVICE   LABELS
-NAME            LABELS                                    SELECTOR   IP(S)        PORT(S)
-kubernetes      component=apiserver,provider=kubernetes   <none>     172.30.0.2   443/TCP
-kubernetes-ro   component=apiserver,provider=kubernetes   <none>     172.30.0.1   80/TCP
-NAME      READY     REASON    RESTARTS   AGE
+CONTROLLER   CONTAINER(S)   IMAGE(S)   SELECTOR   REPLICAS   AGE
+NAME      HOST/PORT   PATH      SERVICE   LABELS    TLS TERMINATION
+NAME         CLUSTER_IP   EXTERNAL_IP   PORT(S)   SELECTOR   AGE
+kubernetes   172.30.0.1   <none>        443/TCP   <none>     11h
+NAME      READY     STATUS    RESTARTS   AGE
+
+[vagrant@ose3-master ~]$ openshift version
+openshift v1.0.6-2-ge2a02a8
+kubernetes v1.1.0-alpha.0-1605-g44c91b1
 {% endhighlight %}
 
 ## Configure OpenShift ##
@@ -157,11 +146,11 @@ or the [vagrant deploy docs](https://github.com/openshift/origin/blob/master/CON
 
 **BUG** This fails. See Issue [#391](https://github.com/openshift/openshift-ansible/issues/391)
 
-- Create a docker registry.
+- Create a docker registry. Origin uses `/etc/origin` while enterprise uses `/etc/openshift`.
 
 {% highlight bash %}
 $ vagrant ssh master
-[vagrant@ose3-master ~]$ export KUBECONFIG=/etc/openshift/master/admin.kubeconfig
+[vagrant@ose3-master ~]$ export KUBECONFIG=/etc/origin/master/admin.kubeconfig
 [vagrant@ose3-master ~]$ export CREDENTIALS=/etc/openshift/master/openshift-registry.kubeconfig
 [vagrant@ose3-master ~]$ sudo chmod +r $KUBECONFIG $CREDENTIALS
 
@@ -171,12 +160,14 @@ services/docker-registry
 
 [vagrant@ose3-master ~]$ oc get pods
 NAME                       READY     STATUS    RESTARTS   AGE
-docker-registry-1-deploy   0/1       Pending   0          9s
+docker-registry-1-deploy   0/1       Pending   0          45s
+
 [vagrant@ose3-master ~]$ oc get pods
 NAME                       READY     STATUS         RESTARTS   AGE
-docker-registry-1-deploy   0/1       ExitCode:255   0          59s
-[vagrant@ose3-master ~]$ oc logs docker-registry-1-deploy
-F0724 20:24:14.746997       1 deployer.go:64] couldn't get deployment default/docker-registry-1: Get https://ose3-master.example.com:8443/api/v1/namespaces/default/replicationcontrollers/docker-registry-1: dial tcp: lookup ose3-master.example.com: no such host
+docker-registry-1-deploy   0/1       ExitCode:255   0          6m
+
+[vagrant@ose3-master ~]$  oc logs docker-registry-1-deploy
+F1009 03:06:30.593315       1 deployer.go:64] couldn't get deployment default/docker-registry-1: Get https://ose3-master.example.com:8443/api/v1/namespaces/default/replicationcontrollers/docker-registry-1: dial tcp: lookup ose3-master.example.com: no such host
 
 [vagrant@ose3-master ~]$ oc get all
 NAME      TYPE      SOURCE
@@ -184,14 +175,14 @@ NAME      TYPE      STATUS    POD
 NAME      DOCKER REPO   TAGS      UPDATED
 NAME              TRIGGERS       LATEST VERSION
 docker-registry   ConfigChange   1
-CONTROLLER          CONTAINER(S)   IMAGE(S)                                  SELECTOR                                                                                REPLICAS
-docker-registry-1   registry       openshift/origin-docker-registry:v1.0.3   deployment=docker-registry-1,deploymentconfig=docker-registry,docker-registry=default   0
-NAME      HOST/PORT   PATH      SERVICE   LABELS
-NAME              LABELS                                    SELECTOR                  IP(S)           PORT(S)
-docker-registry   docker-registry=default                   docker-registry=default   172.30.162.65   5000/TCP
-kubernetes        component=apiserver,provider=kubernetes   <none>                    172.30.0.1      443/TCP
+CONTROLLER          CONTAINER(S)   IMAGE(S)                                  SELECTOR                                                                                REPLICAS   AGE
+docker-registry-1   registry       openshift/origin-docker-registry:v1.0.6   deployment=docker-registry-1,deploymentconfig=docker-registry,docker-registry=default   0          6m
+NAME      HOST/PORT   PATH      SERVICE   LABELS    TLS TERMINATION
+NAME              CLUSTER_IP    EXTERNAL_IP   PORT(S)    SELECTOR                  AGE
+docker-registry   172.30.8.16   <none>        5000/TCP   docker-registry=default   6m
+kubernetes        172.30.0.1    <none>        443/TCP    <none>                    11h
 NAME                       READY     STATUS         RESTARTS   AGE
-docker-registry-1-deploy   0/1       ExitCode:255   0          4m
+docker-registry-1-deploy   0/1       ExitCode:255   0          6m
 {% endhighlight %}
 
 ### Fix DNS Issue ##
