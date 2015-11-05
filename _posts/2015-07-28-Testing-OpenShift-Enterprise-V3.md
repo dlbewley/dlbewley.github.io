@@ -7,27 +7,78 @@ tags:
  - RHEV
 ---
 
-So much for testing [OpenShift Origin with Vagrant on OS X](/blog/2015/06/28/Testing-Openshift-Origin-V3-with-Ansible-and-Vagrant-on-OS-X), because [it doesn't work](https://github.com/openshift/openshift-ansible/issues/391). Let's evaluate OpenShift Enterprise v3 on RHEL! First go get yourself an eval license. The OpenShift VMs will run RHEL7.1 and ride on top of RHEV 3.4.
+So much for testing [OpenShift Origin with Vagrant on OS X](/blog/2015/06/28/Testing-Openshift-Origin-V3-with-Ansible-and-Vagrant-on-OS-X), because [it does not work yet](https://github.com/openshift/openshift-ansible/issues/391). Let's evaluate OpenShift Enterprise v3 on RHEL! First go get yourself an eval license. The OpenShift VMs will run RHEL7.1 and ride on top of [RHEV](https://access.redhat.com/products/red-hat-enterprise-virtualization/).
 
-# Links #
+# Documentation #
 
+First off, here are some starting points to get oriented and acquainted with OpenShift.
+
+**Docs**
 - [Getting Started](https://access.redhat.com/products/openshift-enterprise-red-hat/get-started)
 - [Docs](https://access.redhat.com/documentation/en-US/OpenShift_Enterprise/)
 - [Overview](http://docs.openshift.com/enterprise/latest/admin_guide/overview.html)
 - [Download](https://install.openshift.com/)
 - [Prerequisites](https://docs.openshift.com/enterprise/3.0/admin_guide/install/prerequisites.html)
 
-# Prereqs #
+**Videos**
+- [OpenShift Channel on Youtube](https://www.youtube.com/channel/UCZKMj3YI0wP-kq4QYpaKdEA)
+- [OpenShift Commons Briefing #15: OpenShift 3 Beta 4 Training on Operations Workflow](https://www.youtube.com/watch?t=67&v=nqf9ZBqVIQM) provides a great walk through of install and basic overview of the compnents
 
-[Prereqs](https://docs.openshift.com/enterprise/3.0/admin_guide/install/prerequisites.html) are:
+# Installation #
+
+## Prereqs ##
+
+There are [several prereqs](https://docs.openshift.com/enterprise/3.0/admin_guide/install/prerequisites.html) to meet before installation can begin. There are a few items to identify and used to create Ansible variables before installation.
+
+Some Ansible variables we need to define:
+
+- `openshift_master_portal_net`
+- `osm_cluster_network_cidr`
+- `osm_default_subdomain`
+
+### VMs ###
 
 [Three VMs](https://docs.openshift.com/enterprise/3.0/admin_guide/install/prerequisites.html#system-requirements) running Stock RHEL7.1 with valid subscriptions:
 
-- ose3-master 2vCPU, 8G RAM 30G disk
-- ose3-node1 1vCPU, 8G RAM 15G disk 15G [second disk](https://docs.openshift.com/enterprise/3.0/admin_guide/install/prerequisites.html#configuring-docker-storage) for docker images
-- ose3-node2 1vCPU, 8G RAM 15G disk 15G second disk for docker images
+These are the min reqs, running RHEL7.1 Server.
 
-# Setup RHEL Subs #
+VM            | CPU | Mem | Disk(s)
+--------------|-----|-----|----------
+ose-master-01 | 2   | 8G  | 30G
+ose-node-01   | 1   | 8G  | 15G, 15G [second disk](https://docs.openshift.com/enterprise/3.0/admin_guide/install/prerequisites.html#configuring-docker-storage) for docker images
+ose-node-02   | 1   | 8G  | 15G, 15G second disk for docker images
+
+## Storage ##
+
+An NFS export to be mounted by nodes for creation of _persistent volumes_ and for persistent docker registry.
+
+## Networks ##
+
+Network Name               | Default         |  Ansible Variable             | Description
+---------------------------|-----------------|-------------------------------|-----------------
+`portal_net`               | _172.30.0.0/16_ | `openshift_master_portal_net` | Home for Services / Load Balancers. This should be routable in your organization.
+`sdn_cluster_network_cidr` | _10.1.0.0/16_   | `osm_cluster_network_cidr`    | Docker Network. One `/24` allocated per node by default. SDN manages this network with Open vSwitch and VxLAN.
+
+## DNS ##
+
+Pick a wildcard subdomain domain and assumes.
+
+ Default          |  Ansible Variable             | Description
+------------------|-------------------------------|-----------------
+ _cloudapps.com_  | `osm_default_subdomain`       | Subdomain to place application routes in
+
+Maybe pick multiple?
+Perhaps we should use os.example.com as the "TLD" and use subdomain per env/cluster like this:
+
+- *.dev.os.example.com. 300 IN  A <ip_of_openshift_router>
+- *.test.os.example.com. 300 IN  A <ip_of_openshift_router>
+- *.prod.os.example.com. 300 IN  A <ip_of_openshift_router>
+osm_default_subdomain: test.os.example.com
+
+
+# VM Installation #
+
+## Setup RHEL Subs ##
 
 - On _all 3 hosts_ Register VM with RedHat Subscription Manager
 
@@ -93,10 +144,14 @@ subscription-manager repos \
 {% highlight bash %}
 yum -y remove \
   NetworkManager
+# install reqs
 yum -y install \
   python python-virtualenv openssh-clients gcc \
   wget git net-tools bind-utils iptables-services bridge-utils \
   docker
+# install life improvers
+yum -y install \
+  deltarpm bash-completion tmux
 yum -y update
 {% endhighlight %}
 
@@ -106,6 +161,13 @@ It may be helpful to keep journald logs around across reboots while we are still
 mkdir /var/log/journal
 systemctl restart systemd-journald
 {% endhighlight %}
+
+The following units may produce some interesting logs (`journalctl -f -u $unit`).
+
+- openshift-master
+- openshift-node
+- openshift-sdn-master
+- openshift-sdn-node
 
 # Configure OpenShift #
 
@@ -210,6 +272,10 @@ DOCKER_STORAGE_OPTIONS=-s devicemapper --storage-opt dm.fs=xfs --storage-opt dm.
 
 **TODO**
 - Configure [persistent storage](https://docs.openshift.com/enterprise/3.0/admin_guide/persistent_storage_nfs.html)
+
+## Identify your Environment ##
+
+Portal Net
 
 ## Allow Access to Insecure Registries ##
 
@@ -339,13 +405,11 @@ router1-1-y1wk8           1/1       Running   0          20m
 
 # First Steps #
 
-- [First Steps](https://docs.openshift.com/enterprise/3.0/admin_guide/install/first_steps.html)
+## Create Examples ##
 
-## Create Image Streams ##
+[First Steps](https://docs.openshift.com/enterprise/3.0/admin_guide/install/first_steps.html) doc describes how to import the following, but the playbook will already do this for you.
 
-_It looks like this were already done by the playbook_
-
-Create the core set of image streams, which use RHEL 7 based images:
+- Create the core set of image streams, which use RHEL 7 based images:
 
 {% highlight bash %}
 oc create -f \
@@ -353,25 +417,21 @@ oc create -f \
     -n openshift
 {% endhighlight %}
 
-## Create Database Service Templates ##
-
-_It looks like this were already done by the playbook_
+- Create Database Service Templates
 
 {% highlight bash %}
 oc create -f \
     /usr/share/openshift/examples/db-templates -n openshift
 {% endhighlight %}
 
-## Create Quick Start Templates ##
-
-_It looks like this were already done by the playbook_
+- Create Quick Start Templates
 
 {% highlight bash %}
 oc create -f \
     /usr/share/openshift/examples/quickstart-templates -n openshift
 {% endhighlight %}
 
-# Configure Authentication Bypass #
+## Configure Authentication Bypass ##
 
 - [Auth](https://docs.openshift.com/enterprise/3.0/admin_guide/configuring_authentication.html)
 
@@ -404,6 +464,20 @@ By default `/etc/openshift/master/master-config.yaml` denys all. Let's allow any
 {% highlight bash %}
 systemctl restart openshift-master
 {% endhighlight %}
+
+# Grok Some OpenShift Concepts #
+
+*Users*
+
+The `oc whoami` command will tell you what user you are. The root user is the `cluster-admin` with super ports.
+
+*Projects*
+
+Projects are essentially name spaces and define resources and quoatas for teams.
+
+:changes
+
+
 
 # Test the Developer UI #
 
