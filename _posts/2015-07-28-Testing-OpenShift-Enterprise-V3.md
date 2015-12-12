@@ -17,8 +17,11 @@ First off, here are some starting points to get oriented and acquainted with Ope
 - [Getting Started](https://access.redhat.com/products/openshift-enterprise-red-hat/get-started)
 - [Docs](https://access.redhat.com/documentation/en-US/OpenShift_Enterprise/)
 - [Overview](http://docs.openshift.com/enterprise/latest/admin_guide/overview.html)
+- [Training](https://github.com/openshift/training)
 - [Download](https://install.openshift.com/)
-- [Prerequisites](https://docs.openshift.com/enterprise/3.0/admin_guide/install/prerequisites.html)
+- [Prerequisites](https://docs.openshift.com/enterprise/3.1/admin_guide/install/prerequisites.html)
+- [OpenShift Enterprise 3 Architecture Guide - planning, deployment and operation of an Open Source Platform as a Service](https://access.redhat.com/articles/1755133)
+- [Load Balancing](https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/7/html/Load_Balancer_Administration/ch-lvs-overview-VSA.html)
 
 **Videos**
 - [OpenShift Channel on Youtube](https://www.youtube.com/channel/UCZKMj3YI0wP-kq4QYpaKdEA)
@@ -28,7 +31,7 @@ First off, here are some starting points to get oriented and acquainted with Ope
 
 ## Prereqs ##
 
-There are [several prereqs](https://docs.openshift.com/enterprise/3.0/admin_guide/install/prerequisites.html) to meet before installation can begin. There are a few items to identify and used to create Ansible variables before installation.
+There are [several prereqs](https://docs.openshift.com/enterprise/3.1/admin_guide/install/prerequisites.html) to meet before installation can begin. There are a few items to identify and used to create Ansible variables before installation.
 
 Some Ansible variables we need to define:
 
@@ -38,19 +41,24 @@ Some Ansible variables we need to define:
 
 ### VMs ###
 
-[Three VMs](https://docs.openshift.com/enterprise/3.0/admin_guide/install/prerequisites.html#system-requirements) running Stock RHEL7.1 with valid subscriptions:
+Four [virtual machines](https://docs.openshift.com/enterprise/3.1/admin_guide/install/prerequisites.html#system-requirements) running Stock RHEL 7 with valid subscriptions:
 
-These are the min reqs, running RHEL7.1 Server.
+These are higher than the min requirements, but it's what I'm going to use.
 
 VM            | CPU | Mem | Disk(s)
 --------------|-----|-----|----------
-ose-master-01 | 2   | 8G  | 30G
-ose-node-01   | 1   | 8G  | 15G, 15G [second disk](https://docs.openshift.com/enterprise/3.0/admin_guide/install/prerequisites.html#configuring-docker-storage) for docker images
-ose-node-02   | 1   | 8G  | 15G, 15G second disk for docker images
+ose-master-01 | 2   | 16G | 30G (20G _/mnt/registry_?), 50G [second disk](https://docs.openshift.com/enterprise/3.1/admin_guide/install/prerequisites.html#configuring-docker-storage) for docker images
+ose-node-01   | 2   | 16G | 30G OS, 50G Docker
+ose-node-02   | 2   | 16G | 30G OS, 50G Docker
+ose-node-03   | 2   | 16G | 30G OS, 50G Docker
 
 ## Storage ##
 
-An NFS export to be mounted by nodes for creation of _persistent volumes_ and for persistent docker registry.
+Docker on the node will use a [thin provisioned](http://unpoucode.blogspot.com.es/2015/06/docker-and-devicemappers-thinpool-in.html) LVM volume group for ephemeral container filesystems under `/var/lib/docker`.
+
+An NFS export to be mounted by nodes for creation of [persistent volumes](https://docs.openshift.com/enterprise/3.1/architecture/additional_concepts/storage.html) and for persistent docker registry.
+
+[Persistent storage using NFS](https://docs.openshift.com/enterprise/3.1/install_config/persistent_storage/persistent_storage_nfs.html) requires NFSv4 for SELinux. The [kube_nfs_volumes](https://github.com/openshift/openshift-ansible/tree/master/roles/kube_nfs_volumes) role can automate the creation of `persistent volumes`.
 
 ## Networks ##
 
@@ -65,22 +73,20 @@ Pick a wildcard subdomain domain and assumes.
 
  Default          |  Ansible Variable             | Description
 ------------------|-------------------------------|-----------------
- _cloudapps.com_  | `osm_default_subdomain`       | Subdomain to place application routes in
+ _cloudapps.com_  | `osm_default_subdomain`       | Subdomain to place application [routes](https://access.redhat.com/documentation/en/openshift-enterprise/version-3.0/openshift-enterprise-30-architecture/chapter-3-core-concepts#routes) in
 
 Maybe pick multiple?
 Perhaps we should use os.example.com as the "TLD" and use subdomain per env/cluster like this:
 
-- *.dev.os.example.com. 300 IN  A <ip_of_openshift_router>
+- *.dev.os.example.com.  300 IN  A <ip_of_openshift_router>
 - *.test.os.example.com. 300 IN  A <ip_of_openshift_router>
 - *.prod.os.example.com. 300 IN  A <ip_of_openshift_router>
-osm_default_subdomain: test.os.example.com
-
 
 # VM Installation #
 
 ## Setup RHEL Subs ##
 
-- On _all 3 hosts_ Register VM with RedHat Subscription Manager
+- On _all the hosts_ Register VM with RedHat Subscription Manager
 
 {% highlight bash %}
 subscription-manager register --username=rhel-username --password=<password>
@@ -88,41 +94,61 @@ subscription-manager register --username=rhel-username --password=<password>
 subscription-manager list --available
 {% endhighlight %}
 
-- On _all 3 hosts_ Find the pool ID of our eval license:
+- On _all the hosts_ find the pool ID of the Red Hat OpenShift Enterprise license:
 
 {% highlight bash %}
-subscription-manager list --available
-...
-Subscription Name:   30 Day Self-Supported OpenShift Enterprise, 2 Cores Evaluation
+[root@ose-master-01 ~]# subscription-manager list --available
++-------------------------------------------+
+    Available Subscriptions
++-------------------------------------------+
+Subscription Name:   OpenShift Enterprise, Standard (1-2 Sockets)
 Provides:            Red Hat Beta
-                     Red Hat JBoss A-MQ Clients
                      Red Hat OpenShift Enterprise
-                     Red Hat OpenShift Enterprise JBoss EAP add-on
-                     JBoss Enterprise Application Platform
                      Red Hat OpenShift Enterprise Application Node
                      Red Hat Software Collections (for RHEL Server)
-                     Red Hat OpenShift Enterprise JBoss A-MQ add-on
                      JBoss Enterprise Web Server
-                     Red Hat OpenShift Enterprise JBoss FUSE add-on
                      Oracle Java (for RHEL Server)
                      Red Hat OpenShift Enterprise Client Tools
                      Red Hat Enterprise Linux Server
                      Red Hat Software Collections Beta (for RHEL Server)
-                     Red Hat OpenShift Enterprise Infrastructure
-SKU:                 SER0419
-Contract:            10000000
-Pool ID:             8a000000000000000000000000000000
-Provides Management: Yes
+                     Red Hat Enterprise Linux Atomic Host
+SKU:                 MCT2863
+Contract:            10000001
+Pool ID:             8000000000000000000000000000000a
+Provides Management: No
 Available:           3
 Suggested:           1
-Service Level:       Self-Support
+Service Level:       Standard
+Service Type:        L1-L3
+Subscription Type:   Stackable
+Ends:                11/29/2016
+System Type:         Physical
+
+Subscription Name:   OpenShift Enterprise Broker Infrastructure
+Provides:            Red Hat Beta
+                     Red Hat OpenShift Enterprise
+                     Red Hat Software Collections (for RHEL Server)
+                     Oracle Java (for RHEL Server)
+                     Red Hat OpenShift Enterprise Client Tools
+                     Red Hat Enterprise Linux Server
+                     Red Hat Software Collections Beta (for RHEL Server)
+                     Red Hat Enterprise Linux Atomic Host
+                     Red Hat OpenShift Enterprise Infrastructure
+SKU:                 MCT2741
+Contract:            10000001
+Pool ID:             80000000000000000000000000000001
+Provides Management: Yes
+Available:           2
+Suggested:           1
+Service Level:       Layered
 Service Type:        L1-L3
 Subscription Type:   Standard
-Ends:                08/22/2015
+Ends:                11/29/2016
 System Type:         Physical
+...
 {% endhighlight %}
 
-- On _all 3 hosts_ Attach server to that pool ID
+- On all the hosts, attach to that pool ID
 
 {% highlight bash %}
 subscription-manager attach --pool=8a000000000000000000000000000000
@@ -149,9 +175,9 @@ yum -y install \
   python python-virtualenv openssh-clients gcc \
   wget git net-tools bind-utils iptables-services bridge-utils \
   docker
-# install life improvers
+# install life enhancers
 yum -y install \
-  deltarpm bash-completion tmux
+  vim-enhanced deltarpm bash-completion tmux
 yum -y update
 {% endhighlight %}
 
@@ -189,12 +215,16 @@ docker-storage-setup
 Example:
 
 {% highlight text  %}
-[root@ose3-node1 ~]# docker-storage-setup
-0
+root@ose-node-01 ~]# cat <<EOF > /etc/sysconfig/docker-storage-setup
+> DEVS=/dev/vdb
+> VG=docker-vg
+> EOF
+[root@ose-node-01 ~]#
+[root@ose-node-01 ~]# docker-storage-setup
 Checking that no-one is using this disk right now ...
 OK
 
-Disk /dev/vdb: 31207 cylinders, 16 heads, 63 sectors/track
+Disk /dev/vdb: 104025 cylinders, 16 heads, 63 sectors/track
 sfdisk:  /dev/vdb: unrecognized partition table type
 
 Old situation:
@@ -204,7 +234,7 @@ New situation:
 Units: sectors of 512 bytes, counting from 0
 
    Device Boot    Start       End   #sectors  Id  System
-/dev/vdb1          2048  31457279   31455232  8e  Linux LVM
+/dev/vdb1          2048 104857599  104855552  8e  Linux LVM
 /dev/vdb2             0         -          0   0  Empty
 /dev/vdb3             0         -          0   0  Empty
 /dev/vdb4             0         -          0   0  Empty
@@ -221,7 +251,7 @@ to zero the first 512 bytes:  dd if=/dev/zero of=/dev/foo7 bs=512 count=1
 (See fdisk(8).)
   Physical volume "/dev/vdb1" successfully created
   Volume group "docker-vg" successfully created
-  Rounding up size to full physical extent 16.00 MiB
+  Rounding up size to full physical extent 52.00 MiB
   Logical volume "docker-poolmeta" created.
   Logical volume "docker-pool" created.
   WARNING: Converting logical volume docker-vg/docker-pool and docker-vg/docker-poolmeta to pool's data and metadata volumes.
@@ -229,40 +259,44 @@ to zero the first 512 bytes:  dd if=/dev/zero of=/dev/foo7 bs=512 count=1
   Converted docker-vg/docker-pool to thin pool.
   Logical volume "docker-pool" changed.
 
-[root@ose3-node1 ~]# cat /etc/sysconfig/docker-storage
-DOCKER_STORAGE_OPTIONS=-s devicemapper --storage-opt dm.fs=xfs --storage-opt dm.thinpooldev=/dev/mapper/docker--vg-docker--pool
+[root@ose-node-01 ~]# cat /etc/sysconfig/docker-storage
+DOCKER_STORAGE_OPTIONS=--storage-driver devicemapper --storage-opt dm.fs=xfs --storage-opt dm.thinpooldev=/dev/mapper/docker--vg-docker--pool
 
-[root@ose3-node1 ~]# pvs
-  PV         VG              Fmt  Attr PSize  PFree
-  /dev/vda2  rhel_ose3-node1 lvm2 a--  14.51g 12.00m
-  /dev/vdb1  docker-vg       lvm2 a--  15.00g  5.98g
+[root@ose-node-01 ~]# pvs
+  PV         VG        Fmt  Attr PSize  PFree
+  /dev/vda2  rhel      lvm2 a--  29.51g 40.00m
+  /dev/vdb1  docker-vg lvm2 a--  50.00g 29.92g
 
-[root@ose3-node1 ~]# vgs
-  VG              #PV #LV #SN Attr   VSize  VFree
-  docker-vg         1   1   0 wz--n- 15.00g  5.98g
-  rhel_ose3-node1   1   2   0 wz--n- 14.51g 40.00m
+[root@ose-node-01 ~]# vgs
+  VG        #PV #LV #SN Attr   VSize  VFree
+  docker-vg   1   1   0 wz--n- 50.00g 29.92g
+  rhel        1   2   0 wz--n- 29.51g 40.00m
 
-[root@ose3-node1 ~]# lvs
-  LV          VG              Attr       LSize  Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
-  docker-pool docker-vg       twi-a-t---  8.99g             0.00   0.24
-  root        rhel_ose3-node1 -wi-ao---- 12.97g
-  swap        rhel_ose3-node1 -wi-ao----  1.50g
+[root@ose-node-01 ~]# lvs
+  LV          VG        Attr       LSize  Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+  docker-pool docker-vg twi-a-t--- 19.98g             0.00   0.08
+  root        rhel      -wi-ao---- 26.47g
+  swap        rhel      -wi-ao----  3.00g
+{% endhighlight %}
 
-[root@ose3-node1 ~]# lvdisplay docker-vg/docker-pool
+The docker-pool volume should be 60% of the available volume group and will grow to fill the volume group via LVM monitoring.
+
+{% highlight text %}
+[root@ose-node-01 ~]# lvdisplay docker-vg/docker-pool
   --- Logical volume ---
   LV Name                docker-pool
   VG Name                docker-vg
-  LV UUID                7JhHzN-lPQc-WrOy-e9cJ-e7aA-50Sy-syDVaS
+  LV UUID                enMTwp-s9do-uKCi-3r9w-90bQ-Ht62-4civTW
   LV Write Access        read/write
-  LV Creation host, time ose3-node1, 2015-07-27 16:11:09 -0700
+  LV Creation host, time ose-node-01, 2015-11-15 21:23:09 -0800
   LV Pool metadata       docker-pool_tmeta
   LV Pool data           docker-pool_tdata
   LV Status              available
   # open                 0
-  LV Size                8.99 GiB
+  LV Size                19.98 GiB
   Allocated pool data    0.00%
-  Allocated metadata     0.24%
-  Current LE             2301
+  Allocated metadata     0.08%
+  Current LE             5114
   Segments               1
   Allocation             inherit
   Read ahead sectors     auto
@@ -272,10 +306,6 @@ DOCKER_STORAGE_OPTIONS=-s devicemapper --storage-opt dm.fs=xfs --storage-opt dm.
 
 **TODO**
 - Configure [persistent storage](https://docs.openshift.com/enterprise/3.0/admin_guide/persistent_storage_nfs.html)
-
-## Identify your Environment ##
-
-Portal Net
 
 ## Allow Access to Insecure Registries ##
 
@@ -288,55 +318,103 @@ The docs said to do this, but [ansible does this during the install to follow](h
 OPTIONS='--insecure-registry=172.30.0.0/16 --selinux-enabled'
 {% endhighlight %}
 
-**TODO**
-- fix up the registry security.
+Skip the above for the moment.
 
-# Install OpenShift on Master #
+# Perform Advanced Ansible-based Install #
 
-This will [use Ansible](https://github.com/openshift/openshift-ansible) to install `openshift-node` on the nodes.
+Now proceed with the OpenShift [advanced installation method](https://docs.openshift.com/enterprise/3.1/install_config/install/advanced_install.html).
 
-- On _ose3-master_: Setup ssh so the ansible installer can run in the next step. 
+- Clone the installer
+
+```
+git clone https://github.com/openshift/openshift-ansible
+```
+
+- Install Ansible from EPEL
+
+```
+yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+yum -y install ansible
+```
+
+Setup ssh on the master, such that the ansible installer can run in the next step. 
 
 {% highlight bash %}
 ssh-keygen
 cp -p .ssh/id_rsa.pub .ssh/authorized_keys
 chmod 600 .ssh/authorized_keys
-ssh-copy-id ose3-node1
-ssh-copy-id ose3-node2
+for h in `seq -f 'ose-node-%02g' 1 3`; do
+  ssh-copy-id $h
+done
 {% endhighlight %}
 
-- On _ose3-master_: Try to install OSE
+## Create Ansible Inventory File ##
+
+Based on the [byo/inventory/hosts.example](https://github.com/openshift/openshift-ansible/blob/master/inventory/byo/hosts.example)
+example inventory and advice [here](https://docs.openshift.com/enterprise/3.1/install_config/install/advanced_install.html#configuring-ansible), 
+we'll make our inventory own and place it in `/etc/ansible/hosts` on the master.
+
+We'll have to identify values for use by the playbook such as our Portral Network  default subdomain etc.
+
+
+## Install Openshift ##
+
+{% highlight bash %}
+# run this twice to validate connectivity cache the ssh keys answer yes repeatedly
+[root@ose-master-01 ~]# ansible all -m ping
+[root@ose-master-01 ~]# ansible all -m ping
+ose-node-02.example.com | success >> {
+    "changed": false,
+    "ping": "pong"
+}
+
+ose-master-01.example.com | success >> {
+    "changed": false,
+    "ping": "pong"
+}
+
+ose-node-01.example.com | success >> {
+    "changed": false,
+    "ping": "pong"
+}
+
+ose-node-03.example.com | success >> {
+    "changed": false,
+    "ping": "pong"
+}
+{% endhighlight %}
+
+- Run the _bring your own_ playbook
+
+{% highlight bash %}
+ansible-playbook openshift-ansible/playbooks/byo/config.yml
+{% endhighlight %}
+
+Look around a big
 
 {% highlight text %}
-sh <(curl -s https://install.openshift.com/ose)
+[root@ose-master-01 ~]# oc get nodes
+NAME                      LABELS                                                              STATUS                     AGE
+ose-master-01.example.com   kubernetes.io/hostname=1.1.1.124,region=infra,zone=default     Ready,SchedulingDisabled   5m
+ose-node-01.example.com     kubernetes.io/hostname=1.1.1.94,region=primary,zone=default    Ready                      5m
+ose-node-02.example.com     kubernetes.io/hostname=1.1.1.123,region=primary,zone=default   Ready                      5m
+ose-node-03.example.com     kubernetes.io/hostname=1.1.1.187,region=primary,zone=default   Ready                      5m
 
-# blah blah blah
-ose3-node1.example.com,1.2.3.94,1.2.3.94,ose3-node1.example.com,ose3-node1.example.com
-ose3-master.example.com,1.2.3.124,1.2.3.124,ose3-master.example.com,ose3-master.example.com
-ose3-node2.example.com,1.2.3.123,1.2.3.123,ose3-node2.example.com,ose3-node2.example.com
+[root@ose-master-01 ~]# oc get endpoints
+NAME         ENDPOINTS             AGE
+kubernetes   1.1.1.124:8443   9m
 
-# Everything after this line is ignored.
+[root@ose-master-01 ~]# oc get namespaces
+NAME              LABELS    STATUS    AGE
+default           <none>    Active    9m
+openshift         <none>    Active    9m
+openshift-infra   <none>    Active    9m
 
-Format:
-
-installation host,IP,public IP,hostname,public hostname
-
-Notes:
- * The installation host is the hostname from the installer's perspective.
- * The IP of the host should be the internal IP of the instance.
- * The public IP should be the externally accessible IP associated with the instance
- * The hostname should resolve to the internal IP from the instances
-   themselves.
- * The public hostname should resolve to the external ip from hosts outside of
-   the cloud.
-The installation was successful!
-
-If this is your first time installing please take a look at the Administrator
-Guide for advanced options related to routing, storage, authentication and much
-more:
-
-http://docs.openshift.com/enterprise/latest/admin_guide/overview.html
+[root@ose-master-01 ~]# oc get services
+NAME         CLUSTER_IP    EXTERNAL_IP   PORT(S)   SELECTOR   AGE
+kubernetes   172.30.1.1   <none>        443/TCP   <none>     9m
 {% endhighlight %}
+
 
 # Configure OpenShift #
 
@@ -344,12 +422,27 @@ See [Admin Guide Overview](http://docs.openshift.com/enterprise/latest/admin_gui
 
 ## Create a Docker Registry ##
 
-- Create a Docker Registry on _ose3-master_
+# TODO LEFT OFF HERE
+
+
+- [Create a Docker Registry](https://docs.openshift.com/enterprise/3.1/install_config/install/docker_registry.html) on the master
 
 {% highlight text %}
-[root@ose3-master ~]#  oadm registry --config=/etc/openshift/master/admin.kubeconfig \
-    --credentials=/etc/openshift/master/openshift-registry.kubeconfig \
-    --images='registry.access.redhat.com/openshift3/ose-${component}:${version}'
+[root@ose-master-01 ~]# oadm registry \
+>     --service-account=registry \
+>     --config=/etc/openshift/master/admin.kubeconfig \
+>     --credentials=/etc/openshift/master/openshift-registry.kubeconfig \
+>     --images='registry.access.redhat.com/openshift3/ose-${component}:${version}' \
+>     --selector='region=infra'
+deploymentconfigs/docker-registry
+services/docker-registry
+# this following line would make the master /mnt/registry available in the registry container at /registery
+#    --mount-host=/mnt/registry
+
+# Use enterprise NFS storage backend
+$ oc volume deploymentconfigs/docker-registry \
+     --add --overwrite --name=registry-storage --mount-path=/registry \
+     --source='{"nfs": { "server": "big_nfs_server_fqdn", "path": "/path/to/export"}}'
 
 [root@ose3-master ~]# oc get pods
 NAME                      READY     REASON    RESTARTS   AGE
@@ -371,6 +464,27 @@ time="2015-07-24T19:29:46-04:00" level=info msg=Base.List trace.duration=41.839�
 time="2015-07-24T19:29:46-04:00" level=info msg="Purge uploads finished.  Num deleted=0, num errors=1"
 time="2015-07-24T19:29:46-04:00" level=info msg="Starting upload purge in 24h0m0s" instance.id=17d8ba37-16c4-4bc9-9dff-3ce4337c16d8
 {% endhighlight %}
+
+- TODO (maybe)
+
+Create a new service account in the default project for the registry to run as. The following example creates a service account named registry:
+
+```
+{% highlight text %}
+[root@master ~]# echo \
+'{"kind":"ServiceAccount","apiVersion":"v1","metadata":{"name":"registry"}}' \
+  | oc create ­n default ­f ­
+[root@master ~]# echo \
+'{"kind":"ServiceAccount","apiVersion":"v1","metadata":{"name":"router"}}' \
+  | oc create ­f ­
+[root@master ~]# oc edit scc privileged
+...
+users:
+­ system:serviceaccount:openshift­infra:build­controller
+­ system:serviceaccount:default:registry
+­ system:serviceaccount:default:router
+{% endhighlight %}
+
 
 ## Deploy a router ##
 
@@ -436,27 +550,11 @@ oc create -f \
 - [Auth](https://docs.openshift.com/enterprise/3.0/admin_guide/configuring_authentication.html)
 
 By default `/etc/openshift/master/master-config.yaml` denys all. Let's allow any username to work regardless of password.
+Set this value in the ansible hosts file before installation to allow logins for any user regardless of password. Obviously, this is only appropriate for a testing environment.
 
-{% highlight diff %}
---- master-config.yaml  2015-07-27 17:54:16.403491361 -0700
-+++ master-config.yaml.bak      2015-07-27 16:35:59.777477091 -0700
-@@ -82,12 +82,12 @@
-   grantConfig:
-     method: auto
-   identityProviders:
--  - name: my_allow_provider
--    challenge: true
--    login: true
-+  - name: deny_all
-+    challenge: True
-+    login: True
-     provider:
-       apiVersion: v1
--      kind: AllowAllPasswordIdentityProvider
-+      kind: DenyAllPasswordIdentityProvider
-   masterPublicURL: https://ose3-master.example.com:8443
-   masterURL: https://ose3-master.example.com:8443
-   sessionConfig:
+{% highlight text %}
+# Allow all auth
+openshift_master_identity_providers=[{'name': 'allow_all', 'login': 'true', 'challenge': 'true', 'kind': 'AllowAllPasswordIdentityProvider'}]
 {% endhighlight %}
 
 - Now restart the server on ose3-master.
@@ -497,3 +595,6 @@ You can direct your developers to the Using the QuickStart Templates section in 
 
 - https://ose3-master.example.com:8443
 
+## CLient Access ##
+
+[Download](https://access.redhat.com/downloads/content/290/ver=3.0.0.0/rhel---7/3.0.2.0/x86_64/product-downloads) the client
