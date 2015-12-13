@@ -41,7 +41,7 @@ This playbook is written for RHEL 7.2 and OSE v3.1. It will perform the followin
 
   - name: Install prereqs
     yum:
-      name: "{{ item }}"
+      name: {% raw %}"{{ item }}"{% endraw %}
       state: present
     with_items:
       - atomic-openshift-utils
@@ -59,7 +59,7 @@ This playbook is written for RHEL 7.2 and OSE v3.1. It will perform the followin
 
   - name: Install life enhancers on master
     yum:
-      name: "{{ item }}"
+      name: {% raw %}"{{ item }}"{% endraw %}
       state: present
     with_items:
       - bash-completion
@@ -94,7 +94,7 @@ This playbook is written for RHEL 7.2 and OSE v3.1. It will perform the followin
 
   - name: Setup docker storage config
     copy:
-      content: "{{ docker_storage_setup }}"
+      content: {% raw %}"{{ docker_storage_setup }}"{% endraw %}
       dest: /etc/sysconfig/docker-storage-setup
     notify: docker storage setup
 
