@@ -14,6 +14,8 @@ This playbook is written for RHEL 7.2 and OSE v3.1. It will perform the followin
 - [Turn off swap](https://docs.openshift.com/enterprise/3.1/admin_guide/overcommit.html#disable-swap-memory)
 - Enable use of NFS in selinux
 
+The lastest version is [available here](https://github.com/dlbewley/playbook-openshift/blob/master/prep.yml).
+
 {% highlight yaml %}
 ---
 # file: ose-prep.yml
