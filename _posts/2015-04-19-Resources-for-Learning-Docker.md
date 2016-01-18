@@ -9,6 +9,15 @@ tags:
 
 - [Docker's 10min Tutorial](https://docker.com/tryit/)
 - [Andrew Baker's Introduction to Docker](http://docker.atbaker.me/exercises/exercise_0.html)
+- [Red Hat Workhops](https://github.com/RedHatWorkshops)
+
+  *Docker and Kubernetes Training - Christian Posta* [Blog](http://blog.christianposta.com/kubernetes/3-day-docker-and-kubernetes-training/)
+
+  - [Intro](http://redhatworkshops.github.io/slides/docker/generated/intro.html)
+  - [Day 1](http://redhatworkshops.github.io/slides/docker/generated/day1.html)
+  - [Day 2](http://redhatworkshops.github.io/slides/docker/generated/day2.html)
+  - [Day 3](http://redhatworkshops.github.io/slides/docker/generated/day3.html)
+  - [Day 4](http://redhatworkshops.github.io/slides/docker/generated/day4.html)
 
 # Books #
 
