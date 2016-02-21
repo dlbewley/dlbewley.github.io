@@ -22,12 +22,6 @@ defaults:
 
 permalink: /blog/:year/:month/:day/:title
 
-#pygments: true
-#markdown: HTMLPipeline
-#html_pipeline:
-#  filters:
-#    - "markdownfilter"
-
 collections:
   drafts:
     layout: "draft"

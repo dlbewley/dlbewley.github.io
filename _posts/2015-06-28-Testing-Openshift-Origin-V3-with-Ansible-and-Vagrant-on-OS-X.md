@@ -22,7 +22,7 @@ OpenShift Origin is an opensource PaaS (platform as a service). It is the upstre
 
 - Now following the instructions in [README_vagrant.md](https://github.com/openshift/openshift-ansible/blob/master/README_vagrant.md) create three boxes that will form the OpenShift cluster. One master and two nodes.
 
-{% highlight bash %}
+```bash
 cd ~/src && git@github.com:openshift/openshift-ansible.git
 cd openshift-ansible
 # Install the requisite vagrant plugins
@@ -34,50 +34,50 @@ $ vagrant up --no-provision
 #  vagrant provision
 # When we want to try again it will look like this
 #  vagrant reload --provision
-{% endhighlight %}
+```
 
 - You may want to go ahead and put this into a file called `reset.sh` so you can more easily test over and over.
 
-{% highlight bash %}
+```bash
 #!/bin/bash
 for node in node1 node2 master; do
   vagrant destroy -f $node;
 done
 vagrant up --no-provision
 vagrant provision
-{% endhighlight %}
+```
 
 There are now 3 machines (boxes) which where added to `/etc/hosts` by vagrant.
 
-{% highlight text %}
+```text
 tail -5 /etc/hosts
 ## vagrant-hostmanager-start id: bfad3436-5a92-4f03-b555-55bd186dd0ba
 192.168.100.200	ose3-node1.example.com
 192.168.100.201	ose3-node2.example.com
 192.168.100.100	ose3-master.example.com
 ## vagrant-hostmanager-end
-{% endhighlight %}
+```
 
 You can in the VirtualBox GUI that they are running.
 
 ![virtual box screenshot](/images/openshift-virtualbox-0.png)
 
-{% highlight bash %}
+```bash
 $ vagrant status
 Current machine states:
 
 node1                     running (virtualbox)
 node2                     running (virtualbox)
 master                    running (virtualbox)
-{% endhighlight %}
+```
 
 They can be accessed over ssh using their short vagrant names like this:
 
-{% highlight bash %}
+```bash
 $ vagrant ssh master
 $ vagrant ssh node1
 $ vagrant ssh node2
-{% endhighlight %}
+```
 
 Not only that, but port 8443 on the Mac localhost is forwarded to port 8443 on the master node. Nothing is listening on the master just yet though.
 
@@ -88,25 +88,25 @@ On to the provisioning step.
 Run the [byo/config.yml](https://github.com/openshift/openshift-ansible/blob/master/playbooks/byo/config.yml) Ansible playbook on the cluster by way of the `vagrant provision` command.
 This basically implements the tasks from [README_origin.md](https://github.com/openshift/openshift-ansible/blob/master/README_origin.md), so read that for background.
 
-{% highlight bash %}
+```bash
 $ vagrant provision
-{% endhighlight %}
+```
 
 ## Sanity Check OpenShift ##
 
 Expect an _ok_ from the healthcheck
 
-{% highlight bash %}
+```bash
 $ vagrant ssh node2 
 [vagrant@ose3-node2 ~]$ curl -k https://ose3-master.example.com:8443/healthz
 ok
-{% endhighlight %}
+```
 
 ![console screenshot](/images/openshift-console-0.png)
 
 OpenShift console command `oc` is similar to `kubectl`. Let's blindly try a few commands.
 
-{% highlight bash %}
+```bash
 $ vagrant ssh master
 
 [vagrant@ose3-master ~]$ oc get nodes
@@ -133,7 +133,7 @@ NAME      READY     STATUS    RESTARTS   AGE
 [vagrant@ose3-master ~]$ openshift version
 openshift v1.0.6-2-ge2a02a8
 kubernetes v1.1.0-alpha.0-1605-g44c91b1
-{% endhighlight %}
+```
 
 ## Configure OpenShift ##
 
@@ -148,7 +148,7 @@ or the [vagrant deploy docs](https://github.com/openshift/origin/blob/master/CON
 
 - Create a docker registry. Origin uses `/etc/origin` while enterprise uses `/etc/openshift`.
 
-{% highlight bash %}
+```bash
 $ vagrant ssh master
 [vagrant@ose3-master ~]$ export KUBECONFIG=/etc/origin/master/admin.kubeconfig
 [vagrant@ose3-master ~]$ export CREDENTIALS=/etc/openshift/master/openshift-registry.kubeconfig
@@ -183,7 +183,7 @@ docker-registry   172.30.8.16   <none>        5000/TCP   docker-registry=default
 kubernetes        172.30.0.1    <none>        443/TCP    <none>                    11h
 NAME                       READY     STATUS         RESTARTS   AGE
 docker-registry-1-deploy   0/1       ExitCode:255   0          6m
-{% endhighlight %}
+```
 
 ### Fix DNS Issue ##
 
@@ -191,14 +191,14 @@ The [vagrant plugin hostmanager](https://github.com/smdahlen/vagrant-hostmanager
 
 The [vagrant dnsmasq plugin](https://github.com/mattes/vagrant-dnsmasq), may be a fix, but since I had some ruby problems I tried the [vagrant landrush plugin](https://github.com/phinze/landrush) instead.
 
-{% highlight bash %}
+```bash
 brew install landrush
 vagrant plugin install vagrant-landrush
-{% endhighlight %}
+```
 
 Then update the `Vagrantfile` like this:
 
-{% highlight diff %}
+```diff
 diff --git a/Vagrantfile b/Vagrantfile
 index a832ae8..bfa13ac 100644
 --- a/Vagrantfile
@@ -228,17 +228,17 @@ index a832ae8..bfa13ac 100644
      config.vm.provision "shell", inline: "nmcli connection reload; systemctl restart network.service"
      master.vm.provision "ansible" do |ansible|
        ansible.limit = 'all'
-{% endhighlight %}
+```
 
 DNS works better, but registry creation still fails with a host lookup failure.
 
-{% highlight text %}
+```text
 [vagrant@ose3-master ~]$ oc get pods
 NAME                       READY     STATUS         RESTARTS   AGE
 docker-registry-1-deploy   0/1       ExitCode:255   0          4m
 [vagrant@ose3-master ~]$ oc logs docker-registry-1-deploy
 F0726 02:41:00.845168       1 deployer.go:64] couldn't get deployment default/docker-registry-1: Get https://ose3-master.example.com:8443/api/v1/namespaces/default/replicationcontrollers/docker-registry-1: dial tcp: lookup ose3-master.example.com: no such host
-{% endhighlight %}
+```
 
 ### Create OpenShift App ###
 
@@ -246,7 +246,7 @@ F0726 02:41:00.845168       1 deployer.go:64] couldn't get deployment default/do
 
 - Login as _test_ / _test_ then create a project and an app. This will peform a docker build, but will fail when it attempts to push to the registry above.
 
-{% highlight text %}
+```text
 $ vagrant ssh master
 [vagrant@ose3-master ~]$ oc login
 Username: test
@@ -294,16 +294,16 @@ You can use 'oc get all' to see lists of each of the types described above.
 NAME                        READY     REASON         RESTARTS   AGE
 database-1-deploy           0/1       ExitCode:255   0          1m
 ruby-sample-build-1-build   0/1       ExitCode:255   0          1m
-{% endhighlight %}
+```
 
 ### Check out the OpenShift Console ###
 
 - Add admin user to the _test_ Project.
 
-{% highlight bash %}
+```bash
 $ vagrant ssh master
 [vagrant@ose3-master ~]$ oadm policy add-role-to-user admin admin -n test
-{% endhighlight %}
+```
 
 Be sure you updated your hosts file as described above then browse to one of the following and login as _admin_ / _admin_: 
 

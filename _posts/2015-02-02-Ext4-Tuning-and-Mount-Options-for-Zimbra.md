@@ -75,9 +75,9 @@ I will be working on RHEL 6, and I'm ignoring that fact that anything other than
 
 The dir_index option speeds up directories with large numbers of files. It turns out this is on by default in `/etc/mke2fs.conf`. You can confirm by looking for `dir_index` in the filesystem features in the output of `tune2fs`. So, nothing to do here.
 
-{% highlight text %}
+```text
 Filesystem features:      has_journal ext_attr resize_inode dir_index filetype needs_recovery extent flex_bg sparse_super large_file huge_file uninit_bg dir_nlink extra_isize
-{% endhighlight %}
+```
 
 ## Bytes per Inode ##
 
@@ -87,20 +87,20 @@ Zimbra suggests `-i 10240` mke2fs option. This says create 1 inode for every 10K
 
 How many inodes do I have on my test filesystem?
 
-{% highlight text %}
+```text
 [root@zimbra-mbox-10 ~]# tune2fs -l /dev/mapper/VGzstore-LVstore | grep 'Inode count'
 Inode count:              67108864
-{% endhighlight %}
+```
 
 If I use the `-i 10240` option, how many inodes will I have then? You can find out with `mke2fs` in dry run mode. See line 4 below.
 
-{% highlight text linenos %}
+```text
 [root@zimbra-mbox-10 ~]# umount /opt/zimbra/store
 [root@zimbra-mbox-10 ~]# mke2fs -n -i 10240 /dev/mapper/VGzstore-LVstore | grep inodes
 mke2fs 1.41.12 (17-May-2010)
 107479040 inodes, 268435456 blocks
 13120 inodes per group
-{% endhighlight %}
+```
 
 Wow! That is support for up to 107 million files.
 
@@ -108,13 +108,13 @@ How big is your average message? It looks like in my case we are looking at abou
 
 Doing the math, it looks like by default I'm getting one inode per 16K. This is borne out in `/etc/mk2fs.conf`.
 
-{% highlight text %}
+```text
 [defaults]
         base_features = sparse_super,filetype,resize_inode,dir_index,ext_attr
         blocksize = 4096
         inode_size = 256
         inode_ratio = 16384
-{% endhighlight %}
+```
 
 So the default may be just fine. I could even raise the number, but I won't.
 
@@ -126,7 +126,7 @@ If I've already created a filesystem, so how do I find out the size of the exist
 
 Looks like `tune2fs -l` doesn't do the trick.
 
-{% highlight text %}
+```text
 [root@zimbra-mbox-10 ~]# tune2fs -l /dev/mapper/VGzstore-LVstore
 tune2fs 1.41.12 (17-May-2010)
 Filesystem volume name:   <none>
@@ -173,11 +173,11 @@ Journal inode:            8
 Default directory hash:   half_md4
 Directory Hash Seed:      2394798b-a767-4a9c-b92f-dabd75e5f1e4
 Journal backup:           inode blocks
-{% endhighlight %}
+```
 
 After a little googling, I found [this page](http://blog.dailystuff.nl/2012/07/getting-ext34-journal-size/) that suggested `dumpe2fs`. It looks like the default size for this 1TB filesystem was 128M.
 
-{% highlight text %}
+```text
 [root@zimbra-mbox-10 ~]# dumpe2fs /dev/mapper/VGzstore-LVstore | grep ^Journal
 dumpe2fs 1.41.12 (17-May-2010)
 Journal inode:            8
@@ -187,7 +187,7 @@ Journal size:             128M
 Journal length:           32768
 Journal sequence:         0x00000001
 Journal start:            0
-{% endhighlight %}
+```
 
 What size is actually a good size? Well, [this article](http://www.linux-mag.com/id/7666/) suggested that 256MB may be a good number. Also somewhat arbitrary.
 
@@ -199,7 +199,7 @@ I'll of course use the ansible [filesystem module](http://docs.ansible.com/files
 
 So, in the end I'll be using Ansible [filesystem](http://docs.ansible.com/filesystem_module.html) and [mount](http://docs.ansible.com/mount_module.html) modules to setup filesytems whith a journal size of 256MB, and a reserve of 1%, and use noatime and dirsync mount options. I create a dictionary like this to do that.
 
-{% highlight yaml %}
+```yaml
 zimbra_storage:
   nfs:
     backup:
@@ -244,4 +244,4 @@ zimbra_storage:
           fs_type: ext4
           fs_opts: "-J size=256 -m 1"
           mount_opts: "noatime,dirsync"
-{% endhighlight %}
+```
