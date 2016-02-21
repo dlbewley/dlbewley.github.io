@@ -73,7 +73,7 @@ Pick a wildcard subdomain domain and assumes.
 
  Default          |  Ansible Variable             | Description
 ------------------|-------------------------------|-----------------
- _cloudapps.com_  | `osm_default_subdomain`       | Subdomain to place application [routes](https://access.redhat.com/documentation/en/openshift-enterprise/version-3.0/openshift-enterprise-30-architecture/chapter-3-core-concepts#routes) in
+ _cloudapps.com_  | `osm_default_subdomain`       | Subdomain to place application [routes](https://access.redhat.com/documentation/en/openshift-enterprise/version-3.1/openshift-enterprise-30-architecture/chapter-3-core-concepts#routes) in
 
 Maybe pick multiple?
 Perhaps we should use os.example.com as the "TLD" and use subdomain per env/cluster like this:
@@ -488,7 +488,7 @@ users:
 
 ## Deploy a router ##
 
-Now [Deploy](https://docs.openshift.com/enterprise/3.0/admin_guide/install/deploy_router.html) a [Router](https://access.redhat.com/beta/documentation/en/openshift-enterprise-30-architecture/chapter-3-core-concepts#routes) which is basically a haproxy instance, but it possible to use an external load balancer like an F5 .
+Now [Deploy](https://docs.openshift.com/enterprise/3.1/admin_guide/install/deploy_router.html) a [Router](https://access.redhat.com/beta/documentation/en/openshift-enterprise-30-architecture/chapter-3-core-concepts#routes) which is basically a haproxy instance, but it possible to use an external load balancer like an F5 .
 
 - To see what the router would look like run:
 
@@ -547,7 +547,7 @@ oc create -f \
 
 ## Configure Authentication Bypass ##
 
-- [Auth](https://docs.openshift.com/enterprise/3.0/admin_guide/configuring_authentication.html)
+- [Auth](https://docs.openshift.com/enterprise/3.1/admin_guide/configuring_authentication.html)
 
 By default `/etc/openshift/master/master-config.yaml` denys all. Let's allow any username to work regardless of password.
 Set this value in the ansible hosts file before installation to allow logins for any user regardless of password. Obviously, this is only appropriate for a testing environment.
@@ -585,7 +585,7 @@ Projects are essentially name spaces and define resources and quoatas for teams.
 - Create a project called _eval_
 - Create a _cakephp example app_
 
-[What’s Next?](https://docs.openshift.com/enterprise/3.0/admin_guide/install/first_steps.html#what-s-next)
+[What’s Next?](https://docs.openshift.com/enterprise/3.1/admin_guide/install/first_steps.html#what-s-next)
 
 With these artifacts created, developers can now log into the web console and follow the flow for creating from a template. Any of the database or application templates can be selected to create a running database service or application in the current project. Note that some of the application templates define their own database services as well.
 
@@ -597,4 +597,4 @@ You can direct your developers to the Using the QuickStart Templates section in 
 
 ## CLient Access ##
 
-[Download](https://access.redhat.com/downloads/content/290/ver=3.0.0.0/rhel---7/3.0.2.0/x86_64/product-downloads) the client
+Download the client [from redhat](https://access.redhat.com/downloads/content/290/ver=3.0.0.0/rhel---7/3.0.2.0/x86_64/product-downloads) the client
