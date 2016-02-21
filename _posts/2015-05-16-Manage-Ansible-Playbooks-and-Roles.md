@@ -41,7 +41,7 @@ Ansible does make it easy to create a skeleton for your role that is consistent 
 
 Just start by running `ansible-galaxy init role_name`. Most likely you want to create a git repo out of that role, so do that too.
 
-{% highlight bash %}
+```bash
 cd ~/src
 ansible-galaxy init foorole
 cd foorole
@@ -50,17 +50,17 @@ git add .
 git commit -m firstsies
 git remote add origin git@github.com:dlbewley/foorole.git
 git push -u origin master
-{% endhighlight %}
+```
 
 Now you have a git repo named _foorole_. You might rename the repo to _ansible-foorole_, but I prefer to push the repo with the name of _foorole_ and only name my working directory _ansible-foorole_.
 
-{% highlight bash %}
+```bash
 # create a foorole repo on github then push to it
 git remote add origin git@github.com:dlbewley/foorole.git
 git push -u origin master
 cd ~/src
 git clone git@github.com:dlbewley/foorole.git ansible-foorole
-{% endhighlight %}
+```
 
 # Ansible Galaxy #
 
@@ -79,14 +79,14 @@ git clone git@github.com:dlbewley/foorole.git ansible-foorole
 
 Role dependencies [currently](https://github.com/ansible/ansible/blob/devel/bin/ansible-galaxy) only work with roles hosted on [Ansible Galaxy](http://galaxy.ansible.com). See `fetch_role()`, basically it assumes it will be downloading a `.tar.gz` of a git repo, most likely from github.
 
-{% highlight python %}
+```python
     # first grab the file and save it to a temp location
     if '://' in role_name:
         archive_url = role_name
     else: 
         archive_url = 'https://github.com/%s/%s/archive/%s.tar.gz' % (role_data["github_user"], role_data["github_repo"], target)
     print "- downloading role from %s" % archive_url
-{% endhighlight %}
+```
 
 - List them in `requirements.yml`. More on this below.
 
@@ -102,7 +102,7 @@ There are tools or at least a tool, called [Ansible Role Manager](http://mirskyt
 
 Something like this will allow you to type `make install` to resolve your `requirements.yml`:
 
-{% highlight makefile %}
+```makefile
 .PHONY: galaxy-install ping
 
 install: galaxy-install
@@ -112,7 +112,7 @@ galaxy-install:
 
 ping:
 	ansible all -i hosts -m ping
-{% endhighlight %}
+```
 
 Where do these roles get installed? Ansible-galaxy will install these roles to the first directory found in your [roles_path](http://docs.ansible.com/intro_configuration.html#roles-path). Remember that. We can take advantage of that.
 
@@ -122,12 +122,12 @@ If you are working on a playbook which may have roles stored along side it, and 
 
 Remember, I just said that that `ansible-galaxy install` places roles in the first directory in your `roles_path`? Just create a ansible.cfg in your playbook directory that looks something like this:
 
-{% highlight ini %}
+```ini
 [defaults]
 remote_user = root
 inventory_file = hosts
 roles_path = required-roles:roles
-{% endhighlight %}
+```
 
 Then add `required-roles` to your `.gitignore`. Now, you can disentangle your roles and external roles within your playbook. I have to give credit to [@command_tab](https://twitter.com/command_tab) for changing my life with this tip. :)
 

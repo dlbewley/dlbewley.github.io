@@ -88,15 +88,15 @@ Perhaps we should use os.example.com as the "TLD" and use subdomain per env/clus
 
 - On _all the hosts_ Register VM with RedHat Subscription Manager
 
-{% highlight bash %}
+```bash
 subscription-manager register --username=rhel-username --password=<password>
 
 subscription-manager list --available
-{% endhighlight %}
+```
 
 - On _all the hosts_ find the pool ID of the Red Hat OpenShift Enterprise license:
 
-{% highlight bash %}
+```bash
 [root@ose-master-01 ~]# subscription-manager list --available
 +-------------------------------------------+
     Available Subscriptions
@@ -146,28 +146,28 @@ Subscription Type:   Standard
 Ends:                11/29/2016
 System Type:         Physical
 ...
-{% endhighlight %}
+```
 
 - On all the hosts, attach to that pool ID
 
-{% highlight bash %}
+```bash
 subscription-manager attach --pool=8a000000000000000000000000000000
-{% endhighlight %}
+```
 
 - On _all 3 hosts_: Adjust subscriptions
 
-{% highlight bash %}
+```bash
 subscription-manager repos --disable="*"
 subscription-manager repos \
     --enable="rhel-7-server-rpms" \
     --enable="rhel-7-server-extras-rpms" \
     --enable="rhel-7-server-optional-rpms" \
     --enable="rhel-7-server-ose-3.0-rpms"
-{% endhighlight %}
+```
 
 - On _all 3 hosts_: Install Prereqs
 
-{% highlight bash %}
+```bash
 yum -y remove \
   NetworkManager
 # install reqs
@@ -179,14 +179,14 @@ yum -y install \
 yum -y install \
   vim-enhanced deltarpm bash-completion tmux
 yum -y update
-{% endhighlight %}
+```
 
 It may be helpful to keep journald logs around across reboots while we are still testing.
 
-{% highlight bash %}
+```bash
 mkdir /var/log/journal
 systemctl restart systemd-journald
-{% endhighlight %}
+```
 
 The following units may produce some interesting logs (`journalctl -f -u $unit`).
 
@@ -203,18 +203,18 @@ See [Configure Docker Storage](https://docs.openshift.com/enterprise/3.0/admin_g
 
 - On _ose3-node1_ and on _ose3-node2_ create a LVM thin pool on the 2nd disk. This should be done before the installer playbook runs, and that is why we have to install docker by hand.
 
-{% highlight bash %}
+```bash
 cat <<EOF > /etc/sysconfig/docker-storage-setup
 DEVS=/dev/vdb
 VG=docker-vg
 EOF
 
 docker-storage-setup
-{% endhighlight %}
+```
 
 Example:
 
-{% highlight text  %}
+```text
 root@ose-node-01 ~]# cat <<EOF > /etc/sysconfig/docker-storage-setup
 > DEVS=/dev/vdb
 > VG=docker-vg
@@ -277,11 +277,11 @@ DOCKER_STORAGE_OPTIONS=--storage-driver devicemapper --storage-opt dm.fs=xfs --s
   docker-pool docker-vg twi-a-t--- 19.98g             0.00   0.08
   root        rhel      -wi-ao---- 26.47g
   swap        rhel      -wi-ao----  3.00g
-{% endhighlight %}
+```
 
 The docker-pool volume should be 60% of the available volume group and will grow to fill the volume group via LVM monitoring.
 
-{% highlight text %}
+```text
 [root@ose-node-01 ~]# lvdisplay docker-vg/docker-pool
   --- Logical volume ---
   LV Name                docker-pool
@@ -302,7 +302,7 @@ The docker-pool volume should be 60% of the available volume group and will grow
   Read ahead sectors     auto
   - currently set to     8192
   Block device           253:4
-{% endhighlight %}
+```
 
 **TODO**
 - Configure [persistent storage](https://docs.openshift.com/enterprise/3.0/admin_guide/persistent_storage_nfs.html)
@@ -313,10 +313,10 @@ The docker-pool volume should be 60% of the available volume group and will grow
 
 The docs said to do this, but [ansible does this during the install to follow](https://github.com/openshift/openshift-ansible/blob/master/roles/openshift_node/tasks/main.yml#L66). **Documentation bug to file?**
 
-{% highlight bash %}
+```bash
 [root@ose3-node1 ~]# grep OPTIONS /etc/sysconfig/docker
 OPTIONS='--insecure-registry=172.30.0.0/16 --selinux-enabled'
-{% endhighlight %}
+```
 
 Skip the above for the moment.
 
@@ -339,14 +339,14 @@ yum -y install ansible
 
 Setup ssh on the master, such that the ansible installer can run in the next step. 
 
-{% highlight bash %}
+```bash
 ssh-keygen
 cp -p .ssh/id_rsa.pub .ssh/authorized_keys
 chmod 600 .ssh/authorized_keys
 for h in `seq -f 'ose-node-%02g' 1 3`; do
   ssh-copy-id $h
 done
-{% endhighlight %}
+```
 
 ## Create Ansible Inventory File ##
 
@@ -359,7 +359,7 @@ We'll have to identify values for use by the playbook such as our Portral Networ
 
 ## Install Openshift ##
 
-{% highlight bash %}
+```bash
 # run this twice to validate connectivity cache the ssh keys answer yes repeatedly
 [root@ose-master-01 ~]# ansible all -m ping
 [root@ose-master-01 ~]# ansible all -m ping
@@ -382,17 +382,17 @@ ose-node-03.example.com | success >> {
     "changed": false,
     "ping": "pong"
 }
-{% endhighlight %}
+```
 
 - Run the _bring your own_ playbook
 
-{% highlight bash %}
+```bash
 ansible-playbook openshift-ansible/playbooks/byo/config.yml
-{% endhighlight %}
+```
 
 Look around a big
 
-{% highlight text %}
+```text
 [root@ose-master-01 ~]# oc get nodes
 NAME                      LABELS                                                              STATUS                     AGE
 ose-master-01.example.com   kubernetes.io/hostname=1.1.1.124,region=infra,zone=default     Ready,SchedulingDisabled   5m
@@ -413,7 +413,7 @@ openshift-infra   <none>    Active    9m
 [root@ose-master-01 ~]# oc get services
 NAME         CLUSTER_IP    EXTERNAL_IP   PORT(S)   SELECTOR   AGE
 kubernetes   172.30.1.1   <none>        443/TCP   <none>     9m
-{% endhighlight %}
+```
 
 
 # Configure OpenShift #
@@ -427,7 +427,7 @@ See [Admin Guide Overview](http://docs.openshift.com/enterprise/latest/admin_gui
 
 - [Create a Docker Registry](https://docs.openshift.com/enterprise/3.1/install_config/install/docker_registry.html) on the master
 
-{% highlight text %}
+```text
 [root@ose-master-01 ~]# oadm registry \
 >     --service-account=registry \
 >     --config=/etc/openshift/master/admin.kubeconfig \
@@ -463,14 +463,14 @@ time="2015-07-24T19:29:46-04:00" level=info msg="PurgeUploads starting: olderTha
 time="2015-07-24T19:29:46-04:00" level=info msg=Base.List trace.duration=41.839µs trace.file="/builddir/build/BUILD/openshift-git-4.eab4c86/_thirdpartyhacks/src/github.com/docker/distribution/registry/storage/driver/base/base.go" trace.func="github.com/docker/distribution/registry/storage/driver/base.(*Base).List" trace.id=8c3d1799-e480-4dc3-9d2d-72c6f728d829 trace.line=123
 time="2015-07-24T19:29:46-04:00" level=info msg="Purge uploads finished.  Num deleted=0, num errors=1"
 time="2015-07-24T19:29:46-04:00" level=info msg="Starting upload purge in 24h0m0s" instance.id=17d8ba37-16c4-4bc9-9dff-3ce4337c16d8
-{% endhighlight %}
+```
 
 - TODO (maybe)
 
 Create a new service account in the default project for the registry to run as. The following example creates a service account named registry:
 
 ```
-{% highlight text %}
+```text
 [root@master ~]# echo \
 '{"kind":"ServiceAccount","apiVersion":"v1","metadata":{"name":"registry"}}' \
   | oc create ­n default ­f ­
@@ -483,7 +483,7 @@ users:
 ­ system:serviceaccount:openshift­infra:build­controller
 ­ system:serviceaccount:default:registry
 ­ system:serviceaccount:default:router
-{% endhighlight %}
+```
 
 
 ## Deploy a router ##
@@ -492,30 +492,30 @@ Now [Deploy](https://docs.openshift.com/enterprise/3.1/admin_guide/install/deplo
 
 - To see what the router would look like run:
 
-{% highlight bash %}
+```bash
 oadm router -o yaml \
     --credentials='/etc/openshift/master/openshift-router.kubeconfig' \
     --images='registry.access.redhat.com/openshift3/ose-${component}:${version}'
-{% endhighlight %}
+```
 
 - _On ose3-master_  create a router and note the stats password.
 
-{% highlight bash %}
+```bash
 oadm router router1 --replicas=2 \
     --credentials='/etc/openshift/master/openshift-router.kubeconfig' \
     --images='registry.access.redhat.com/openshift3/ose-${component}:${version}'
 password for stats user admin has been set to noB000002X
 deploymentconfigs/router1
 services/router1
-{% endhighlight %}
+```
 
-{% highlight text  %}
+```text
 [root@ose3-master ~]# oc get pods
 NAME                      READY     REASON    RESTARTS   AGE
 docker-registry-1-udgkk   1/1       Running   0          45m
 router1-1-miamx           1/1       Running   0          19m
 router1-1-y1wk8           1/1       Running   0          20m
-{% endhighlight %}
+```
 
 # First Steps #
 
@@ -525,25 +525,25 @@ router1-1-y1wk8           1/1       Running   0          20m
 
 - Create the core set of image streams, which use RHEL 7 based images:
 
-{% highlight bash %}
+```bash
 oc create -f \
     /usr/share/openshift/examples/image-streams/image-streams-rhel7.json \
     -n openshift
-{% endhighlight %}
+```
 
 - Create Database Service Templates
 
-{% highlight bash %}
+```bash
 oc create -f \
     /usr/share/openshift/examples/db-templates -n openshift
-{% endhighlight %}
+```
 
 - Create Quick Start Templates
 
-{% highlight bash %}
+```bash
 oc create -f \
     /usr/share/openshift/examples/quickstart-templates -n openshift
-{% endhighlight %}
+```
 
 ## Configure Authentication Bypass ##
 
@@ -552,16 +552,16 @@ oc create -f \
 By default `/etc/openshift/master/master-config.yaml` denys all. Let's allow any username to work regardless of password.
 Set this value in the ansible hosts file before installation to allow logins for any user regardless of password. Obviously, this is only appropriate for a testing environment.
 
-{% highlight text %}
+```text
 # Allow all auth
 openshift_master_identity_providers=[{'name': 'allow_all', 'login': 'true', 'challenge': 'true', 'kind': 'AllowAllPasswordIdentityProvider'}]
-{% endhighlight %}
+```
 
 - Now restart the server on ose3-master.
 
-{% highlight bash %}
+```bash
 systemctl restart openshift-master
-{% endhighlight %}
+```
 
 # Grok Some OpenShift Concepts #
 
