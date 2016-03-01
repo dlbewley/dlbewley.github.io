@@ -28,8 +28,8 @@ ose-ha-node-02.example.com | 192.0.2.2  | _region=infra_, _zone=metal_
 
 Name                       |            | Labels         
 ---------------------------|------------|----------------------------
-ose-ha-node-03.example.com | 192.0.2.3  | _region=primary, _zone=rhev_
-ose-ha-node-04.example.com | 192.0.2.4  | _region=primary, _zone=rhev_
+ose-ha-node-03.example.com | 192.0.2.3  | _region=primary_, _zone=rhev_
+ose-ha-node-04.example.com | 192.0.2.4  | _region=primary_, _zone=rhev_
 
 
 ## Initial DNS Configuration ##
@@ -113,10 +113,9 @@ Pick 2 IP addresses which will float between the 2 infra nodes and create a IP f
 
 **IP Failover Nodes**
 
-Service                    | IPs        | Labels         
----------------------------|------------|----------------------------
-ipf-ha-router-primary      | 192.0.2.101| _ha-router=primary_
-                           | 192.0.2.102| 
+IP Failover Service        | IPs                      | Labels         
+---------------------------|--------------------------|----------------------------
+ipf-ha-router-primary      | 192.0.2.101, 192.0.2.102 | _ha-router=primary_
 
 Create a IP failover configuration named `ipf-ha-router-primary` having N replicas equal to number nodes labeled `ha-router=primary`
 
@@ -176,4 +175,4 @@ Load balance the API endpoint. If a `lb` group is defined in the Ansible playboo
 
 ### Registry ##
 
-** TODO**
+**TODO**
