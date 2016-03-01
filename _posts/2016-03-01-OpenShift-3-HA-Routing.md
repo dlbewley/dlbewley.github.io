@@ -51,7 +51,7 @@ nsupdate -v -k os.example.com.key
 
 That can be fixed with a `ipfailover` service and floating IPs. The result will look like this:
 
-[![OpenShift HA Routing](images/thumb/openshift-ha-cluster-routing.png)](images/openshift-ha-cluster-routing.png)
+[![OpenShift HA Routing](/images/thumb/openshift-ha-cluster-routing.png)](/images/openshift-ha-cluster-routing.png)
 
 [Configure IP Failover](https://docs.openshift.com/enterprise/3.1/admin_guide/high_availability.html#configuring-ip-failover)
 
@@ -118,7 +118,7 @@ Service                    | IPs        | Labels
 ipf-ha-router-primary      | 192.0.2.101| _ha-router=primary_
                            | 192.0.2.102| 
 
-Create a IP failover configuration named `ipf-ha-router-primar` having N replicas equal to number nodes labeled `ha-router=primary`
+Create a IP failover configuration named `ipf-ha-router-primary` having N replicas equal to number nodes labeled `ha-router=primary`
 
 ```bash
 oadm ipfailover ipf-ha-router-primary \
