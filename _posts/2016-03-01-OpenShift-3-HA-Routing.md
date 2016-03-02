@@ -19,7 +19,7 @@ _I'm still working on this post_
 - [Setup the HA router with IP failover](#ha-routing)
 - [Update DNS to use IP failover](#openshift-ha-dns-configuration)
 
-## Related Documentation ##
+**Related Documentation**
 
 - [OpenShift Router Concept](https://docs.openshift.com/enterprise/3.1/architecture/core_concepts/routes.html#routers)
 - [OpenShift Router Deployment](https://docs.openshift.com/enterprise/3.1/install_config/install/deploy_router.html)
