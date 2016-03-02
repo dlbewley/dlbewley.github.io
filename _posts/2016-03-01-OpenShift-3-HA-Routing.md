@@ -62,8 +62,8 @@ These hosts run haproxy and front end the masters thanks to `openshift_master_cl
 
 Name                     | IP
 -------------------------|-----------
-ose-ha-lb-01.example.com | 192.0.2.21
-ose-ha-lb-02.example.com | 192.0.2.22
+ose-ha-lb-01.example.com | 192.0.2.41
+ose-ha-lb-02.example.com | 192.0.2.42
 
 **Hosts Inventory File**
 
@@ -116,12 +116,12 @@ Access to applications like `app-namespace.os.example.com` starts with a wildcar
 
 The DNS records should point to the `router` pods which are using the infrastructure node host ports. That means the DNS record should point to the IP of the infrastructure node(s). But what if that node fails? Don't worry about that just yet.
 
-Let's stick a wildcard record in our `os.example.com` zone and point the ose-master name at the IP of the first load balancer node, for now.
+Using nsupdate and a key which is allowed to manipulate our `os.example.com` zone, let's insert a `*` wildcard, and  pointi the name `ose-master` at the IP of the first load balancer node (for now).
 
 ```bash
 nsupdate -v -k os.example.com.key
     update add *.os.example.com          300 A 192.0.2.1
-    update add ose-master.os.example.com 300 A 192.0.2.31
+    update add ose-master.os.example.com 300 A 192.0.2.41
     send
     quit
 ```
