@@ -12,7 +12,14 @@ _I'm still working on this post_
 
 # OpenShift High Availability Configuration #
 
-Some backgrouund docs:
+**Overview**
+
+- [Put together the inventory and install](#host-inventory-and-installation)
+- [Do the basic configuration with a single router](#configuration)
+- [Setup the HA router with IP failover](#ha-routing)
+- [Update DNS to use IP failover](#openshift-ha-dns-configuration)
+
+## Related Documentation ##
 
 - [OpenShift Router Concept](https://docs.openshift.com/enterprise/3.1/architecture/core_concepts/routes.html#routers)
 - [OpenShift Router Deployment](https://docs.openshift.com/enterprise/3.1/install_config/install/deploy_router.html)
@@ -105,8 +112,7 @@ ose-ha-node-[03:05].example.com   openshift_node_labels="{'region': 'primary', '
 
 ## Perform the Install ##
 
-Run [my prep playbook](Playbook-to-Prepare-for-OpenShift-Enterprise-3.1-Install.md) and then run the byo playbook to perform the actual install.
-
+Run [my prep playbook](/blog/2015/12/12/Playbook-to-Prepare-for-OpenShift-Enterprise-3.1-Install) and then run the [byo playbook](https://github.com/openshift/openshift-ansible/blob/master/playbooks/byo/config.yml) to perform the actual install.
 
 # Configuration #
 
@@ -127,7 +133,6 @@ nsupdate -v -k os.example.com.key
 ```
 
 ## HA Routing ##
-
 
 Of course if DNS points at the IP of a single node, your apps will become unavailable if that node reboots.
 That can be fixed with a `ipfailover` service and floating IPs. The result will look like this:
