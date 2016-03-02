@@ -12,17 +12,10 @@ High availability of containers in OpenShift is baked into the cake thanks to [r
 
 **Overview**
 
-- [Put together the inventory and install](#host-inventory-and-installation) with `openshift_master_cluster_method`=_native_
+- [Put together the inventory and install](#host-inventory-and-installation) with `openshift_master_cluster_method=native`
 - [Do the basic configuration with a single router](#configuration) to point DNS to a router
 - [Setup the HA router with IP failover](#ha-routing) and replace the standard router
-- [Update DNS to use IP failover](#openshift-ha-dns-configuration) update DNS to use the floating IP
-
-**Related Documentation**
-
-- [OpenShift Router Concept](https://docs.openshift.com/enterprise/3.1/architecture/core_concepts/routes.html#routers)
-- [OpenShift Router Deployment](https://docs.openshift.com/enterprise/3.1/install_config/install/deploy_router.html)
-- [OpenShift Highly Available Router](https://docs.openshift.com/enterprise/3.1/admin_guide/high_availability.html)
-- [Load Balance of non-HTTP](https://github.com/kubernetes/contrib/tree/master/service-loadbalancer) is not yet available beyond node ports and ipfailover
+- [Update DNS to use IP failover](#openshift-ha-dns-configuration) and update DNS to use the floating IP
 
 # Host Inventory and Installation #
 
@@ -72,7 +65,7 @@ ose-ha-lb-02.example.com | 192.0.2.42
 
 **Hosts Inventory File**
 
-And here is the inventory file.
+And here is the inventory file based on [the examples](https://github.com/openshift/openshift-ansible/blob/master/inventory/byo/).
 
 ```ini
 [OSEv3:children]
@@ -133,17 +126,17 @@ nsupdate -v -k os.example.com.key
 ## HA Routing ##
 
 Of course if DNS points at the IP of a single node, your apps will become unavailable if that node reboots.
-That can be fixed with a `ipfailover` service and floating IPs. The result will look like this:
+That can be fixed with a [IP Failover](https://docs.openshift.com/enterprise/3.1/admin_guide/high_availability.html#configuring-ip-failover) service and floating IPs. 
+
+The result will look like this:
 
 [![OpenShift HA Routing](/images/thumb/openshift-ha-cluster-routing.png)](/images/openshift-ha-cluster-routing.png)
-
-[Configure IP Failover](https://docs.openshift.com/enterprise/3.1/admin_guide/high_availability.html#configuring-ip-failover)
 
 Create a HA router set for the application pods in the `primary` region. The routers will run on the schedulable nodes in the `infra` region.
 
 OpenShift's ipfailover internally uses [keepalived](http://www.keepalived.org/), so ensure that multicast is enabled on the labeled nodes, specifically the [VRRP](https://en.wikipedia.org/wiki/Virtual_Router_Redundancy_Protocol) multicast IP address 224.0.0.18.
 
-- Label the nodes so they can be selected for the service
+Label the nodes _ha-router=primary_ so they can be selected for the service
 
 ```bash
 oc label nodes ose-ha-node-0{1,2} "ha-router=primary"
@@ -154,6 +147,14 @@ NAME                         LABELS                                             
 ose-ha-node-01.example.com   ha-router=primary,kubernetes.io/hostname=ose-ha-node-01.example.com,region=infra,zone=rhev   Ready     3d
 ose-ha-node-02.example.com   ha-router=primary,kubernetes.io/hostname=ose-ha-node-02.example.com,region=infra,zone=rhev   Ready     3d
 ```
+
+**Infrastructure Nodes**
+
+Name                       | IP         | Labels
+---------------------------|------------|----------------------------
+ose-ha-node-01.example.com | 192.0.2.1  | _region=infra_, _zone=metal_, _ha-router=primary_
+ose-ha-node-02.example.com | 192.0.2.2  | _region=infra_, _zone=metal_, _ha-router=primary_
+
 
 - Use _router_ service account (or optionally create _ipfailover_ account) to create the router. Check that it exists.
 
@@ -260,4 +261,12 @@ Load balance the API endpoint. If a `lb` group is defined in the Ansible playboo
 ### Registry ##
 
 **TODO**
+
+# Related Documentation #
+
+- [OpenShift Router Concept](https://docs.openshift.com/enterprise/3.1/architecture/core_concepts/routes.html#routers)
+- [OpenShift Router Deployment](https://docs.openshift.com/enterprise/3.1/install_config/install/deploy_router.html)
+- [OpenShift Highly Available Router](https://docs.openshift.com/enterprise/3.1/admin_guide/high_availability.html)
+- [Load Balance of non-HTTP](https://github.com/kubernetes/contrib/tree/master/service-loadbalancer) is not yet available beyond node ports and ipfailover
+
 
