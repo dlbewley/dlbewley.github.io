@@ -10,27 +10,105 @@ High availability of containers in OpenShift is baked into the cake thanks to [r
 
 _I'm still working on this post_
 
-# OpenShift High Availability #
+# OpenShift High Availability Configuration #
+
+Some backgrouund docs:
 
 - [OpenShift Router Concept](https://docs.openshift.com/enterprise/3.1/architecture/core_concepts/routes.html#routers)
 - [OpenShift Router Deployment](https://docs.openshift.com/enterprise/3.1/install_config/install/deploy_router.html)
 - [OpenShift Highly Available Router](https://docs.openshift.com/enterprise/3.1/admin_guide/high_availability.html)
 - [Load Balance of non-HTTP](https://github.com/kubernetes/contrib/tree/master/service-loadbalancer) is not yet available beyond node ports and ipfailover
 
+# Host Inventory and Installation #
+
+Of course you'll be doing [advanced install](https://docs.openshift.com/enterprise/3.1/install_config/install/advanced_install.html) which leverages the [OpenShift Ansible playbook](https://github.com/openshift/openshift-ansible).
+
+Here is an overview of the hosts.
+
 **Infrastructure Nodes**
 
-Name                       |            | Labels         
+Name                       | IP         | Labels
 ---------------------------|------------|----------------------------
-ose-ha-node-01.example.com | 192.0.2.1  | _region=infra_, _zone=rhev_
+ose-ha-node-01.example.com | 192.0.2.1  | _region=infra_, _zone=metal_
 ose-ha-node-02.example.com | 192.0.2.2  | _region=infra_, _zone=metal_
 
 **Application Nodes**
 
-Name                       |            | Labels         
+Name                       | IP         | Labels
 ---------------------------|------------|----------------------------
 ose-ha-node-03.example.com | 192.0.2.3  | _region=primary_, _zone=rhev_
 ose-ha-node-04.example.com | 192.0.2.4  | _region=primary_, _zone=rhev_
+ose-ha-node-05.example.com | 192.0.2.5  | _region=primary_, _zone=rhev_
 
+**Master Nodes**
+
+Name                         | IP         | Labels
+-----------------------------|------------|----------------------------
+ose-ha-master-01.example.com | 192.0.2.21 | _region=infra_, _zone=rhev_
+ose-ha-master-02.example.com | 192.0.2.22 | _region=infra_, _zone=rhev_
+ose-ha-master-03.example.com | 192.0.2.23 | _region=infra_, _zone=rhev_
+
+**Etcd Servers**
+
+Name                       | IP
+---------------------------|-----------
+ose-ha-etcd-01.example.com | 192.0.2.31
+ose-ha-etcd-02.example.com | 192.0.2.32
+ose-ha-etcd-02.example.com | 192.0.2.33
+
+**Load Balancer Servers**
+
+These hosts run haproxy and front end the masters thanks to `openshift_master_cluster_hostname=ose-master.os.example.com` in the hosts file.
+
+Name                     | IP
+-------------------------|-----------
+ose-ha-lb-01.example.com | 192.0.2.21
+ose-ha-lb-02.example.com | 192.0.2.22
+
+**Hosts Inventory File**
+
+And here is the inventory file.
+
+```ini
+[OSEv3:children]
+masters
+nodes
+etcd
+lb
+[OSEv3:vars]
+ansible_ssh_user=root
+debug_level=2
+deployment_type=openshift-enterprise
+use_cluster_metrics=true
+openshift_master_metrics_public_url=https://metrics.os.example.com/hawkular/metrics
+openshift_master_identity_providers=[{'name': 'my_ldap_provider', 'challenge': 'true', 'login': 'true', 'kind': 'LDAPPasswordIdentityProvider', 'attributes': {'id': ['dn'], 'email': ['mail'], 'name': ['cn'], 'preferredUsername': ['uid']}, 'bindDN': '', 'bindPassword': '', 'ca': '', 'insecure': 'true', 'url': 'ldap://ldap.example.com:389/ou=people,o=example.com?uid'}]
+use_fluentd=true
+openshift_master_cluster_method=native
+openshift_master_cluster_hostname=ose-master.os.example.com
+openshift_master_cluster_public_hostname=ose-master.os.example.com
+osm_default_subdomain=os.example.com
+osm_default_node_selector='region=primary'
+openshift_router_selector='region=infra'
+openshift_registry_selector='region=infra'
+[masters]
+ose-ha-master-[01:03].example.com
+[etcd]
+ose-ha-etcd-[01:03].example.com
+[lb]
+ose-ha-lb-01.example.com
+ose-ha-lb-02.example.com
+[nodes]
+ose-ha-master-[01:03].example.com openshift_node_labels="{'region': 'infra', 'zone': 'rhev'}" openshift_schedulable=False
+ose-ha-node-[01:02].example.com   openshift_node_labels="{'region': 'infra', 'zone': 'metal'}"
+ose-ha-node-[03:05].example.com   openshift_node_labels="{'region': 'primary', 'zone': 'rhev'}"
+```
+
+## Perform the Install ##
+
+Run [my prep playbook](Playbook-to-Prepare-for-OpenShift-Enterprise-3.1-Install.md) and then run the byo playbook to perform the actual install.
+
+
+# Configuration #
 
 ## Initial DNS Configuration ##
 
@@ -38,11 +116,12 @@ Access to applications like `app-namespace.os.example.com` starts with a wildcar
 
 The DNS records should point to the `router` pods which are using the infrastructure node host ports. That means the DNS record should point to the IP of the infrastructure node(s). But what if that node fails? Don't worry about that just yet.
 
-Let's stick a wildcard record in our `os.example.com` zone:
+Let's stick a wildcard record in our `os.example.com` zone and point the ose-master name at the IP of the first load balancer node, for now.
 
 ```bash
 nsupdate -v -k os.example.com.key
-    update add *.os.example.com       300 A 192.0.2.1
+    update add *.os.example.com          300 A 192.0.2.1
+    update add ose-master.os.example.com 300 A 192.0.2.31
     send
     quit
 ```
@@ -113,7 +192,7 @@ Pick 2 IP addresses which will float between the 2 infra nodes and create a IP f
 
 **IP Failover Nodes**
 
-IP Failover Service        | IPs                      | Labels         
+IP Failover Service        | IPs                      | Labels
 ---------------------------|--------------------------|----------------------------
 ipf-ha-router-primary      | 192.0.2.101, 192.0.2.102 | _ha-router=primary_
 
@@ -176,3 +255,4 @@ Load balance the API endpoint. If a `lb` group is defined in the Ansible playboo
 ### Registry ##
 
 **TODO**
+
