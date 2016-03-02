@@ -8,16 +8,14 @@ tags:
 
 High availability of containers in OpenShift is baked into the cake thanks to [replication controllers](https://docs.openshift.com/enterprise/3.1/architecture/core_concepts/deployments.html#replication-controllers) and [service load balancing](https://docs.openshift.com/enterprise/3.1/architecture/core_concepts/pods_and_services.html#services), but there are plenty of other single points of failure. Here is how to eliminate many of those.
 
-_I'm still working on this post_
-
 # OpenShift High Availability Configuration #
 
 **Overview**
 
-- [Put together the inventory and install](#host-inventory-and-installation)
-- [Do the basic configuration with a single router](#configuration)
-- [Setup the HA router with IP failover](#ha-routing)
-- [Update DNS to use IP failover](#openshift-ha-dns-configuration)
+- [Put together the inventory and install](#host-inventory-and-installation) with `openshift_master_cluster_method`=_native_
+- [Do the basic configuration with a single router](#configuration) to point DNS to a router
+- [Setup the HA router with IP failover](#ha-routing) and replace the standard router
+- [Update DNS to use IP failover](#openshift-ha-dns-configuration) update DNS to use the floating IP
 
 **Related Documentation**
 
@@ -122,7 +120,7 @@ Access to applications like `app-namespace.os.example.com` starts with a wildcar
 
 The DNS records should point to the `router` pods which are using the infrastructure node host ports. That means the DNS record should point to the IP of the infrastructure node(s). But what if that node fails? Don't worry about that just yet.
 
-Using nsupdate and a key which is allowed to manipulate our `os.example.com` zone, let's insert a `*` wildcard, and  pointi the name `ose-master` at the IP of the first load balancer node (for now).
+Using nsupdate and a key which is allowed to manipulate our `os.example.com` zone, let's insert a `*` wildcard, and  point the name `ose-master` at the IP of the first load balancer node (for now).
 
 ```bash
 nsupdate -v -k os.example.com.key
