@@ -128,6 +128,8 @@ nsupdate -v -k os.example.com.key
 
 ## HA Routing ##
 
+
+Of course if DNS points at the IP of a single node, your apps will become unavailable if that node reboots.
 That can be fixed with a `ipfailover` service and floating IPs. The result will look like this:
 
 [![OpenShift HA Routing](/images/thumb/openshift-ha-cluster-routing.png)](/images/openshift-ha-cluster-routing.png)
