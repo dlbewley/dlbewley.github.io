@@ -6,9 +6,22 @@ tags:
  - docker
 ---
 
-High availability of containers in OpenShift is baked into the cake thanks to [replication controllers](https://docs.openshift.com/enterprise/3.1/architecture/core_concepts/deployments.html#replication-controllers) and [service load balancing](https://docs.openshift.com/enterprise/3.1/architecture/core_concepts/pods_and_services.html#services), but there are plenty of other single points of failure. Here is how to eliminate many of those.
+Highly availabile containers in OpenShift are baked into the cake thanks to [replication controllers](https://docs.openshift.com/enterprise/3.1/architecture/core_concepts/deployments.html#replication-controllers) and [service load balancing](https://docs.openshift.com/enterprise/3.1/architecture/core_concepts/pods_and_services.html#services), but there are plenty of other single points of failure. Here is how to eliminate many of those.
+
+# Single Points of Failure #
+
+The [components](https://docs.openshift.com/dedicated/3.1/architecture/infrastructure_components/kubernetes_infrastructure.html) of OpenShift include:
+
+- Master controller manager server and API endpoint
+- Etcd configuration and state storage
+- Docker Registry
+- Router haproxy
+
+This post is mostly about adding high availability to the routing layer.
 
 # OpenShift High Availability Configuration #
+
+What do we have to do?
 
 **Overview**
 
@@ -21,16 +34,28 @@ High availability of containers in OpenShift is baked into the cake thanks to [r
 
 Of course you'll be doing [advanced install](https://docs.openshift.com/enterprise/3.1/install_config/install/advanced_install.html) which leverages the [OpenShift Ansible playbook](https://github.com/openshift/openshift-ansible).
 
-Here is an overview of the hosts.
+An example installation might look like this:
+
+- 3 master nodes
+- 2 infrastructure nodes
+- 3 primary nodes
+- 3 etcd servers
+- 2 load balancers
+
+Here is an overview of the hosts with IP addresses and labels.
 
 **Infrastructure Nodes**
+
+The infrastructure nodes will be used to run non-user pods, like haproxy routers.
 
 Name                       | IP         | Labels
 ---------------------------|------------|----------------------------
 ose-ha-node-01.example.com | 192.0.2.1  | _region=infra_, _zone=metal_
 ose-ha-node-02.example.com | 192.0.2.2  | _region=infra_, _zone=metal_
 
-**Application Nodes**
+**Primary Nodes**
+
+The primary nodes will run user application pods.
 
 Name                       | IP         | Labels
 ---------------------------|------------|----------------------------
@@ -40,28 +65,32 @@ ose-ha-node-05.example.com | 192.0.2.5  | _region=primary_, _zone=rhev_
 
 **Master Nodes**
 
+The master servers act as the API endpoint and can be load balanced by independent load balancer nodes or a dedicated hardware. One master is elected as the contoller manager server.
+
 Name                         | IP         | Labels
 -----------------------------|------------|----------------------------
 ose-ha-master-01.example.com | 192.0.2.21 | _region=infra_, _zone=rhev_
 ose-ha-master-02.example.com | 192.0.2.22 | _region=infra_, _zone=rhev_
 ose-ha-master-03.example.com | 192.0.2.23 | _region=infra_, _zone=rhev_
 
+**Load Balancer Servers**
+
+These hosts run haproxy and front end the masters using a hostname defined as `openshift_master_cluster_hostname=ose-master.os.example.com` in the hosts file.
+
+Name                     | IP
+-------------------------|-----------
+ose-ha-lb-01.example.com | 192.0.2.41
+ose-ha-lb-02.example.com | 192.0.2.42
+
 **Etcd Servers**
+
+Etcd is used to maintain all state for the cluster, and is configured as a standalone cluster.
 
 Name                       | IP
 ---------------------------|-----------
 ose-ha-etcd-01.example.com | 192.0.2.31
 ose-ha-etcd-02.example.com | 192.0.2.32
 ose-ha-etcd-02.example.com | 192.0.2.33
-
-**Load Balancer Servers**
-
-These hosts run haproxy and front end the masters thanks to `openshift_master_cluster_hostname=ose-master.os.example.com` in the hosts file.
-
-Name                     | IP
--------------------------|-----------
-ose-ha-lb-01.example.com | 192.0.2.41
-ose-ha-lb-02.example.com | 192.0.2.42
 
 **Hosts Inventory File**
 
