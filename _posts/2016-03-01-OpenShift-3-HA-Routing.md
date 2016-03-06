@@ -102,6 +102,7 @@ masters
 nodes
 etcd
 lb
+
 [OSEv3:vars]
 ansible_ssh_user=root
 debug_level=2
@@ -111,19 +112,23 @@ openshift_master_metrics_public_url=https://metrics.os.example.com/hawkular/metr
 openshift_master_identity_providers=[{'name': 'my_ldap_provider', 'challenge': 'true', 'login': 'true', 'kind': 'LDAPPasswordIdentityProvider', 'attributes': {'id': ['dn'], 'email': ['mail'], 'name': ['cn'], 'preferredUsername': ['uid']}, 'bindDN': '', 'bindPassword': '', 'ca': '', 'insecure': 'true', 'url': 'ldap://ldap.example.com:389/ou=people,o=example.com?uid'}]
 use_fluentd=true
 openshift_master_cluster_method=native
-openshift_master_cluster_hostname=ose-master.os.example.com
-openshift_master_cluster_public_hostname=ose-master.os.example.com
+openshift_master_cluster_hostname=master.os.example.com
+openshift_master_cluster_public_hostname=master.os.example.com
 osm_default_subdomain=os.example.com
 osm_default_node_selector='region=primary'
 openshift_router_selector='region=infra'
 openshift_registry_selector='region=infra'
+
 [masters]
 ose-ha-master-[01:03].example.com
+
 [etcd]
 ose-ha-etcd-[01:03].example.com
+
 [lb]
 ose-ha-lb-01.example.com
 ose-ha-lb-02.example.com
+
 [nodes]
 ose-ha-master-[01:03].example.com openshift_node_labels="{'region': 'infra', 'zone': 'rhev'}" openshift_schedulable=False
 ose-ha-node-[01:02].example.com   openshift_node_labels="{'region': 'infra', 'zone': 'metal'}"
@@ -146,8 +151,8 @@ Using nsupdate and a key which is allowed to manipulate our `os.example.com` zon
 
 ```bash
 nsupdate -v -k os.example.com.key
-    update add *.os.example.com          300 A 192.0.2.1
-    update add ose-master.os.example.com 300 A 192.0.2.41
+    update add *.os.example.com      300 A 192.0.2.1
+    update add master.os.example.com 300 A 192.0.2.41
     send
     quit
 ```
@@ -185,7 +190,7 @@ ose-ha-node-01.example.com | 192.0.2.1  | _region=infra_, _zone=metal_, _ha-rout
 ose-ha-node-02.example.com | 192.0.2.2  | _region=infra_, _zone=metal_, _ha-router=primary_
 
 
-- Use _router_ service account (or optionally create _ipfailover_ account) to create the router. Check that it exists.
+Use _router_ service account (or optionally create _ipfailover_ account) to create the router. Check that it exists.
 
 ```bash
 oc get scc privileged -o json | jq .users
@@ -196,7 +201,7 @@ oc get scc privileged -o json | jq .users
 ]
 ```
 
-- Start N replicas of the where N is count of infra nodes. Label the router with `ha-router=primary` # **TODO** add 3rd infra node and VIP @csochin
+Since we have 2 Infrastructure (`region=infra`) nodes which are labeled `ha-router=primary` let's start 2 replicas of a router called `ha-router-primary`.
 
 ```bash
 oadm router ha-router-primary \
