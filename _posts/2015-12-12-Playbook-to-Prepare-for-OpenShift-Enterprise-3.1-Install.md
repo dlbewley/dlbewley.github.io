@@ -14,11 +14,17 @@ This playbook is written for RHEL 7.2 and OSE v3.1. It will perform the followin
 - [Turn off swap](https://docs.openshift.com/enterprise/3.1/admin_guide/overcommit.html#disable-swap-memory)
 - Enable use of NFS in selinux
 
+# Prerequisites #
+
+See my [Testing OpenShift Enterprise V3](http://guifreelife.com/blog/2015/07/28/Testing-OpenShift-Enterprise-V3) post for the prereqs.
+
+# The Playbook #
+
 The lastest version is [available here](https://github.com/dlbewley/playbook-openshift/blob/master/prep.yml).
 
-{% highlight yaml %}
+```yaml
 ---
-# file: ose-prep.yml
+# file: prep.yml
 # @dlbewley
 # Playbook to prep OpenShift Enterprise hosts for installation. Run this before
 # the openshift-ansible byo playbook.
@@ -43,7 +49,7 @@ The lastest version is [available here](https://github.com/dlbewley/playbook-ope
 
   - name: Install prereqs
     yum:
-      name: {% raw %}"{{ item }}"{% endraw %}
+      name: "{{ item }}"
       state: present
     with_items:
       - atomic-openshift-utils
@@ -61,11 +67,12 @@ The lastest version is [available here](https://github.com/dlbewley/playbook-ope
 
   - name: Install life enhancers on master
     yum:
-      name: {% raw %}"{{ item }}"{% endraw %}
+      name: "{{ item }}"
       state: present
     with_items:
       - bash-completion
       - deltarpm
+      - etcd
       - tmux
       - vim-enhanced
     when: "'masters' in group_names"
@@ -85,6 +92,7 @@ The lastest version is [available here](https://github.com/dlbewley/playbook-ope
       name: openshift_use_nfs
       state: yes
       persistent: yes
+    when: "'nodes' in group_names"
 
   # https://docs.openshift.com/enterprise/3.1/admin_guide/overcommit.html#disable-swap-memory
   - name: Remove swaps from fstab
@@ -93,12 +101,14 @@ The lastest version is [available here](https://github.com/dlbewley/playbook-ope
       regexp: '^/[\S]+\s+swap\s+swap'
       state: absent
     notify: disable swap
+    when: "'nodes' in group_names"
 
   - name: Setup docker storage config
     copy:
-      content: {% raw %}"{{ docker_storage_setup }}"{% endraw %}
+      content: "{{ docker_storage_setup }}"
       dest: /etc/sysconfig/docker-storage-setup
     notify: docker storage setup
+    when: "'nodes' in group_names"
 
 
   handlers:
@@ -115,5 +125,4 @@ The lastest version is [available here](https://github.com/dlbewley/playbook-ope
   
   - name: docker storage setup
     command: docker-storage-setup
-
-{% endhighlight %}
+```
