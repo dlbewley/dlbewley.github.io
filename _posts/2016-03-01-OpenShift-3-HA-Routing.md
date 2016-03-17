@@ -203,7 +203,7 @@ oc get scc privileged -o json | jq .users
 
 Since we have 2 Infrastructure (`region=infra`) nodes which are labeled `ha-router=primary` let's start 2 replicas of a router called `ha-router-primary`.
 
-Get a wildcard cert for `*.os.example.com`, and concatenate the cert, key, and intermediate certs into a pem file.
+Go get a legit wildcard cert for `*.os.example.com` instead of [generating one](https://docs.openshift.com/enterprise/latest/install_config/install/deploy_router.html#using-wildcard-certificates), and concatenate the cert, key, and intermediate certs into a pem file.
 
 ```bash
 cat \
@@ -213,7 +213,7 @@ cat \
   > router_wildcard.os.example.com.pem
 ```
 
-Create the router with the wildcard cert as the default certificate.
+[Deploy the router](https://docs.openshift.com/enterprise/latest/install_config/install/deploy_router.html) with the wildcard cert as the default certificate.
 
 ```bash
 oadm router ha-router-primary \
