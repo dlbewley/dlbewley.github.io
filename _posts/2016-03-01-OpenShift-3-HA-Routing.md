@@ -203,6 +203,18 @@ oc get scc privileged -o json | jq .users
 
 Since we have 2 Infrastructure (`region=infra`) nodes which are labeled `ha-router=primary` let's start 2 replicas of a router called `ha-router-primary`.
 
+Get a wildcard cert for `*.os.example.com`, and concatenate the cert, key, and intermediate certs into a pem file.
+
+```bash
+cat \
+  wildcard.os.example.com.crt \
+  wildcard.os.example.com.key \
+  gd_bundle-g2-g1.crt \
+  > router_wildcard.os.example.com.pem
+```
+
+Create the route with the wildcard cert as the default certificate.
+
 ```bash
 oadm router ha-router-primary \
     --replicas=2 \
@@ -210,6 +222,7 @@ oadm router ha-router-primary \
     --selector="region=infra" \
     --labels="ha-router=primary" \
     --credentials=/etc/origin/master/openshift-router.kubeconfig \
+    --default-cert=router_wildcard.os.example.com.pem \
     --service-account=router
 password for stats user admin has been set to cixBqxbXyz
 DeploymentConfig "ha-router-primary" created
