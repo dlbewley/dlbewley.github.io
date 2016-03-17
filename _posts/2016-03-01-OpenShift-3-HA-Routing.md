@@ -213,7 +213,7 @@ cat \
   > router_wildcard.os.example.com.pem
 ```
 
-Create the route with the wildcard cert as the default certificate.
+Create the router with the wildcard cert as the default certificate.
 
 ```bash
 oadm router ha-router-primary \
@@ -278,36 +278,17 @@ nsupdate -v -k os.example.com.key
     quit
 ```
 
-## Router SSL ##
-
-**TODO**
-
-This would have installed the default cert off the bat, but has not been tested:
-
-```bash
-# test. not ran
-oadm router test-ha-router-primary \
-    --replicas=2 \
-    --selector="ha-router=primary" \
-    --selector="region=infra" \
-    --labels="ha-router=primary" \
-    --credentials=/etc/origin/master/openshift-router.kubeconfig \
-    --service-account=router \
-    --default-cert=wildcard.example.router.pem \
-    --dry-run \
-    -o json \
-    --create=false
-```
-
 ## HA Master ##
 
 **TODO**
 
-Load balance the API endpoint. If a `lb` group is defined in the Ansible playbook inventory then a haproxy node will be setup to load balance the master. That instance is a SPoF.
+If a `lb` group is defined in the Ansible playbook inventory then a haproxy node will be setup to load balance the master API endpoint. The load balancer becomes a single point of failure, however.
 
-### Registry ##
+### HA Registry ##
 
 **TODO**
+
+This is pretty easy. I'll post about it at some point.
 
 # Related Documentation #
 
