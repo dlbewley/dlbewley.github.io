@@ -4,6 +4,7 @@ layout: post
 tags:
  - openshift
  - kubernetes
+ - ssl
 ---
 
 OpenShift has an internal CA for generating certificates to authenticate intra-cluster communication, but your browser doesn't trust this CA. Perhaps you want to fix that without mucking with the internal SSL communication? I did. Here is how.
@@ -116,7 +117,7 @@ servingInfo:
 Restart the master and watch for TLS errors for a few seconds. You will notice problems pretty quickly if you affected the internal API URL.
 
 ```bash
-sysemctl retsart atomic-openshift-master-api
+systemctl restart atomic-openshift-master-api
 journalctl -f
 ```
 
