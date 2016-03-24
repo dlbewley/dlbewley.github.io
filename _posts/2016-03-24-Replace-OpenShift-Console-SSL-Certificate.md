@@ -2,8 +2,9 @@
 title: Changing the SSL Certificate for OpenShift Console
 layout: post
 tags:
- - openshift
  - kubernetes
+ - openshift
+ - OSE3.1
  - ssl
 ---
 
@@ -17,7 +18,7 @@ This [OpenShift doc](https://docs.openshift.org/latest/install_config/certificat
 An outline of the steps:
 
 - Only make changes to the public URLs and not any internal URLs.
-- Create a `namedCertificates` section in both `/serviingInfo` and `/assetConfig/servingInfo` sections of `/etc/origin/master/master-config.yaml`.
+- Create a `namedCertificates` section in both `/servingInfo` and `/assetConfig/servingInfo` sections of `/etc/origin/master/master-config.yaml`.
 - In those repeated sections:
   - identify a certificate and key
   - identify the hostname(s) to match with that cert/key pair
@@ -123,21 +124,21 @@ journalctl -f
 
 # Using Ansible #
 
-There is support for this in the playbook, which is probably the best method, but **I have not tested this yet**.
+There is support for this in [the playbook](https://github.com/openshift/openshift-ansible), which is probably the best method, but **I have not tested this yet**.
 
-Update your inventory for [OpenShift Advanced Installation](https://docs.openshift.com/enterprise/3.1/install_config/install/advanced_install.html#configuring-ansible) while referring to the [byo example](https://github.com/openshift/openshift-ansible/blob/master/inventory/byo/hosts.ose.example#L180).
+Update your inventory for [OpenShift Advanced Installation](https://docs.openshift.com/enterprise/3.1/install_config/install/advanced_install.html#advanced-install-custom-certificates) while referring to the [byo example](https://github.com/openshift/openshift-ansible/blob/master/inventory/byo/hosts.ose.example#L180).
 
 ```ini
 openshift_master_cluster_method=native
 openshift_master_cluster_hostname=master.os.example.com
 openshift_master_cluster_public_hostname=openshift.example.com
-#openshift_master_overwrite_named_certificates: true
+openshift_master_overwrite_named_certificates: true
 #
 # Provide local certificate paths which will be deployed to masters
 openshift_master_named_certificates=[{"certfile": "wildcard.example.com.crt", "keyfile": "wildcard.example.com.key"}]
 #
 # Detected names may be overridden by specifying the "names" key
-#openshift_master_named_certificates=[{"certfile": "/path/to/custom1.crt", "keyfile": "/path/to/custom1.key", "names": ["openshift.example.com"]}]
+#openshift_master_named_certificates=[{"certfile": "wildcard.example.com.crt", "keyfile": "wildcard.example.com.key", "names": ["openshift.example.com"]}]
 ```
 
 # Related Reading #
