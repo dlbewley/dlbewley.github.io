@@ -132,7 +132,7 @@ Update your inventory for [OpenShift Advanced Installation](https://docs.openshi
 openshift_master_cluster_method=native
 openshift_master_cluster_hostname=master.os.example.com
 openshift_master_cluster_public_hostname=openshift.example.com
-openshift_master_overwrite_named_certificates: true
+openshift_master_overwrite_named_certificates=true
 #
 # Provide local certificate paths which will be deployed to masters
 openshift_master_named_certificates=[{"certfile": "wildcard.example.com.crt", "keyfile": "wildcard.example.com.key"}]
