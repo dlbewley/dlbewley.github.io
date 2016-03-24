@@ -29,6 +29,7 @@ ose-ha-master-01.example.com | 192.0.2.21
 ose-ha-master-02.example.com | 192.0.2.22
 ose-ha-master-03.example.com | 192.0.2.23
 ose-ha-lb-01.example.com     | 192.0.2.41
+master.os.example.com        | _CNAME ose-ha-lb-01.example.com_
 openshift.example.com        | _CNAME ose-ha-lb-01.example.com_
 
 In this case `openshift.example.com` is an alias to the loadbalancer which directs traffic back to the 3 masters. The load balancer passes the traffic through for TLS termination on port 8443 of the master servers. Therefore, all three masters need to be updated.
@@ -121,27 +122,28 @@ journalctl -f
 
 # Using Ansible #
 
-There is support for this in the playbook, which is probably the bestmethod, but I have not tested it yet.
+There is support for this in the playbook, which is probably the best method, but **I have not tested this yet**.
 
-Confirgure [the inventory](https://github.com/openshift/openshift-ansible/blob/master/inventory/byo/hosts.ose.example#L180)
+Update your inventory for [OpenShift Advanced Installation](https://docs.openshift.com/enterprise/3.1/install_config/install/advanced_install.html#configuring-ansible) while referring to the [byo example](https://github.com/openshift/openshift-ansible/blob/master/inventory/byo/hosts.ose.example#L180).
 
-```
-# Configure custom named certificates
-# NOTE: openshift_master_named_certificates is cached on masters and is an
-# additive fact, meaning that each run with a different set of certificates
-# will add the newly provided certificates to the cached set of certificates.
-# If you would like openshift_master_named_certificates to be overwritten with
-# the provided value, specify openshift_master_overwrite_named_certificates.
+```ini
+openshift_master_cluster_method=native
+openshift_master_cluster_hostname=master.os.example.com
+openshift_master_cluster_public_hostname=openshift.example.com
 #openshift_master_overwrite_named_certificates: true
 #
 # Provide local certificate paths which will be deployed to masters
-#openshift_master_named_certificates=[{"certfile": "/path/to/custom1.crt", "keyfile": "/path/to/custom1.key"}]
+openshift_master_named_certificates=[{"certfile": "wildcard.example.com.crt", "keyfile": "wildcard.example.com.key"}]
 #
 # Detected names may be overridden by specifying the "names" key
-#openshift_master_named_certificates=[{"certfile": "/path/to/custom1.crt", "keyfile": "/path/to/custom1.key", "names": ["public-master-host.com"]}]
+#openshift_master_named_certificates=[{"certfile": "/path/to/custom1.crt", "keyfile": "/path/to/custom1.key", "names": ["openshift.example.com"]}]
 ```
 
 # Related Reading #
 
+- [OpenShift Advanced Installation](https://docs.openshift.com/enterprise/3.1/install_config/install/advanced_install.html#configuring-ansible)
+- [OpenShift Certificate Customization](https://docs.openshift.org/latest/install_config/certificate_customization.html)
+- Trello Card [Allow setting custom serving certs for specific hostnames in API / Console using SNI](https://trello.com/c/Gc3FDSK8)
+- [PR5097](https://github.com/openshift/origin/pull/5097)
 - [Run OpenShift console on port 443](http://akrambenaissi.com/2016/02/21/run-openshift-console-on-port-443/)
 - [Make OpenShift console available on port 443](https://alword.wordpress.com/2016/03/11/make-openshift-console-available-on-port-443-https/)
