@@ -3,7 +3,7 @@
   <head>
     <meta charset='utf-8'>
     <meta http-equiv="X-UA-Compatible" content="chrome=1" />
-    <meta name="keywords" content="{% if post.tags %}{{ post.tags | join:',' }}{% else %}bewley{% endif %}" />
+    <meta name="keywords" content="{{ page.tags | join: ',' }}" />
     <meta name="description" content="{% if page.title %}{{ page.title }} &mdash; {% endif %}{{ page.author.name }}">
 
     <!-- <link rel="stylesheet" type="text/css" media="screen" href="{{site.github.url}}/css/stylesheet.css"> -->
