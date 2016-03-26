@@ -94,10 +94,9 @@ The purpose of this snippet is to list all your posts posted with a certain tag.
          {{ post.title }}
          <small>{{ post.date | date_to_string }}</small>
          </a>
-         </p>
-         <p>
+         <br/>
          {% for tag in post.tags %}
-             <a class="tag, small" href="/blog/tag/#{{ tag | slugify }}">{{ tag }}</a>
+             <a class="tag small" href="/blog/tag/#{{ tag | slugify }}">{{ tag }}</a>
          {% endfor %}
          </p>
          </li>
