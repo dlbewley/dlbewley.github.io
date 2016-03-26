@@ -2,6 +2,9 @@
 layout: slate
 ---
     {% if page.subtitle %}<h1>{{ page.subtitle }}</h1>{% endif %}
+         {% for tag in post.tags %}
+             <a class="tag small" href="/tags.html#{{ tag | slugify }}">{{ tag }}</a>
+         {% endfor %}
     <info datetime="{{ page.date | date: "%Y-%m-%d" }}">
       {{ page.date | date: "%b %d, %Y" }}
     </info>
