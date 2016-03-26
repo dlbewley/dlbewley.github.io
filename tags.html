@@ -3,39 +3,6 @@ layout: slate
 title: Tag
 ---
 
-<style>
-.tag2 {
-    display: block;
-    position: absolute;
-    top: 0;
-    right: 10px;
-    z-index: 10;
-    padding: 10px 50px 10px 10px;
-    color: #fff;
-    background: url('../images/blacktocat.png') #0090ff no-repeat 95% 50%;
-    font-weight: 700;
-    box-shadow: 0 0 10px rgba(0,0,0,.5);
-    border-bottom-left-radius: 2px;
-    border-bottom-right-radius: 2px;
-}
-
-.small {
-  font-size: 50%;
-}
-
-.tag {
-    display: inline;
-    font-size:75%;    
-    padding: 1px 1px 1px 2px;
-    color: #fff;
-    background: #0090ff ;
-    font-weight: 700;
-    box-shadow: 0 0 10px rgba(0,0,0,.5);
-    border-bottom-left-radius: 2px;
-    border-bottom-right-radius: 2px;
-}
-</style>
-
 {% comment %}
 https://codinfox.github.io/dev/2015/03/06/use-tags-and-categories-in-your-jekyll-based-github-pages/
 =======================
@@ -94,7 +61,7 @@ The purpose of this snippet is to list all your posts posted with a certain tag.
          </a>
          <br/>
          {% for tag in post.tags %}
-             <a class="tag small" href="/blog/tag/#{{ tag | slugify }}">{{ tag }}</a>
+             <a class="tag small" href="#{{ tag | slugify }}">{{ tag }}</a>
          {% endfor %}
          </p>
          </li>
