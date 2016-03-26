@@ -3,6 +3,23 @@ layout: slate
 title: Tag
 ---
 
+<style>
+.tag {
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 10px;
+    z-index: 10;
+    padding: 10px 50px 10px 10px;
+    color: #fff;
+    background: url('../images/blacktocat.png') #0090ff no-repeat 95% 50%;
+    font-weight: 700;
+    box-shadow: 0 0 10px rgba(0,0,0,.5);
+    border-bottom-left-radius: 2px;
+    border-bottom-right-radius: 2px;
+}
+</style>
+
 {% comment %}
 https://codinfox.github.io/dev/2015/03/06/use-tags-and-categories-in-your-jekyll-based-github-pages/
 =======================
@@ -39,9 +56,11 @@ The following part removes dulpicated tags and invalid tags like blank tag.
 The purpose of this snippet is to list all the tags you have in your site.
 =======================
 {% endcomment %}
+<ul>
 {% for tag in tags %}
-    <a href="#{{ tag | slugify }}"> {{ tag }} </a>
+    <li><a class="tag" href="#{{ tag | slugify }}"> {{ tag }} </a></li>
 {% endfor %}
+</ul>
 
 {% comment %}
 =======================
