@@ -402,11 +402,11 @@ Full-Width Styles
   background: #212121;
 }
 
-#posts {
+ul, #posts {
   list-style: none;
 }
 
-#recent-posts {
+ul, #recent-posts {
   list-style: none;
   font-size: 75%;
 }
