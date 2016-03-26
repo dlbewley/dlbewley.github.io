@@ -4,7 +4,7 @@ title: Tag
 ---
 
 <style>
-.tag {
+.tag2 {
     display: block;
     position: absolute;
     top: 0;
@@ -13,6 +13,18 @@ title: Tag
     padding: 10px 50px 10px 10px;
     color: #fff;
     background: url('../images/blacktocat.png') #0090ff no-repeat 95% 50%;
+    font-weight: 700;
+    box-shadow: 0 0 10px rgba(0,0,0,.5);
+    border-bottom-left-radius: 2px;
+    border-bottom-right-radius: 2px;
+}
+
+.tag {
+    display: inline;
+    font-size:75%;    
+    padding: 1px 1px 1px 2px;
+    color: #fff;
+    background: #0090ff ;
     font-weight: 700;
     box-shadow: 0 0 10px rgba(0,0,0,.5);
     border-bottom-left-radius: 2px;
@@ -78,10 +90,10 @@ The purpose of this snippet is to list all your posts posted with a certain tag.
          {{ post.title }}
          <small>{{ post.date | date_to_string }}</small>
          </a>
+         </h3>
          {% for tag in post.tags %}
              <a class="tag" href="/blog/tag/#{{ tag | slugify }}">{{ tag }}</a>
          {% endfor %}
-         </h3>
          </li>
          {% endif %}
      {% endfor %}
