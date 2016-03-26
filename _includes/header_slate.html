@@ -5,7 +5,7 @@
           <a id="forkme_banner" href="{{ site.github.repository_url }}">View on GitHub</a>
           <a href="/">home</a>
           <h1 id="project_title"  >{% if page.title %}{{ page.title }}{% endif %} {{ project_title }}  </h1>
-         {% for tag in post.tags %}
+         {% for tag in page.tags %}
              <a class="tag small" href="/tags.html#{{ tag | slugify }}">{{ tag }}</a>
          {% endfor %}
           <h2 id="project_tagline">{{ project_tagline }}</h2>
