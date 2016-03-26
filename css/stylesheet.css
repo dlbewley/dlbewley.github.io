@@ -403,7 +403,14 @@ Full-Width Styles
 }
 
 #posts {
+ font-size: 75%;
 }
+
+.post-date {
+  color: gray;
+  font-family: monospace;
+}
+
 #repos {
 }
 
