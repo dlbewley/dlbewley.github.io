@@ -61,7 +61,7 @@ The following part removes dulpicated tags and invalid tags like blank tag.
             {% assign tags = tag | split:'|' %}
         {% endif %}
         {% unless tags contains tag %}
-            {% assign tags = tags | join:'|' | append:'|' | append:tag | split:'|' %}
+            {% assign tags = tags | join:'|' | append:'|' | append:tag | split:'|' | sort %}
         {% endunless %}
     {% endif %}
 {% endfor %}
@@ -72,11 +72,9 @@ The following part removes dulpicated tags and invalid tags like blank tag.
 The purpose of this snippet is to list all the tags you have in your site.
 =======================
 {% endcomment %}
-<ul>
 {% for tag in tags %}
-    <li><a class="tag" href="#{{ tag | slugify }}">{{ tag }}</a></li>
+    <a class="tag" href="#{{ tag | slugify }}">{{ tag }}</a>
 {% endfor %}
-</ul>
 
 {% comment %}
 =======================
