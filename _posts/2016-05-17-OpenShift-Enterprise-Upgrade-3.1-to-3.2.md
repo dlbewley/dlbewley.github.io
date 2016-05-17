@@ -25,7 +25,7 @@ Following the directions is pretty straight forward.
 
 - Start by prepping the yum repos.
 
-```
+```yaml
 ---
 # file: upgrade-prep.yml
 # 
@@ -53,7 +53,7 @@ Following the directions is pretty straight forward.
 
 - Then run the upgrade
 
-```
+```bash
 ansible-playbook -i hosts openshift-ansible/playbooks/byo/openshift-cluster/upgrades/v3_1_to_v3_2/upgrade.yml | \
   tee ansible-upgrade-$(date +%Y%m%d-%H%M).log
 ```
@@ -66,7 +66,7 @@ I previously described the [native HA routing I am using](/blog/2016/03/01/OpenS
 
 **Basically:**
 
-```
+```bash
 $ oc get nodes -l "region=infra"
 NAME                           STATUS                     AGE
 ose-prod-master-01.example.com   Ready,SchedulingDisabled   71d
@@ -78,7 +78,7 @@ ose-prod-node-03.example.com     Ready                      71d
 
 $ oc scale --replicas=0 dc router
 
-$  oadm router ha-router-primary \
+$ oadm router ha-router-primary \
     --replicas=3 \
     --selector="ha-router=primary" \
     --selector="region=infra" \
@@ -104,7 +104,7 @@ The upgrade playbook updated the image used by the default router dc, but since 
 - **What image tag should I use for the `openshift3/ose-keepalived-ipfailover` image?**
 - **How can I enumerate the tags to find this on my own?**
 
-```
+```bash
 $ oc get dc -n default
 NAME                    TRIGGERS       LATEST
 docker-registry         ConfigChange   3
@@ -245,7 +245,7 @@ During upgrade playbook run, I had pings going to my ipfailover VIPs each second
 
 I still see 3.1.1 referenced by several images, and I'm still working out how to deduce the right image to use and to update them.
 
-- **How do I updated all OSE 3.1.1 vintage images?**
+- **How do I update all OSE 3.1.1 vintage images?**
 
 ```
 [root@ose-prod-node-05 ~]# docker images | grep 3.1.1
@@ -282,6 +282,6 @@ Run `oadm diagnostics` to do some sanity checks. Some results should be taken wi
 
 I as prompted to use `oadm policy reconcile-cluster-role-bindings` and `oadm policy reconcile-cluster-roles`, but I have not done so with `--confirm` yet, because I've monkied with mine a bit. [See also](https://docs.openshift.com/enterprise/3.2/install_config/upgrading/manual_upgrades.html#updating-policy-definitions)
 
-# Hawkular Metrics Fails #
+# Hawkular Metrics #
 
 It used to be that you had to know the metrics URL and visit https://metrics.os.example.com and accept the cert so you could view the resource usage of your pods. There is now a nice link to this URL from the pod metrics page. However, even though I can vist the URL sucessfully, the metrics tab lists a _Forbidden_ error at the bottom, and no graphs. I suspect this may be related to the metrics running `openshift3/metrics-hawkular-metrics:3.1.1` still. This ties back to the [image stream updates](#image-stream-updates) issue.
