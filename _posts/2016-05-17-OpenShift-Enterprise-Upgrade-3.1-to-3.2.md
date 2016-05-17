@@ -140,7 +140,7 @@ Warnings:
     try: oc set probe dc/ipf-ha-router-primary --readiness ...
 ```
 
-```
+```bash
 $ oc get dc/ipf-ha-router-primary
 NAME                    REVISION   REPLICAS   TRIGGERED BY
 ipf-ha-router-primary   1          3          config
@@ -208,7 +208,7 @@ No events.
 
 ## Downtime During Upgrade ##
 
-The upgrade playbook ran fine from ose-prod-master-01 and took 11:49. I used the latest upstream playbook from Github as of a077b688e56374de31587bebcf4de20b22a6d51c. Output is attached.
+The upgrade playbook ran fine from ose-prod-master-01 and took 11:49. I used the latest upstream playbook cloned [from Github](https://github.com/openshift/openshift-ansible) rather than from `/usr/share/ansible/openshift-ansible`. Output is attached.
 
 ```
 localhost                  : ok=44   changed=0    unreachable=0    failed=0
@@ -280,7 +280,7 @@ Wait, I still have the issue after an upgrade to OSE 3.2.0 and docker-1.9.1-40.e
 
 Run `oadm diagnostics` to do some sanity checks. Some results should be taken with a grain of salt.
 
-I as prompted to use `oadm policy reconcile-cluster-role-bindings` and `oadm policy reconcile-cluster-roles`, but I have not done so with `--confirm` yet, because I've monkied with mine a bit. [See also](https://docs.openshift.com/enterprise/3.2/install_config/upgrading/manual_upgrades.html#updating-policy-definitions)
+I was prompted to use `oadm policy reconcile-cluster-role-bindings` and `oadm policy reconcile-cluster-roles`, but I have not done so with `--confirm` yet, because I've monkied with mine a bit. [See also](https://docs.openshift.com/enterprise/3.2/install_config/upgrading/manual_upgrades.html#updating-policy-definitions)
 
 # Hawkular Metrics #
 
