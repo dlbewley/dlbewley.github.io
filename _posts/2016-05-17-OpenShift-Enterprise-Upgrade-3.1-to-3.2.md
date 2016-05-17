@@ -62,7 +62,7 @@ ansible-playbook -i hosts openshift-ansible/playbooks/byo/openshift-cluster/upgr
 
 # IP Failover #
 
-I previously described the [native HA routing I am using](2016-03-01-OpenShift-3-HA-Routing.md).  
+I previously described the [native HA routing I am using](/blog/2016/03/01/OpenShift-3-HA-Routing).  
 
 **Basically:**
 
