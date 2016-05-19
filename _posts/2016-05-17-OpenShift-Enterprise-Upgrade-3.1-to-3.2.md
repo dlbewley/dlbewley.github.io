@@ -16,7 +16,7 @@ The issues were related to:
 - [downtime during the upgrade](#downtime-during-upgrade)
 - [updates to image streams](#image-stream-updates)
 - [docker error messages](#docker-errors)
-- [updated policy and role bindings](#update-policies-and-roles)
+- [updated policy and role bindings](#update-cluster-policies-and-roles)
 - [hawkular metrics](#hawkular-metrics)
 
 # Upgrade Process #
@@ -276,11 +276,83 @@ This is even though [BZ#1275399](https://bugzilla.redhat.com/show_bug.cgi?id=127
 Wait, I still have the issue after an upgrade to OSE 3.2.0 and docker-1.9.1-40.el7.x86_64. [This PR](https://github.com/projectatomic/docker/pull/156) mentioned by [BZ#1335635](https://bugzilla.redhat.com/show_bug.cgi?id=1335635) indicates the fix should have been in Docker 1.9.1-40 and is coming in 1.10.
 
 
-# Update Policies and Roles #
+# Update Cluster Policies and Roles #
 
 Run `oadm diagnostics` to do some sanity checks. Some results should be taken with a grain of salt.
 
-I was prompted to use `oadm policy reconcile-cluster-role-bindings` and `oadm policy reconcile-cluster-roles`, but I have not done so with `--confirm` yet, because I've monkied with mine a bit. [See also](https://docs.openshift.com/enterprise/3.2/install_config/upgrading/manual_upgrades.html#updating-policy-definitions)
+Cluster policies and roles changed, so update them to the latest. To see what needs to change run `oadm policy reconcile-cluster-roles` and `oadm policy reconcile-cluster-role-bindings`.
+See [the docs](https://docs.openshift.com/enterprise/3.2/install_config/upgrading/manual_upgrades.html#updating-policy-definitions).
+
+The [docs say](https://github.com/openshift/openshift-docs/issues/2131) to restart `atomic-openshift-master`, but I think that should `atomic-openshift-master-api
+
+
+```bash
+# examine output before continuing
+$ oadm policy reconcile-cluster-roles
+# make the changes suggested by above on one master
+$ oadm policy reconcile-cluster-roles  --confirm
+# restart api on all masters
+$ systemctl restart atomic-openshift-master-api
+# update policy role bindings
+$ oadm policy reconcile-cluster-role-bindings \
+    --exclude-groups=system:authenticated \
+    --exclude-groups=system:authenticated:oauth \
+    --exclude-groups=system:unauthenticated \
+    --exclude-users=system:anonymous \
+    --additive-only=true \
+    --confirm
+```
+
+Even after this I'm seeing these warnings from `oadm diagnostics`
+
+```
+[Note] Running diagnostic: ClusterRoleBindings
+       Description: Check that the default ClusterRoleBindings are present and contain the expected subjects
+
+Info:  clusterrolebinding/cluster-admins has more subjects than expected.
+
+       Use the `oadm policy reconcile-cluster-role-bindings` command to update the role binding to remove extra subjects.
+
+Info:  clusterrolebinding/cluster-admins has extra subject {User  dlbewley    }.
+
+Info:  clusterrolebinding/cluster-readers has more subjects than expected.
+
+       Use the `oadm policy reconcile-cluster-role-bindings` command to update the role binding to remove extra subjects.
+
+Info:  clusterrolebinding/cluster-readers has extra subject {ServiceAccount management-infra management-admin    }.
+Info:  clusterrolebinding/cluster-readers has extra subject {ServiceAccount openshift-infra heapster    }.
+Info:  clusterrolebinding/cluster-readers has extra subject {User  sysdig    }.
+Info:  clusterrolebinding/cluster-readers has extra subject {ServiceAccount openshift-infra sysdig    }.
+
+WARN:  [CRBD1003 from diagnostic ClusterRoleBindings@openshift/origin/pkg/diagnostics/cluster/rolebindings.go:83]
+       clusterrolebinding/self-provisioners is missing expected subjects.
+
+       Use the `oadm policy reconcile-cluster-role-bindings` command to update the role binding to include expected subjects.
+
+Info:  clusterrolebinding/self-provisioners is missing subject {SystemGroup  system:authenticated:oauth    }.
+Info:  clusterrolebinding/self-provisioners has extra subject {SystemGroup  system:authenticated    }.
+
+WARN:  [CRBD1003 from diagnostic ClusterRoleBindings@openshift/origin/pkg/diagnostics/cluster/rolebindings.go:83]
+       clusterrolebinding/system:build-strategy-docker-binding is missing expected subjects.
+
+       Use the `oadm policy reconcile-cluster-role-bindings` command to update the role binding to include expected subjects.
+
+Info:  clusterrolebinding/system:build-strategy-docker-binding is missing subject {SystemGroup  system:authenticated    }.
+
+WARN:  [CRBD1003 from diagnostic ClusterRoleBindings@openshift/origin/pkg/diagnostics/cluster/rolebindings.go:83]
+       clusterrolebinding/system:build-strategy-custom-binding is missing expected subjects.
+
+       Use the `oadm policy reconcile-cluster-role-bindings` command to update the role binding to include expected subjects.
+
+Info:  clusterrolebinding/system:build-strategy-custom-binding is missing subject {SystemGroup  system:authenticated    }.
+
+WARN:  [CRBD1003 from diagnostic ClusterRoleBindings@openshift/origin/pkg/diagnostics/cluster/rolebindings.go:83]
+       clusterrolebinding/system:build-strategy-source-binding is missing expected subjects.
+
+       Use the `oadm policy reconcile-cluster-role-bindings` command to update the role binding to include expected subjects.
+
+Info:  clusterrolebinding/system:build-strategy-source-binding is missing subject {SystemGroup  system:authenticated    }.
+```
 
 # Hawkular Metrics #
 
