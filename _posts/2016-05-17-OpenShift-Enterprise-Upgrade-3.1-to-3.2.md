@@ -280,6 +280,8 @@ registry.access.redhat.com/openshift3/ose-pod                    v3.1.1.6       
 
 # Docker Errors #
 
+- **When with _get pwuid struct: user: unknown userid_ errors be fixed?**
+
 I am seeing the following error repeatedly:
 
 ```
