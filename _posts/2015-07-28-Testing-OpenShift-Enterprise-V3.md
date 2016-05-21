@@ -3,8 +3,8 @@ title: Testing OpenShift Enterprise V3
 layout: post
 tags:
  - openshift
+ - OSEv3.0
  - RHEL
- - RHEV
 ---
 
 So much for testing [OpenShift Origin with Vagrant on OS X](/blog/2015/06/28/Testing-Openshift-Origin-V3-with-Ansible-and-Vagrant-on-OS-X), because [it does not work yet](https://github.com/openshift/openshift-ansible/issues/391). Let's evaluate OpenShift Enterprise v3 on RHEL! First go get yourself an eval license. The OpenShift VMs will run RHEL7.1 and ride on top of [RHEV](https://access.redhat.com/products/red-hat-enterprise-virtualization/).
@@ -14,6 +14,7 @@ So much for testing [OpenShift Origin with Vagrant on OS X](/blog/2015/06/28/Tes
 First off, here are some starting points to get oriented and acquainted with OpenShift.
 
 **Docs**
+
 - [Getting Started](https://access.redhat.com/products/openshift-enterprise-red-hat/get-started)
 - [Docs](https://access.redhat.com/documentation/en-US/OpenShift_Enterprise/)
 - [Overview](http://docs.openshift.com/enterprise/latest/admin_guide/overview.html)
@@ -24,6 +25,7 @@ First off, here are some starting points to get oriented and acquainted with Ope
 - [Load Balancing](https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/7/html/Load_Balancer_Administration/ch-lvs-overview-VSA.html)
 
 **Videos**
+
 - [OpenShift Channel on Youtube](https://www.youtube.com/channel/UCZKMj3YI0wP-kq4QYpaKdEA)
 - [OpenShift Commons Briefing #15: OpenShift 3 Beta 4 Training on Operations Workflow](https://www.youtube.com/watch?t=67&v=nqf9ZBqVIQM) provides a great walk through of install and basic overview of the compnents
 
