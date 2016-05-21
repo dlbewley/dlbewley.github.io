@@ -376,4 +376,163 @@ Info:  clusterrolebinding/system:build-strategy-source-binding is missing subjec
 
 # Hawkular Metrics #
 
-It used to be that you had to know the metrics URL and visit https://metrics.os.example.com and accept the cert so you could view the resource usage of your pods. There is now a nice link to this URL from the pod metrics page. However, even though I can vist the URL sucessfully, the metrics tab lists a _Forbidden_ error at the bottom, and no graphs. I suspect this may be related to the metrics running `openshift3/metrics-hawkular-metrics:3.1.1` still. This ties back to the [image stream updates](#image-stream-updates) issue.
+It used to be that you had to know the metrics URL and visit https://metrics.os.example.com and accept the cert so you could view the resource usage of your pods. There is now a nice link to this URL from the pod metrics page. However, even though I can vist the URL sucessfully, the metrics tab lists a _Forbidden_ error at the bottom, and no graphs. I suspect this may be related to the metrics running `openshift3/metrics-hawkular-metrics:3.1.1` still.
+
+I could just dump the stats and [start over](https://docs.openshift.com/enterprise/3.2/install_config/cluster_metrics.html), but I'll try updating the replication controllers first.
+
+Get the list, and then use `oc edit` to set the version to 3.2.0.
+
+```bash
+$ oc get rc -n openshift-infra -o wide
+NAME                   DESIRED   CURRENT   AGE       CONTAINER(S)           IMAGE(S)                                                               SELECTOR
+hawkular-cassandra-1   1         1         73d       hawkular-cassandra-1   registry.access.redhat.com/openshift3/metrics-cassandra:3.1.1          name=hawkular-cassandra-1
+hawkular-metrics       1         1         73d       hawkular-metrics       registry.access.redhat.com/openshift3/metrics-hawkular-metrics:3.1.1   name=hawkular-metrics
+heapster               1         1         73d       heapster               registry.access.redhat.com/openshift3/metrics-heapster:3.1.1           name=heapster
+```
+
+Edit the replication controller and change the image tag from `3.1.1` to `3.2.0`
+
+```bash
+$ oc edit rc hawkular-cassandra-1
+```
+
+The pod needs to be removed so the replication controller can recreate it. I think you could pre-emptively pull the new image if you are worried about the downtime.
+
+```bash
+$ oc get pods
+NAME                         READY     STATUS    RESTARTS   AGE
+hawkular-cassandra-1-t7mp5   1/1       Running   0          4d
+hawkular-metrics-2ccne       1/1       Running   0          4d
+heapster-6usys               1/1       Running   4          4d
+
+$ oc delete pod hawkular-cassandra-1-t7mp5
+pod "hawkular-cassandra-1-t7mp5" deleted
+
+$ oc get events --watch
+```
+
+Unfortunately I wound up with a `CrashLoopBackOff` for the cassandra pod. Watching the logs it seemed to be replaying transactions, so I'm not sure if it was a timeout or what exactly.
+
+```
+2016-05-20 21:03:15 -0700 PDT   2016-05-20 21:18:03 -0700 PDT   61        hawkular-cassandra-1-iwl9z   Pod       spec.containers{hawkular-cassandra-1}   Warning   BackOff   {kubelet ose-prod-node-06.example.com}   Back-off restarting failed docker container
+2016-05-20 21:11:42 -0700 PDT   2016-05-20 21:18:03 -0700 PDT   30        hawkular-cassandra-1-iwl9z   Pod                 Warning   FailedSync   {kubelet ose-prod-node-06.example.com}   Error syncing pod, skipping: failed to "StartContainer" for "hawkular-cassandra-1" with CrashLoopBackOff: "Back-off 5m0s restarting failed container=hawkular-cassandra-1 pod=hawkular-cassandra-1-iwl9z_openshift-infra(ac1669d8-1f08-11e6-8f0c-001a4a48be57)"
+```
+
+```
+$ oc logs hawkular-cassandra-1-iwl9z -f
+About to generate seeds
+Trying to access the Seed list [try #1]
+Trying to access the Seed list [try #2]
+Trying to access the Seed list [try #3]
+Setting seeds to be hawkular-cassandra-1-iwl9z
+cat: /etc/ld.so.conf.d/*.conf: No such file or directory
+CompilerOracle: inline org/apache/cassandra/db/AbstractNativeCell.compareTo (Lorg/apache/cassandra/db/composites/Composite;)I
+CompilerOracle: inline org/apache/cassandra/db/composites/AbstractSimpleCellNameType.compareUnsigned (Lorg/apache/cassandra/db/composites/Composite;Lorg/apache/cassandra/db/composites/Composite;)I
+CompilerOracle: inline org/apache/cassandra/io/util/Memory.checkBounds (JJ)V
+CompilerOracle: inline org/apache/cassandra/io/util/SafeMemory.checkBounds (JJ)V
+CompilerOracle: inline org/apache/cassandra/utils/AsymmetricOrdering.selectBoundary (Lorg/apache/cassandra/utils/AsymmetricOrdering/Op;II)I
+CompilerOracle: inline org/apache/cassandra/utils/AsymmetricOrdering.strictnessOfLessThan (Lorg/apache/cassandra/utils/AsymmetricOrdering/Op;)I
+CompilerOracle: inline org/apache/cassandra/utils/ByteBufferUtil.compare (Ljava/nio/ByteBuffer;[B)I
+CompilerOracle: inline org/apache/cassandra/utils/ByteBufferUtil.compare ([BLjava/nio/ByteBuffer;)I
+CompilerOracle: inline org/apache/cassandra/utils/ByteBufferUtil.compareUnsigned (Ljava/nio/ByteBuffer;Ljava/nio/ByteBuffer;)I
+CompilerOracle: inline org/apache/cassandra/utils/FastByteOperations$UnsafeOperations.compareTo (Ljava/lang/Object;JILjava/lang/Object;JI)I
+CompilerOracle: inline org/apache/cassandra/utils/FastByteOperations$UnsafeOperations.compareTo (Ljava/lang/Object;JILjava/nio/ByteBuffer;)I
+CompilerOracle: inline org/apache/cassandra/utils/FastByteOperations$UnsafeOperations.compareTo (Ljava/nio/ByteBuffer;Ljava/nio/ByteBuffer;)I
+INFO  04:07:55 Loading settings from file:/opt/apache-cassandra-2.2.1.redhat-2/conf/cassandra.yaml
+INFO  04:07:55 Node configuration:[authenticator=AllowAllAuthenticator; authorizer=AllowAllAuthorizer; auto_snapshot=true; batch_size_warn_threshold_in_kb=5; batchlog_replay_throttle_in_kb=1024; cas_conte
+ntion_timeout_in_ms=1000; client_encryption_options=<REDACTED>; cluster_name=hawkular-metrics; column_index_size_in_kb=64; commit_failure_policy=stop; commitlog_directory=/cassandra_data/commitlog; commit
+log_segment_size_in_mb=32; commitlog_sync=periodic; commitlog_sync_period_in_ms=10000; compaction_throughput_mb_per_sec=16; concurrent_counter_writes=32; concurrent_reads=32; concurrent_writes=32; counter
+_cache_save_period=7200; counter_cache_size_in_mb=null; counter_write_request_timeout_in_ms=5000; cross_node_timeout=false; data_file_directories=[/cassandra_data/data]; disk_failure_policy=stop; dynamic_
+snitch_badness_threshold=0.1; dynamic_snitch_reset_interval_in_ms=600000; dynamic_snitch_update_interval_in_ms=100; endpoint_snitch=SimpleSnitch; hinted_handoff_enabled=true; hinted_handoff_throttle_in_kb
+=1024; incremental_backups=false; index_summary_capacity_in_mb=null; index_summary_resize_interval_in_minutes=60; inter_dc_tcp_nodelay=false; internode_compression=all; key_cache_save_period=14400; key_ca
+che_size_in_mb=null; listen_address=hawkular-cassandra-1-iwl9z; max_hint_window_in_ms=10800000; max_hints_delivery_threads=2; memtable_allocation_type=heap_buffers; native_transport_port=9042; num_tokens=
+256; partitioner=org.apache.cassandra.dht.Murmur3Partitioner; permissions_validity_in_ms=2000; range_request_timeout_in_ms=10000; read_request_timeout_in_ms=5000; request_scheduler=org.apache.cassandra.sc
+heduler.NoScheduler; request_timeout_in_ms=10000; row_cache_save_period=0; row_cache_size_in_mb=0; rpc_address=hawkular-cassandra-1-iwl9z; rpc_keepalive=true; rpc_port=9160; rpc_server_type=sync; seed_pro
+vider=[{class_name=org.hawkular.openshift.cassandra.OpenshiftSeedProvider, parameters=[{seeds=hawkular-cassandra-1-iwl9z}]}]; server_encryption_options=<REDACTED>; snapshot_before_compaction=false; ssl_st
+orage_port=7001; sstable_preemptive_open_interval_in_mb=50; start_native_transport=true; start_rpc=true; storage_port=7000; thrift_framed_transport_size_in_mb=15; tombstone_failure_threshold=100000; tombs
+tone_warn_threshold=1000; trickle_fsync=false; trickle_fsync_interval_in_kb=10240; truncate_request_timeout_in_ms=60000; write_request_timeout_in_ms=2000]
+INFO  04:07:55 DiskAccessMode 'auto' determined to be mmap, indexAccessMode is mmap
+INFO  04:07:56 Global memtable on-heap threshold is enabled at 125MB
+INFO  04:07:56 Global memtable off-heap threshold is enabled at 125MB
+WARN  04:07:56 UnknownHostException for service 'hawkular-cassandra-nodes'. It may not be up yet. Trying again
+WARN  04:07:58 UnknownHostException for service 'hawkular-cassandra-nodes'. It may not be up yet. Trying again
+WARN  04:08:00 UnknownHostException for service 'hawkular-cassandra-nodes'. It may not be up yet. Trying again
+WARN  04:08:02 UnknownHostException for service 'hawkular-cassandra-nodes'. It may not be up yet. Trying again
+...
+```
+
+Not only that, but it looks like there are some compatibility issues.
+
+```bash
+$ oc logs heapster-jdpgi
+exec: "./heapster-wrapper.sh": stat ./heapster-wrapper.sh: no such file or directory
+```
+
+There is a new debug command in 3.2, but I wasn't able to learn much from it other than the startup command for the pod.
+
+```bash
+$ oc debug pod heapster-jdpgi
+Debugging with pod/heapster-jdpgi-debug, original command: ./heapster-wrapper.sh --wrapper.username_file=/hawkular-account/hawkular-metrics.username --wrapper.password_file=/hawkular-account/hawkular-metrics.password --wrapper.allowed_users_file=/secrets/heapster.allowed-users --source=kubernetes:https://kubernetes.default.svc:443?useServiceAccount=true&kubeletHttps=true&kubeletPort=10250 --sink=hawkular:https://hawkular-metrics:443?tenant=_system&labelToTenant=pod_namespace&caCert=/hawkular-cert/hawkular-metrics-ca.certificate&user=%username%&pass=%password%&filter=label(container_name:^/system.slice.*|^/user.slice) --logtostderr=true --tls_cert=/secrets/heapster.cert --tls_key=/secrets/heapster.key --tls_client_ca=/secrets/heapster.client-ca --allowed_users=%allowed_users%
+```
+
+## Redeploy Cluster Metrics ##
+
+So, it seems there is some missing documentation here.  I'm going to go ahead and [redeploy cluster metrics](https://docs.openshift.com/enterprise/3.2/install_config/cluster_metrics.html) instead of trying to fix it.
+
+- Clear the decks and remove the old deployment
+
+```bash
+$ oc delete all --selector="metrics-infra"
+replicationcontroller "hawkular-cassandra-1" deleted
+replicationcontroller "hawkular-metrics" deleted
+replicationcontroller "heapster" deleted
+route "hawkular-metrics" deleted
+service "hawkular-cassandra" deleted
+service "hawkular-cassandra-nodes" deleted
+service "hawkular-metrics" deleted
+service "heapster" deleted
+pod "hawkular-cassandra-1-iwl9z" deleted
+
+# skipped
+#oc delete sa --selector="metrics-infra"
+
+$ oc delete templates --selector="metrics-infra"
+template "hawkular-cassandra-node-emptydir" deleted
+template "hawkular-cassandra-node-pv" deleted
+template "hawkular-cassandra-services" deleted
+template "hawkular-heapster" deleted
+template "hawkular-metrics" deleted
+template "hawkular-support" deleted
+
+$ oc delete secrets --selector="metrics-infra"
+secret "hawkular-cassandra-certificate" deleted
+secret "hawkular-cassandra-secrets" deleted
+secret "hawkular-metrics-account" deleted
+secret "hawkular-metrics-certificate" deleted
+secret "hawkular-metrics-secrets" deleted
+secret "heapster-secrets" deleted
+
+$ oc delete pvc --selector="metrics-infra"
+persistentvolumeclaim "metrics-cassandra-1" deleted
+```
+
+# TODO - Resume here
+The reclaim policy on the PV used by metrics is _retain_, so go empty out that volume.
+
+```
+$ oc describe pv metrics
+Name:           metrics
+Labels:         <none>
+Status:         Released
+Claim:          openshift-infra/metrics-cassandra-1
+Reclaim Policy: Retain
+Access Modes:   RWO,RWX
+Capacity:       50Gi
+Message:
+Source:
+    Type:       NFS (an NFS mount that lasts the lifetime of a pod)
+    Server:     openshift-data.example.com
+    Path:       /openshift/prod/metrics
+    ReadOnly:   false
+```
+
