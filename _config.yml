@@ -10,6 +10,8 @@ defaults:
       disqus:
         shortname: dlbewleygithubio
         enabled: false
+      google:
+        analytics: "UA-78084690-1"
 
   # posts
   - scope:
