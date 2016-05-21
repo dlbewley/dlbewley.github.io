@@ -12,8 +12,8 @@ Upgrading from OSE 3.1 to 3.2 using the [playbook](https://github.com/openshift/
 
 The issues were related to:
 
-- [ip failover](#ip-failover)
-- [downtime during the upgrade](#downtime-during-upgrade)
+- [ip failover](#ip-failover) had to be updated manually
+- there was about 5 minutes [downtime during the upgrade](#downtime-during-upgrade)
 - [updates to image streams](#image-stream-updates)
 - [docker error messages](#docker-errors)
 - [updated policy and role bindings](#update-cluster-policies-and-roles)
@@ -99,10 +99,7 @@ $ oadm ipfailover ipf-ha-router-primary \
 
 ## IPF Image ##
 
-The upgrade playbook updated the image used by the default router dc, but since I use Native HA with IPfailover I do not use that router. Mine is called `ha-router-primary`. I was able to manually update the image for `ha-router-primary` as described [here](https://docs.openshift.com/enterprise/3.2/install_config/upgrading/manual_upgrades.html#upgrading-the-router). However, that leaves the ipfailover pods. Presumably it should use `v3.2.0.20-3`, but I'm not sure how to validate that.
-
-- **What image tag should I use for the `openshift3/ose-keepalived-ipfailover` image?**
-- **How can I enumerate the tags to find this on my own?**
+The upgrade playbook updated the image used by the default router dc, but since I use Native HA with IPfailover I do not use that router. Mine is called `ha-router-primary`. I was able to manually update the image for `ha-router-primary` as described [here](https://docs.openshift.com/enterprise/3.2/install_config/upgrading/manual_upgrades.html#upgrading-the-router).
 
 ```bash
 $ oc get dc -n default
@@ -112,15 +109,38 @@ ha-router-primary       ConfigChange   2
 ipf-ha-router-primary   ConfigChange   1
 router                  ConfigChange   3      <-- unused. 0 replicas.
 
-$ oc get dc ha-router-primary -n default -o json | jq '. | {name: .spec.template.spec.containers[].name, image:.spec.template.spec.containers[].image}'
+$ oc get dc ha-router-primary -n default -o json | jq '. | {name: .spec.template.spec.containers[].name, image: .spec.template.spec.containers[].image}'
 {
   "image": "openshift3/ose-haproxy-router:v3.2.0.20-3",
   "name": "router"
 }
-$ oc get dc ipf-ha-router-primary -n default -o json | jq '. | {name: .spec.template.spec.containers[].name, image:.spec.template.spec.containers[].image}'
+$ oc get dc ipf-ha-router-primary -n default -o json | jq '. | {name: .spec.template.spec.containers[].name, image: .spec.template.spec.containers[].image}'
 {
   "image": "openshift3/ose-keepalived-ipfailover:v3.1.1.6",
   "name": "ipf-ha-router-primary-keepalived"
+}
+```
+
+However, that leaves the ipfailover pods still at `v3.1.1.6`. Presumably it should use `v3.2.0.20-3`, but I'm not sure how to validate that.
+
+- **What image tag should I use for the `openshift3/ose-keepalived-ipfailover` image?**
+
+- **How can I enumerate the tags to find this on my own?**
+
+Well, I can go search [registry.access.redhat.com](https://access.redhat.com/search/#/container-images), but the results don't list the version tags. Trying a `docker pull openshift3/ose-keepalived-ipfailover:v3.2.0.20-3` works, so let's do it. The [oc patch](https://github.com/openshift/origin/blob/master/docs/cli.md#oc-patch) command makes this "easy" if you like counting braces. 
+
+```bash
+$ oc patch dc ipf-ha-router-primary -p \
+ '{"spec": {"template": {"spec": {"containers": [{"name": "ipf-ha-router-primary-keepalived", "image": "openshift3/ose-keepalived-ipfailover:v3.2.0.20-3"}]}}}}'
+```
+
+When the change is made it will be detected and the ipfailover pods will be recreated automatically. I didn't detect any downtime when doing this.
+
+```bash
+$ oc get dc ipf-ha-router-primary -n default -o json | jq '. | {name: .spec.template.spec.containers[].name, image: .spec.template.spec.containers[].image}'
+{
+  "name": "ipf-ha-router-primary-keepalived",
+  "image": "openshift3/ose-keepalived-ipfailover:v3.2.0.20-3"
 }
 ```
 
