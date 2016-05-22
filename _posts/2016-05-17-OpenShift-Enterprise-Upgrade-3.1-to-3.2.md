@@ -495,9 +495,6 @@ service "hawkular-metrics" deleted
 service "heapster" deleted
 pod "hawkular-cassandra-1-iwl9z" deleted
 
-# skipped
-#oc delete sa --selector="metrics-infra"
-
 $ oc delete templates --selector="metrics-infra"
 template "hawkular-cassandra-node-emptydir" deleted
 template "hawkular-cassandra-node-pv" deleted
@@ -516,12 +513,16 @@ secret "heapster-secrets" deleted
 
 $ oc delete pvc --selector="metrics-infra"
 persistentvolumeclaim "metrics-cassandra-1" deleted
+
+$ oc delete sa --selector="metrics-infra"
+serviceaccount "cassandra" deleted
+serviceaccount "hawkular" deleted
+serviceaccount "heapster" deleted
 ```
 
-# TODO - Resume here
-The reclaim policy on the PV used by metrics is _retain_, so go empty out that volume.
+The _Reclaim Policy_ on the PV used by metrics is _retain_, so go empty out that volume before continuing.
 
-```
+```bash
 $ oc describe pv metrics
 Name:           metrics
 Labels:         <none>
@@ -538,3 +539,64 @@ Source:
     ReadOnly:   false
 ```
 
+- Deploy the metrics again and wait for it to complete.
+
+```bash
+$ oc process -f /usr/share/ansible/openshift-ansible/roles/openshift_examples/files/examples/v1.2/infrastructure-templates/enterprise/metrics-deployer.yaml \
+  -v HAWKULAR_METRICS_HOSTNAME=metrics.os.example.com \
+  | oc create -f -
+```
+
+- Now replace the hawkular route with a [reencrypting router]( https://docs.openshift.com/enterprise/latest/install_config/cluster_metrics.html#metrics-reencrypting-route)
+
+```bash
+$ oc describe route hawkular-metrics
+Name:                   hawkular-metrics
+Created:                2 hours ago
+Labels:                 metrics-infra=support
+Annotations:            <none>
+Requested Host:         metrics.os.example.com
+                          exposed on router ha-router-primary 2 hours ago
+Path:                   <none>
+TLS Termination:        passthrough
+Insecure Policy:        <none>
+Service:                hawkular-metrics
+Endpoint Port:          <all endpoint ports>
+Endpoints:              10.1.7.5:8444
+
+$ oc describe service hawkular-metrics
+Name:                   hawkular-metrics
+Namespace:              openshift-infra
+Labels:                 metrics-infra=hawkular-metrics,name=hawkular-metrics
+Selector:               name=hawkular-metrics
+Type:                   ClusterIP
+IP:                     172.30.113.214
+Port:                   https-endpoint  443/TCP
+Endpoints:              10.1.7.5:8444
+Session Affinity:       None
+No events.
+```
+
+- Create `route-metrics-reencrypt.yaml` with the _wildcard.os.example.com_ cert.
+
+```bash
+$ oc get routes
+NAME               HOST/PORT              PATH      SERVICE            TERMINATION   LABELS
+hawkular-metrics   metrics.os.example.com             hawkular-metrics   passthrough   metrics-infra=support
+
+$ vim route-metrics-reencrypt.yaml
+
+$ oc delete route hawkular-metrics
+route "hawkular-metrics" deleted
+
+$ oc create -f route-metrics-reencrypt.yaml
+route "hawkular-metrics" created
+
+$ oc get routes
+NAME               HOST/PORT              PATH      SERVICE                 TERMINATION   LABELS
+hawkular-metrics   metrics.os.example.com             hawkular-metrics:8444   reencrypt     metrics-infra=support
+```
+
+After this, metrics work again, even better! FWIW there is some mixed content on the page.
+
+> Mixed Content: The page at 'https://metrics.os.example.com/hawkular/metrics' was loaded over HTTPS, but requested an insecure stylesheet 'http://fonts.googleapis.com/css?family=Exo+2'. This request has been blocked; the content must be served over HTTPS.
