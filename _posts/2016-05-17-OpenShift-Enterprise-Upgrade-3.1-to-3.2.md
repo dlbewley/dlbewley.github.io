@@ -459,8 +459,33 @@ clusterrolebinding/system:build-strategy-source-binding
  RoleBinding[system:daemonset-controller]:
 ```
 
-Now the source build strategy works again!
+Now the source build strategy works again and the diagnostics output looks mostly reasonable. Not sure about the `self-provisioners` yet.
 
+```
+[Note] Running diagnostic: ClusterRoleBindings
+       Description: Check that the default ClusterRoleBindings are present and contain the expected subjects
+
+Info:  clusterrolebinding/cluster-admins has more subjects than expected.
+
+       Use the `oadm policy reconcile-cluster-role-bindings` command to update the role binding to remove extra subjects.
+
+Info:  clusterrolebinding/cluster-admins has extra subject {User  dlbewley    }.
+
+Info:  clusterrolebinding/cluster-readers has more subjects than expected.
+
+       Use the `oadm policy reconcile-cluster-role-bindings` command to update the role binding to remove extra subjects.
+
+Info:  clusterrolebinding/cluster-readers has extra subject {ServiceAccount management-infra management-admin    }.
+Info:  clusterrolebinding/cluster-readers has extra subject {ServiceAccount openshift-infra heapster    }.
+Info:  clusterrolebinding/cluster-readers has extra subject {User  sysdig    }.
+Info:  clusterrolebinding/cluster-readers has extra subject {ServiceAccount openshift-infra sysdig    }.
+
+Info:  clusterrolebinding/self-provisioners has more subjects than expected.
+
+       Use the `oadm policy reconcile-cluster-role-bindings` command to update the role binding to remove extra subjects.
+
+Info:  clusterrolebinding/self-provisioners has extra subject {SystemGroup  system:authenticated    }.
+```
 
 # Hawkular Metrics #
 
