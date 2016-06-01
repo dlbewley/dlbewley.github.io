@@ -380,6 +380,88 @@ Info:  clusterrolebinding/system:build-strategy-source-binding is missing subjec
 
 Rather than try to fix each of the above, I've been trying to work with RedHat support to try to understand the correct way to fix it.
 
+By comparing the output of `oc describe clusterPolicyBindings :default` on 3.1.1 and 3.2.0 you can see these new RoleBindings
+
+```
+RoleBinding[system:build-strategy-custom-binding]:
+RoleBinding[system:build-strategy-docker-binding]:
+RoleBinding[system:build-strategy-source-binding]:
+RoleBinding[system:discovery-binding]:
+```
+
+It makes sense that the reconcile command should not exclude the `system:authenticated` users as the docs say to do.
+
+- Save the output beforehand
+
+```
+oc describe clusterPolicyBindings :default > describe-clusterPolicyBindings-default-before.txt
+```
+
+- Reconcile the role bindings again but do not exclude `system:authenticated`
+
+```bash
+$ oadm policy reconcile-cluster-role-bindings \
+>     --exclude-groups=system:unauthenticated \
+>     --exclude-users=system:anonymous \
+>     --additive-only=true \
+>     --confirm
+clusterrolebinding/self-provisioners
+clusterrolebinding/system:build-strategy-docker-binding
+clusterrolebinding/system:build-strategy-custom-binding
+clusterrolebinding/system:build-strategy-source-binding
+```
+
+- Compare the difference
+
+```diff
+--- describe-clusterPolicyBindings-default-before.txt        2016-06-01 09:24:28.030082834 -0700
++++ describe-clusterPolicyBindings-default-after.txt 2016-06-01 09:26:18.664093120 -0700
+@@ -2,7 +2,7 @@
+ Created:                                               12 weeks ago
+ Labels:                                                        <none>
+ Annotations:                                           <none>
+-Last Modified:                                         2016-05-21 11:32:48 -0700 PDT
++Last Modified:                                         2016-06-01 09:25:53 -0700 PDT
+ Policy:                                                        <none>
+ RoleBinding[basic-users]:
+                                                        Role:                   basic-user
+@@ -31,7 +31,7 @@
+ RoleBinding[self-provisioners]:
+                                                        Role:                   self-provisioner
+                                                        Users:                  <none>
+-                                                       Groups:                 system:authenticated
++                                                       Groups:                 system:authenticated:oauth, system:authenticated
+                                                        ServiceAccounts:        <none>
+                                                        Subjects:               <none>
+ RoleBinding[system:build-controller]:
+@@ -43,19 +43,19 @@
+ RoleBinding[system:build-strategy-custom-binding]:
+                                                        Role:                   system:build-strategy-custom
+                                                        Users:                  <none>
+-                                                       Groups:                 <none>
++                                                       Groups:                 system:authenticated
+                                                        ServiceAccounts:        <none>
+                                                        Subjects:               <none>
+ RoleBinding[system:build-strategy-docker-binding]:
+                                                        Role:                   system:build-strategy-docker
+                                                        Users:                  <none>
+-                                                       Groups:                 <none>
++                                                       Groups:                 system:authenticated
+                                                        ServiceAccounts:        <none>
+                                                        Subjects:               <none>
+ RoleBinding[system:build-strategy-source-binding]:
+                                                        Role:                   system:build-strategy-source
+                                                        Users:                  <none>
+-                                                       Groups:                 <none>
++                                                       Groups:                 system:authenticated
+                                                        ServiceAccounts:        <none>
+                                                        Subjects:               <none>
+ RoleBinding[system:daemonset-controller]:
+```
+
+Now the source build strategy works again!
+
+
 # Hawkular Metrics #
 
 It used to be that you had to know the metrics URL and visit https://metrics.os.example.com and accept the cert so you could view the resource usage of your pods. There is now a nice link to this URL from the pod metrics page. However, even though I can vist the URL sucessfully, the metrics tab lists a _Forbidden_ error at the bottom, and no graphs. I suspect this may be related to the metrics running `openshift3/metrics-hawkular-metrics:3.1.1` still.
