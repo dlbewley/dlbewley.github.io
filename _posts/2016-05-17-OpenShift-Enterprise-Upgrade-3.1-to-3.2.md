@@ -16,7 +16,7 @@ The issues were related to:
 - there was about 5 minutes [downtime during the upgrade](#downtime-during-upgrade)
 - [updates to image streams](#image-stream-updates)
 - [docker error messages](#docker-errors)
-- [updated policy and role bindings](#update-cluster-policies-and-roles)
+- [updated policy and role bindings](#update-cluster-policies-and-roles) _build strategy Source is not allowed_
 - [hawkular metrics](#hawkular-metrics)
 
 # Upgrade Process #
@@ -325,9 +325,11 @@ $ oadm policy reconcile-cluster-role-bindings \
     --confirm
 ```
 
-Even after this I'm seeing these warnings from `oadm diagnostics`
+Even after this I'm seeing these warnings from `oadm diagnostics`, and developers can no longer use the source build strategy. Big problem.
 
 ```
+$ oadm diagnostics
+...
 [Note] Running diagnostic: ClusterRoleBindings
        Description: Check that the default ClusterRoleBindings are present and contain the expected subjects
 
@@ -375,6 +377,8 @@ WARN:  [CRBD1003 from diagnostic ClusterRoleBindings@openshift/origin/pkg/diagno
 
 Info:  clusterrolebinding/system:build-strategy-source-binding is missing subject {SystemGroup  system:authenticated    }.
 ```
+
+Rather than try to fix each of the above, I've been trying to work with RedHat support to try to understand the correct way to fix it.
 
 # Hawkular Metrics #
 
