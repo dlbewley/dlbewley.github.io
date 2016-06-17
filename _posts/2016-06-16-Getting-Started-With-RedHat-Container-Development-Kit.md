@@ -60,7 +60,9 @@ vagrant provision
 
 # Getting Started #
 
-- Access the console at https://10.1.2.2:8443/console *User:* _openshift-dev_ *Pass:* _devel_ or User: _admin_ Pass: _admin_
+- Access the console at [https://10.1.2.2:8443/console](https://10.1.2.2:8443/console/) using a credential below:
+  - *User:* _openshift-dev_ *Pass:* _devel_
+  - *User:* _admin_ *Pass:* _admin_
 
 - If you forget where to find the console vagrant can remind you
 
@@ -74,6 +76,8 @@ vagrant service-manager env openshift
 ```bash
 curl http://helloflask-sample-project.rhel-cdk.10.1.2.2.xip.io/api
 ```
+
+How the heck did that work?! Checkout [xip.io](http://xip.io).
 
 - SSH to your openshift VM and list the openshift images
 
