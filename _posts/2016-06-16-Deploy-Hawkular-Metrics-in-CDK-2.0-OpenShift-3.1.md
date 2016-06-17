@@ -8,9 +8,9 @@ tags:
  - CDK2.0
 ---
 
-If you use the Red Hat Container Developer Kit to deploy OSE 3.1 using Vagrant then you may be sad to not see the cool hawkular metrics.
+In my [last post](http://guifreelife.com/blog/2016/06/16/Getting-Started-With-RedHat-Container-Development-Kit) I installed Red Hat Container Developer Kit to deploy OSE 3.1 using Vagrant. But now I want to add Hawkular Metrics.
 
-- [Docs](https://docs.openshift.com/enterprise/3.2/install_config/cluster_metrics.html)
+- [Docs](https://docs.openshift.com/enterprise/3.2/install_config/cluster_metrics.html) for deploying metrics in OSE
 
 Login to the vagrant VM before continuing
 
