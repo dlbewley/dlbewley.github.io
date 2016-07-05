@@ -10,6 +10,10 @@ tags:
  - CDK2.1
 ---
 
+The RedHat Container Developer Kit allows you to deploy OpenShift on your laptop for easier testing and development. Here is how to deploy it.
+
+[![OpenShift CDK](/images/thumb/openshift-cdk-2.1.png)](/images/openshift-cdk-2.1.png)
+
 # Register as a RedHat Developer #
 
 - [Obtain a RH login](http://developers.redhat.com/)
@@ -151,3 +155,7 @@ $ vagrant box add --force --name cdkv2 rhel-cdk-kubernetes-7.2*.x86_64.vagrant-v
 ```
 
 Now go back to [Getting Started](#getting-started) and fire up your new CDK 2.1 VM.
+
+# More Info #
+
+Check out my [post on deploying metrics to CDK](http://guifreelife.com/blog/2016/06/16/Deploy-Hawkular-Metrics-in-CDK-2.0-OpenShift-3.1).
