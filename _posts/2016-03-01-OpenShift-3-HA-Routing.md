@@ -264,6 +264,14 @@ oadm ipfailover ipf-ha-router-primary \
     --create
 ```
 
+### Keepalived Readiness Probe ###
+
+As of OSE 3.2 the `oc status -v` command will warn you that there is no readiness probe defined for this `ipf-ha-router-primary` deployment config. I tried to resolve that warning with this probe, but deployment failed with a _connection refused_ to port 1985 on the node host IP.
+
+```
+oc set probe dc/ipf-ha-router-primary --readiness --open-tcp=1985
+```
+
 # OpenShift HA DNS Configuration #
 
 Wildcard DNS records point users to the OpenShift routers providing ingress to application services.

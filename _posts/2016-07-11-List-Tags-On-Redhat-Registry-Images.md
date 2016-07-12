@@ -2,7 +2,7 @@
 title: How to List Tags On Redhat Registry Images
 layout: post
 tags:
- - Docker
+ - docker
  - openshift
  - OSE3.2
 ---
