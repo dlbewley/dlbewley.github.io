@@ -10,9 +10,7 @@ tags:
 
 Ever gone to [RedHat's container registry](https://access.redhat.com/search/#/container-images) to search for an image and been left wondering what versions exist? Ever been frustrated by the inconsistent tag format? Is there a _v_ or is there not a _v_? Me too.
 
-Docker Hub has progressed to [v2](https://docs.docker.com/registry/spec/api/), while the RedHat registry is still [v1](https://docs.docker.com/v1.6/reference/api/registry_api/).
-
-You can use curl to query the registry API and [list the tags](https://docs.docker.com/v1.6/reference/api/registry_api/#list-repository-tags) like this:
+Docker Hub has progressed to [v2](https://docs.docker.com/registry/spec/api/), while the RedHat registry is still [v1](https://docs.docker.com/v1.6/reference/api/registry_api/) at the moment. As long as you use the right syntax, you can use curl to query the registry API and [list the tags](https://docs.docker.com/v1.6/reference/api/registry_api/#list-repository-tags) like this:
 
 ```bash
 $ curl -s https://registry.access.redhat.com/v1/repositories/openshift3/${image}/tags | jq .
@@ -20,8 +18,10 @@ $ curl -s https://registry.access.redhat.com/v1/repositories/openshift3/${image}
 
 **Example:**
 
+```bash
+$ curl -s https://registry.access.redhat.com/v1/repositories/openshift3/logging-kibana/tags | jq .
+```
 ```json
-[root@ose-prod-master-01 ~]# curl -s https://registry.access.redhat.com/v1/repositories/openshift3/logging-kibana/tags | jq .
 {
   "3.1.0": "2c5acfd9c89c5b122e41b7ca13c6847aa9183bd41076ac9a3836a28da5b82bb4",
   "3.1.0-1": "10b5df01eb1793076b746f27c5b439bde2d73bdf988d805fac450255c22d904b",
