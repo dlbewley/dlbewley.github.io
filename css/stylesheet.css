@@ -290,6 +290,12 @@ Full-Width Styles
   border-bottom-right-radius: 2px;
 }
 
+#tweet_link {
+  position: absolute;
+  top:1;
+  right:10px;
+}
+
 #home_link {
   display: block;
   position: absolute;
