@@ -50,8 +50,10 @@ I just happened to be working on [RHSA-2016:1836](https://access.redhat.com/erra
 
 Take a look at the tags as of 2016-09-18. Notice that `latest` is still _7ac03c5eb56e15575c86d57ced2387c844d17469f4fda7c7928a660b77bf3aef_ like it was back in July, but `3.2.1` and `v3.2` have moved to point to `3.2.1-5` _982e831f5fba03abca20e1f8fbbc8d31ddf8747c5ee8170ddfcba93018e5730d_. I would expect `latest` to match `3.2.1` right now.
 
-```
+```bash
 $ curl -s https://registry.access.redhat.com/v1/repositories/openshift3/logging-kibana/tags | jq .
+```
+```json
 {
   "3.1.0": "2c5acfd9c89c5b122e41b7ca13c6847aa9183bd41076ac9a3836a28da5b82bb4",
   "3.1.0-1": "10b5df01eb1793076b746f27c5b439bde2d73bdf988d805fac450255c22d904b",
