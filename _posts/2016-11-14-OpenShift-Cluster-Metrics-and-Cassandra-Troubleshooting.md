@@ -89,7 +89,7 @@ $ oc logs hawkular-cassandra-1-eo3w8 | grep 'heap space'
 java.lang.OutOfMemoryError: Java heap space
 ```
 
-**How big is the cassandra heap space?##
+**How big is the cassandra heap space?**
 
 First off, how does the cassandra container start? It uses `[cassandra-docker.sh](https://github.com/openshift/origin-metrics/blob/master/cassandra/cassandra-docker.sh)`.
 
