@@ -76,14 +76,6 @@ Keyspace: hawkular_metrics
                 Space used (live): 318081
 ```
 
-**TODO**
-
-- What is a good value? [ref1](https://docs.datastax.com/en/cassandra/2.1/cassandra/operations/ops_tune_jvm_c.html), [ref2](http://stackoverflow.com/questions/30207779/optimal-jvm-settings-for-cassandra), [ref3](https://tobert.github.io/pages/als-cassandra-21-tuning-guide.html)
-  - It doesn't look like JMX is enabled since Sysdig is not showing me any detail about the heap usage. I think I will increase it to 12GB without having done complete due diligence.
-
-- Can this be [injected via the template](https://docs.openshift.com/container-platform/3.3/install_config/cluster_metrics.html#deployer-template-parameters) at deploy time?
-  - Nope. I don't see a param in `/usr/share/openshift/examples/infrastructure-templates/enterprise/metrics-deployer.yaml`
-
 ## Cassandra Heap Size ##
 
 Today I noticed my metrics were malfunctioning and I observed that cassandra is out of heap space:
@@ -96,7 +88,7 @@ java.lang.OutOfMemoryError: Java heap space
 
 **How big is the cassandra heap space?##
 
-First off, how does the cassandra container start?
+First off, how does the cassandra container start? It uses `[cassandra-docker.sh](https://github.com/openshift/origin-metrics/blob/master/cassandra/cassandra-docker.sh)`.
 
 ```bash
 $ oc get rc hawkular-cassandra-1 -o json | jq .spec.template.spec.containers[].command
@@ -189,44 +181,13 @@ At start up the container outputs the following.
 
 All this tells me Cassandra's Java heap is being artificially limited to 8G (on my node which has 192G RAM), and to fix that I can set the `MAX_HEAP_SIZE` variable in the replication controller config.
 
-**Before:**
-
-```bash
-$ oc get rc hawkular-cassandra-1 -o json | jq .spec.template.spec.containers[].env
-```
-```json
-[
-  {
-    "name": "CASSANDRA_MASTER",
-    "value": "true"
-  },
-  {
-    "name": "POD_NAMESPACE",
-    "valueFrom": {
-      "fieldRef": {
-        "apiVersion": "v1",
-        "fieldPath": "metadata.namespace"
-      }
-    }
-  },
-  {
-    "name": "MEMORY_LIMIT",
-    "valueFrom": {}
-  },
-  {
-    "name": "CPU_LIMIT",
-    "valueFrom": {}
-  }
-]
-```
-
 ```bash
 $ oc env rc hawkular-cassandra-1 MAX_HEAP_SIZE=12288M
 replicationcontroller "hawkular-cassandra-1" updated
 $ oc delete pod hawkular-cassandra-1-eo3w8
 ```
 
-This time the pod was scheduled to a smaller node
+After deleting the running pod with the old environment, a new pod was scheduled with the updated environment, but to a smaller node
 
 > The MAX_HEAP_SIZE envar is set to 12288M. Using this value
 > THE HEAP_NEWSIZE envar is not set. Setting to 800M based on the CPU_LIMIT of 8000. [100M per CPU core]
@@ -247,6 +208,17 @@ else
 fi
 ```
 
-So, unless a HEAP_NEWSIZE is defined in the rc a limit of 100MB per CPU core will be applied. However, [that is bad](https://issues.apache.org/jira/browse/CASSANDRA-8150)?
+So, unless a `$HEAP_NEWSIZE` is supplied a limit of 100MB per CPU core will be applied. However, [that is bad](https://issues.apache.org/jira/browse/CASSANDRA-8150)?
+
+## ToDo ##
 
 At these point we are getting deeper into JVM tuning than I care to be.
+
+- What is a good value for `MAX_HEAP_SIZE`? [ref1](https://docs.datastax.com/en/cassandra/2.1/cassandra/operations/ops_tune_jvm_c.html), [ref2](http://stackoverflow.com/questions/30207779/optimal-jvm-settings-for-cassandra), [ref3](https://tobert.github.io/pages/als-cassandra-21-tuning-guide.html)
+  - It doesn't look like JMX is enabled since Sysdig is not showing me any detail about the heap usage. I think I will increase it to 12GB without having done complete due diligence.
+
+- Can this value be [injected via the template](https://docs.openshift.com/container-platform/3.3/install_config/cluster_metrics.html#deployer-template-parameters) at deploy time?
+  - Nope. I don't see a param in `/usr/share/openshift/examples/infrastructure-templates/enterprise/metrics-deployer.yaml`
+
+- What is a good value for `HEAP_NEWSIZE`? [ref1](https://issues.apache.org/jira/browse/CASSANDRA-8150)
+
