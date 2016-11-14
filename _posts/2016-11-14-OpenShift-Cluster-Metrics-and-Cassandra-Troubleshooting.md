@@ -19,15 +19,15 @@ There are 3 major components in the metrics collection process. [Heapster](https
 To ensure the services are healthy [readiness and liveness probes](https://docs.openshift.com/container-platform/3.3/dev_guide/application_health.html) are deployed. The following checks are created on the replicationControllers by the metrics deployer:
 
 - _heapster_ 
-  - `readinessprobe`: `/opt/heapster-readiness.sh`
+  - `readinessprobe`: `[/opt/heapster-readiness.sh](https://github.com/openshift/origin-metrics/blob/master/heapster/heapster-readiness.sh)`
   - `livenessprobe`: _None_
 
 - _hawkular-metrics_
-  - `readinessprobe`: `/opt/hawkular/scripts/hawkular-metrics-readiness.py`
-  - `livenessprobe`: `/opt/hawkular/scripts/hawkular-metrics-liveness.py`
+  - `readinessprobe`: `[/opt/hawkular/scripts/hawkular-metrics-readiness.py](https://github.com/openshift/origin-metrics/blob/master/hawkular-metrics/hawkular-metrics-readiness.py)`
+  - `livenessprobe`: `[/opt/hawkular/scripts/hawkular-metrics-liveness.py](https://github.com/openshift/origin-metrics/blob/master/hawkular-metrics/hawkular-metrics-liveness.py)`
 
 - _hawkular-cassandra_
-  - `readinessprobe`: `/opt/apache-cassandra/bin/cassandra-docker-ready.sh`
+  - `readinessprobe`: `[/opt/apache-cassandra/bin/cassandra-docker-ready.sh](https://github.com/openshift/origin-metrics/blob/master/cassandra/cassandra-docker-ready.sh)`
   - `livenessprobe`: _None_
 
 **When is OK not OK?**
@@ -36,11 +36,11 @@ I have seen things in a state such that _heapster_ is _Ready_, but logging:
 
 > Failed to push data to sink: Hawkular-Metrics Sink
 
-At the same time _hawkular-metrics_ purports to be ready but is logging:
+At the same time _hawkular-metrics_ is _Ready_ but is logging:
 
 > Caused by: com.datastax.driver.core.exceptions.WriteTimeoutException: Cassandra timeout during write query at consistency LOCAL_ONE (1 replica were required but only 0 acknowledged the write)
 
-And concurrent to that, _hawkular-cassandra_ is supposedly _OK_ per `nodeutil status` as called from `/opt/apache-cassandra/bin/cassandra-docker-ready.sh`.
+And simultaneously, _hawkular-cassandra_ is _Ready_, but is logging:
 
 > Caused by: com.datastax.driver.core.exceptions.WriteTimeoutException: Cassandra timeout during write query at consistency LOCAL_ONE (1 replica were required but only 0 acknowledged the write)
 
@@ -210,15 +210,18 @@ fi
 
 So, unless a `$HEAP_NEWSIZE` is supplied a limit of 100MB per CPU core will be applied. However, [that is bad](https://issues.apache.org/jira/browse/CASSANDRA-8150)?
 
+At these point we are getting deeper into JVM tuning than I care to be.
+
 ## ToDo ##
 
-At these point we are getting deeper into JVM tuning than I care to be.
+Here are some outstanding questions.
 
 - What is a good value for `MAX_HEAP_SIZE`? [ref1](https://docs.datastax.com/en/cassandra/2.1/cassandra/operations/ops_tune_jvm_c.html), [ref2](http://stackoverflow.com/questions/30207779/optimal-jvm-settings-for-cassandra), [ref3](https://tobert.github.io/pages/als-cassandra-21-tuning-guide.html)
   - It doesn't look like JMX is enabled since Sysdig is not showing me any detail about the heap usage. I think I will increase it to 12GB without having done complete due diligence.
 
-- Can this value be [injected via the template](https://docs.openshift.com/container-platform/3.3/install_config/cluster_metrics.html#deployer-template-parameters) at deploy time?
-  - Nope. I don't see a param in `/usr/share/openshift/examples/infrastructure-templates/enterprise/metrics-deployer.yaml`
-
 - What is a good value for `HEAP_NEWSIZE`? [ref1](https://issues.apache.org/jira/browse/CASSANDRA-8150)
 
+- Can the above values be [injected via the template](https://docs.openshift.com/container-platform/3.3/install_config/cluster_metrics.html#deployer-template-parameters) at deploy time?
+  - Nope. I don't see a param in `/usr/share/openshift/examples/infrastructure-templates/enterprise/metrics-deployer.yaml`
+
+- How best to create a reliable cassandra liveness probe? [ref1](https://bugzilla.redhat.com/show_bug.cgi?id=1386406)
