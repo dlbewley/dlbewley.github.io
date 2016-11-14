@@ -44,11 +44,47 @@ And concurrent to that, _hawkular-cassandra_ is supposedly _OK_ per `nodeutil st
 
 > Caused by: com.datastax.driver.core.exceptions.WriteTimeoutException: Cassandra timeout during write query at consistency LOCAL_ONE (1 replica were required but only 0 acknowledged the write)
 
-Unfortunately there is no liveness probe defined for Cassandra, so if it fails your metrics collection fails,  and it will not self-heal. Additionally you likely will not know unless your developers complain about missing the metrics graphs on their pods.
+Unfortunately there is [no liveness probe defined for Cassandra](https://bugzilla.redhat.com/show_bug.cgi?id=1386406), so if it fails your metrics collection fails,  and it will not self-heal. Additionally you likely will not know unless your developers complain about missing the metrics graphs on their pods.
 
-I was informed by Red Hat Support that running `nodetool tablestats hawkular-metrics` periodically can prove that metric record count is increasing. This might be adequate for a cassandra liveness probe, but I have not yet explored this.
+I was informed by Red Hat Support that running `nodetool tablestats hawkular_metrics` periodically can prove that metric record count is increasing. This might be adequate for a cassandra liveness probe, but I have not yet explored this.
 
-## Cassandra Heap OOM ##
+Running the command within the hawkular-cassandra pod a few seconds apart I see:
+
+```
+sh-4.2$ nodetool tablestats hawkular_metrics | head
+Keyspace: hawkular_metrics
+        Read Count: 1610
+        Read Latency: 8.997621118012423 ms.
+        Write Count: 12747002
+        Write Latency: 0.01655690922461611 ms.
+        Pending Flushes: 0
+                Table: active_time_slices
+                SSTable count: 1
+                SSTables in each level: [1, 0, 0, 0, 0, 0, 0, 0, 0]
+                Space used (live): 318081
+
+sh-4.2$ nodetool tablestats hawkular_metrics | head
+Keyspace: hawkular_metrics
+        Read Count: 1610
+        Read Latency: 8.997621118012423 ms.
+        Write Count: 12763701
+        Write Latency: 0.016549977784656663 ms.
+        Pending Flushes: 0
+                Table: active_time_slices
+                SSTable count: 1
+                SSTables in each level: [1, 0, 0, 0, 0, 0, 0, 0, 0]
+                Space used (live): 318081
+```
+
+**TODO**
+
+- What is a good value? [ref1](https://docs.datastax.com/en/cassandra/2.1/cassandra/operations/ops_tune_jvm_c.html), [ref2](http://stackoverflow.com/questions/30207779/optimal-jvm-settings-for-cassandra), [ref3](https://tobert.github.io/pages/als-cassandra-21-tuning-guide.html)
+  - It doesn't look like JMX is enabled since Sysdig is not showing me any detail about the heap usage. I think I will increase it to 12GB without having done complete due diligence.
+
+- Can this be [injected via the template](https://docs.openshift.com/container-platform/3.3/install_config/cluster_metrics.html#deployer-template-parameters) at deploy time?
+  - Nope. I don't see a param in `/usr/share/openshift/examples/infrastructure-templates/enterprise/metrics-deployer.yaml`
+
+## Cassandra Heap Size ##
 
 Today I noticed my metrics were malfunctioning and I observed that cassandra is out of heap space:
 
@@ -64,6 +100,8 @@ First off, how does the cassandra container start?
 
 ```bash
 $ oc get rc hawkular-cassandra-1 -o json | jq .spec.template.spec.containers[].command
+```
+```json
 [
   "/opt/apache-cassandra/bin/cassandra-docker.sh",
   "--cluster_name=hawkular-metrics",
@@ -182,10 +220,33 @@ $ oc get rc hawkular-cassandra-1 -o json | jq .spec.template.spec.containers[].e
 ]
 ```
 
-**TODO**
+```bash
+$ oc env rc hawkular-cassandra-1 MAX_HEAP_SIZE=12288M
+replicationcontroller "hawkular-cassandra-1" updated
+$ oc delete pod hawkular-cassandra-1-eo3w8
+```
 
-- What is a good value? [ref1](https://docs.datastax.com/en/cassandra/2.1/cassandra/operations/ops_tune_jvm_c.html), [ref2](http://stackoverflow.com/questions/30207779/optimal-jvm-settings-for-cassandra), [ref3](https://tobert.github.io/pages/als-cassandra-21-tuning-guide.html)
-  - It doesn't look like JMX is enabled since Sysdig is not showing me any detail about the heap usage. I think I will increase it to 12GB without having done complete due diligence.
+This time the pod was scheduled to a smaller node
 
-- Can this be [injected via the template](https://docs.openshift.com/container-platform/3.3/install_config/cluster_metrics.html#deployer-template-parameters) at deploy time?
-  - Nope. I don't see a param in `/usr/share/openshift/examples/infrastructure-templates/enterprise/metrics-deployer.yaml`
+> The MAX_HEAP_SIZE envar is set to 12288M. Using this value
+> THE HEAP_NEWSIZE envar is not set. Setting to 800M based on the CPU_LIMIT of 8000. [100M per CPU core]
+
+## Cassandra Heap New Size ##
+
+What is this `$HEAP_NEWSIZE` parameter, and how is it determined? Back to `/opt/apache-cassandra/bin/cassandra-docker.sh`:
+
+```bash
+if [ -z "${HEAP_NEWSIZE}" ] && [ -z "${CPU_LIMIT}" ]; then
+  echo "The HEAP_NEWSIZE and CPU_LIMIT envars are not set. Defaulting the HEAP_NEWSIZE to 100M"
+  export HEAP_NEWSIZE=100M
+elif [ -z "${HEAP_NEWSIZE}" ]; then
+  export HEAP_NEWSIZE=$((CPU_LIMIT/10))M
+  echo "THE HEAP_NEWSIZE envar is not set. Setting to ${HEAP_NEWSIZE} based on the CPU_LIMIT of ${CPU_LIMIT}. [100M per CPU core]"
+else
+  echo "The HEAP_NEWSIZE envar is set to ${HEAP_NEWSIZE}. Using this value"
+fi
+```
+
+So, unless a HEAP_NEWSIZE is defined in the rc a limit of 100MB per CPU core will be applied. However, [that is bad](https://issues.apache.org/jira/browse/CASSANDRA-8150)?
+
+At these point we are getting deeper into JVM tuning than I care to be.
