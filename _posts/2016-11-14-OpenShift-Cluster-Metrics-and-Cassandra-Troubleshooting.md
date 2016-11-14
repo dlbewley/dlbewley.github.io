@@ -91,7 +91,7 @@ java.lang.OutOfMemoryError: Java heap space
 
 **How big is the cassandra heap space?**
 
-First off, how does the cassandra container start? It uses `[cassandra-docker.sh](https://github.com/openshift/origin-metrics/blob/master/cassandra/cassandra-docker.sh)`.
+First off, how does the cassandra container start? It uses [cassandra-docker.sh](https://github.com/openshift/origin-metrics/blob/master/cassandra/cassandra-docker.sh).
 
 ```bash
 $ oc get rc hawkular-cassandra-1 -o json | jq .spec.template.spec.containers[].command
@@ -220,7 +220,7 @@ At these point we are getting deeper into JVM tuning than I care to be.
 Here are some outstanding questions.
 
 - What is a good value for `MAX_HEAP_SIZE`? [ref1](https://docs.datastax.com/en/cassandra/2.1/cassandra/operations/ops_tune_jvm_c.html), [ref2](http://stackoverflow.com/questions/30207779/optimal-jvm-settings-for-cassandra), [ref3](https://tobert.github.io/pages/als-cassandra-21-tuning-guide.html)
-  - It doesn't look like JMX is enabled since Sysdig is not showing me any detail about the heap usage. I think I will increase it to 12GB without having done complete due diligence.
+  - I think I will increase it to 12GB without having done complete due diligence.
 
 - What is a good value for `HEAP_NEWSIZE`? [ref1](https://issues.apache.org/jira/browse/CASSANDRA-8150)
 
@@ -228,3 +228,5 @@ Here are some outstanding questions.
   - Nope. I don't see a param in `/usr/share/openshift/examples/infrastructure-templates/enterprise/metrics-deployer.yaml`
 
 - How best to create a reliable cassandra liveness probe? [ref1](https://bugzilla.redhat.com/show_bug.cgi?id=1386406)
+
+- Can I enable JMX or otherwise get [Sysdig](https://sysdig.com/) to tell about the memory health of the JVM? Currently I do not see any GC info.
