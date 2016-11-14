@@ -18,25 +18,28 @@ There are 3 major components in the metrics collection process. [Heapster](https
 
 To ensure the services are healthy [readiness and liveness probes](https://docs.openshift.com/container-platform/3.3/dev_guide/application_health.html) are deployed. The following checks are created on the replicationControllers by the metrics deployer:
 
-- _heapster_ 
-  - `readinessprobe`: `[/opt/heapster-readiness.sh](https://github.com/openshift/origin-metrics/blob/master/heapster/heapster-readiness.sh)`
-  - `livenessprobe`: _None_
+**_heapster_**
 
-- _hawkular-metrics_
-  - `readinessprobe`: `[/opt/hawkular/scripts/hawkular-metrics-readiness.py](https://github.com/openshift/origin-metrics/blob/master/hawkular-metrics/hawkular-metrics-readiness.py)`
-  - `livenessprobe`: `[/opt/hawkular/scripts/hawkular-metrics-liveness.py](https://github.com/openshift/origin-metrics/blob/master/hawkular-metrics/hawkular-metrics-liveness.py)`
+- `readinessprobe`: `[/opt/heapster-readiness.sh](https://github.com/openshift/origin-metrics/blob/master/heapster/heapster-readiness.sh)`
+- `livenessprobe`: _None_
 
-- _hawkular-cassandra_
-  - `readinessprobe`: `[/opt/apache-cassandra/bin/cassandra-docker-ready.sh](https://github.com/openshift/origin-metrics/blob/master/cassandra/cassandra-docker-ready.sh)`
-  - `livenessprobe`: _None_
+**_hawkular-metrics_**
 
-**When is OK not OK?**
+- `readinessprobe`: `[/opt/hawkular/scripts/hawkular-metrics-readiness.py](https://github.com/openshift/origin-metrics/blob/master/hawkular-metrics/hawkular-metrics-readiness.py)`
+- `livenessprobe`: `[/opt/hawkular/scripts/hawkular-metrics-liveness.py](https://github.com/openshift/origin-metrics/blob/master/hawkular-metrics/hawkular-metrics-liveness.py)`
+
+**_hawkular-cassandra_**
+
+- `readinessprobe`: `[/opt/apache-cassandra/bin/cassandra-docker-ready.sh](https://github.com/openshift/origin-metrics/blob/master/cassandra/cassandra-docker-ready.sh)`
+- `livenessprobe`: _None_
+
+## When is OK not OK? ##
 
 I have seen things in a state such that _heapster_ is _Ready_, but logging:
 
 > Failed to push data to sink: Hawkular-Metrics Sink
 
-At the same time _hawkular-metrics_ is _Ready_ but is logging:
+At the same time _hawkular-metrics_ is _Ready_ and _Live_ but is logging:
 
 > Caused by: com.datastax.driver.core.exceptions.WriteTimeoutException: Cassandra timeout during write query at consistency LOCAL_ONE (1 replica were required but only 0 acknowledged the write)
 
