@@ -20,17 +20,17 @@ To ensure the services are healthy [readiness and liveness probes](https://docs.
 
 **_heapster_**
 
-- `readinessprobe`: `[/opt/heapster-readiness.sh](https://github.com/openshift/origin-metrics/blob/master/heapster/heapster-readiness.sh)`
+- `readinessprobe`: [/opt/heapster-readiness.sh](https://github.com/openshift/origin-metrics/blob/master/heapster/heapster-readiness.sh)
 - `livenessprobe`: _None_
 
 **_hawkular-metrics_**
 
-- `readinessprobe`: `[/opt/hawkular/scripts/hawkular-metrics-readiness.py](https://github.com/openshift/origin-metrics/blob/master/hawkular-metrics/hawkular-metrics-readiness.py)`
-- `livenessprobe`: `[/opt/hawkular/scripts/hawkular-metrics-liveness.py](https://github.com/openshift/origin-metrics/blob/master/hawkular-metrics/hawkular-metrics-liveness.py)`
+- `readinessprobe`: [/opt/hawkular/scripts/hawkular-metrics-readiness.py](https://github.com/openshift/origin-metrics/blob/master/hawkular-metrics/hawkular-metrics-readiness.py)
+- `livenessprobe`: [/opt/hawkular/scripts/hawkular-metrics-liveness.py](https://github.com/openshift/origin-metrics/blob/master/hawkular-metrics/hawkular-metrics-liveness.py)
 
 **_hawkular-cassandra_**
 
-- `readinessprobe`: `[/opt/apache-cassandra/bin/cassandra-docker-ready.sh](https://github.com/openshift/origin-metrics/blob/master/cassandra/cassandra-docker-ready.sh)`
+- `readinessprobe`: [/opt/apache-cassandra/bin/cassandra-docker-ready.sh](https://github.com/openshift/origin-metrics/blob/master/cassandra/cassandra-docker-ready.sh)
 - `livenessprobe`: _None_
 
 ## When is OK not OK? ##
