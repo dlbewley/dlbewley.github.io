@@ -25,18 +25,19 @@ To summarize:
 - HTTPS 50,000
 - Haproxy Stats 51,936
 
-As of OCP 3.3.1.7, I believe there is a flaw/bug in the `oadm router` command which I have called out below.
 
 # How To #
 
-- *Open firewall on infra nodes where router will run to allow new http and https port*
+## Open infra node firewalls ##
+
+- Open firewall on infra nodes where router will run to allow new http and https port
 
 ```bash
  iptables -A OS_FIREWALL_ALLOW -m tcp -p tcp --dport 49999 -j ACCEPT
  iptables -A OS_FIREWALL_ALLOW -m tcp -p tcp --dport 50000 -j ACCEPT
 ```
 
-This can also be done with Ansible and the [os_firewall role](https://github.com/openshift/openshift-ansible/tree/master/roles/os_firewall) in your playbook.
+- This can also be done with Ansible and the [os_firewall role](https://github.com/openshift/openshift-ansible/tree/master/roles/os_firewall) in your playbook. (_untested_)
 
 ```yaml
 - hosts: infra-nodes
@@ -53,7 +54,9 @@ This can also be done with Ansible and the [os_firewall role](https://github.com
     - os_firewall
 ```
 
-- **Create a router called _ha-router-teradici_ on these ports and also make sure the stats port does not clash with existing router on port 1936:**
+## Create a router ##
+
+- Create a router called _ha-router-teradici_ with `oa adm router` or `oadm router` on these ports and also make sure the stats port does not clash with existing router on port 1936
 
 ```bash
 [root@ose-test-master-01 ~]# oc get nodes --show-labels
@@ -121,7 +124,9 @@ frontend public
   bind 127.0.0.1:{{env "ROUTER_SERVICE_NO_SNI_PORT" "10443"}} ssl no-sslv3 {{ if (len .DefaultCertificate) gt 0 }}crt {{.DefaultCertificate}}{{ else }}crt /var/lib/haproxy/conf/default_pub_keys.pem{{ end }} accept-proxy
 ```
 
-- **Fix port number environment variables in the new router deploymentconfig**
+## Fix the router deploymentconfig ##
+
+- Fix port number environment variables in the new router deploymentconfig
 
 ```bash
 [root@ose-test-master-01 ~]# oc set env dc/ha-router-teradici  ROUTER_SERVICE_HTTP_PORT=49999
@@ -140,13 +145,15 @@ map[443/tcp:{} 53/tcp:{} 80/tcp:{} 8443/tcp:{}]
 EXPOSE 80 443
 ```
 
-- **Add ROUTE_LABLES env var for sharding routes to the new router**
+## Add labels for sharding ##
+
+- Add `ROUTE_LABLES` env var to the router deployment config for sharding
 
 ```
 [root@ose-test-master-01 ~]# oc set env dc/ha-router-teradici  ROUTE_LABELS="router=teradici"
 ```
 
-- **Add matching label to an existing route to make it available on new router**
+- Add matching label to an existing route to make it available on new router
 
 ```
 [root@ose-test-master-01 ~]# oc label route v3simplebottle -n user1 router=teradici
@@ -154,7 +161,9 @@ EXPOSE 80 443
 
 I did not preclude the route from also being reachable on the first existing router as well.
 
-- **Profit!**
+## Profit! ##
+
+- Watch it work
 
 ```bash
 [root@ose-test-master-01 ~]# curl http://v3simplebottle-user1.test.os.example.com:49999
