@@ -13,7 +13,10 @@ Ever gone to [RedHat's container registry](https://access.redhat.com/search/#/co
 Docker Hub has progressed to [v2](https://docs.docker.com/registry/spec/api/), while the RedHat registry is still [v1](https://docs.docker.com/v1.6/reference/api/registry_api/) at the moment. As long as you use the right syntax, you can use curl to query the registry API and [list the tags](https://docs.docker.com/v1.6/reference/api/registry_api/#list-repository-tags) like this:
 
 ```bash
+# v1 registry
 $ curl -s https://registry.access.redhat.com/v1/repositories/openshift3/${image}/tags | jq .
+# v2 registry
+$ curl -sL https://registry.access.redhat.com/v2/openshift3/${image}-deployer/tags/list
 ```
 
 **Example:**
