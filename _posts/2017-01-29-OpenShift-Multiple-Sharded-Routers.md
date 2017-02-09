@@ -181,6 +181,10 @@ The following things `oadm router` does not do, and they feel like bugs:
 - properly set env `ROUTER_SERVICE_HTTP_PORT`
 - label the generated `ha-router-teradici-certs` secret as it labels services, dc, and seemingly everything else it created
 
+Apparently this isn't exactly a bug.
+
+- [https://bugzilla.redhat.com/show_bug.cgi?id=1420543](https://bugzilla.redhat.com/show_bug.cgi?id=1420543)
+
 # See Also #
 
 - https://docs.openshift.com/container-platform/3.3/dev_guide/getting_traffic_into_cluster.html
