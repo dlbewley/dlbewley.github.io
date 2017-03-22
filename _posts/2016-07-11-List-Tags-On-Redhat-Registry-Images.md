@@ -16,7 +16,7 @@ Docker Hub has progressed to [v2](https://docs.docker.com/registry/spec/api/), w
 # v1 registry
 $ curl -s https://registry.access.redhat.com/v1/repositories/openshift3/${image}/tags | jq .
 # v2 registry
-$ curl -sL https://registry.access.redhat.com/v2/openshift3/${image}-deployer/tags/list
+$ curl -sL https://registry.access.redhat.com/v2/openshift3/${image}/tags/list
 ```
 
 **Example:**
