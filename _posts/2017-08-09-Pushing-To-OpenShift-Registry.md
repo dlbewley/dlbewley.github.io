@@ -14,10 +14,10 @@ Get on a machine that has docker and participates in the cluster SDN or can some
 
 **Get the IP of the registry**
 
-```bash
+{% highlight bash %}{% raw %}
 oc get svc docker-registry -n default --template "{{ .spec.clusterIP }}"
 SVC_REGISTRY=$(oc get svc docker-registry -n default --template "{{ .spec.clusterIP }}")
-```
+{% endraw %}{% endhighlight %}
 
 **Get a token for your session**
 
@@ -27,7 +27,7 @@ r4bjk9MrFcWz8SjR688zvbAbwnI1yoqNbtdhN1sMaeo
 TOKEN=$(oc whoami -t)
 ```
 
-***Login to the docker registry**
+**Login to the docker registry**
 
 ```bash
 docker login -u $(oc whoami) -p $TOKEN  $SVC_REGISTRY:5000
