@@ -44,3 +44,7 @@ docker commit <container_id> $SVC_REGISTRY:5000/project/image:tag
 ```bash
 docker push $SVC_REGISTRY:5000/project/image:tag
 ```
+
+## See Also ##
+
+- [OpenShift Managing Images](https://docs.openshift.com/container-platform/latest/dev_guide/managing_images.html)
