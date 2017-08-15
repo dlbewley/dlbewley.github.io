@@ -7,7 +7,7 @@ tags:
 
 What does the networking for OpenStack look like? Maybe something like this.
 
-   | Network            | VLAN  | IP CIDR
+ # | Network            | VLAN  | IP CIDR
 ---|--------------------|-------|-----------------
 N1 | Provisioning (PXE) | V:310 | 172.23.32.0/20
 N2 | Internal API | V:311 | 172.23.21.0/24
