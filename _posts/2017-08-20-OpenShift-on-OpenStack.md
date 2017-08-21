@@ -25,12 +25,25 @@ OpenShift its self needs to be [configured for OpenStack](https://docs.openshift
 # Networking Overview #
 
 OpenShift highly available routing is somewhat complex on its own.
+
 [![OpenShift HA Routing](/images/thumb/openshift-ha-cluster-routing.png)](http://guifreelife.com/blog/2016/03/01/OpenShift-3-HA-Routing)
 
 Toss in the even more complete OpenStack networking, and well, hopefully you are not starting from scratch.
+
 [![OpenStack Network Diagram](/images/thumb/openstack-network-pub.png)](http://guifreelife.com/blog/2017/08/14/OpenStack-Network-Diagram)
 
 The reference architecture forgoes the [OpenShift SDN with ovs-subnet plugin](https://docs.openshift.com/container-platform/latest/architecture/additional_concepts/sdn.html) and [uses Flannel](https://docs.openshift.com/container-platform/latest/architecture/additional_concepts/flannel.html). Notes on [configuring Flannel networking](https://docs.openshift.com/container-platform/latest/install_config/configuring_sdn.html#using-flannel). 
 
+[![Openshift on OpenStack Reference Arch Diagram](https://raw.githubusercontent.com/redhat-openstack/openshift-on-openstack/master/graphics/architecture.png)]
+
 There are some drawbacks to using Flannel when it comes to isolation. An interesting alternative to Flannel could be [Project Calico](https://www.projectcalico.org/) which uses BGP routing amongst containers.
+
+## Network Details ##
+
+Since this is "openshift on openstack" I will use `o3` as the subdomain for now.
+
+Host                  | IP                        | Description
+----------------------|---------------------------|------------
+openshift.o3.example.com | 10.19.x.y (Load Balancer) | Web console and API endpoint
+*.o3.example.com      | 10.19.x.y (Router)        | OpenShift routes to services handled by haproxy.
 
