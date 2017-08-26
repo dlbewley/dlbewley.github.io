@@ -2,7 +2,7 @@
 title: OpenStack Network Diagram
 layout: post
 tags:
- - OpenStack
+ - openstack
 ---
 
 What does the networking for OpenStack look like? Maybe something like this.
