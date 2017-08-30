@@ -223,10 +223,19 @@ ansible-playbook --private-key ocp3.key -e @dns-vars.yaml -vv\
         openshift-ansible-contrib/reference-architecture/osp-dns/deploy-dns.yaml | tee dns-deploy.log
 ```
 
-My network deployed, but I hit an error deploying the instances so I [opened an issue](https://github.com/openshift/openshift-ansible-contrib/issues/699)
+My network deployed, but I hit an error caused by the [Nova scheduler](https://docs.openstack.org/nova/latest/user/filter-scheduler.html) configuration while deploying the instances, so I [opened an issue](https://github.com/openshift/openshift-ansible-contrib/issues/699)
 
 ```
 17-08-27 02:21:14Z [dns-service.hosts]: CREATE_FAILED  ResourceInError: resources.hosts.resources.slaves.resources.slaves.resources[1].resources.host: Went to status ERROR due to \"Message: ServerGroup policy is not supported: ServerGroupAntiAffinityFilter not configured, Code: 400\"", "2017-08-27 02:21:14Z [dns-service]: CREATE_FAILED  Resource CREATE failed: ResourceInError: resources.hosts.resources.slaves.resources.slaves.resources[1].resources.host: Went to status ERROR due to \"Message: ServerGroup policy is not supported: ServerGroupAntiAffinityFilter not configured, Code: 400\""]}
+```
+
+```
+[stack@director ~]$ openstack server group list
++--------------------------------------+--------------------+---------------+
+| ID                                   | Name               | Policies      |
++--------------------------------------+--------------------+---------------+
+| 0eb9c161-3abd-44a6-80c7-0dea63f2060e | slave_server_group | anti-affinity |
++--------------------------------------+--------------------+---------------+
 ```
 
 # Heat Deployment #
