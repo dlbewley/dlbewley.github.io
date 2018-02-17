@@ -7,7 +7,7 @@ tags:
  - networking
 ---
 
-[OpenShift HA Routing](http://guifreelife.com/blog/2016/03/01/OpenShift-3-HA-Routing) uses haproxy application routers to get traffic into the cluster. These application routers are made redundant by running ipfailover (keepalived) pods to maintain a set of Virtual IPs on each infrastructure node where the application routers run. These VIPs are then referenced by round robin DNS records to enable a measure of load balancing. 
+[OpenShift HA Routing](http://guifreelife.com/blog/2016/03/01/OpenShift-3-HA-Routing) uses [haproxy application routers](https://docs.openshift.com/container-platform/latest/architecture/networking/haproxy-router.html) to get traffic into the cluster. These application routers are made redundant by running [ipfailover (keepalived)](https://docs.openshift.com/container-platform/latest/admin_guide/high_availability.html) pods to maintain a set of Virtual IPs on each infrastructure node where the application routers run. These VIPs are then referenced by round robin DNS records to enable a measure of load balancing. 
 
 OK, so now you are load balancing at the network layer, but what about the link layer?
 Did you know that even *if* you somehow manage to perfectly balance traffic among the VIPs using RR DNS you could still be using only one of your application routers? Well you could be!
