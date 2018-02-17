@@ -12,6 +12,8 @@ tags:
 OK, so now you are load balancing at the network layer, but what about the link layer?
 Did you know that even *if* you somehow manage to perfectly balance traffic among the VIPs using RR DNS you could still be using only one of your application routers? Well you could be!
 
+[![Bandwidth to Infra Nodes](/images/openshift-routing-garp-before.png)](/images/openshift-routing-garp-before.png)
+
 **Example Environment**
 
 Here is an environment with 3 infrastructure nodes and and 3 primary or applications nodes in the 192.0.2.0/24 address space. The application domain is `os.example.com`.
@@ -130,6 +132,8 @@ ssh root@ose-prod-node-01 arping -c 4 -A -I eth0 192.0.2.101
 ssh root@ose-prod-node-02 arping -c 4 -A -I eth0 192.0.2.102
 ssh root@ose-prod-node-03 arping -c 4 -A -I eth0 192.0.2.103
 ```
+
+[![Bandwidth to Infra Nodes After GARP](/images/openshift-routing-garp-after.png)](/images/openshift-routing-garp-after.png)
 
 **The Caveat**
 
