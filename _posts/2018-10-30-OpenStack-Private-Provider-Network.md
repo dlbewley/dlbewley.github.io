@@ -14,7 +14,8 @@ A prequisite is the provider network must be plumbed to the external bridge on y
 Here is an Ansible playbook to create a project, place a unshared provider network and subnet in that project. Afterwards we will grant access to the members of this project using the openstack client. It [does not appear](https://docs.ansible.com/ansible/latest/modules/list_of_cloud_modules.html#openstack) that Ansible has a OpenStack network RBAC module at this time.
 
 
-```yaml
+
+{% highlight yaml %}{% raw %}
 ---
 # file: project-tools-build.yml
 # playbook to create tools-build project and network
@@ -123,7 +124,7 @@ Here is an Ansible playbook to create a project, place a unshared provider netwo
         allocation_pool_end:  "{{ item.value.allocation_pool_end | default(omit) }}"
         dns_nameservers: "{{ item.value.dns_nameservers | default(dns_nameservers) | join(',') }}"
       with_dict: "{{ networks }}"
-```
+{% endraw %}{% endhighlight %}
 
 At this point you will have a provider network called `tools-build` located in the tools-build project, but members of that tenant will not have rights to access it, because we set `shared: False`.
 
