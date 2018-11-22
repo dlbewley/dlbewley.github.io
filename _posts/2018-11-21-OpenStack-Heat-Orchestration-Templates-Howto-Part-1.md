@@ -11,7 +11,7 @@ OpenStack enables automated creation of resources such as networks, routers, and
 Heat templates are written in YAML format, and you can quickly see from the documentation that a basic template will likely have 4 sections:
 
 {% highlight yaml %}{% raw %}
-# features as of date of OpenStack release or the name of the release
+# templates will use features as of this release of OpenStack
 heat_template_version: queens
   ...
 # variables to inform the creation of resources to follow 
@@ -25,19 +25,17 @@ outputs:
   ...
 {% endraw %}{% endhighlight %}
 
-The `[heat_template_version](https://docs.openstack.org/heat/latest/template_guide/hot_spec.html#heat-template-version)` specifies the features expected to be supported by the template to follow. You may see dated versions, but since Newton the release name is supported. I would use that if the template is not going to be used on a cloud older than that.
+The [heat_template_version](https://docs.openstack.org/heat/latest/template_guide/hot_spec.html#heat-template-version) specifies the features expected to be supported by the template to follow. You may see dated versions, but since Newton the release name is supported. I would use that if the template is not going to be used on a cloud older than that.
 
-The `[parameters](https://docs.openstack.org/heat/latest/template_guide/hot_spec.html#parameters-section)` section identifies any variables that will be used later in the template. This is where a place holder for a server name, or the flavor to use would be defined. Parameters can have a default value and miscellaneous constraints applied for validation.
+The [parameters](https://docs.openstack.org/heat/latest/template_guide/hot_spec.html#parameters-section) section identifies any variables that will be used later in the template. This is where a place holder for a server name, or the flavor to use would be defined. Parameters can have a default value and miscellaneous constraints applied for validation.
 
-Objects like a server instance are known as `[resources](https://docs.openstack.org/heat/latest/template_guide/hot_spec.html#resources-section)`. Anything that the template will create or instantiate will be listed in the `resources` section and will be informed by the `parameters` section.
+Objects like a server instance are known as [resources](https://docs.openstack.org/heat/latest/template_guide/hot_spec.html#resources-section). Anything that the template will create or instantiate will be listed in the `resources` section and will be informed by the `parameters` section.
 
 Once a template has been "launched" or fed to OpenStack it will create what is called a `stack` of all the resources requested. There are likely some obvious questions you want to ask about a stack like: _"What is the name of the server I just created?"_ or _"What is the IP of my server?"_. The `outputs` section makes it easy to expose that information.
 
 # Simple Example Template
 
-Here is a template that will create a server and attach it to a network, but it assumes that a network exists.
-
-Even simple things can actually be somewhat complicated in OpenStack, let's pretend a network called _"private"_ already exists.
+Here is a template that will create a server and attach it to a network, but it assumes that a network exists. In my case I already have a network named `provider192`.
 
 {% highlight yaml %}{% raw %}
 # file: example-1.yaml
@@ -238,12 +236,6 @@ Since the flavor was not found, our stack was not created. In truth, without tha
 
 ```bash
 # flawed example with custom constraint removed
-$ openstack stack create -t example-1.yaml --parameter flavor=nonexistant example-fail
-ERROR: Property error: : resources.my_instance.properties.flavor: : Error validating value 'nonexistant': No Flavor matching {'name': u'nonexistant'}. (HTTP 404)
-```
-
-```bash
-# example with custom constraint removed
 $ openstack stack create -t example-1.yaml --parameter flavor=nonexistant example-fail
 ERROR: Property error: : resources.my_instance.properties.flavor: : Error validating value 'nonexistant': No Flavor matching {'name': u'nonexistant'}. (HTTP 404)
 ```
