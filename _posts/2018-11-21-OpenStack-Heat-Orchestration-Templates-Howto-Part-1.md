@@ -1,5 +1,5 @@
 ---
-title: How to Creatae and Use OpenStack Heat Orchestration Templates Part 1
+title: How to Create and Use OpenStack Heat Orchestration Templates Part 1
 layout: post
 tags:
  - heat
