@@ -80,7 +80,7 @@ outputs:
 
 Save that to a file called `example-1.yaml`. Edit the default flavor and image values to match what exists in your cloud.
 
-Now create a stack from from the template. The command looks like this:
+Now create a stack from the template. The command looks like this:
 
 ```bash
 $ openstack stack create -t <template_filename.yaml> <resultant_stack_name>
@@ -224,7 +224,7 @@ $ openstack stack delete example-1 --yes
 
 Let's see how to pass in parameter values and demonstrate the effect of the [custom constraint](https://docs.openstack.org/heat/latest/template_guide/hot_spec.html#custom-constraint) we placed on the flavor parameter.
 
-We know there is a paremeter named `flavor` we can provide a value to override the default value when we create a stack from our template.
+We know there is a parameter named `flavor` we can provide a value to override the default value when we create a stack from our template.
 
 ```bash
 # flawed example
@@ -314,8 +314,9 @@ I'll try to follow up with some more comprehensive examples. Check back in a wee
 
 - Rackspace [OpenStack Orchestration In Depth, Part I: Introduction to Heat](https://developer.rackspace.com/blog/openstack-orchestration-in-depth-part-1-introduction-to-heat/)
 - [OpenStack Resource Types](http://docs.openstack.org/developer/heat/template_guide/openstack.html)
+- [OpenStack User Guide Create and Manage Stacks](https://docs.openstack.org/newton/user-guide/cli-create-and-manage-stacks.html)
 - [HOT Template Specification](http://docs.openstack.org/developer/heat/template_guide/hot_spec.html)
-- [OpenStack Resource Types](https://docs.openstack.org/heat/latest/template_guide/openstack.html)
+- [OpenStack Resource Types](https://docs.openstack.org/heat/latest/template_guide/openstack.html) - Go here when looking up resource parameters and outputs.
 - [TriplO Documentation](https://docs.openstack.org/tripleo-docs/latest/)
 - [Heat Template Composition](https://docs.openstack.org/heat/latest/template_guide/composition.html)
 - Stratoscale [Best Practices for OpenStack Heat Templates](https://www.stratoscale.com/blog/openstack/best-practices-openstack-heat-templates/)
