@@ -317,6 +317,7 @@ I'll try to follow up with some more comprehensive examples. Check back in a wee
 - [OpenStack User Guide Create and Manage Stacks](https://docs.openstack.org/newton/user-guide/cli-create-and-manage-stacks.html)
 - [HOT Template Specification](http://docs.openstack.org/developer/heat/template_guide/hot_spec.html)
 - [OpenStack Resource Types](https://docs.openstack.org/heat/latest/template_guide/openstack.html) - Go here when looking up resource parameters and outputs.
-- [TriplO Documentation](https://docs.openstack.org/tripleo-docs/latest/)
+- [TripleO Documentation](https://docs.openstack.org/tripleo-docs/latest/)
 - [Heat Template Composition](https://docs.openstack.org/heat/latest/template_guide/composition.html)
 - Stratoscale [Best Practices for OpenStack Heat Templates](https://www.stratoscale.com/blog/openstack/best-practices-openstack-heat-templates/)
+- [DevOpsPro 2016](http://devops-pro-2016.armyofevilrobots.com/) is a great tutorial by example!
