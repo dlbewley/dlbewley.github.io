@@ -62,6 +62,7 @@ https://ose-test-etcd-03.example.com:2379 is healthy: successfully committed pro
 https://ose-test-etcd-02.example.com:2379 is healthy: successfully committed proposal: took = 2.213456ms
 {% endraw %}{% endhighlight %}
 
+
 - [ ] **[Create a backup of your etcd](https://docs.openshift.com/container-platform/3.9/day_two_guide/environment_backup.html#backing-up-etcd_environment-backup) data and configuration.**
 
 > Because of the [migration during the upgrade](https://docs.openshift.com/container-platform/3.7/upgrading/migrating_etcd.html) to 3.7, I am assuming I do not need to back up v2 data. That is [somewhat TBD](https://lists.openshift.redhat.com/openshift-archives/users/2019-February/msg00010.html), however.
@@ -96,7 +97,8 @@ ETCDCTL_API=3 $ETCD3 \
 #    snapshot restore ${BACKUP_DIR}/snap/db
 {% endraw %}{% endhighlight %}
 
-- [ ] **Run the etcd scaleup playbook `[/usr/share/ansible/openshift-ansible/playbooks/openshift-etcd/scaleup.yml](https://github.com/openshift/openshift-ansible/blob/release-3.9/playbooks/openshift-etcd/scaleup.yml)`**
+
+- [ ] **Run the [etcd scaleup playbook](https://github.com/openshift/openshift-ansible/blob/release-3.9/playbooks/openshift-etcd/scaleup.yml)**
 
 {% highlight bash %}{% raw %}
 #!/bin/bash
@@ -107,6 +109,7 @@ ansible-playbook -vvv \
         -i hosts "$PLAYBOOK" \
         | tee $(date +%Y%m%d-%H%M)-etcd-scaleup.log
 {% endraw %}{% endhighlight %}
+
 
 > In my case I found that the etcd restart handler was skipped and the master started etcd listening only on localhost. This caused the [cluster status check task](https://github.com/openshift/openshift-ansible/blob/release-3.9/playbooks/openshift-etcd/private/scaleup.yml#L51) to timeout, and subsequent steps in the playbook to fail.
 
@@ -149,9 +152,14 @@ ose-test-node-03.example.com : ok=0    changed=0    unreachable=0    failed=0
 ose-test-node-04.example.com : ok=0    changed=0    unreachable=0    failed=0
 {% endraw %}{% endhighlight %}
 
+
+- [ ] **TODO** Resolve above by restarting etcd and re-running scaleup playbook...
+
 - [ ] **Move this first test masters from the `new_etcd` to the `etcd` ansible group.** Leave it in any other groups it is already a member of of course.
 
 - [ ] **Modify the master configuration in the `etcClientInfo` section of the `/etc/origin/master/master-config.yaml` file on every master.**
+
+> Consider the [modify_yaml module](https://github.com/openshift/openshift-ansible/blob/release-3.9/roles/lib_utils/library/modify_yaml.py) and [canit00 role](https://github.com/canit00/role_cluster_config).
 
 _Example:_
 
@@ -167,6 +175,7 @@ _Example:_
       - https://ose-test-master-01.example.com:2379
 {% endraw %}{% endhighlight %}
 
+
 - [ ] **Restart API on masters `systemctl restart atomic-openshift-master-api`**
 
 - [ ] **Verify OpenShift operation**
@@ -178,4 +187,12 @@ _Example:_
 - [ ] **Repeat for Masters 2 and 3 and etcd nodes 2 and 3.**
 
 - [ ] **Take a warm bath.**
+
+
+# See Also
+
+- [Backup and Restore in OpenShift Container Platform 3](https://access.redhat.com/solutions/1981013)
+- [Replacing a failed etcd member](https://docs.openshift.com/container-platform/3.9/admin_guide/assembly_replace-etcd-member.html)
+- [Known Issues when upgrading to OpenShift 3.10](https://access.redhat.com/solutions/3631141)
+- [Role for configuring master config](https://github.com/canit00/role_cluster_config)
 
