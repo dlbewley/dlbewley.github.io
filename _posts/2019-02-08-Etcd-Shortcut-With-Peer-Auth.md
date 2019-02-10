@@ -24,6 +24,23 @@ alias etcd3='. /etc/etcd/etcd.conf && \
     --endpoints "${ETCD_ADVERTISE_CLIENT_URLS}"'
 {% endraw %}{% endhighlight %}
 
+If you are using OpenShift, you may also find that you already have some bash functions [enabled by the etcd role](https://github.com/openshift/openshift-ansible/blob/master/roles/etcd/tasks/drop_etcdctl.yml) in `/etc/profile.d/etcdctl.sh`. They will look different depending on your version. Below is from 3.9.
+
+{% highlight bash %}{% raw %}
+#!/bin/bash
+# Sets up handy aliases for etcd, need etcdctl2 and etcdctl3 because
+# command flags are different between the two. Should work on stand
+# alone etcd hosts and master + etcd hosts too because we use the peer keys.
+etcdctl2() {
+ /usr/bin/etcdctl --cert-file /etc/etcd/peer.crt --key-file /etc/etcd/peer.key --ca-file /etc/etcd/ca.crt -C https://`hostname`:2379 ${@}
+
+}
+
+etcdctl3() {
+ ETCDCTL_API=3 /usr/bin/etcdctl --cert /etc/etcd/peer.crt --key /etc/etcd/peer.key --cacert /etc/etcd/ca.crt --endpoints https://`hostname`:2379 ${@}
+}
+{% endraw %}{% endhighlight %}
+
 **Example:**
 
 {% highlight bash %}{% raw %}
