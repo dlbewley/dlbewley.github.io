@@ -195,6 +195,68 @@ etcdClientInfo:
 
 > Consider the [modify_yaml module](https://github.com/openshift/openshift-ansible/blob/release-3.9/roles/lib_utils/library/modify_yaml.py) and [canit00 role](https://github.com/canit00/role_cluster_config) if that needs to be 
 
+{% highlight yaml %}{% raw %}
+---
+# this is an untested WIP!
+# i guess it should be possible to pull etcd urls from ansible groups
+# or something else dynamically
+- hosts: masters
+
+  vars:
+    etcd_urls:
+      - https://ose-test-etcd-01.example.com:2379
+      - https://ose-test-etcd-02.example.com:2379
+      - https://ose-test-master-01.example.com:2379
+
+  roles:
+    - lib_utils
+    - openshift_facts
+
+  tasks:
+
+    - name: what am i
+      debug: var=openshift_service_type
+
+    - name: Modify etcd list
+      modify_yaml:
+        dest: /etc/origin/master/master-config.yaml
+        yaml_key: etcdClientInfo.urls
+        yaml_value: "{{ etcd_urls }}"
+        backup: yes
+      notify: restart master api
+
+  handlers:
+    # these are stolen from
+    # https://github.com/openshift/openshift-ansible/blob/release-3.9/roles/openshift_master/handlers/main.yml
+    - name: restart master api
+      systemd:
+        name: "{{ openshift_service_type }}-master-api"
+        state: restarted
+      notify:
+      - Verify API Server
+
+    - name: restart master controllers
+      command: "systemctl restart {{ openshift_service_type }}-master-controllers"
+      retries: 5
+      delay: 5
+      register: result
+      until: result.rc == 0
+
+    - name: Verify API Server
+      command: >
+        curl --silent --tlsv1.2 --max-time 2
+        --cacert {{ openshift.common.config_base }}/master/ca-bundle.crt
+        {{ openshift.master.api_url }}/healthz/ready
+      args:
+        warn: no
+      register: l_api_available_output
+      until: l_api_available_output.stdout == 'ok'
+      retries: 120
+      delay: 1
+      changed_when: false
+{% endraw %}{% endhighlight %}
+
+
 - [ ] **Restart API on masters `systemctl restart atomic-openshift-master-api`**
 
 - [ ] **Verify OpenShift operation**
