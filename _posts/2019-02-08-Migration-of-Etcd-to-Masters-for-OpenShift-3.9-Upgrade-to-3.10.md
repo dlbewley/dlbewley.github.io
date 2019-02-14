@@ -66,6 +66,10 @@ https://ose-test-etcd-02.example.com:2379 is healthy: successfully committed pro
 - [ ] **[Create a backup of your etcd](https://docs.openshift.com/container-platform/3.9/day_two_guide/environment_backup.html#backing-up-etcd_environment-backup) data and configuration.**
 
 > Because of the [migration during the upgrade](https://docs.openshift.com/container-platform/3.7/upgrading/migrating_etcd.html) to 3.7, I am assuming I do not need to back up v2 data. That is [somewhat TBD](https://lists.openshift.redhat.com/openshift-archives/users/2019-February/msg00010.html), however.
+> - https://lists.openshift.redhat.com/openshift-archives/users/2019-February/msg00029.html
+> - https://bugzilla.redhat.com/show_bug.cgi?id=1579304
+> - https://bugzilla.redhat.com/show_bug.cgi?id=1656397
+
 
 {% highlight bash %}{% raw %}
 #!/bin/bash
@@ -189,71 +193,53 @@ etcdClientInfo:
 {% endraw %}{% endhighlight %}
 
 
-- [ ] **This master is done. Move this first master from the `new_etcd` to the `etcd` ansible group.** Leave it in any other groups it is already a member of of course.
+- [ ] **This master is done. Move this first master from the `new_etcd` to the `etcd` ansible group.** _Leave it in any other groups it is already a member of of course._
 
-- [ ] **Remove an old etcd node eg. `ose-test-etcd-03` from `master-config.yaml`**
+- [ ] **Remove old `ose-test-etcd-03` node from the `etcd` ansible group.**
 
-> Consider the [modify_yaml module](https://github.com/openshift/openshift-ansible/blob/release-3.9/roles/lib_utils/library/modify_yaml.py) and [canit00 role](https://github.com/canit00/role_cluster_config) if that needs to be 
+- [ ] **Update the `master-config.yaml` to include only the hosts remaining in the `etcd` ansible group**
+
+I considered the [`modify_yaml`](https://github.com/openshift/openshift-ansible/blob/release-3.9/roles/lib_utils/library/modify_yaml.py) but after noticing it inserted some `nulls` and converted some doule quotes to single quotes, I was happy to find the [`yedit`](https://github.com/openshift/openshift-ansible/blob/release-3.9/roles/lib_utils/library/yedit.py) module.
+
 
 {% highlight yaml %}{% raw %}
 ---
-# this is an untested WIP!
-# i guess it should be possible to pull etcd urls from ansible groups
-# or something else dynamically
+# playbook to replace currently configured master etcd URLs with
+# the hosts found in ansible etcd group
 - hosts: masters
 
   vars:
-    etcd_urls:
-      - https://ose-test-etcd-01.example.com:2379
-      - https://ose-test-etcd-02.example.com:2379
-      - https://ose-test-master-01.example.com:2379
+    openshift_master_fire_handlers: true
 
   roles:
+    # https://github.com/openshift/openshift-ansible/tree/release-3.9/roles/lib_utils/library
     - lib_utils
     - openshift_facts
 
   tasks:
 
-    - name: what am i
-      debug: var=openshift_service_type
+    - name: Gather Cluster facts
+      openshift_facts:
+        role: common
 
-    - name: Modify etcd list
-      modify_yaml:
-        dest: /etc/origin/master/master-config.yaml
-        yaml_key: etcdClientInfo.urls
-        yaml_value: "{{ etcd_urls }}"
+    - name: Derive etcd url list
+      set_fact:
+        openshift_master_etcd_urls: "{{ groups['etcd'] | lib_utils_oo_etcd_host_urls(l_use_ssl, openshift_master_etcd_port) }}"
+      vars:
+        l_use_ssl: "{{ openshift_master_etcd_use_ssl | default(True) | bool}}"
+        openshift_master_etcd_port: "{{ etcd_client_port | default('2379') }}"
+
+    - name: Configure ectcd url list
+      yedit:
+        src: "{{ openshift.common.config_base }}/master/master-config.yaml"
+        key: etcdClientInfo.urls
+        value: "{{ openshift_master_etcd_urls }}"
         backup: yes
       notify: restart master api
 
   handlers:
-    # these are stolen from
     # https://github.com/openshift/openshift-ansible/blob/release-3.9/roles/openshift_master/handlers/main.yml
-    - name: restart master api
-      systemd:
-        name: "{{ openshift_service_type }}-master-api"
-        state: restarted
-      notify:
-      - Verify API Server
-
-    - name: restart master controllers
-      command: "systemctl restart {{ openshift_service_type }}-master-controllers"
-      retries: 5
-      delay: 5
-      register: result
-      until: result.rc == 0
-
-    - name: Verify API Server
-      command: >
-        curl --silent --tlsv1.2 --max-time 2
-        --cacert {{ openshift.common.config_base }}/master/ca-bundle.crt
-        {{ openshift.master.api_url }}/healthz/ready
-      args:
-        warn: no
-      register: l_api_available_output
-      until: l_api_available_output.stdout == 'ok'
-      retries: 120
-      delay: 1
-      changed_when: false
+    - import_tasks: /usr/share/ansible/openshift-ansible/roles/openshift_master/handlers/main.yml
 {% endraw %}{% endhighlight %}
 
 
