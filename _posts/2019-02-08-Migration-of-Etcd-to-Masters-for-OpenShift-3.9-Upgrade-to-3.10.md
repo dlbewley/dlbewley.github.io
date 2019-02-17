@@ -10,8 +10,6 @@ tags:
 
 As of OpenShift Container Platform 3.10 etcd is expected to run in [static pods](https://docs.openshift.com/container-platform/3.10/release_notes/ocp_3_10_release_notes.html#ocp-310-control-plane-changes) on the master nodes in the control plane. You may have a deployed an HA cluster with dedicated etcd nodes managed with systemd. How do you migrate the this new architecture?
 
-_This is WIP!_
-
 **Assumptions:**
 
 - You are running OCP 3.9
@@ -22,9 +20,9 @@ _This is WIP!_
 **Outline:**
 
 - Backup etcd
-- Scale up etcd to include Master nodes
-- Configure cluster to use new etcd endpoints
-- Scale down etcd to remove Etcd nodes
+- Scale up Etcd cluster to include Master nodes
+- Configure Openshift Masters to ignore the old Etcd nodes
+- Scale down etcd cluster to remove old Etcd nodes
 
 # Detailed Steps #
 
@@ -66,9 +64,10 @@ https://ose-test-etcd-02.example.com:2379 is healthy: successfully committed pro
 - [ ] **[Create a backup of your etcd](https://docs.openshift.com/container-platform/3.9/day_two_guide/environment_backup.html#backing-up-etcd_environment-backup) data and configuration.**
 
 > Because of the [migration during the upgrade](https://docs.openshift.com/container-platform/3.7/upgrading/migrating_etcd.html) to 3.7, I am assuming I do not need to back up v2 data. That is [somewhat TBD](https://lists.openshift.redhat.com/openshift-archives/users/2019-February/msg00010.html), however.
-> - https://lists.openshift.redhat.com/openshift-archives/users/2019-February/msg00029.html
-> - https://bugzilla.redhat.com/show_bug.cgi?id=1579304
-> - https://bugzilla.redhat.com/show_bug.cgi?id=1656397
+
+  - [OpenShift-Users mailing list post](https://lists.openshift.redhat.com/openshift-archives/users/2019-February/msg00029.html)
+  - [BZ 1579304](https://bugzilla.redhat.com/show_bug.cgi?id=1579304)
+  - [BZ 1656397](https://bugzilla.redhat.com/show_bug.cgi?id=1656397)
 
 
 {% highlight bash %}{% raw %}
@@ -115,68 +114,10 @@ ansible-playbook -vvv \
 {% endraw %}{% endhighlight %}
 
 
-> In my case I found etcd had been started erroneously at 16:57 with a default config file which listened on localhost. The config file was [modified by the etcd role](https://github.com/openshift/openshift-ansible/blob/release-3.9/roles/etcd/tasks/main.yml#L119) at 17:36 and the restart etcd handler was notified but it was skipped.  This caused the [cluster status check task](https://github.com/openshift/openshift-ansible/blob/release-3.9/playbooks/openshift-etcd/private/scaleup.yml#L51) to timeout, and subsequent steps in the playbook to fail.
-
-  {% highlight plain %}{% raw %}
-  [root@ose-test-master-01 3.9.60]# grep -E '(TASK|HAND)' 20190207-1735-etcd-scaleup.log | tail
-  TASK [etcd : Install Etcd system container] *************************************************
-  TASK [etcd : Validate permissions on the config dir] ****************************************
-  TASK [etcd : Write etcd global config file] *************************************************
-  NOTIFIED HANDLER restart etcd
-  TASK [etcd : Enable etcd] *******************************************************************
-  TASK [etcd : Set fact etcd_service_status_changed] ******************************************
-  TASK [nickhammond.logrotate : nickhammond.logrotate | Install logrotate] ********************
-  TASK [nickhammond.logrotate : nickhammond.logrotate | Setup logrotate.d scripts] ************
-  RUNNING HANDLER [etcd : restart etcd] *******************************************************
-  TASK [Verify cluster is stable] *************************************************************
-  {% endraw %}{% endhighlight %}
-
-  {% highlight plain %}{% raw %}
-  RUNNING HANDLER [etcd : restart etcd] *******************************************************
-  skipping: [ose-test-master-01.example.com] => {
-      "changed": false,
-      "skip_reason": "Conditional result was False",
-      "skipped": true
-  }
-  META: ran handlers
-  {% endraw %}{% endhighlight %}
-
-  {% highlight plain %}{% raw %}
-  PLAY RECAP **********************************************************************************
-  localhost                  : ok=26   changed=0    unreachable=0    failed=0
-  ose-test-etcd-01.example.com : ok=23   changed=0    unreachable=0    failed=0
-  ose-test-etcd-02.example.com : ok=20   changed=0    unreachable=0    failed=0
-  ose-test-etcd-03.example.com : ok=20   changed=0    unreachable=0    failed=0
-  ose-test-lb-01.example.com   : ok=17   changed=0    unreachable=0    failed=0
-  ose-test-master-01.example.com : ok=83   changed=19   unreachable=0    failed=1
-  ose-test-master-02.example.com : ok=21   changed=0    unreachable=0    failed=0
-  ose-test-node-01.example.com : ok=0    changed=0    unreachable=0    failed=0
-  ose-test-node-02.example.com : ok=0    changed=0    unreachable=0    failed=0
-  ose-test-node-03.example.com : ok=0    changed=0    unreachable=0    failed=0
-  ose-test-node-04.example.com : ok=0    changed=0    unreachable=0    failed=0
-  {% endraw %}{% endhighlight %}
-
-  {% highlight plain %}{% raw %}
-  [root@ose-test-master-01 etcd]# systemctl status etcd -l
-  ● etcd.service - Etcd Server
-   Loaded: loaded (/usr/lib/systemd/system/etcd.service; enabled; vendor preset: disabled)
-   Active: active (running) since Thu 2019-02-07 16:57:27 PST; 56min ago
-  Main PID: 83742 (etcd)
-    Tasks: 16
-   Memory: 35.9M
-   CGroup: /system.slice/etcd.service
-           └─83742 /usr/bin/etcd --name=default --data-dir=/var/lib/etcd/default.etcd --listen-client-urls=http://localhost:2379
-  {% endraw %}{% endhighlight %}
-
-  {% highlight plain %}{% raw %}
-  [root@ose-test-master-01 etcd]# ls -l /etc/etcd/etcd.conf*
-  -rw-r--r--. 1 root root 1634 Feb  7 17:36 /etc/etcd/etcd.conf
-  -rw-r--r--. 1 root root 1686 Jan 14 05:02 /etc/etcd/etcd.conf.34879.2019-02-07@17:36:37~
-  {% endraw %}{% endhighlight %}
-
-> After restarting etcd at 18:43 the cluster reports as healthy.
-
-- [ ] **Re-run scaleup playbook allowing it to complete now that above has been rectified.**
+> In my case I found etcd had been accidentally started by hand with a default config file which listened on localhost. The config file was [modified by the etcd role](https://github.com/openshift/openshift-ansible/blob/release-3.9/roles/etcd/tasks/main.yml#L119) and the restart etcd handler was notified, but it was skipped.  This caused the [etcd cluster status check task](https://github.com/openshift/openshift-ansible/blob/release-3.9/playbooks/openshift-etcd/private/scaleup.yml#L51) to timeout, and subsequent steps in the playbook to fail.
+>
+> After restarting etcd at 18:43 the cluster reports as healthy, and I re-ran the playbook successfully.
+>
 
 After the playbook has been run successfuly it can be seen that the master node has been added as an etcd endpoint in `/etc/origin/master/master-config.yaml` on every master node.
 
@@ -197,7 +138,7 @@ etcdClientInfo:
 
 - [ ] **Remove old `ose-test-etcd-03` node from the `etcd` ansible group.**
 
-- [ ] **Update the `master-config.yaml` to include only the hosts remaining in the `etcd` ansible group**
+- [ ] **Update the `master-config.yaml` to include only the hosts remaining in the `etcd` ansible group and restart api service.**
 
 I considered the [`modify_yaml`](https://github.com/openshift/openshift-ansible/blob/release-3.9/roles/lib_utils/library/modify_yaml.py) but after noticing it inserted some `nulls` and converted some doule quotes to single quotes, I was happy to find the [`yedit`](https://github.com/openshift/openshift-ansible/blob/release-3.9/roles/lib_utils/library/yedit.py) module.
 
@@ -243,8 +184,6 @@ I considered the [`modify_yaml`](https://github.com/openshift/openshift-ansible/
 {% endraw %}{% endhighlight %}
 
 
-- [ ] **Restart API on masters `systemctl restart atomic-openshift-master-api`**
-
 - [ ] **Verify OpenShift operation**
 
 - [ ] **Remove old `ose-test-etcd-03` node from etcd cluster.**
@@ -262,7 +201,7 @@ eafa4cc2f9510e7b, started, ose-test-master-01.example.com, https://192.0.2.251:2
 
 - [ ] **Repeat for Masters 2 and 3 and etcd nodes 2 and 1.**
 
-- [ ] **Take a warm bath.**
+You are now one step closer to OpenShift 3.10.
 
 
 At this point etcd should be running only on the 3 Master nodes and not on the old Etcd nodes. All the masters should know this, and you are one step closer to being able to upgrade to OpenShift 3.10.
