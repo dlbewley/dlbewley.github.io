@@ -188,15 +188,15 @@ I considered the [`modify_yaml`](https://github.com/openshift/openshift-ansible/
 
 - [ ] **Remove old `ose-test-etcd-03` node from etcd cluster.**
 
-{% highlight yaml %}{% raw %}
-[root@ose-test-master-01 etcd]# etcdctl3 member list
-3cc657644e2e1080, started, ose-test-etcd-02.example.com, https://192.0.2.242:2380, https://192.0.2.242:2379
-669fc09764815697, started, ose-test-etcd-03.example.com, https://192.0.2.243:2380, https://192.0.2.243:2379
-dd1f136e71579ace, started, ose-test-etcd-01.example.com, https://192.0.2.241:2380, https://192.0.2.241:2379
-eafa4cc2f9510e7b, started, ose-test-master-01.example.com, https://192.0.2.251:2380, https://192.0.2.251:2379
+  {% highlight yaml %}{% raw %}
+  [root@ose-test-master-01 etcd]# etcdctl3 member list
+  3cc657644e2e1080, started, ose-test-etcd-02.example.com, https://192.0.2.242:2380, https://192.0.2.242:2379
+  669fc09764815697, started, ose-test-etcd-03.example.com, https://192.0.2.243:2380, https://192.0.2.243:2379
+  dd1f136e71579ace, started, ose-test-etcd-01.example.com, https://192.0.2.241:2380, https://192.0.2.241:2379
+  eafa4cc2f9510e7b, started, ose-test-master-01.example.com, https://192.0.2.251:2380, https://192.0.2.251:2379
 
-[root@ose-test-master-01 etcd]# etcdctl3 member remove 669fc09764815697
-{% endraw %}{% endhighlight %}
+  [root@ose-test-master-01 etcd]# etcdctl3 member remove 669fc09764815697
+  {% endraw %}{% endhighlight %}
 
 
 - [ ] **Repeat for Masters 2 and 3 and etcd nodes 2 and 1.**
