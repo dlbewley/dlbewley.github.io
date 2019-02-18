@@ -206,6 +206,15 @@ You are now one step closer to OpenShift 3.10.
 
 At this point etcd should be running only on the 3 Master nodes and not on the old Etcd nodes. All the masters should know this, and you are one step closer to being able to upgrade to OpenShift 3.10.
 
+# Problems
+
+**Solved**
+
+- As I mentioned I had accidentally started etcd with a default config and the scaleup playbook did not expect this condition.
+
+**Lingering**
+
+- I scaled up 2 masters as etcd nodes they got etcd 3.3.11 installed and when I went to scale up the 3rd master soon after suddenly the newest etcd RPM was 3.2.22. Guess what. Those are not compatible. In fact OpenShift is not certified to work with etcd 3.3. Etcd 3.3 should be excluded in `yum.conf` but it is not [BZ 1672518](https://bugzilla.redhat.com/show_bug.cgi?id=1672518)! Oh, and it gets worse!  This KB points out a 3.2 etcd container image got a 3.3 etcd binary into it somehow! "[ETCD hosts were upgraded to version 3.3.11.]( https://access.redhat.com/solutions/3885101)".  Wow. WTF?
 
 # See Also
 
@@ -213,4 +222,5 @@ At this point etcd should be running only on the 3 Master nodes and not on the o
 - [Replacing a failed etcd member](https://docs.openshift.com/container-platform/3.9/admin_guide/assembly_replace-etcd-member.html)
 - [Known Issues when upgrading to OpenShift 3.10](https://access.redhat.com/solutions/3631141)
 - [Role for configuring master config](https://github.com/canit00/role_cluster_config)
-
+- [ETCD hosts were upgraded to version 3.3.11.](https://access.redhat.com/solutions/3885101)
+- [Etcd 3.3 should be excluded but it is not BZ 1672518](https://bugzilla.redhat.com/show_bug.cgi?id=1672518)
