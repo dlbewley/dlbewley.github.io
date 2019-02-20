@@ -23,7 +23,7 @@ Here is more or less what I did. YMMV.
 
 # Steps
 
-- **Get endpoint status**
+- [ ] **Get endpoint status**
 
 {% highlight bash %}{% raw %}
 #!/bin/bash
@@ -65,7 +65,7 @@ ETCDCTL_API=3 etcdctl \
 +-----------------------------+------------------+---------+---------+-----------+-----------+------------+
 {% endraw %}{% endhighlight %}
 
-- **Create etcd snapshot backup.**
+- [ ] **Create etcd snapshot backup.**
 
 {% highlight bash %}{% raw %}
 # https://access.redhat.com/solutions/1981013#comment-1257931
@@ -81,13 +81,13 @@ ETCDCTL_API=3 $ETCD3 \
 
 > Snapshot saved at /var/backup/etcd/20190219/snap/db
 
-- **Copy db for some reason. Just cuz**
+- [ ] **Copy db for some reason. Just cuz**
 
 {% highlight bash %}{% raw %}
 [root@ose-test-etcd-01 bin]# cp -p /var/lib/etcd/member/snap/db /tmp/db
 {% endraw %}{% endhighlight %}
 
-- **Distribute saved snapshot `/var/backup/etcd/20190219/snap/db` to all etcd nodes**
+- [ ] **Distribute saved snapshot `/var/backup/etcd/20190219/snap/db` to all etcd nodes**
 
 {% highlight yaml %}{% raw %}
 - hosts: etcd
@@ -115,21 +115,21 @@ ETCDCTL_API=3 $ETCD3 \
       dest: "/tmp/{{ etcd_backup_copy }}"
 {% endraw %}{% endhighlight %}
 
-- **Stop etcd on all nodes and rm old data**
+- [ ] **Stop etcd on all nodes and rm old data**
 
 {% highlight bash %}{% raw %}
 ansible etcd -m service -a 'name=etcd state=stopped'
 ansible etcd -m shell -a 'mv /var/lib/etcd{,.deleted}'
 {% endraw %}{% endhighlight %}
 
-- **Downgrade etcd to supported version**
+- [ ] **Downgrade etcd to supported version**
 
 {% highlight bash %}{% raw %}
 ansible etcd -m yum -a 'name=etcd-3.2.22 allow_downgrade=yes'
 ansible etcd -m file -a 'dest=/var/lib/etcd state=absent'
 {% endraw %}{% endhighlight %}
 
-- **Confirm the version**
+- [ ] **Confirm the version**
 
 {% highlight plain %}{% raw %}
 [root@ose-test-master-01 playbook-openshift]# ansible etcd -m command -a 'rpm -q etcd' -o
@@ -140,7 +140,7 @@ ose-test-master-02.example.com | SUCCESS | rc=0 | (stdout) etcd-3.2.22-1.el7.x86
 ose-test-master-01.example.com | SUCCESS | rc=0 | (stdout) etcd-3.2.22-1.el7.x86_64
 {% endraw %}{% endhighlight %}
 
-- **Recover from snapshot on each node**
+- [ ] **Recover from snapshot on each node**
 
 {% highlight bash %}{% raw %}
 #!/bin/bash -x
@@ -193,18 +193,18 @@ ETCDCTL_API=3 etcdctl snapshot restore /tmp/20190219.snap.db \
   2019-02-19 11:33:09.723709 I | etcdserver/membership: added member dd1f136e71579ace [https://192.0.2.241:2380] to cluster f09fa88ac65802b7
   2019-02-19 11:33:09.723719 I | etcdserver/membership: added member f54da589b60c16be [https://192.0.2.243:2380] to cluster f09fa88ac65802b7
   2019-02-19 11:33:09.723732 I | etcdserver/membership: added member f573d8d196b92c82 [https://192.0.2.242:2380] to cluster f09fa88ac65802b7
-  ```
+{% endraw %}{% endhighlight %}
 
-- **Repeat above restore on all etcd nodes**
+- [ ] **Repeat above restore on all etcd nodes**
 
-- **Fix etcd permissions**
+- [ ] **Fix etcd permissions**
 
 {% highlight bash %}{% raw %}
 ansible etcd -m command -a 'chown etcd:etcd -R /var/lib/etcd'
 ansible etcd -m command -a 'restorecon -Rv /var/lib/etcd'
 {% endraw %}{% endhighlight %}
 
-- **Start etcd and check status.**
+- [ ] **Start etcd and check status.**
 
 {% highlight bash %}{% raw %}
 ansible etcd -m service -a 'name=etcd state=started'
@@ -225,13 +225,13 @@ ansible etcd -m service -a 'name=etcd state=started'
 +--------------------------+------------------+---------+---------+-----------+-----------+------------+
 {% endraw %}{% endhighlight %}
 
-- **Restart master api**
+- [ ] **Restart master api**
 
 {% highlight bash %}{% raw %}
 ansible masters -m service -a 'name=atomic-openshift-master-api state=restarted'
 {% endraw %}{% endhighlight %}
 
-- **I messed up and had to start over, so here's a more compact summary of restore using the same snapshot.**
+- [ ] **I messed up and had to start over, so here's a more compact summary of restore using the same snapshot.**
 
 {% highlight bash %}{% raw %}
 ansible etcd -m service -a 'name=etcd state=stopped'
