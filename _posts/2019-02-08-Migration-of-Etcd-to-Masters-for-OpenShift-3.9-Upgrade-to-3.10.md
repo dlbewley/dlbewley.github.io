@@ -214,7 +214,7 @@ At this point etcd should be running only on the 3 Master nodes and not on the o
 
 **Lingering**
 
-- I scaled up 2 masters as etcd nodes which got etcd 3.3.11 installed. When I went to scale up the 3rd master soon after, suddenly the newest etcd RPM was 3.2.22 which is incompatible. In fact OpenShift is not certified to work with etcd 3.3. Etcd 3.3 should be excluded in `yum.conf` but it is not [BZ 1672518](https://bugzilla.redhat.com/show_bug.cgi?id=1672518)! This KB points out a 3.2 etcd container image got a 3.3 etcd binary into it also! "[ETCD hosts were upgraded to version 3.3.11.]( https://access.redhat.com/solutions/3885101)". [Here is what I did.](2019-02-19-Downgrade-Etcd-for-OpenShift-Compatibility.md)
+- I scaled up 2 masters as etcd nodes which got etcd 3.3.11 installed. When I went to scale up the 3rd master soon after, suddenly the newest etcd RPM was 3.2.22 which is incompatible. In fact OpenShift is not certified to work with etcd 3.3. Etcd 3.3 should be excluded in `yum.conf` but it is not [BZ 1672518](https://bugzilla.redhat.com/show_bug.cgi?id=1672518)! This KB points out a 3.2 etcd container image got a 3.3 etcd binary into it also! "[ETCD hosts were upgraded to version 3.3.11.]( https://access.redhat.com/solutions/3885101)". Here is [what I did](http://guifreelife.com/blog/2019/02/19/Downgrade-Etcd-for-OpenShift-Compatibility).
 
 # See Also
 
