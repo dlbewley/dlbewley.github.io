@@ -321,3 +321,4 @@ I'll try to follow up with some more comprehensive examples. Check back in a wee
 - [Heat Template Composition](https://docs.openstack.org/heat/latest/template_guide/composition.html)
 - Stratoscale [Best Practices for OpenStack Heat Templates](https://www.stratoscale.com/blog/openstack/best-practices-openstack-heat-templates/)
 - [DevOpsPro 2016](http://devops-pro-2016.armyofevilrobots.com/) is a great tutorial by example!
+- [Heat 101](http://yauuu.me/heat-101.html) by gchenuet
