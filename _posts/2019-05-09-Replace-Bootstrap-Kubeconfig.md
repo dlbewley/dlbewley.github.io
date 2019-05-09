@@ -32,25 +32,23 @@ FAILED - RETRYING: Approve the node (30 retries left).Result was: {
     },
     "msg": "Could not find csr for nodes: ose-test-node-01.example.com",
 ...
-{% endhighlight %}{% raw %}
+{% endraw %}{% endhighlight %}
 
 Turns out this was because the start up of `atomic-openshift-node` failed to generate a CSR.
 
-{% endhighlight %}{% raw %}
+{% highlight plain %}{% raw %}
 [root@ose-test-node-01 ~]# journalctl -xe
 ...
 Apr 05 11:17:13 ose-test-node-01.example.com atomic-openshift-node[62930]: I0405 11:17:13.675814   62930 bootstrap.go:56] Using bootstrap kubeconfig to generate TLS client cert, key and kubeconfig file
 Apr 05 11:17:13 ose-test-node-01.example.com atomic-openshift-node[62930]: I0405 11:17:13.677298   62930 bootstrap.go:86] No valid private key and/or certificate found, reusing existing private key or creating
 Apr 05 11:17:13 ose-test-node-01.example.com atomic-openshift-node[62930]: F0405 11:17:13.705228   62930 server.go:235] failed to run Kubelet: cannot create certificate signing request: Unauthorized
-{% endhighlight %}{% raw %}
+{% endraw %}{% endhighlight %}
 
 And why is that? It is because `/etc/origin/node/bootstrap.kubeconfig` is out of date. Why is this? A bug in the upgrade apparently.
 
 The fix is the same as it would be to replace the node certificates. There is a [handy knowledgebase article](https://access.redhat.com/support/cases/#/case/02355566) for this. 
 
-Here is a playbook to do that.
-
-
+**Here is a playbook to replace bootstrap.kubeconfig and node certificates.**
 
 {% highlight yaml %}{% raw %}
 ---
