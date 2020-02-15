@@ -129,7 +129,7 @@ EOF
 
 The API load balancer floating IP should also go into the install-config.yaml at `/openstack/lbFloatingIP`. There is more to be said on the [install config](#install-config) later.
 
-The installer will create a private node network (10.0.0.0/24) and a router joining this network to the external network you identify as holding your floating IPs.
+The installer will create a private node network _10.0.0.0/24_ and a router joining this network to the external network you identify as holding your floating IPs.
 
 ## Ports
 
@@ -141,11 +141,11 @@ In addition to the 2 floating IPs we created, the installer creates 3 Neutron po
 
 This is all well explained in the [OpenStack IPI Networking Infrastructure](https://github.com/openshift/installer/blob/master/docs/design/openstack/networking-infrastructure.md) doc. The [Bare Metal IPI Networking Infrastructure](https://github.com/openshift/installer/blob/master/docs/design/baremetal/networking-infrastructure.md) doc is also highly relevant.
 
-These neutron ports act as the holder of the keepalived managed Virtual IPs even while the machines participating in VRRP change their priorities or come and go.
+These neutron ports own the private VIP addresses that are keepalived managed even while the machines participating in VRRP change their priorities or come and go.
 
 # Install Config
 
-No we have to gather all the configuration details necessary for the installation.
+Now we have to gather all the configuration details necessary for the installation.
 
 First create an `install-config.yaml`. This will run you through an interactive dialog where you will pick your provider (openstack of course), your cloud or project, your ssh key, the external network that holds your floating IPs, and your flavor.
 
@@ -188,7 +188,7 @@ When the bootstrap node is first created, it is the only member of all three VRR
 
 ![OpenShift OpenStack Networking](/images/openshift-openstack-install-network-01.png)
 
-Once the bootstrap node is running a small cluster it will be reachable via the API port on 10.0.0.5. The installer (Terraform) will then connect again to OpenStack and build 3 master nodes.
+Once the bootstrap node is running a small cluster it will be reachable via the API port on _10.0.0.5_ and the floating IP _192.0.2.61_. The installer (Terraform) will then connect again to OpenStack and build 3 master nodes.
 
 The masters will obtain their configuration from the bootstrap node and execute the machine config operator which will connect to the OpenStack API to build worker nodes. This step would fail if your `cacert` is not obtained from your clouds.yaml.
 
@@ -200,9 +200,9 @@ $ openstack console log show --lines 10 <boostrap node> # see TLS errors
 
 The bootstrap node will ultimatly be deleted once the actual cluster is up leaving behind only the masters and worker nodes to participate in VRRP and handle traffic for the VIPs. This is unlike TripleO wich leaves uses the director machine to manage the overcloud.
 
-# Floating IP 
+# Ingress Floating IP 
 
-Finally while the association of the API floating IP and the API port are automatically handled by the installer process, the ingress floating IP must be assocated by hand.
+Finally while the association of the API floating IP to the API port is automatically handled by the installer process, the ingress floating IP must be assocated by hand.
 
 
 ```bash
