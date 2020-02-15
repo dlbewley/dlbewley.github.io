@@ -9,29 +9,26 @@ tags:
 
 OpenShift Containter Platform 4 is much more like Tectonic than OpenShift 3. Particularly when it comes to [installation](https://docs.openshift.com/container-platform/4.3/architecture/architecture-installation.html) and node management. Rather then building machines and running [an Ansible playbook](https://github.com/openshift/openshift-ansible/tree/release-3.11) to configure them you now have the option of setting a fewer paramters in an install config running an installer to build and configure the cluster from scratch.
 
-I would like to illustrate how the basics of the networking might look when installing OpenShift on OpenStack. I also wanted an excuse to try out a new iPad sketch app. I will also describe some issues I had to overcome. My notes are based on 4.4 nightly builds.
+I would like to illustrate how the basics of the networking might look when installing OpenShift on OpenStack. I also wanted an excuse to try out a new iPad sketch app. My notes are based on recent 4.4 nightly builds.
 
 # Networking
 
 The OpenShift installer takes advantage of OpenStack [Neutron](https://docs.openstack.org/api-ref/network/v2/) featues including
 
-Neutron _ports_
-![Neutron Port](/images/openshift-openstack-install-network-port.png)
-
-and _floating IPs_.
-![Neutron Floating IP](/images/openshift-openstack-install-network-floating.png)
+_ports_
+![Neutron Port](/images/openshift-openstack-install-network-port.png) and _floating IPs_.  ![Neutron Floating IP](/images/openshift-openstack-install-network-floating.png)
 
 ## Floating IPs
 
-Before starting the installation process we must establish 2 IP addresses which will be used to access the OpenShift cluster. These will [necessarily be](https://github.com/openshift/installer/issues/2670) Neutron floating IPs.
+Before starting the installation process we must establish 2 IP addresses which will be used to access the OpenShift cluster externally. These will [necessarily be](https://github.com/openshift/installer/issues/2670) Neutron floating IPs.
 
-You might typically think of floating IPs as being assigned to a virtual machine instance. These will be assigned to Neutron ports that exist even if there are no machines.
+You might typically think of floating IPs as being assigned to a virtual machine instance, but these will be assigned to Neutron ports that exist even if there are no machines.
 
 Create 2 floating IPs and make note of them.
 
 ```bash
-$ openstack floating ip create --description "API osp-nightly.ocp.example.com" floating 
-$ openstack floating ip create --description "Ingress osp-nightly.ocp.example.com" floating 
+$ openstack floating ip create --description "API osp-nightly.os.example.com" floating 
+$ openstack floating ip create --description "Ingress osp-nightly.os.example.com" floating 
 # here is what we got
 $ export API_FIP=192.0.2.61
 $ export INGRESS_FIP=192.0.2.52
@@ -78,7 +75,7 @@ create install-config --log-level=debug --dir=osp-nightly
 
 Now you must modify the file created at `osp-nightly/install-config.yaml`.
 
-Even though 4.3 was announced with OpenStack support, there have been a [lot of issues](https://bugzilla.redhat.com/show_bug.cgi?id=1796822) that affect clouds using self-signed certificates for their OpenStack endpoint. It seems to me that would be the norm for an enterprise and therefore OpenStack was not fully supported. This is all good now, but you make your CA cert available in two ways.
+Even though OpenShift 4.3 was announced with OpenStack support, there have been a [lot of issues](https://bugzilla.redhat.com/show_bug.cgi?id=1796822) that affect clouds using self-signed certificates for their OpenStack endpoint. It seems to me that would be the norm for an enterprise and therefore OpenStack was not fully supported. This is all good now, but must you make your CA cert available in two ways. One is within the install-config.
 
 Edit `install-config.yaml` and:
 
@@ -145,19 +142,19 @@ openshift-install create cluster --log-level=debug --dir=osp-nightly
 
 The [openshift-install tool](https://github.com/openshift/installer) leverages [Terraform](https://www.terraform.io/) to produce Installer Provisioned Infrastructure. It will create a bootstrap node first.
 
-[![OpenShift OpenStack Networking](/images/openshift-openstack-install-network-00.png)](/images/thumb/openshift-openstack-install-network-00.png)
+![OpenShift OpenStack Networking](/images/openshift-openstack-install-network-00.png)
 
 This node will be configured to run a tiny 1 node OpenShift cluster, which only exists as a mechanism to serve out the configurations required by the actual cluster being built shortly after. This may remind you of the TripleO Undercloud / Overcloud model. 
 
 When the bootstrap node is first created, it is the only member of all three VRRP or keepalived instances. I try to indicate this by showing the network connection passing through all three blue keepalived "domains".
 
-[![OpenShift OpenStack Networking](/images/openshift-openstack-install-network-01.png)](/images/thumb/openshift-openstack-install-network-01.png)
+![OpenShift OpenStack Networking](/images/openshift-openstack-install-network-01.png)
 
 Once the bootstrap node is running a small cluster it will be reachable via the API port on 10.0.0.5. The installer (Terraform) will then connect again to OpenStack and build 3 master nodes.
 
 The masters will obtain their configuration from the bootstrap node and execute the machine config operator which will connect to the OpenStack API to build worker nodes. This step would fail if your `cacert` is not obtained from your clouds.yaml.
 
-[![OpenShift OpenStack Networking](/images/openshift-openstack-install-network-02.png)](/images/thumb/openshift-openstack-install-network-02.png)
+![OpenShift OpenStack Networking](/images/openshift-openstack-install-network-02.png)
 
 Finally, a big difference from TripleO is that the bootstrap node will be deleted once the actual cluster is up leaving behind only the masers and worker nodes participated in VRRP to handle traffic for the VIPs. With TripleO the undercloud director machine would live on for management purposes.
 
