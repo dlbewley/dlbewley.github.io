@@ -9,112 +9,11 @@ tags:
 
 OpenShift Containter Platform 4 is much more like Tectonic than OpenShift 3. Particularly when it comes to [installation](https://docs.openshift.com/container-platform/4.3/architecture/architecture-installation.html) and node management. Rather then building machines and running [an Ansible playbook](https://github.com/openshift/openshift-ansible/tree/release-3.11) to configure them you now have the option of setting a fewer paramters in an install config running an installer to build and configure the cluster from scratch.
 
-I would like to illustrate how the basics of the networking might look when [installing OpenShift on OpenStack](https://docs.openshift.com/container-platform/4.3/installing/installing_openstack/installing-openstack-installer-custom.html
+I would like to illustrate how the basics of the networking might look when [installing OpenShift on OpenStack](https://docs.openshift.com/container-platform/4.3/installing/installing_openstack/installing-openstack-installer-custom.html). I also wanted an excuse to try out a new iPad sketch app. These notes are based on recent 4.4 nightly builds on OSP 13 Queens.
 
-). I also wanted an excuse to try out a new iPad sketch app. These notes are based on recent 4.4 nightly builds on OSP 13 Queens.
+# OpenStack
 
-# Project
-
-First create an OpenStack project and user.  I use some Ansible for this that I haven not posted.
-
-* Create project _shiftstack_ and adjust quota as needed.
-
-* Create user _shiftstack_ with role _swiftoperator_ and [temp URL](https://docs.ceph.com/docs/master/radosgw/swift/tempurl/) ability
-
-```bash
-$ openstack --os-cloud=admin project create --description OpenShift --enable shiftstack
-$ openstack --os-cloud=admin user create --project shiftstack --enable --password password shiftstack
-$ openstack --os-cloud=admin role add --user shiftstack --project shiftstack swiftoperator
-$ openstack --os-cloud=shiftstack object store account set --property Temp-URL-Key=superkey
-
-$ openstack --os-cloud=admin role assignment list --project shiftstack --names
-+---------------+--------------------+-------------+--------------------+--------+-----------+
-| Role          | User               | Group       | Project            | Domain | Inherited |
-+---------------+--------------------+-------------+--------------------+--------+-----------+
-| swiftoperator | shiftstack@Default |             | shiftstack@Default |        | False     |
-| _member_      | shiftstack@Default |             | shiftstack@Default |        | False     |
-| _member_      | admin@Default      |             | shiftstack@Default |        | False     |
-+---------------+--------------------+-------------+--------------------+--------+-----------+
-```
-
-* Create a flavor meeting the requirements
-
-# Networking
-
-The OpenShift installer takes advantage of OpenStack [Neutron](https://docs.openstack.org/api-ref/network/v2/) featues including
-
-_ports_
-![Neutron Port](/images/openshift-openstack-install-network-port.png) and _floating IPs_.  ![Neutron Floating IP](/images/openshift-openstack-install-network-floating.png)
-
-## Floating IPs
-
-Before starting the installation process we must establish 2 IP addresses which will be used to access the OpenShift cluster externally. These will [necessarily be](https://github.com/openshift/installer/issues/2670) Neutron floating IPs.
-
-You might typically think of floating IPs as being assigned to a virtual machine instance, but these will be assigned to Neutron ports that exist even if there are no machines.
-
-Create 2 floating IPs and make note of them.
-
-```bash
-$ openstack floating ip create --description "API osp-nightly.os.example.com" floating 
-$ openstack floating ip create --description "Ingress osp-nightly.os.example.com" floating 
-# here is what we got
-$ export API_FIP=192.0.2.61
-$ export INGRESS_FIP=192.0.2.52
-```
-
-You could use your local `/etc/hosts` file for testing, but otherwise you will need to create some DNS records. I have already created a dynamic DNS zone called `os.example.com` and defined a key that nsupdate can use to inject the required A records.
-
-```bash
-$ export CLUSTER_NAME=osp-nightly
-$ cat <<EOF | nsupdate -v -k Kos.example.com.key
-update add api.${CLUSTER_NAME}.os.example.com 300 A $API_FIP
-update add *.apps.${CLUSTER_NAME}.os.example.com 300 A $INGRESS_FIP
-send
-EOF
-```
-
-The API load balancer floating IP should also go into the install-config.yaml at `/openstack/lbFloatingIP`. There is more to be said on the [install config](#install-config) later.
-
-## Network
-
-The installer will create a private network and a router joining this network to the external network you identify as holding your floating IPs.
-
-## Ports
-
-In addition to the 2 floating IPs we created, the installer creates 3 Neutron ports to serve as holders of the highly available cluster virtual IPs which provide three functions. These will be on the created private network and have the following well defined IPs by default.
-
-- **API** 10.0.0.5
-- **DNS** 10.0.0.6
-- **Ingress** 10.0.0.7
-
-This is all well explained in the [OpenStack IPI Networking Infrastructure](https://github.com/openshift/installer/blob/master/docs/design/openstack/networking-infrastructure.md) doc. The [Bare Metal IPI Networking Infrastructure](https://github.com/openshift/installer/blob/master/docs/design/baremetal/networking-infrastructure.md) doc is also highly relevant.
-
-These neutron ports act as the holder of the keepalived managed Virtual IPs even while the machines participating in VRRP change their priorities or come and go.
-
-# Install Config
-
-Before we go further there are a few things to mention about the installation config. 
-
-First create an install-config.yaml. This will run you through an interactive dialog where you will pick your provider (openstack), your cloud or project (did you make one already?), your ssh key, and the external network that holds your floating IPs.
-
-```bash
-$ openshift-insall create install-config --log-level=debug --dir=osp-nightly
-```
-
-Now you must modify the file created at `osp-nightly/install-config.yaml`.
-
-Even though OpenShift 4.3 was announced with OpenStack support, there have been a [lot of issues](https://bugzilla.redhat.com/show_bug.cgi?id=1796822) that affect clouds using self-signed certificates for their OpenStack endpoint. It seems to me that would be the norm for an enterprise and therefore OpenStack was not fully supported. This is all good now, but must you make your CA cert available in two ways. One is within the install-config.
-
-Edit `install-config.yaml` and:
-
-- Add the `$API_FIP` at `/openstack/lbFloatingIP` 
-- Add your enterprise CA cert at `/additionalTrustBundle`
-- [Generate a pull secret](https://cloud.redhat.com/) and add it at `/pullSecret`
-- Add your ssh key at `/sshKey`
-
-**Important!** Back up your install-config.yaml now. The install process will delete your install-config.yaml! I do not know why that choice was made.
-
-## OpenStack Cloud Config
+## Cloud Config
 
 Modify your openstack client config to [define a `cacert`](https://github.com/openshift/installer/tree/master/docs/user/openstack#self-signed-openstack-ca-certificates).
 
@@ -167,6 +66,105 @@ clouds:
       username: 'admin'
       password: 'password'
 ```
+
+## Project Creation
+
+First create an OpenStack project and user.  I use some Ansible for this that I have not posted yet.
+
+* Create project _shiftstack_ and adjust quota as needed.
+
+* Create user _shiftstack_ with role _swiftoperator_ and [temp URL](https://docs.ceph.com/docs/master/radosgw/swift/tempurl/) ability
+
+```bash
+$ openstack --os-cloud=admin project create --description OpenShift --enable shiftstack
+$ openstack --os-cloud=admin user create --project shiftstack --enable --password password shiftstack
+$ openstack --os-cloud=admin role add --user shiftstack --project shiftstack swiftoperator
+$ openstack --os-cloud=shiftstack object store account set --property Temp-URL-Key=superkey
+
+$ openstack --os-cloud=admin role assignment list --project shiftstack --names
++---------------+--------------------+-------------+--------------------+--------+-----------+
+| Role          | User               | Group       | Project            | Domain | Inherited |
++---------------+--------------------+-------------+--------------------+--------+-----------+
+| swiftoperator | shiftstack@Default |             | shiftstack@Default |        | False     |
+| _member_      | shiftstack@Default |             | shiftstack@Default |        | False     |
+| _member_      | admin@Default      |             | shiftstack@Default |        | False     |
++---------------+--------------------+-------------+--------------------+--------+-----------+
+```
+
+* Create a flavor meeting the requirements
+
+## Networking
+
+The OpenShift installer takes advantage of OpenStack [Neutron](https://docs.openstack.org/api-ref/network/v2/) featues including
+
+_ports_
+![Neutron Port](/images/openshift-openstack-install-network-port.png) and _floating IPs_.  ![Neutron Floating IP](/images/openshift-openstack-install-network-floating.png)
+
+## Floating IPs
+
+Before starting the installation process we must establish 2 IP addresses which will be used to access the OpenShift cluster externally. These will [necessarily be](https://github.com/openshift/installer/issues/2670) Neutron floating IPs.
+
+You might typically think of floating IPs as being assigned to a virtual machine instance, but these will be assigned to Neutron ports that exist even if there are no machines.
+
+Create 2 floating IPs and make note of them.
+
+```bash
+$ openstack floating ip create --description "API osp-nightly.os.example.com" floating 
+$ openstack floating ip create --description "Ingress osp-nightly.os.example.com" floating 
+# here is what we got
+$ export API_FIP=192.0.2.61
+$ export INGRESS_FIP=192.0.2.52
+```
+
+You could use your local `/etc/hosts` file for testing, but otherwise you will need to create some DNS records. I have already created a dynamic DNS zone called `os.example.com` and defined a key that nsupdate can use to inject the required A records.
+
+```bash
+$ export CLUSTER_NAME=osp-nightly
+$ cat <<EOF | nsupdate -v -k Kos.example.com.key
+update add api.${CLUSTER_NAME}.os.example.com 300 A $API_FIP
+update add *.apps.${CLUSTER_NAME}.os.example.com 300 A $INGRESS_FIP
+send
+EOF
+```
+
+The API load balancer floating IP should also go into the install-config.yaml at `/openstack/lbFloatingIP`. There is more to be said on the [install config](#install-config) later.
+
+The installer will create a private node network (10.0.0.0/24) and a router joining this network to the external network you identify as holding your floating IPs.
+
+## Ports
+
+In addition to the 2 floating IPs we created, the installer creates 3 Neutron ports to serve as holders of the highly available cluster virtual IPs which provide three functions. These will be on the created private network and have the following well defined IPs by default.
+
+- **API** 10.0.0.5
+- **DNS** 10.0.0.6
+- **Ingress** 10.0.0.7
+
+This is all well explained in the [OpenStack IPI Networking Infrastructure](https://github.com/openshift/installer/blob/master/docs/design/openstack/networking-infrastructure.md) doc. The [Bare Metal IPI Networking Infrastructure](https://github.com/openshift/installer/blob/master/docs/design/baremetal/networking-infrastructure.md) doc is also highly relevant.
+
+These neutron ports act as the holder of the keepalived managed Virtual IPs even while the machines participating in VRRP change their priorities or come and go.
+
+# Install Config
+
+No we have to gather all the configuration details necessary for the installation.
+
+First create an `install-config.yaml`. This will run you through an interactive dialog where you will pick your provider (openstack of course), your cloud or project, your ssh key, the external network that holds your floating IPs, and your flavor.
+
+```bash
+$ openshift-insall create install-config --log-level=debug --dir=osp-nightly
+```
+
+Now you must modify the file just created at `osp-nightly/install-config.yaml`.
+
+Even though OpenShift 4.3 was announced with OpenStack support, there have been a [lot of issues](https://bugzilla.redhat.com/show_bug.cgi?id=1796822) that affect clouds using self-signed certificates for their OpenStack endpoint. It seems to me that would be the norm for an enterprise and therefore OpenStack was not fully supported. This is all good now, but must you make your CA cert available in two ways. One is within the install-config.
+
+Edit `install-config.yaml` and:
+
+- Add the `$API_FIP` at `/openstack/lbFloatingIP` 
+- Add your enterprise CA cert at `/additionalTrustBundle`
+- [Generate a pull secret](https://cloud.redhat.com/) and add it at `/pullSecret`
+- Add your ssh key at `/sshKey`
+
+**Important!** Back up your install-config.yaml now. The install process will delete your install-config.yaml! I do not know why that choice was made.
 
 # Installation
 
