@@ -25,9 +25,8 @@ Maybe your OpenStack client config looks like this. In that case ensure that `ca
 
 ```yaml
 public-clouds:
-  # overcloud is the production cloud for the masses
   overcloud:
-    cacert: 'ca.crt.pem'
+    cacert: 'ca.crt.pem' # file path readable by installer
     auth_type: password
     identity_api_version: '3'
     auth:
