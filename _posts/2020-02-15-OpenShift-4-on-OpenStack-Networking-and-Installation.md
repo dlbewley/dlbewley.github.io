@@ -156,11 +156,11 @@ The masters will obtain their configuration from the bootstrap node and execute 
 
 ![OpenShift OpenStack Networking](/images/openshift-openstack-install-network-02.png)
 
-Finally, a big difference from TripleO is that the bootstrap node will be deleted once the actual cluster is up leaving behind only the masers and worker nodes participated in VRRP to handle traffic for the VIPs. With TripleO the undercloud director machine would live on for management purposes.
+The bootstrap node will ultimatly be deleted once the actual cluster is up leaving behind only the masters and worker nodes to participate in VRRP and handle traffic for the VIPs. This is unlike TripleO wich leaves uses the director machine to manage the overcloud.
 
 # Floating IP 
 
-Finally while the association of the API floating IP and API port are automatically handled by the installer process, the ingress floating IP must be assocated by hand.
+Finally while the association of the API floating IP and the API port are automatically handled by the installer process, the ingress floating IP must be assocated by hand.
 
 
 ```bash
