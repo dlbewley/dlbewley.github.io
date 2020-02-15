@@ -9,7 +9,35 @@ tags:
 
 OpenShift Containter Platform 4 is much more like Tectonic than OpenShift 3. Particularly when it comes to [installation](https://docs.openshift.com/container-platform/4.3/architecture/architecture-installation.html) and node management. Rather then building machines and running [an Ansible playbook](https://github.com/openshift/openshift-ansible/tree/release-3.11) to configure them you now have the option of setting a fewer paramters in an install config running an installer to build and configure the cluster from scratch.
 
-I would like to illustrate how the basics of the networking might look when installing OpenShift on OpenStack. I also wanted an excuse to try out a new iPad sketch app. My notes are based on recent 4.4 nightly builds.
+I would like to illustrate how the basics of the networking might look when [installing OpenShift on OpenStack](https://docs.openshift.com/container-platform/4.3/installing/installing_openstack/installing-openstack-installer-custom.html
+
+). I also wanted an excuse to try out a new iPad sketch app. These notes are based on recent 4.4 nightly builds on OSP 13 Queens.
+
+# Project
+
+First create an OpenStack project and user.  I use some Ansible for this that I haven not posted.
+
+* Create project _shiftstack_ and adjust quota as needed.
+
+* Create user _shiftstack_ with role _swiftoperator_ and [temp URL](https://docs.ceph.com/docs/master/radosgw/swift/tempurl/) ability
+
+```bash
+$ openstack --os-cloud=admin project create --description OpenShift --enable shiftstack
+$ openstack --os-cloud=admin user create --project shiftstack --enable --password password shiftstack
+$ openstack --os-cloud=admin role add --user shiftstack --project shiftstack swiftoperator
+$ openstack --os-cloud=shiftstack object store account set --property Temp-URL-Key=superkey
+
+$ openstack --os-cloud=admin role assignment list --project shiftstack --names
++---------------+--------------------+-------------+--------------------+--------+-----------+
+| Role          | User               | Group       | Project            | Domain | Inherited |
++---------------+--------------------+-------------+--------------------+--------+-----------+
+| swiftoperator | shiftstack@Default |             | shiftstack@Default |        | False     |
+| _member_      | shiftstack@Default |             | shiftstack@Default |        | False     |
+| _member_      | admin@Default      |             | shiftstack@Default |        | False     |
++---------------+--------------------+-------------+--------------------+--------+-----------+
+```
+
+* Create a flavor meeting the requirements
 
 # Networking
 
@@ -38,7 +66,7 @@ You could use your local `/etc/hosts` file for testing, but otherwise you will n
 
 ```bash
 $ export CLUSTER_NAME=osp-nightly
-cat <<EOF | nsupdate -v -k Kos.example.com.key
+$ cat <<EOF | nsupdate -v -k Kos.example.com.key
 update add api.${CLUSTER_NAME}.os.example.com 300 A $API_FIP
 update add *.apps.${CLUSTER_NAME}.os.example.com 300 A $INGRESS_FIP
 send
@@ -70,7 +98,7 @@ Before we go further there are a few things to mention about the installation co
 First create an install-config.yaml. This will run you through an interactive dialog where you will pick your provider (openstack), your cloud or project (did you make one already?), your ssh key, and the external network that holds your floating IPs.
 
 ```bash
-create install-config --log-level=debug --dir=osp-nightly
+$ openshift-insall create install-config --log-level=debug --dir=osp-nightly
 ```
 
 Now you must modify the file created at `osp-nightly/install-config.yaml`.
@@ -81,6 +109,8 @@ Edit `install-config.yaml` and:
 
 - Add the `$API_FIP` at `/openstack/lbFloatingIP` 
 - Add your enterprise CA cert at `/additionalTrustBundle`
+- [Generate a pull secret](https://cloud.redhat.com/) and add it at `/pullSecret`
+- Add your ssh key at `/sshKey`
 
 **Important!** Back up your install-config.yaml now. The install process will delete your install-config.yaml! I do not know why that choice was made.
 
@@ -116,6 +146,12 @@ clouds:
       project_name: shiftstack
       user_domain_name: Default
       project_domain_name: Default
+  admin:
+    profile: overcloud
+    auth:
+      project_name: admin
+      user_domain_name: Default
+      project_domain_name: Default
 ```
 
 - `~/.config/openstack/secure.yaml`
@@ -125,6 +161,10 @@ clouds:
   shiftstack:
     auth:
       username: 'shiftstack'
+      password: 'password'
+  admin:
+    auth:
+      username: 'admin'
       password: 'password'
 ```
 
@@ -154,6 +194,10 @@ Once the bootstrap node is running a small cluster it will be reachable via the 
 
 The masters will obtain their configuration from the bootstrap node and execute the machine config operator which will connect to the OpenStack API to build worker nodes. This step would fail if your `cacert` is not obtained from your clouds.yaml.
 
+```bash
+$ openstack console log show --lines 10 <boostrap node> # see TLS errors
+```
+
 ![OpenShift OpenStack Networking](/images/openshift-openstack-install-network-02.png)
 
 The bootstrap node will ultimatly be deleted once the actual cluster is up leaving behind only the masters and worker nodes to participate in VRRP and handle traffic for the VIPs. This is unlike TripleO wich leaves uses the director machine to manage the overcloud.
@@ -173,4 +217,36 @@ $ export INGRESS_FIP=192.0.2.52
 $ export INGRESS_PORT="${CLUSTER_ID}-ingress-port"
 
 $ openstack --os-cloud=shiftstack floating ip set --port $INGRESS_PORT $INGRESS_FIP
+```
+
+And here is a look at the final port and FIP assignments
+
+```bash
+$ openstack --os-cloud=shiftstack floating ip list \
+    -c 'Floating IP Address' -c 'Fixed IP Address' -c 'Port' -c 'Floating Network'
++---------------------+------------------+-----------+--------------------------------------+
+| Floating IP Address | Fixed IP Address | Port      | Floating Network                     |
++---------------------+------------------+-----------+--------------------------------------+
+| 192.0.2.61          | 10.0.0.5         | 0f46db1c- | c95e1f09-fe50-4837-99d7-cf9b1c3195c1 |
+| 192.0.2.52          | 10.0.0.7         | 3718f842- | c95e1f09-fe50-4837-99d7-cf9b1c3195c1 |
++---------------------+------------------+-----------+--------------------------------------+
+
+$ openstack --os-cloud=shiftstack port list \
+    -c ID -c Name -c Status -c 'Fixed IP Addresses'
++-----------+---------------------------------+--------+-----------------------------------------------+
+| ID        | Name                            | Status | Fixed IP Addresses                            |
++-----------+---------------------------------+--------+-----------------------------------------------+
+| 0b2caa8a- |                                 | ACTIVE | ip_address='10.0.0.11', subnet_id='815d5df0-' |
+| 0f46db1c- | osp-nightly-bwgwq-api-port      | DOWN   | ip_address='10.0.0.5', subnet_id='815d5df0-'  | <--
+| 1ce57420- | osp-nightly-bwgwq-worker-bn9l8  | ACTIVE | ip_address='10.0.0.14', subnet_id='815d5df0-' |
+| 30c790a3- | osp-nightly-bwgwq-master-port-0 | ACTIVE | ip_address='10.0.0.16', subnet_id='815d5df0-' |
+| 3718f842- | osp-nightly-bwgwq-ingress-port  | DOWN   | ip_address='10.0.0.7', subnet_id='815d5df0-'  | <--
+| 5120e5fe- | osp-nightly-bwgwq-worker-7qksj  | ACTIVE | ip_address='10.0.0.18', subnet_id='815d5df0-' |
+| 7e8b29a4- | osp-nightly-bwgwq-worker-5ptpq  | ACTIVE | ip_address='10.0.0.26', subnet_id='815d5df0-' |
+| ab61d063- | osp-nightly-bwgwq-master-port-2 | ACTIVE | ip_address='10.0.0.23', subnet_id='815d5df0-' |
+| b322ad7a- |                                 | ACTIVE | ip_address='10.0.0.12', subnet_id='815d5df0-' |
+| bd3fa5ea- |                                 | ACTIVE | ip_address='10.0.0.10', subnet_id='815d5df0-' |
+| d0b6eb02- | osp-nightly-bwgwq-master-port-1 | ACTIVE | ip_address='10.0.0.15', subnet_id='815d5df0-' |
+| febae668- |                                 | ACTIVE | ip_address='10.0.0.1', subnet_id='815d5df0-'  |
++-----------+---------------------------------+--------+-----------------------------------------------+
 ```
