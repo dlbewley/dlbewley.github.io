@@ -11,15 +11,17 @@ OpenShift Containter Platform 4 is much more like Tectonic than OpenShift 3. Par
 
 I would like to illustrate how the basics of the networking might look when installing OpenShift on OpenStack. I also wanted an excuse to try out a new iPad sketch app. I will also describe some issues I had to overcome. My notes are based on 4.4 nightly builds.
 
-= Networking
+# Networking
 
 The OpenShift installer takes advantage of OpenStack [Neutron](https://docs.openstack.org/api-ref/network/v2/) featues including
-_ports_
+
+Neutron _ports_
 ![Neutron Port](/images/openshift-openstack-install-network-port.png)
+
 and _floating IPs_.
 ![Neutron Floating IP](/images/openshift-openstack-install-network-floating.png)
 
-== Floating IPs
+## Floating IPs
 
 Before starting the installation process we must establish 2 IP addresses which will be used to access the OpenShift cluster. These will [necessarily be](https://github.com/openshift/installer/issues/2670) Neutron floating IPs.
 
@@ -48,11 +50,11 @@ EOF
 
 The API load balancer floating IP should also go into the install-config.yaml at `/openstack/lbFloatingIP`. There is more to be said on the [install config](#install-config) later.
 
-== Network
+## Network
 
 The installer will create a private network and a router joining this network to the external network you identify as holding your floating IPs.
 
-== Ports
+## Ports
 
 In addition to the 2 floating IPs we created, the installer creates 3 Neutron ports to serve as holders of the highly available cluster virtual IPs which provide three functions. These will be on the created private network and have the following well defined IPs by default.
 
@@ -64,7 +66,7 @@ This is all well explained in the [OpenStack IPI Networking Infrastructure](http
 
 These neutron ports act as the holder of the keepalived managed Virtual IPs even while the machines participating in VRRP change their priorities or come and go.
 
-= Install Config
+# Install Config
 
 Before we go further there are a few things to mention about the installation config. 
 
@@ -85,7 +87,7 @@ Edit `install-config.yaml` and:
 
 **Important!** Back up your install-config.yaml now. The install process will delete your install-config.yaml! I do not know why that choice was made.
 
-== OpenStack Cloud Config
+## OpenStack Cloud Config
 
 Modify your openstack client config to [define a `cacert`](https://github.com/openshift/installer/tree/master/docs/user/openstack#self-signed-openstack-ca-certificates).
 
@@ -129,9 +131,9 @@ clouds:
       password: 'password'
 ```
 
-= Installation
+# Installation
 
-== Bootstrap
+## Bootstrap
 
 And finally, here is where I can show off my Apple Pencil lack of skills! And where we will run the installer.
 
@@ -143,23 +145,23 @@ openshift-install create cluster --log-level=debug --dir=osp-nightly
 
 The [openshift-install tool](https://github.com/openshift/installer) leverages [Terraform](https://www.terraform.io/) to produce Installer Provisioned Infrastructure. It will create a bootstrap node first.
 
-[![OpenShift OpenStack Networking](/images/thumb/openshift-openstack-install-network-00.png)](/images/thumb/openshift-openstack-install-network-00.png)
+[![OpenShift OpenStack Networking](/images/openshift-openstack-install-network-00.png)](/images/thumb/openshift-openstack-install-network-00.png)
 
 This node will be configured to run a tiny 1 node OpenShift cluster, which only exists as a mechanism to serve out the configurations required by the actual cluster being built shortly after. This may remind you of the TripleO Undercloud / Overcloud model. 
 
 When the bootstrap node is first created, it is the only member of all three VRRP or keepalived instances. I try to indicate this by showing the network connection passing through all three blue keepalived "domains".
 
-[![OpenShift OpenStack Networking](/images/thumb/openshift-openstack-install-network-01.png)](/images/thumb/openshift-openstack-install-network-01.png)
+[![OpenShift OpenStack Networking](/images/openshift-openstack-install-network-01.png)](/images/thumb/openshift-openstack-install-network-01.png)
 
 Once the bootstrap node is running a small cluster it will be reachable via the API port on 10.0.0.5. The installer (Terraform) will then connect again to OpenStack and build 3 master nodes.
 
 The masters will obtain their configuration from the bootstrap node and execute the machine config operator which will connect to the OpenStack API to build worker nodes. This step would fail if your `cacert` is not obtained from your clouds.yaml.
 
-[![OpenShift OpenStack Networking](/images/thumb/openshift-openstack-install-network-02.png)](/images/thumb/openshift-openstack-install-network-02.png)
+[![OpenShift OpenStack Networking](/images/openshift-openstack-install-network-02.png)](/images/thumb/openshift-openstack-install-network-02.png)
 
 Finally, a big difference from TripleO is that the bootstrap node will be deleted once the actual cluster is up leaving behind only the masers and worker nodes participated in VRRP to handle traffic for the VIPs. With TripleO the undercloud director machine would live on for management purposes.
 
-= Floating IP 
+# Floating IP 
 
 Finally while the association of the API floating IP and API port are automatically handled by the installer process, the ingress floating IP must be assocated by hand.
 
