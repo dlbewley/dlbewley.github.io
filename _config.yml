@@ -34,7 +34,9 @@ site:
 footer_links:
   github: dlbewley
   twitter: dlbewley
-  linkedin: 60564658
+  linkedin: dalebewley
   facebook: dale.bewley
   youtube: DaleBewley
-  googleplus: +DaleBewley
+
+plugins:
+  - jekyll-feed
