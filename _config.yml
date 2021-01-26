@@ -30,6 +30,9 @@ collections:
 
 site:
   url: "//guifreelife.com/"
+
+description: The GUI Free Life of Dale Bewley. A blog on topics such as Linux, Networking, and Kubernetes.
+
 # Includes an icon in the footer for each user name you enter
 footer_links:
   github: dlbewley
@@ -40,4 +43,3 @@ footer_links:
 
 plugins:
   - jekyll-feed
-    description: The GUI Free Life and times of Dale Bewley. A blog on topics such as Linux, Networking, and Kubernetes.
