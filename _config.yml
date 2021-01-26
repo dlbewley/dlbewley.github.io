@@ -40,3 +40,4 @@ footer_links:
 
 plugins:
   - jekyll-feed
+    description: The GUI Free Life and times of Dale Bewley. A blog on topics such as Linux, Networking, and Kubernetes.
