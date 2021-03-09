@@ -319,9 +319,9 @@ Deployments:
                  StateRoot: rhcos
 {% endhighlight %}
 
-#### MCD Troubleshooting
+#### Machine Config Daemon Troubleshooting
 
-The MCD is of course running in a pod, so you can spy on its logs on each node and observe its actions or check for problems. For example, while unusual (I've seen the following once), if you found a problem with the boot config like this...
+The MCD is of course running in a pod, so you can spy on its logs on each node and observe its actions or check for problems. For example, while unusual (I've seen the following once), it adds some behind the scenes context. After finding a node as NotReady a problem with the boot config was exposed in the logs.
 
 {%highlight shell %}
 oc project openshift-machine-config-operator
@@ -343,7 +343,7 @@ E0209 18:23:14.965590  116436 writer.go:135] Marking Degraded due to: unexpected
  have "quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:4c5b83a192734ad6aa33da798f51b4b7ebe0f633ed63d53867a0c3fb73993024"
 {% endhighlight %}
 
-You can manually update the boot configuration.
+Updating the boot config allowed the host to come back into compliance. 
 
 {%highlight shell %}
 oc debug node/vipi-7zc6h-master-1
@@ -359,6 +359,7 @@ sh-4.4# reboot
 Finally when the node is rebooted with the node annotations updated by the MachineConfigControllerare updated to reflect the state.
 When the values of the `machineconfiguration.openshift.io/currentConfig` and `machineconfiguration.openshift.io/desiredConfig` annotations on the Node match the MCD is happy and so are we!
 
+I could have also just deleted the node and allowed the machine api operator to automatically replace it, but I didn't even talk about `MachineSets` and node autoscaling! Maybe next time. :)
 # Summary
 
 This was admittedly heavy on external links and possibly "hand wavy" at points, but I hope it provides you a better sense of just exactly how OpenShift Over The Air Updates automate the administration of your entire Kubernetes cluster.
