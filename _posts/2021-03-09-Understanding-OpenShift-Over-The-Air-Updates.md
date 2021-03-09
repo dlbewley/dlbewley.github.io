@@ -7,7 +7,7 @@ tags:
  - operators
 ---
 
-OpenShift 4 extends the [operator pattern introduced by CoreOS][9], and enables automated management of the Kubernetes cluster and the underlying resources including machine instances and operating system configuration. Operator driven over-the-air updates enable automated updates much like you are accustomed to receiving for your smart phone. What follows is a a technical exploration of the OpenShift over the air updates implementation.
+OpenShift 4 extends the [operator pattern introduced by CoreOS][9], and enables automated management of the Kubernetes cluster and the underlying resources including machine instances and operating system configuration. Operator driven over the air updates enable automated updates much like you are accustomed to receiving for your smart phone. What follows is a a technical exploration of the OpenShift over the air updates implementation.
 
 # Operators All the Way Down
 
@@ -19,7 +19,7 @@ OpenShift 4 extends the [operator pattern introduced by CoreOS][9], and enables 
 
 **What is a "Kubernetes application"?**
 
-> [A Kubernetes application is][1] an app that is both deployed on Kubernetes and managed using the Kubernetes APIs.
+> [A Kubernetes application is][1] an application that is both deployed on Kubernetes and managed using the Kubernetes APIs.
 
 By creating APIs and [Custom Resource Definitions](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/) for all aspects of a cluster, OpenShift essentially turns the cluster into a "kubernetes application".
 {:style="clear center"}
@@ -38,7 +38,7 @@ machineconfigs            mc           machineconfiguration.openshift.io   false
 
 # Operators Manage the Workloads
 
-The [Operator SDK][2] behind this work leverages technologies including Ansible, Helm, and Golang to bundle software and the logic to drive it into a Kubernetes Operator. OpenShift enables easy installation of community and ISV applications from customizatble catalog sources such as [OperatorHub](https://operatorhub.io/) and [Red Hat Marketplace](https://marketplace.redhat.com/).
+The [Operator SDK][2] behind this work leverages technologies including Ansible, Helm, and Golang to bundle software and related operational knowledge into a Kubernetes Operator. OpenShift enables easy installation of community and ISV applications from customizatble catalog sources such as [OperatorHub](https://operatorhub.io/) and [Red Hat Marketplace](https://marketplace.redhat.com/).
 
 After installation of a workload operator, the update or removal is managed by the [Operator Lifecycle Manager][11] or OLM. When a new release of the operator is published the OLM facilitates an update to the new operator bundle.
 
@@ -61,7 +61,7 @@ This post will focus less on workload operators and more on cluster operators.
 
 There is a [set of operators][6] that do not require manual installation. These operators comprise the services such as DNS, etcd, monitoring, and cloud API automation that make up the OpenShift cluster.
 
-These are called Cluster Operators, and you can see them with the `oc get clusteroperators` command.
+These are called exposed by a the [ClusterOperator][12] custom resource. You can see them with the `oc get clusteroperators` command.
 
 {% highlight shell %}
 $ oc get clusteroperators
@@ -179,7 +179,7 @@ To understand how to define an "authentication", in addition to the product docu
 
 ## Cluster Version Operator
 
-These [ClusterOperators][12] like "authentication" and "console" report their status and are kept in sync by the [Cluster Version Operator](https://github.com/openshift/cluster-version-operator). The CVO is responsible for orchestrating over the air updates to the cluster. By acting on a payload representing the artifacts which make up an OpenShift release, the CVO ensures that everything from the RHEL CoreOS version on the nodes to the OpenShift web console are running on the same release.
+These cluster operators like "authentication" and "console" report their status and are kept in up to date by the [Cluster Version Operator](https://github.com/openshift/cluster-version-operator). The CVO is responsible for orchestrating over the air updates to the cluster. By acting on a payload representing the artifacts which make up an OpenShift release, the CVO ensures that everything from the RHEL CoreOS version on the nodes to the OpenShift web console are running on the same release.
 
 So how does the CVO learn what upgrades are available?
 
@@ -229,8 +229,7 @@ We can get some info about a release, including the list of container images pro
 
 {% highlight shell %}
 $ oc adm release info \
-quay.io/openshift-release-dev/ocp-release@sha256:8a9e40d
-f2a19db4cc51dc8624d54163bef6e88b7d88cc0f577652ba25466e338
+quay.io/openshift-release-dev/ocp-release@sha256:8a9e40df2a19db4cc51dc8624d54163bef6e88b7d88cc0f577652ba25466e338
 Name:      4.6.13
 Digest:    sha256:8a9e40df2a19db4cc51dc8624d54163bef6e88b7d88cc0f577652ba25466e338
 Created:   2021-01-20T13:12:02Z
@@ -271,16 +270,18 @@ Pro Tip: `oc adm release info quay.io/openshift-release-dev/ocp-release:4.6.13-x
 
 ## Managing the Nodes
 
-The machines which make up the cluster are also managed by operators. The `machine-api` operator interfaces with the underlying infrastructure provider (OpenStack, AWS, etc) to provision machines on Day 1. The `machine-config` operator manages the resources that provide Day 1 and Day 2 configuration.
+The machines which make up the cluster are also managed by operators. The `machine-api` operator interfaces with the underlying infrastructure provider (OpenStack, AWS, etc) to provision machines on Day 1 and the `machine-config` operator manages the resources that implement machine configuration.
 
-When a machine is booted it is provided a URL to the machine config server which serves up an [Ignition Config][4]. Ignition can be thought of as a combination of Kickstart and Cloud-Init. The config will include a reference to the RHCOS image to install on the host and every file and configuration detail to be applied.  Machines are grouped into pools and subscribe to corresponding MachineConfigPools like _master_ or _worker_ in this example.
+Machines are provisioned by a technology called Ignition[4]. Ignition can be thought of as a combination of Kickstart and Cloud-Init. When a machine is booted it is provided a URL to the machine config server which serves up an Ignition config. The config will include a reference to the RHCOS image to install on the host and every file and configuration detail to be applied.
+
+Machines are grouped into pools and subscribe to corresponding MachineConfigPools which each have a unique machine configuration. Example pools include _master_ or _worker_ in this example below.
 
 ![Machine Config Server](/images/openshift-mcs-slide-640.png)
 
 Since Ignition runs in the initial RAM disk (initrd), it has the ability to make low level changes to storage and networking without requiring a reboot.
 If there are any errors reported by Ignition during the provisioning phase, the machine will not be placed into service.
 
-The `machine-config` ClusterOperator has as an operand the `machine-config-daemon`. [The MCD][8] is deployed as a daemonset to all nodes and prevents configuration drift by checking in with the `machine-config-server`. When a change is detected between the currently applied machine configuration and the desired configuration the `machine-config-controller`. [The MCC][19] will coordinate the application of the change in a controlled manner.
+The `machine-config` ClusterOperator has as an operand the `machine-config-daemon`. [The MCD][8] is deployed as a daemonset to all nodes and prevents configuration drift by checking in with the `machine-config-server`. When a change is detected between the currently applied machine configuration and the desired configuration the `machine-config-controller` [the MCC][19] will coordinate the application of the change in a controlled manner.
 
 OpenShift 4 considers nodes to be immutable. That is to say, if they break or require a change they should be "replaced" or configured in whole rather than in part. A practical effect of this is that the only way to affect a change is to create a [MachineConfig][15]  any change to a machine configuration requires a reapplication of all changes by way of a node reboot. The number of nodes impacted simultaneously may be configured with the `maxUnavailable` attribute of a MachineConfigPool which will be honored by the MCC.
 
@@ -289,7 +290,7 @@ OpenShift 4 considers nodes to be immutable. That is to say, if they break or re
 As shown above, the OpenShift release image contains a reference to a [specific release of RHCOS][17] eg. `machine-os 46.82.202101191342-0 Red Hat Enterprise Linux CoreOS`. 
 
 RHEL CoreOS like RHEL Atomic Host uses [libostree][18] to apply operating system updates in a transactional manner. During an update the MCD downloads the container image provided in the `osImageURL` attribute of the Ignition config. This is image essentially a wrapper around an OSTree commit which is extracted and written to 
-`/ostree/deploy/rhcos/deploy/<hash>`. The boot configuration is then updated to point to the new OSTree.
+`/ostree/deploy/rhcos/deploy/<hash>`. The boot configuration is then updated to point to the new OSTree where it will be used upon reboot.
 
 {%highlight shell %}
 sh-4.4# rpm-ostree status
@@ -356,7 +357,7 @@ sh-4.4# reboot
 
 
 Finally when the node is rebooted with the node annotations updated by the MachineConfigControllerare updated to reflect the state.
-When the values of `machineconfiguration.openshift.io/currentConfig` and `machineconfiguration.openshift.io/desiredConfig` match the MCD is happy and so are we!
+When the values of the `machineconfiguration.openshift.io/currentConfig` and `machineconfiguration.openshift.io/desiredConfig` annotations on the Node match the MCD is happy and so are we!
 
 # Summary
 
@@ -366,12 +367,12 @@ This was admittedly heavy on external links and possibly "hand wavy" at points, 
 
 For more information on this topic including a video demonstration of the OpenShift 4 upgrade process, please see [my BrightTALK presentation][3] from September, 2020.
 
-[![OpenShift Over-The-Air Updates BrightTALK](/images/openshift-ota-brighttalk.png)][3]
+[![OpenShift Over The Air Updates BrightTALK](/images/openshift-ota-brighttalk.png)][3]
 
 
 ## References
 
-* [Red Hat OpenShift Cluster Services: Over-The-Air Updates Webinar][3]
+* [Red Hat OpenShift Cluster Services: Over The Air Updates Webinar][3]
 * [What are Operators?][1]
 * [What are Cluster Operators?][12]
 * [Cluster Operators Reference][6]
