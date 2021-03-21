@@ -11,7 +11,7 @@ OpenShift 4 extends the [operator pattern introduced by CoreOS][9], and enables 
 
 # Operators All the Way Down
 
-[![Computer Operator](/images/the-face-of-a-computer-operator-from-the-2134th-communications-squadron-is-2ca9c9.jpg)](https://nara.getarchive.net/media/the-face-of-a-computer-operator-from-the-2134th-communications-squadron-is-2ca9c9){: .align-center}
+[![Computer Operator](/images/the-face-of-a-computer-operator-from-the-2134th-communications-squadron-is-2ca9c9.jpg)](https://nara.getarchive.net/media/the-face-of-a-computer-operator-from-the-2134th-communications-squadron-is-2ca9c9)
 
 **What is an "Operator"?**
 
@@ -22,7 +22,6 @@ OpenShift 4 extends the [operator pattern introduced by CoreOS][9], and enables 
 > [A Kubernetes application is][1] an application that is both deployed on Kubernetes and managed using the Kubernetes APIs.
 
 By creating APIs and [Custom Resource Definitions](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/) for all aspects of a cluster, OpenShift essentially turns the cluster into a "kubernetes application".
-{:style="clear center"}
 
 For example here is a list of machine configuration related CRDs now available for management by Kubernetes.
 
