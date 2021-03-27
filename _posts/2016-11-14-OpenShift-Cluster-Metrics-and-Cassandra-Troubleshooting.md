@@ -2,12 +2,11 @@
 title: OpenShift Cluster Metrics and Cassandra Troubleshooting
 layout: post
 tags:
- - cassandra
- - hawkular
  - kubernetes
  - openshift
- - OCP3.3
+ - OCP3
  - metrics
+ - troubleshooting
 ---
 
 OpenShift gathers [cluster metrics](https://docs.openshift.com/container-platform/3.3/install_config/cluster_metrics.html) such as CPU, memory, and network bandwidth per pod which can assist in troubleshooting and capacity planning. The metrics are also used to support [horizontal pod autoscaling](https://docs.openshift.com/container-platform/3.3/dev_guide/pod_autoscaling.html), which makes the metrics service not just helpful, but critical to operation.

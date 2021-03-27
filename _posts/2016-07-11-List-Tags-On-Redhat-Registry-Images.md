@@ -4,7 +4,7 @@ layout: post
 tags:
  - docker
  - openshift
- - OSE3.2
+ - OCP3
 ---
 
 

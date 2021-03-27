@@ -2,10 +2,10 @@
 title: Deploy Hawkular Metrics in CDK 2.1 OpenShift 3.2
 layout: post
 tags:
+ - CDK
  - kubernetes
  - openshift
- - OSE3.2
- - CDK2.1
+ - OCP3
 ---
 
 **Update!** _I failed with CDK 2.0, but CDK 2.1 works with some fiddling._

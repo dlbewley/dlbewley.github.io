@@ -3,6 +3,7 @@ title: Testing Openshift Origin V3 with Ansible and Vagrant on OS X
 layout: post
 tags:
  - ansible
+ - automation
  - mac
  - openshift
  - vagrant

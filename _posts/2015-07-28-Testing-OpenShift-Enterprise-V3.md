@@ -3,7 +3,7 @@ title: Testing OpenShift Enterprise V3
 layout: post
 tags:
  - openshift
- - OSEv3.0
+ - OCP3
  - RHEL
 ---
 

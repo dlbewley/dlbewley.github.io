@@ -4,7 +4,7 @@ layout: post
 tags:
  - haproxy
  - kubernetes
- - OCP3.3
+ - OCP3
  - openshift
  - router
 ---

@@ -4,10 +4,8 @@ layout: post
 tags:
  - kubernetes
  - openshift
- - OSE3.1
- - OSE3.2
- - CDK2.0
- - CDK2.1
+ - OCP3
+ - CDK
 ---
 
 The RedHat Container Developer Kit allows you to deploy OpenShift on your laptop for easier testing and development. Here is how to deploy it.

@@ -2,7 +2,9 @@
 title: OpenShift 4 on OpenStack Networking and Installation
 layout: post
 tags:
+ - install
  - openshift
+ - networking
  - openstack
  - OCP4
 ---

@@ -3,6 +3,7 @@ title: Split an Ansible Git Repo and Retain the Commit History
 layout: post
 tags:
  - ansible
+ - automation
  - git
 ---
 
