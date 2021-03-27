@@ -3,7 +3,9 @@ title: Ansible Playbook to Prepare for OpenShift Enterprise 3.1
 layout: post
 tags:
  - ansible
+ - automation
  - openshift
+ - install
 ---
 
 This playbook is written for RHEL 7.2 and OSE v3.1. It will perform the following steps which should take place before running the [openshift-ansible byo playbook](https://github.com/openshift/openshift-ansible/blob/master/playbooks/byo/config.yml).

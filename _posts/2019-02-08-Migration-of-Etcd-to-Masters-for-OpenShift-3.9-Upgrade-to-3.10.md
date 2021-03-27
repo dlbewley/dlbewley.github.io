@@ -4,8 +4,9 @@ layout: post
 tags:
  - etcd
  - openshift
- - OCP3.9
- - OCP3.10
+ - OCP3
+ - migration
+ - upgrade
 ---
 
 As of OpenShift Container Platform 3.10 etcd is expected to run in [static pods](https://docs.openshift.com/container-platform/3.10/release_notes/ocp_3_10_release_notes.html#ocp-310-control-plane-changes) on the master nodes in the control plane. You may have a deployed an HA cluster with dedicated etcd nodes managed with systemd. How do you migrate the this new architecture?

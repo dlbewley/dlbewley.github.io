@@ -3,6 +3,7 @@ title: Ansible CMDB Inventory and Facts Reporting
 layout: post
 tags:
  - ansible
+ - automation
 ---
 
 You just deployed a complex multi-host app using Ansible. Wouldn't it be helpful to see a overview of the deployment including hardware details?

@@ -3,8 +3,8 @@ title: Playbook to replace bootstrap.kubeconfig and node certificates on OpenShi
 layout: post
 tags:
  - openshift
- - OCP3.10
- - OCP3.11
+ - OCP3
+ - troubleshooting
 ---
 
 If you are a serial upgrader like me, you may have found that at one point during your 3.10.xx patching (say 3.10.119) you hit this error during the data plane upgrade:

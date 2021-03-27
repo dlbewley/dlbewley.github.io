@@ -4,7 +4,7 @@ layout: post
 tags:
  - kubernetes
  - openshift
- - OSE3.1
+ - OCP3
  - ssl
 ---
 

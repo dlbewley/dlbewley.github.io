@@ -2,10 +2,11 @@
 title: OpenShift High Availability - Routing
 layout: post
 tags:
- - docker
  - kubernetes
+ - networking
  - openshift
- - OSE3.1
+ - OCP3
+ - router
 ---
 
 Highly availabile containers in OpenShift are baked into the cake thanks to [replication controllers](https://docs.openshift.com/enterprise/3.1/architecture/core_concepts/deployments.html#replication-controllers) and [service load balancing](https://docs.openshift.com/enterprise/3.1/architecture/core_concepts/pods_and_services.html#services), but there are plenty of other single points of failure. Here is how to eliminate many of those.
