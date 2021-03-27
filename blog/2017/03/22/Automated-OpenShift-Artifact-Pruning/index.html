@@ -1,0 +1,150 @@
+<!doctype html><html lang=en-us><head><meta charset=utf-8><meta name=robots content="all,follow"><meta name=googlebot content="index,follow,snippet,archive"><meta name=viewport content="width=device-width,initial-scale=1"><title>Automated Pruning of OpenShift Artifacts; Builds, Deploys, Images</title><meta name=author content="DevCows"><meta name=keywords content="devows,hugo,go,openshift,OCP3"><meta name=description content="Site template made by devcows using hugo"><meta name=generator content="Hugo 0.81.0"><link href="//fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,500,700,800" rel=stylesheet type=text/css><link rel=stylesheet href=//use.fontawesome.com/releases/v5.11.2/css/all.css><link rel=stylesheet href=//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css integrity=sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u crossorigin=anonymous><link href=/css/animate.css rel=stylesheet><link href=/css/style.turquoise.css rel=stylesheet id=theme-stylesheet><link href=/css/custom.css rel=stylesheet><!--[if lt IE 9]><script src=https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js></script><script src=https://oss.maxcdn.com/respond/1.4.2/respond.min.js></script><![endif]--><link rel="shortcut icon" href=/img/favicon.ico type=image/x-icon><link rel=apple-touch-icon href=/img/apple-touch-icon.png><link href=/css/owl.carousel.css rel=stylesheet><link href=/css/owl.theme.css rel=stylesheet><link rel=alternate href=https://dwnwrd.github.io/index.xml type=application/rss+xml title="dwnwrd Universal"><meta property="og:locale" content="en_us"><meta property="og:site_name" content="dwnwrd Universal"><meta property="og:title" content="Automated Pruning of OpenShift Artifacts; Builds, Deploys, Images"><meta property="og:type" content="article"><meta property="og:url" content="https://dwnwrd.github.io/blog/2017/03/22/Automated-OpenShift-Artifact-Pruning/"><meta property="og:description" content="Site template made by devcows using hugo"><meta property="og:image" content="https://dwnwrd.github.io/img/banners/banner-4.jpg"><meta property="og:image:type" content="image/jpg"><meta property="og:image:width" content="1000"><meta property="og:image:height" content="750"><meta property="og:updated_time" content="2017-03-22T00:00:00Z"><meta property="article:tag" content="openshift"><meta property="article:tag" content="OCP3"><meta property="article:published_time" content="2017-03-22T00:00:00Z"><meta property="article:modified_time" content="2017-03-22T00:00:00Z"><meta name=twitter:card content="summary_large_image"><meta name=twitter:site content="@dlbewley"><meta name=twitter:title content="Automated Pruning of OpenShift Artifacts; Builds, Deploys, Images"><meta name=twitter:image content="https://dwnwrd.github.io/img/banners/banner-4.jpg"><meta name=twitter:description content="Site template made by devcows using hugo"></head><body><div id=all><header class=navbar-affixed-top data-spy=affix data-offset-top=62><div class="navbar navbar-default yamm" role=navigation id=navbar><div class=container><div class=navbar-header><a class="navbar-brand home" href=/><img src=/img/logo.png alt="Automated Pruning of OpenShift Artifacts; Builds, Deploys, Images logo" class="hidden-xs hidden-sm">
+<img src=/img/logo-small.png alt="Automated Pruning of OpenShift Artifacts; Builds, Deploys, Images logo" class="visible-xs visible-sm">
+<span class=sr-only>Automated Pruning of OpenShift Artifacts; Builds, Deploys, Images - go to homepage</span></a><div class=navbar-buttons><button type=button class="navbar-toggle btn-template-main" data-toggle=collapse data-target=#navigation>
+<span class=sr-only>Toggle Navigation</span>
+<i class="fas fa-align-justify"></i></button></div></div><div class="navbar-collapse collapse" id=navigation><ul class="nav navbar-nav navbar-right"><li class=dropdown><a href=/>Home</a></li><li class="dropdown active"><a href=/blog/>Blog</a></li><li class=dropdown><a href=/contact/>Contact</a></li></ul></div><div class="collapse clearfix" id=search><form class=navbar-form role=search><div class=input-group><input type=text class=form-control placeholder=Search>
+<span class=input-group-btn><button type=submit class="btn btn-template-main"><i class="fas fa-search"></i></button></span></div></form></div></div></div></header><div id=heading-breadcrumbs><div class=container><div class=row><div class=col-md-12><h1>Automated Pruning of OpenShift Artifacts; Builds, Deploys, Images</h1></div></div></div></div><div id=content><div class=container><div class=row><div class=col-md-9 id=blog-post><p class="text-muted text-uppercase mb-small text-right">March 22, 2017</p><div id=post-content><p>After running openshift for a while I discovered that letting builds pile up to around to around 1,200 led to what was essentially a deadlock in the scheduling of new builds. New builds were stuck in a <em>New, waiting</em> state indefinitely.</p><p>This <a href=https://github.com/openshift/origin/pull/12623>was fixed</a> as of OCP 3.4.1, but it caused me to get more pro-active in the <a href=https://docs.openshift.org/latest/admin_guide/pruning_resources.html>pruning of artifacts</a> within OpenShift.</p><p>I threw together a script and a playbook to deploy it. YMMV</p><p>Playbook to setup the first master to prune artifacts on a schedule. This will also create a <code>serviceaccount</code> in the <code>default</code> project with appropriate permissions to support image pruning.</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml>---
+<span style=color:#75715e># file: prune-cron.yml</span>
+<span style=color:#75715e># run this on only the first master, as root</span>
+
+- <span style=color:#f92672>hosts</span>: <span style=color:#ae81ff>masters[0]</span>
+  <span style=color:#f92672>vars</span>:
+    <span style=color:#f92672>default</span>:
+      <span style=color:#f92672>cron_weekday</span>: <span style=color:#e6db74>&#34;1-5&#34;</span>
+      <span style=color:#f92672>cron_hour</span>: <span style=color:#ae81ff>6</span>
+      <span style=color:#f92672>cron_minute</span>: <span style=color:#e6db74>&#34;{{ 15 | random}}&#34;</span>
+    <span style=color:#f92672>prune_script</span>: <span style=color:#ae81ff>prune-artifacts</span>
+    <span style=color:#f92672>prune_serviceaccount</span>: <span style=color:#ae81ff>prunebot</span>
+    <span style=color:#f92672>prune_artifacts</span>:
+      <span style=color:#f92672>builds</span>:
+        <span style=color:#f92672>keep_complete</span>: <span style=color:#ae81ff>5</span>
+        <span style=color:#f92672>keep_failed</span>: <span style=color:#ae81ff>5</span>
+        <span style=color:#f92672>keep_younger</span>: <span style=color:#ae81ff>60m</span>
+        <span style=color:#f92672>cron_hour</span>: <span style=color:#ae81ff>8</span>
+      <span style=color:#f92672>deployments</span>:
+        <span style=color:#f92672>keep_complete</span>: <span style=color:#ae81ff>5</span>
+        <span style=color:#f92672>keep_failed</span>: <span style=color:#ae81ff>5</span>
+        <span style=color:#f92672>keep_younger</span>: <span style=color:#ae81ff>60m</span>
+        <span style=color:#f92672>cron_hour</span>: <span style=color:#ae81ff>7</span>
+      <span style=color:#f92672>images</span>:
+        <span style=color:#f92672>keep_younger</span>: <span style=color:#ae81ff>60m</span>
+        <span style=color:#f92672>keep_tag_revisions</span>: <span style=color:#ae81ff>5</span>
+        <span style=color:#f92672>cron_weekday</span>: <span style=color:#ae81ff>1</span>
+
+  <span style=color:#f92672>tasks</span>:
+    - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>check for service account</span>
+      <span style=color:#f92672>command</span>: <span style=color:#e6db74>&#34;oc get sa {{ prune_serviceaccount }} -n default -o name&#34;</span>
+      <span style=color:#f92672>register</span>: <span style=color:#ae81ff>serviceaccount</span>
+      <span style=color:#f92672>ignore_errors</span>: <span style=color:#66d9ef>true</span>
+      <span style=color:#f92672>tags</span>: <span style=color:#ae81ff>sa</span>
+
+    - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>create service account</span>
+      <span style=color:#f92672>command</span>: <span style=color:#e6db74>&#34;oc create sa {{ prune_serviceaccount }} -n default&#34;</span>
+      <span style=color:#f92672>when</span>: <span style=color:#e6db74>&#34;&#39;{{ prune_serviceaccount }}&#39; not in &#39;{{ serviceaccount.stdout }}&#39;&#34;</span>
+      <span style=color:#f92672>tags</span>: <span style=color:#ae81ff>sa</span>
+
+    - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>grant perms to service account</span>
+      <span style=color:#f92672>command</span>: <span style=color:#e6db74>&#34;oc adm policy add-cluster-role-to-user system:image-pruner system:serviceaccount:default:{{ prune_serviceaccount }}&#34;</span>
+      <span style=color:#f92672>when</span>: <span style=color:#e6db74>&#34;&#39;{{ prune_serviceaccount }}&#39; not in &#39;{{ serviceaccount.stdout }}&#39;&#34;</span>
+      <span style=color:#f92672>tags</span>: <span style=color:#ae81ff>sa</span>
+
+    - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>install prune artifacts script</span>
+      <span style=color:#f92672>copy</span>:
+        <span style=color:#f92672>src</span>: <span style=color:#e6db74>&#34;bin/{{ prune_script }}&#34;</span>
+        <span style=color:#f92672>dest</span>: <span style=color:#e6db74>&#34;/usr/local/bin/{{ prune_script }}&#34;</span>
+        <span style=color:#f92672>owner</span>: <span style=color:#ae81ff>root</span>
+        <span style=color:#f92672>group</span>: <span style=color:#ae81ff>root</span>
+        <span style=color:#f92672>mode</span>: <span style=color:#ae81ff>0755</span>
+      <span style=color:#f92672>run_once</span>: <span style=color:#66d9ef>true</span>
+      <span style=color:#f92672>tags</span>: <span style=color:#ae81ff>script</span>
+
+    - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>create prune crons per artifact type</span>
+      <span style=color:#f92672>cron</span>:
+        <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;prune old {{ item.key }} artifacts&#34;</span>
+        <span style=color:#f92672>job</span>: <span style=color:#e6db74>&#34;/usr/local/bin/{{ prune_script }} --artifact &#39;{{ item.key }}&#39; --keep-complete &#39;{{item.value.keep_complete | default(5)}}&#39;  --keep-failed &#39;{{item.value.keep_failed | default(5)}}&#39;  --keep-younger &#39;{{item.value.keep_younger | default(&#39;60m&#39;)}}&#39; --keep-tag-revisions &#39;{{item.value.keep_tag_revisions | default(5)}}&#39;&#34;</span>
+        <span style=color:#f92672>user</span>: <span style=color:#ae81ff>root</span>
+        <span style=color:#f92672>cron_file</span>: <span style=color:#e6db74>&#34;prune-{{ item.key }}&#34;</span>
+        <span style=color:#f92672>minute</span>: <span style=color:#e6db74>&#34;{{item.value.cron_minute | default(default.cron_minute)}}&#34;</span>
+        <span style=color:#f92672>hour</span>: <span style=color:#e6db74>&#34;{{item.value.cron_hour | default(default.cron_hour)}}&#34;</span>
+        <span style=color:#f92672>weekday</span>: <span style=color:#e6db74>&#34;{{item.value.cron_weekday | default(default.cron_weekday)}}&#34;</span>
+        <span style=color:#f92672>state</span>: <span style=color:#ae81ff>present</span>
+      <span style=color:#f92672>with_dict</span>: <span style=color:#e6db74>&#34;{{ prune_artifacts }}&#34;</span>
+      <span style=color:#f92672>run_once</span>: <span style=color:#66d9ef>true</span>
+      <span style=color:#f92672>tags</span>: <span style=color:#ae81ff>cron</span>
+</code></pre></div><p>Wrapper to call the <code>oc prune</code> command</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#75715e>#!/bin/bash
+</span><span style=color:#75715e></span><span style=color:#75715e># prune-artifacts</span>
+<span style=color:#75715e># https://docs.openshift.org/latest/admin_guide/pruning_resources.html</span>
+<span style=color:#75715e># https://docs.openshift.com/container-platform/3.4/admin_guide/pruning_resources.html</span>
+
+KEEP_COMPLETE<span style=color:#f92672>=</span><span style=color:#ae81ff>5</span>
+KEEP_FAILED<span style=color:#f92672>=</span><span style=color:#ae81ff>5</span>
+KEEP_YOUNGER<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;60m&#34;</span>
+KEEP_TAG_REVISIONS<span style=color:#f92672>=</span><span style=color:#ae81ff>3</span>
+PRUNE_SERVICEACCOUNT<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;prunebot&#34;</span>
+
+USAGE<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;</span>$0<span style=color:#e6db74> --artifact &lt;builds,deployments,images&gt; --keep_complete &lt;num&gt; --keep_failed &lt;num&gt; --keep_younger &lt;time&gt; --keep-tag-revisions &lt;num&gt;&#34;</span>
+
+<span style=color:#66d9ef>while</span> <span style=color:#f92672>[[</span> $# -gt <span style=color:#ae81ff>1</span> <span style=color:#f92672>]]</span>; <span style=color:#66d9ef>do</span>
+  key<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;</span>$1<span style=color:#e6db74>&#34;</span>
+
+  <span style=color:#66d9ef>case</span> $key in
+      --artifact<span style=color:#f92672>)</span>
+        ARTIFACT<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;</span>$2<span style=color:#e6db74>&#34;</span>
+        shift
+      ;;
+      --keep-complete<span style=color:#f92672>)</span>
+        KEEP_COMPLETE<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;</span>$2<span style=color:#e6db74>&#34;</span>
+        shift
+      ;;
+      --keep-failed<span style=color:#f92672>)</span>
+        KEEP_FAILED<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;</span>$2<span style=color:#e6db74>&#34;</span>
+        shift
+      ;;
+      --keep-younger<span style=color:#f92672>)</span>
+        KEEP_YOUNGER<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;</span>$2<span style=color:#e6db74>&#34;</span>
+        shift
+      ;;
+      --keep-tag-revisions<span style=color:#f92672>)</span>
+        KEEP_TAG_REVISIONS<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;</span>$2<span style=color:#e6db74>&#34;</span>
+        shift
+      ;;
+  <span style=color:#66d9ef>esac</span>
+  shift
+<span style=color:#66d9ef>done</span>
+
+LOGGER<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;logger -t prune-</span>$ARTIFACT<span style=color:#e6db74>&#34;</span>
+
+<span style=color:#66d9ef>if</span> <span style=color:#f92672>[</span> -z <span style=color:#e6db74>&#34;</span>$ARTIFACT<span style=color:#e6db74>&#34;</span> <span style=color:#f92672>]</span>; <span style=color:#66d9ef>then</span>
+  echo <span style=color:#e6db74>&#34;</span>$USAGE<span style=color:#e6db74>&#34;</span>
+  $LOGGER <span style=color:#e6db74>&#34;</span>$USAGE<span style=color:#e6db74>&#34;</span>
+  exit <span style=color:#ae81ff>1</span>
+<span style=color:#66d9ef>fi</span>
+
+<span style=color:#66d9ef>if</span> <span style=color:#f92672>[</span> <span style=color:#e6db74>&#34;</span>$ARTIFACT<span style=color:#e6db74>&#34;</span> <span style=color:#f92672>==</span> <span style=color:#e6db74>&#34;images&#34;</span> <span style=color:#f92672>]</span>; <span style=color:#66d9ef>then</span>
+  $LOGGER <span style=color:#e6db74>&#34;pruning </span>$ARTIFACT<span style=color:#e6db74> over </span>$KEEP_YOUNGER<span style=color:#e6db74>, keep at least </span>$KEEP_TAG_REVISIONS<span style=color:#e6db74> tag revisions as user </span>$PRUNE_SERVICEACCOUNT<span style=color:#e6db74>&#34;</span>
+  $LOGGER <span style=color:#e6db74>&#34;oc --token=&lt;token&gt; adm prune </span>$ARTIFACT<span style=color:#e6db74> --keep-tag-revisions=</span>$KEEP_TAG_REVISIONS<span style=color:#e6db74>  --keep-younger-than=</span>$KEEP_YOUNGER<span style=color:#e6db74> --confirm&#34;</span>
+  oc --token<span style=color:#f92672>=</span><span style=color:#66d9ef>$(</span>oc serviceaccounts get-token <span style=color:#e6db74>&#34;</span>$PRUNE_SERVICEACCOUNT<span style=color:#e6db74>&#34;</span><span style=color:#66d9ef>)</span> adm prune <span style=color:#e6db74>&#34;</span>$ARTIFACT<span style=color:#e6db74>&#34;</span> <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>    --keep-tag-revisions<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;</span>$KEEP_TAG_REVISIONS<span style=color:#e6db74>&#34;</span>  --keep-younger-than<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;</span>$KEEP_YOUNGER<span style=color:#e6db74>&#34;</span> --confirm | $LOGGER
+
+<span style=color:#66d9ef>else</span>
+  $LOGGER <span style=color:#e6db74>&#34;pruning </span>$ARTIFACT<span style=color:#e6db74> over </span>$KEEP_YOUNGER<span style=color:#e6db74>, keep at least </span>$KEEP_COMPLETE<span style=color:#e6db74> and </span>$KEEP_FAILED<span style=color:#e6db74> failed&#34;</span>
+
+  artifact_count<span style=color:#f92672>=</span><span style=color:#66d9ef>$(</span>oc adm prune $ARTIFACT <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>    --orphans --keep-complete<span style=color:#f92672>=</span>$KEEP_COMPLETE --keep-failed<span style=color:#f92672>=</span>$KEEP_FAILED --keep-younger-than<span style=color:#f92672>=</span>$KEEP_YOUNGER 2&gt;/dev/null | wc -l<span style=color:#66d9ef>)</span>
+  <span style=color:#66d9ef>if</span> <span style=color:#f92672>[</span> $? -eq <span style=color:#ae81ff>0</span> <span style=color:#f92672>]</span>; <span style=color:#66d9ef>then</span>
+    $LOGGER <span style=color:#e6db74>&#34;count </span>$artifact_count<span style=color:#e6db74> </span>$ARTIFACT<span style=color:#e6db74> to delete&#34;</span>
+    <span style=color:#66d9ef>if</span> <span style=color:#f92672>[</span> <span style=color:#e6db74>&#34;</span>$artifact_count<span style=color:#e6db74>&#34;</span> -gt <span style=color:#e6db74>&#34;0&#34;</span> <span style=color:#f92672>]</span>; <span style=color:#66d9ef>then</span>
+      $LOGGER <span style=color:#e6db74>&#34;oc adm prune </span>$ARTIFACT<span style=color:#e6db74> &#34;</span> <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>        <span style=color:#e6db74>&#34;--orphans --keep-complete=</span>$KEEP_COMPLETE<span style=color:#e6db74> --keep-failed=</span>$KEEP_FAILED<span style=color:#e6db74> --keep-younger-than=</span>$KEEP_YOUNGER<span style=color:#e6db74> --confirm&#34;</span>
+      oc adm prune <span style=color:#e6db74>&#34;</span>$ARTIFACT<span style=color:#e6db74>&#34;</span> <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>        --orphans --keep-complete<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;</span>$KEEP_COMPLETE<span style=color:#e6db74>&#34;</span> --keep-failed<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;</span>$KEEP_FAILED<span style=color:#e6db74>&#34;</span> --keep-younger-than<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;</span>$KEEP_YOUNGER<span style=color:#e6db74>&#34;</span> --confirm
+    <span style=color:#66d9ef>fi</span>
+  <span style=color:#66d9ef>else</span>
+    $LOGGER <span style=color:#e6db74>&#34;failed to count existing </span>$ARTIFACT<span style=color:#e6db74>&#34;</span>
+    exit <span style=color:#ae81ff>1</span>
+  <span style=color:#66d9ef>fi</span>
+<span style=color:#66d9ef>fi</span>
+</code></pre></div></div><div id=comments><div id=disqus_thread></div><script type=application/javascript>var disqus_config=function(){};(function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById('disqus_thread').innerHTML='Disqus comments not available by default when the website is previewed locally.';return}var b=document,a=b.createElement('script');a.async=!0,a.src='//dlbewleygithubio.disqus.com/embed.js',a.setAttribute('data-timestamp',+new Date),(b.head||b.body).appendChild(a)})()</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript><a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a></div></div><div class=col-md-3><div class="panel panel-default sidebar-menu"><div class=panel-heading><h3 class=panel-title>Search</h3></div><div class=panel-body><form action=//google.com/search method=get accept-charset=utf-8 role=search><div class=input-group><input type=search name=q class=form-control placeholder=Search>
+<input type=hidden name=sitesearch value=https://dwnwrd.github.io/>
+<span class=input-group-btn><button type=submit class="btn btn-template-main"><i class="fas fa-search"></i></button></span></div></form></div></div><div class="panel sidebar-menu"><div class=panel-heading><h3 class=panel-title>Tagged</h3></div><div class=panel-body><ul class=tag-cloud><li class=active><a href=/tags/openshift><i class="fas fa-tags"></i>openshift</a></li><li class=active><a href=/tags/OCP3><i class="fas fa-tags"></i>OCP3</a></li></ul></div></div><div class="panel sidebar-menu"><div class=panel-heading><h3 class=panel-title>Tags</h3></div><div class=panel-body><ul class=tag-cloud><li><a href=/tags/CDK><i class="fas fa-tags"></i>CDK</a></li><li><a href=/tags/OCP3><i class="fas fa-tags"></i>OCP3</a></li><li><a href=/tags/OCP4><i class="fas fa-tags"></i>OCP4</a></li><li><a href=/tags/OSE3><i class="fas fa-tags"></i>OSE3</a></li><li><a href=/tags/RHEL><i class="fas fa-tags"></i>RHEL</a></li><li><a href=/tags/ansible><i class="fas fa-tags"></i>ansible</a></li><li><a href=/tags/automation><i class="fas fa-tags"></i>automation</a></li><li><a href=/tags/docker><i class="fas fa-tags"></i>docker</a></li><li><a href=/tags/draft><i class="fas fa-tags"></i>draft</a></li><li><a href=/tags/etcd><i class="fas fa-tags"></i>etcd</a></li><li><a href=/tags/git><i class="fas fa-tags"></i>git</a></li><li><a href=/tags/haproxy><i class="fas fa-tags"></i>haproxy</a></li><li><a href=/tags/heat><i class="fas fa-tags"></i>heat</a></li><li><a href=/tags/install><i class="fas fa-tags"></i>install</a></li><li><a href=/tags/kubernetes><i class="fas fa-tags"></i>kubernetes</a></li><li><a href=/tags/mac><i class="fas fa-tags"></i>mac</a></li><li><a href=/tags/metrics><i class="fas fa-tags"></i>metrics</a></li><li><a href=/tags/migration><i class="fas fa-tags"></i>migration</a></li><li><a href=/tags/monitoring><i class="fas fa-tags"></i>monitoring</a></li><li><a href=/tags/networking><i class="fas fa-tags"></i>networking</a></li><li><a href=/tags/openshift><i class="fas fa-tags"></i>openshift</a></li><li><a href=/tags/openstack><i class="fas fa-tags"></i>openstack</a></li><li><a href=/tags/operators><i class="fas fa-tags"></i>operators</a></li><li><a href=/tags/python><i class="fas fa-tags"></i>python</a></li><li><a href=/tags/router><i class="fas fa-tags"></i>router</a></li><li><a href=/tags/ssl><i class="fas fa-tags"></i>ssl</a></li><li><a href=/tags/troubleshooting><i class="fas fa-tags"></i>troubleshooting</a></li><li><a href=/tags/upgrade><i class="fas fa-tags"></i>upgrade</a></li><li><a href=/tags/vagrant><i class="fas fa-tags"></i>vagrant</a></li><li><a href=/tags/zabbix><i class="fas fa-tags"></i>zabbix</a></li><li><a href=/tags/zimbra><i class="fas fa-tags"></i>zimbra</a></li></ul></div></div></div></div></div></div><footer id=footer><div class=container><div class="col-md-4 col-sm-6"><h4>About us</h4><p>GUI Free Life is the personal, technical blog of Dale Bewley. Comments and opinions are my own and not that of my employers.</p><hr class="hidden-md hidden-lg hidden-sm"></div><div class="col-md-4 col-sm-6"><h4>Recent posts</h4><div class=blog-entries><div class="item same-height-row clearfix"><div class="image same-height-always"><a href=https://dwnwrd.github.io/blog/2021/03/09/Understanding-OpenShift-Over-The-Air-Updates/><img src=/images/the-face-of-a-computer-operator-from-the-2134th-communications-squadron-is-2ca9c9.jpg class=img-responsive alt="How do OpenShift Over The Air Updates Work?"></a></div><div class="name same-height-always"><h5><a href=https://dwnwrd.github.io/blog/2021/03/09/Understanding-OpenShift-Over-The-Air-Updates/>How do OpenShift Over The Air Updates Work?</a></h5></div></div><div class="item same-height-row clearfix"><div class="image same-height-always"><a href=https://dwnwrd.github.io/blog/2020/02/15/OpenShift-4-on-OpenStack-Networking-and-Installation/><img src=/images/openshift-openstack-install-network-00.png class=img-responsive alt="OpenShift 4 on OpenStack Networking and Installation"></a></div><div class="name same-height-always"><h5><a href=https://dwnwrd.github.io/blog/2020/02/15/OpenShift-4-on-OpenStack-Networking-and-Installation/>OpenShift 4 on OpenStack Networking and Installation</a></h5></div></div><div class="item same-height-row clearfix"><div class="image same-height-always"><a href=https://dwnwrd.github.io/blog/2019/05/09/Replace-Bootstrap-Kubeconfig/><img src=/img/banners/banner-5.jpg class=img-responsive alt="Playbook to replace bootstrap.kubeconfig and node certificates on OpenShift 3.10 3.11"></a></div><div class="name same-height-always"><h5><a href=https://dwnwrd.github.io/blog/2019/05/09/Replace-Bootstrap-Kubeconfig/>Playbook to replace bootstrap.kubeconfig and node certificates on OpenShift 3.10 3.11</a></h5></div></div></div><hr class="hidden-md hidden-lg"></div><div class="col-md-4 col-sm-6"><h4>Contact</h4><p class=text-uppercase><strong>Dale Bewley</strong><br>Oakland<br>California<br><strong>USA</strong></p><a href=/contact class="btn btn-small btn-template-main">Go to contact page</a><hr class="hidden-md hidden-lg hidden-sm"></div></div></footer><div id=copyright><div class=container><div class=col-md-12><p class=pull-left>Copyright (c) 2021, Dale Bewley; all rights reserved.</p><p class=pull-right>Template by <a href=https://bootstrapious.com/p/universal-business-e-commerce-template>Bootstrapious</a>.
+Ported to Hugo by <a href=https://github.com/devcows/hugo-universal-theme>DevCows</a>.</p></div></div></div></div><script type=application/javascript>var doNotTrack=!1;doNotTrack||(function(a,e,f,g,b,c,d){a.GoogleAnalyticsObject=b,a[b]=a[b]||function(){(a[b].q=a[b].q||[]).push(arguments)},a[b].l=1*new Date,c=e.createElement(f),d=e.getElementsByTagName(f)[0],c.async=1,c.src=g,d.parentNode.insertBefore(c,d)}(window,document,'script','https://www.google-analytics.com/analytics.js','ga'),ga('create','UA-78084690-1','auto'),ga('send','pageview'))</script><script src=//code.jquery.com/jquery-3.1.1.min.js integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin=anonymous></script><script src=//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js integrity=sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa crossorigin=anonymous></script><script src=//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js></script><script src=//cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/jquery.waypoints.min.js></script><script src=//cdnjs.cloudflare.com/ajax/libs/Counter-Up/1.0/jquery.counterup.min.js></script><script src=//cdnjs.cloudflare.com/ajax/libs/jquery-parallax/1.1.3/jquery-parallax.js></script><script src="//maps.googleapis.com/maps/api/js?key=AIzaSyDacpwSIXi6lk2fS2wzZOSoh7iHm_ZP3UE&v=3.exp"></script><script src=/js/hpneo.gmaps.js></script><script src=/js/gmaps.init.js></script><script src=/js/front.js></script><script src=/js/owl.carousel.min.js></script></body></html>
