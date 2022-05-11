@@ -1,12 +1,133 @@
-<!doctype html><html lang=en-us><head><meta charset=utf-8><meta name=robots content="all,follow"><meta name=googlebot content="index,follow,snippet,archive"><meta name=viewport content="width=device-width,initial-scale=1"><title>Adding a Windows Node to an OpenShift Cluster</title><meta name=author content="Dale Bewley"><meta name=keywords content="bewley,guifreelife,openshift,OCP4,operators,windows"><meta name=description content="GUI Free Life"><meta name=generator content="Hugo 0.81.0"><link href="//fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,500,700,800" rel=stylesheet type=text/css><link rel=stylesheet href=//use.fontawesome.com/releases/v5.11.2/css/all.css><link rel=stylesheet href=//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css integrity=sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u crossorigin=anonymous><link href=/css/animate.css rel=stylesheet><link href=/css/style.turquoise.css rel=stylesheet id=theme-stylesheet><link href=/css/custom.css rel=stylesheet><!--[if lt IE 9]><script src=https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js></script><script src=https://oss.maxcdn.com/respond/1.4.2/respond.min.js></script><![endif]--><link rel="shortcut icon" href=/img/favicon.ico type=image/x-icon><link rel=apple-touch-icon href=/img/apple-touch-icon.png><link href=/css/owl.carousel.css rel=stylesheet><link href=/css/owl.theme.css rel=stylesheet><link rel=alternate href=http://guifreelife.com/index.xml type=application/rss+xml title="GUI Free Life"><meta property="og:locale" content="en_us"><meta property="og:site_name" content="GUI Free Life"><meta property="og:title" content="Adding a Windows Node to an OpenShift Cluster"><meta property="og:type" content="article"><meta property="og:url" content="http://guifreelife.com/blog/2021/06/03/OpenShift-Windows-Containers-part-2/"><meta property="og:description" content="GUI Free Life"><meta property="og:image" content="http://guifreelife.com/images/view-of-the-fwd-iss-and-docked-atlantis-during-eva-1-00946b.jpg"><meta property="og:image:type" content="image/jpg"><meta property="og:image:width" content="640"><meta property="og:image:height" content="437"><meta property="og:updated_time" content="2021-06-03T00:00:00Z"><meta property="article:tag" content="openshift"><meta property="article:tag" content="OCP4"><meta property="article:tag" content="operators"><meta property="article:tag" content="windows"><meta property="article:published_time" content="2021-06-03T00:00:00Z"><meta property="article:modified_time" content="2021-06-03T00:00:00Z"><meta name=twitter:card content="summary_large_image"><meta name=twitter:site content="@dlbewley"><meta name=twitter:title content="Adding a Windows Node to an OpenShift Cluster"><meta name=twitter:image content="http://guifreelife.com/images/view-of-the-fwd-iss-and-docked-atlantis-during-eva-1-00946b.jpg"><meta name=twitter:description content="GUI Free Life"><link rel=stylesheet type=text/css href=/css/asciinema-player.css><script src=/js/asciinema-player.js></script></head><body><div id=all><header class=navbar-affixed-top data-spy=affix data-offset-top=62><div class="navbar navbar-default yamm" role=navigation id=navbar><div class=container><div class=navbar-header><a class="navbar-brand home" href=/><img src=/img/logo.png alt="Adding a Windows Node to an OpenShift Cluster logo" class="hidden-xs hidden-sm">
+<!doctype html><html lang=en-us>
+<head>
+<meta charset=utf-8>
+<meta name=robots content="all,follow">
+<meta name=googlebot content="index,follow,snippet,archive">
+<meta name=viewport content="width=device-width,initial-scale=1">
+<title>Adding a Windows Node to an OpenShift Cluster</title>
+<meta name=author content="Dale Bewley">
+<meta name=keywords content="bewley,guifreelife,openshift,OCP4,operators,windows">
+<meta name=description content="GUI Free Life">
+<meta name=generator content="Hugo 0.91.2">
+<link href="//fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,500,700,800" rel=stylesheet type=text/css>
+<link rel=stylesheet href=//use.fontawesome.com/releases/v5.11.2/css/all.css>
+<link rel=stylesheet href=//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css integrity=sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u crossorigin=anonymous>
+<link href=/css/animate.css rel=stylesheet>
+<link href=/css/style.turquoise.css rel=stylesheet id=theme-stylesheet>
+<link href=/css/custom.css rel=stylesheet><!--[if lt IE 9]><script src=https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js></script>
+<script src=https://oss.maxcdn.com/respond/1.4.2/respond.min.js></script><![endif]-->
+<link rel="shortcut icon" href=/img/favicon.ico type=image/x-icon>
+<link rel=apple-touch-icon href=/img/apple-touch-icon.png>
+<link href=/css/owl.carousel.css rel=stylesheet>
+<link href=/css/owl.theme.css rel=stylesheet>
+<link rel=alternate href=http://guifreelife.com/index.xml type=application/rss+xml title="GUI Free Life">
+<meta property="og:locale" content="en_us">
+<meta property="og:site_name" content="GUI Free Life">
+<meta property="og:title" content="Adding a Windows Node to an OpenShift Cluster">
+<meta property="og:type" content="article">
+<meta property="og:url" content="http://guifreelife.com/blog/2021/06/03/OpenShift-Windows-Containers-part-2/">
+<meta property="og:description" content="GUI Free Life">
+<meta property="og:image" content="http://guifreelife.com/images/view-of-the-fwd-iss-and-docked-atlantis-during-eva-1-00946b.jpg">
+<meta property="og:image:type" content="image/jpg">
+<meta property="og:image:width" content="640">
+<meta property="og:image:height" content="437">
+<meta property="og:updated_time" content="2021-06-03T00:00:00Z">
+<meta property="article:tag" content="openshift">
+<meta property="article:tag" content="OCP4">
+<meta property="article:tag" content="operators">
+<meta property="article:tag" content="windows">
+<meta property="article:published_time" content="2021-06-03T00:00:00Z">
+<meta property="article:modified_time" content="2021-06-03T00:00:00Z">
+<meta name=twitter:card content="summary_large_image">
+<meta name=twitter:site content="@dlbewley">
+<meta name=twitter:title content="Adding a Windows Node to an OpenShift Cluster">
+<meta name=twitter:image content="http://guifreelife.com/images/view-of-the-fwd-iss-and-docked-atlantis-during-eva-1-00946b.jpg">
+<meta name=twitter:description content="GUI Free Life">
+<link rel=stylesheet type=text/css href=/css/asciinema-player.css>
+<script src=/js/asciinema-player.js></script>
+</head>
+<body>
+<div id=all>
+<header class=navbar-affixed-top data-spy=affix data-offset-top=62>
+<div class="navbar navbar-default yamm" role=navigation id=navbar>
+<div class=container>
+<div class=navbar-header>
+<a class="navbar-brand home" href=/>
+<img src=/img/logo.png alt="Adding a Windows Node to an OpenShift Cluster logo" class="hidden-xs hidden-sm">
 <img src=/img/logo-small.png alt="Adding a Windows Node to an OpenShift Cluster logo" class="visible-xs visible-sm">
-<span class=sr-only>Adding a Windows Node to an OpenShift Cluster - go to homepage</span></a><div class=navbar-buttons><button type=button class="navbar-toggle btn-template-main" data-toggle=collapse data-target=#navigation>
+<span class=sr-only>Adding a Windows Node to an OpenShift Cluster - go to homepage</span>
+</a>
+<div class=navbar-buttons>
+<button type=button class="navbar-toggle btn-template-main" data-toggle=collapse data-target=#navigation>
 <span class=sr-only>Toggle Navigation</span>
-<i class="fas fa-align-justify"></i></button></div></div><div class="navbar-collapse collapse" id=navigation><ul class="nav navbar-nav navbar-right"><li class=dropdown><a href=/>Home</a></li><li class="dropdown active"><a href=/blog/>Blog</a></li><li class=dropdown><a href=/contact/>Contact</a></li></ul></div><div class="collapse clearfix" id=search><form class=navbar-form role=search><div class=input-group><input type=text class=form-control placeholder=Search>
-<span class=input-group-btn><button type=submit class="btn btn-template-main"><i class="fas fa-search"></i></button></span></div></form></div></div></div></header><style>.bar.background-image-fixed-banner{background:url(/images/view-of-the-fwd-iss-and-docked-atlantis-during-eva-1-00946b.jpg)50% 0 no-repeat;background-attachment:fixed;background-size:cover;padding:100px 5%;text-shadow:2px 3px 4px var(--primary-accent),0 0 1em var(--navbar-border-top)}</style><div><div class=container><div class=row><div class=col-md-12><section class="bar background-image-fixed-banner heading h2 color-white text-center"><h1>Adding a Windows Node to an OpenShift Cluster</h1></section></div></div></div></div><div id=content><div class=container><div class=row><div class=col-md-9 id=blog-post><p class="text-muted text-uppercase mb-small text-right">June 3, 2021</p><div id=post-content><p>The Windows Machine Config Operator builds and configures Windows machines to act as nodes in an OpenShift cluster enabling cross platform workloads. This post will demonstrate the addition of a Windows node to an existing cluster and explore the integration of Windows and Kubernetes.</p><blockquote><p>📓 <em>This is part 2 of a 3 part series on OpenShift support for Windows containers.</em>
-<em>Parts: <a href=http://guifreelife.com/blog/2021/05/18/OpenShift-Windows-Containers-part-1/ title="Windows Containers Part 1">1</a>, 2, <a href=http://guifreelife.com/blog/2021/07/10/OpenShift-Windows-Containers-part-3/ title="Windows Containers Part 3">3</a></em></p></blockquote><h1 id=enabling-windows-workloads>Enabling Windows Workloads</h1><p><a href=https://picryl.com/media/view-of-the-fwd-iss-and-docked-atlantis-during-eva-1-00946b><img src=/images/view-of-the-fwd-iss-and-docked-atlantis-during-eva-1-00946b.jpg alt="Space shuttle Atlantis docking with International Space Station"></a></p><p>Enabling support for Windows containers on OpenShift is a &ldquo;day 2&rdquo; operation. Before we can proceeed we must ensure we&rsquo;ve met the &ldquo;day 1&rdquo; networking prerequisites covered in <a href=http://guifreelife.com/blog/2021/05/18/OpenShift-Windows-Containers-part-1/ title="Windows Containers Part 1">part 1</a> of this series. Be sure to start there.</p><p>With that out of the way we can begin <a href=https://docs.openshift.com/container-platform/4.7/windows_containers/understanding-windows-container-workloads.html title="Understanding Windows Containers">understanding Windows containers</a> support in OpenShift.
-Unlike the Linux nodes which use the <a href=https://cri-o.io>CRI-O runtime</a>, Windows nodes continue to use Docker runtime (until such time as containerd is adopted). It is also important to note that unlike the automated <a href=http://guifreelife.com/blog/2021/03/09/Understanding-OpenShift-Over-The-Air-Updates/ title="Understanding Over-The-Air Updates">over the air updates</a> for CoreOS nodes, the Windows operating system is not automatically patched nor upgraded.</p><h1 id=understanding-windows-container-images>Understanding Windows Container Images</h1><p>Containers on Windows are less portable than on Linux. It is critical that the same OS version is used on the node and in the container image. This presents a challenge when containerizing applications and for patching nodes.</p><p>While the WMCO will configure a Windows node with the kubelet, kube-proxy, and container runtime plumbing enabling it to join the Kubernetes cluster, the upgrading or patching of the node is not automated.
-The process of building and testing the machine images to address Windows patches will remain your responsibility.</p><p>This <a href=https://github.com/giofontana/ocp-windows-image-prepare title="Ansible playbook to prepare Windows OS image for OpenShift (using Packer)">playbook for automating the creation of a Window image</a> offers a starting point for constructing a pipeline to build and test updated Windows images for use on nodes.</p><h1 id=reviewing-the-day-1-cluster>Reviewing the Day 1 Cluster</h1><p>After <a href=http://guifreelife.com/blog/2021/05/18/OpenShift-Windows-Containers-part-1/ title="Windows Containers Part 1">provisioning a cluster prepared for Windows</a> support, let&rsquo;s examine it. From this starting point we have only Linux based nodes and the cluster is deployed to Azure. Additonally, all the cluster operators are healthy and no extra operators have been installed yet.</p><pre><code>$ oc get nodes -L kubernetes.io/os
+<i class="fas fa-align-justify"></i>
+</button>
+</div>
+</div>
+<div class="navbar-collapse collapse" id=navigation>
+<ul class="nav navbar-nav navbar-right">
+<li class=dropdown>
+<a href=/>Home</a>
+</li>
+<li class="dropdown active">
+<a href=/blog/>Blog</a>
+</li>
+<li class=dropdown>
+<a href=/contact/>Contact</a>
+</li>
+</ul>
+</div>
+<div class="collapse clearfix" id=search>
+<form class=navbar-form role=search>
+<div class=input-group>
+<input type=text class=form-control placeholder=Search>
+<span class=input-group-btn>
+<button type=submit class="btn btn-template-main"><i class="fas fa-search"></i></button>
+</span>
+</div>
+</form>
+</div>
+</div>
+</div>
+</header>
+<style>.bar.background-image-fixed-banner{background:url(/images/view-of-the-fwd-iss-and-docked-atlantis-during-eva-1-00946b.jpg)50% 0 no-repeat;background-attachment:fixed;background-size:cover;padding:100px 5%;text-shadow:2px 3px 4px var(--primary-accent),0 0 1em var(--navbar-border-top)}</style>
+<div>
+<div class=container>
+<div class=row>
+<div class=col-md-12>
+<section class="bar background-image-fixed-banner heading h2 color-white text-center">
+<h1>Adding a Windows Node to an OpenShift Cluster</h1>
+</section>
+</div>
+</div>
+</div>
+</div>
+<div id=content>
+<div class=container>
+<div class=row>
+<div class=col-md-9 id=blog-post>
+<p class="text-muted text-uppercase mb-small text-right">
+June 3, 2021
+</p>
+<div id=post-content>
+<p>The Windows Machine Config Operator builds and configures Windows machines to act as nodes in an OpenShift cluster enabling cross platform workloads. This post will demonstrate the addition of a Windows node to an existing cluster and explore the integration of Windows and Kubernetes.</p>
+<blockquote>
+<p>📓 <em>This is part 2 of a 3 part series on OpenShift support for Windows containers.</em>
+<em>Parts: <a href=http://guifreelife.com/blog/2021/05/18/OpenShift-Windows-Containers-part-1/ title="Windows Containers Part 1">1</a>, 2, <a href=http://guifreelife.com/blog/2021/07/10/OpenShift-Windows-Containers-part-3/ title="Windows Containers Part 3">3</a></em></p>
+</blockquote>
+<h1 id=enabling-windows-workloads>Enabling Windows Workloads</h1>
+<p><a href=https://picryl.com/media/view-of-the-fwd-iss-and-docked-atlantis-during-eva-1-00946b><img src=/images/view-of-the-fwd-iss-and-docked-atlantis-during-eva-1-00946b.jpg alt="Space shuttle Atlantis docking with International Space Station"></a></p>
+<p>Enabling support for Windows containers on OpenShift is a &ldquo;day 2&rdquo; operation. Before we can proceeed we must ensure we&rsquo;ve met the &ldquo;day 1&rdquo; networking prerequisites covered in <a href=http://guifreelife.com/blog/2021/05/18/OpenShift-Windows-Containers-part-1/ title="Windows Containers Part 1">part 1</a> of this series. Be sure to start there.</p>
+<p>With that out of the way we can begin <a href=https://docs.openshift.com/container-platform/4.7/windows_containers/understanding-windows-container-workloads.html title="Understanding Windows Containers">understanding Windows containers</a> support in OpenShift.
+Unlike the Linux nodes which use the <a href=https://cri-o.io>CRI-O runtime</a>, Windows nodes continue to use Docker runtime (until such time as containerd is adopted). It is also important to note that unlike the automated <a href=http://guifreelife.com/blog/2021/03/09/Understanding-OpenShift-Over-The-Air-Updates/ title="Understanding Over-The-Air Updates">over the air updates</a> for CoreOS nodes, the Windows operating system is not automatically patched nor upgraded.</p>
+<h1 id=understanding-windows-container-images>Understanding Windows Container Images</h1>
+<p>Containers on Windows are less portable than on Linux. It is critical that the same OS version is used on the node and in the container image. This presents a challenge when containerizing applications and for patching nodes.</p>
+<p>While the WMCO will configure a Windows node with the kubelet, kube-proxy, and container runtime plumbing enabling it to join the Kubernetes cluster, the upgrading or patching of the node is not automated.
+The process of building and testing the machine images to address Windows patches will remain your responsibility.</p>
+<p>This <a href=https://github.com/giofontana/ocp-windows-image-prepare title="Ansible playbook to prepare Windows OS image for OpenShift (using Packer)">playbook for automating the creation of a Window image</a> offers a starting point for constructing a pipeline to build and test updated Windows images for use on nodes.</p>
+<h1 id=reviewing-the-day-1-cluster>Reviewing the Day 1 Cluster</h1>
+<p>After <a href=http://guifreelife.com/blog/2021/05/18/OpenShift-Windows-Containers-part-1/ title="Windows Containers Part 1">provisioning a cluster prepared for Windows</a> support, let&rsquo;s examine it. From this starting point we have only Linux based nodes and the cluster is deployed to Azure. Additonally, all the cluster operators are healthy and no extra operators have been installed yet.</p>
+<pre tabindex=0><code>$ oc get nodes -L kubernetes.io/os
 NAME                            STATUS   ROLES    AGE   VERSION           OS
 win-tmk9g-master-0              Ready    master   60m   v1.20.0+7d0a2b2   linux
 win-tmk9g-master-1              Ready    master   60m   v1.20.0+7d0a2b2   linux
@@ -65,10 +186,17 @@ storage                                    4.7.8     True        False         F
 
 $ oc get operators --all-namespaces
 No resources found
-</code></pre><h1 id=installing-the-windows-machine-config-operator>Installing the Windows Machine Config Operator</h1><p>OpenShift uses operators to create and manage the nodes in a cluster along with managment of cluster services.
-Check out my post on <a href=http://guifreelife.com/blog/2021/03/09/Understanding-OpenShift-Over-The-Air-Updates/ title="Understanding Over-The-Air Updates">Understanding Over the Air Updates</a> for some background.</p><p>Most relevant of these cluster operators are the <a href=https://github.com/openshift/machine-api-operator title="Machine-API Operator">Machine-API</a> and <a href=https://github.com/openshift/machine-config-operator title="Machine-Config Operator">Machine-Config</a> which facilitate the creation of machines using the cloud provider API and the operating system configuration of these machines necessary to form a cluster node.
-However, <a href=https://docs.openshift.com/container-platform/4.7/windows_containers/enabling-windows-container-workloads.html title="Enabling Windows container workloads">enabling Windows containers</a> requires installation of an additional <a href=https://github.com/openshift/windows-machine-config-operator title="Windows Machine Config Operator">Windows machine config operator</a>.</p><p>Installing an operator on the CLI typically requires creation of a Namespace, an OperatorGroup, and a Subscription resource.</p><ul><li>Create the <code>Namespace</code> -
-<strong><a href=https://gitlab.com/dlbewley/openshift-practice/-/blob/master/clusters/az-win/day2/base/namespace.yaml>clusters/az-win/day2/base/namespace.yaml</a></strong></li></ul><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#ae81ff>$ cat &lt;&lt;EOF | oc create -f -</span>
+</code></pre><h1 id=installing-the-windows-machine-config-operator>Installing the Windows Machine Config Operator</h1>
+<p>OpenShift uses operators to create and manage the nodes in a cluster along with managment of cluster services.
+Check out my post on <a href=http://guifreelife.com/blog/2021/03/09/Understanding-OpenShift-Over-The-Air-Updates/ title="Understanding Over-The-Air Updates">Understanding Over the Air Updates</a> for some background.</p>
+<p>Most relevant of these cluster operators are the <a href=https://github.com/openshift/machine-api-operator title="Machine-API Operator">Machine-API</a> and <a href=https://github.com/openshift/machine-config-operator title="Machine-Config Operator">Machine-Config</a> which facilitate the creation of machines using the cloud provider API and the operating system configuration of these machines necessary to form a cluster node.
+However, <a href=https://docs.openshift.com/container-platform/4.7/windows_containers/enabling-windows-container-workloads.html title="Enabling Windows container workloads">enabling Windows containers</a> requires installation of an additional <a href=https://github.com/openshift/windows-machine-config-operator title="Windows Machine Config Operator">Windows machine config operator</a>.</p>
+<p>Installing an operator on the CLI typically requires creation of a Namespace, an OperatorGroup, and a Subscription resource.</p>
+<ul>
+<li>Create the <code>Namespace</code> -
+<strong><a href=https://gitlab.com/dlbewley/openshift-practice/-/blob/master/clusters/az-win/day2/base/namespace.yaml>clusters/az-win/day2/base/namespace.yaml</a></strong></li>
+</ul>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#ae81ff>$ cat &lt;&lt;EOF | oc create -f -</span>
 <span style=color:#f92672>apiVersion</span>: <span style=color:#ae81ff>v1</span>
 <span style=color:#f92672>kind</span>: <span style=color:#ae81ff>Namespace</span>
 <span style=color:#f92672>metadata</span>:
@@ -76,8 +204,11 @@ However, <a href=https://docs.openshift.com/container-platform/4.7/windows_conta
   <span style=color:#f92672>labels</span>:
     <span style=color:#f92672>openshift.io/cluster-monitoring</span>: <span style=color:#e6db74>&#34;true&#34;</span>
 <span style=color:#ae81ff>EOF</span>
-</code></pre></div><ul><li>Create the <code>OperatorGroup</code> -
-<strong><a href=https://gitlab.com/dlbewley/openshift-practice/-/blob/master/clusters/az-win/day2/base/operatorgroup.yaml>clusters/az-win/day2/base/operatorgroup.yaml</a></strong></li></ul><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#ae81ff>$ cat &lt;&lt;EOF | oc create -f -</span>
+</code></pre></div><ul>
+<li>Create the <code>OperatorGroup</code> -
+<strong><a href=https://gitlab.com/dlbewley/openshift-practice/-/blob/master/clusters/az-win/day2/base/operatorgroup.yaml>clusters/az-win/day2/base/operatorgroup.yaml</a></strong></li>
+</ul>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#ae81ff>$ cat &lt;&lt;EOF | oc create -f -</span>
 <span style=color:#f92672>apiVersion</span>: <span style=color:#ae81ff>operators.coreos.com/v1</span>
 <span style=color:#f92672>kind</span>: <span style=color:#ae81ff>OperatorGroup</span>
 <span style=color:#f92672>metadata</span>:
@@ -87,8 +218,11 @@ However, <a href=https://docs.openshift.com/container-platform/4.7/windows_conta
   <span style=color:#f92672>targetNamespaces</span>:
   - <span style=color:#ae81ff>openshift-windows-machine-config-operator</span>
 <span style=color:#ae81ff>EOF</span>
-</code></pre></div><ul><li>Create the <code>Subscription</code> -
-<strong><a href=https://gitlab.com/dlbewley/openshift-practice/-/blob/master/clusters/az-win/day2/base/subscription.yaml>clusters/az-win/day2/base/subscription.yaml</a></strong></li></ul><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#ae81ff>$ cat &lt;&lt;EOF | oc create -f -</span>
+</code></pre></div><ul>
+<li>Create the <code>Subscription</code> -
+<strong><a href=https://gitlab.com/dlbewley/openshift-practice/-/blob/master/clusters/az-win/day2/base/subscription.yaml>clusters/az-win/day2/base/subscription.yaml</a></strong></li>
+</ul>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#ae81ff>$ cat &lt;&lt;EOF | oc create -f -</span>
 <span style=color:#f92672>apiVersion</span>: <span style=color:#ae81ff>operators.coreos.com/v1alpha1</span>
 <span style=color:#f92672>kind</span>: <span style=color:#ae81ff>Subscription</span>
 <span style=color:#f92672>metadata</span>:
@@ -101,10 +235,25 @@ However, <a href=https://docs.openshift.com/container-platform/4.7/windows_conta
   <span style=color:#f92672>source</span>: <span style=color:#e6db74>&#34;redhat-operators&#34;</span> 
   <span style=color:#f92672>sourceNamespace</span>: <span style=color:#e6db74>&#34;openshift-marketplace&#34;</span> 
 <span style=color:#ae81ff>EOF</span>
-</code></pre></div><p>After a few seconds check that the <a href=https://docs.openshift.com/container-platform/4.7/rest_api/operatorhub_apis/clusterserviceversion-operators-coreos-com-v1alpha1.html title="ClusterServiceVersion CR"><code>ClusterServiceVersion</code></a> has been created. This is used to tell the <a href=https://github.com/operator-framework/operator-lifecycle-manager title="Operator Lifecycle Manager">Operator Lifecycle Manager</a> how to install the operator.</p><pre><code>$ oc get csv -n openshift-windows-machine-config-operator
-</code></pre><blockquote><p>📓 <strong>Do you GitOps?</strong></p><p>Assuming the <code>machineset.yaml</code> has been configured <a href=http://guifreelife.com/blog/2021/06/03/OpenShift-Windows-Containers-part-2/#creating-a-windows-machineset>as described</a> and asuming a <a href=https://gitlab.com/dlbewley/openshift-practice/-/blob/master/clusters/az-win/day2/base/>layout like this</a> we can use a more GitOps compatible flow for the WMCO installation.
-A <a href=https://kustomize.io>Kustomize</a> template can be applied with the <a href=https://docs.openshift.com/container-platform/4.7/cli_reference/openshift_cli/developer-cli-commands.html>oc CLI</a> <code>-k</code> flag.</p></blockquote><h1 id=adding-a-windows-node>Adding a Windows Node</h1><p>Now that the WMCO factory is in place we can provide it the raw materials to build a Windows node.</p><h2 id=creating-a-windows-machineset>Creating a Windows MachineSet</h2><p>The Machine API operator uses a <code>MachineSet</code> resource to understand exactly how to build a machine and how many to build. There is already a MachineSet for the Linux workers, so we will <a href=https://docs.openshift.com/container-platform/4.7/windows_containers/creating_windows_machinesets/creating-windows-machineset-azure.html title="Creating Windows MachineSet for Azure">create an Azure Windows MachineSet</a> to enable our Windows machines to be built.</p><blockquote><p>📓 <strong>Start with <code>0</code> replicas</strong></p><p>It is important to create the MachineSet with 0 replicas for now as we fulfill some further prerequisites.</p></blockquote><p>Here is an example with placeholder values.
-Further details on the values to replace in this example MachineSet are <a href=https://github.com/openshift/windows-machine-config-operator/blob/master/docs/machineset-azure.md title="MachineSet Azure docs from WMCO">discussed in the WMCO github repo</a>.</p><p><strong><a href=https://gitlab.com/dlbewley/openshift-practice/-/blob/master/clusters/az-win/day2/base/machineset.yaml>clusters/az-win/day2/base/machineset.yaml</a></strong></p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#75715e># example MachineSet before replacing &#34;&lt;values&gt;&#34;</span>
+</code></pre></div><p>After a few seconds check that the <a href=https://docs.openshift.com/container-platform/4.7/rest_api/operatorhub_apis/clusterserviceversion-operators-coreos-com-v1alpha1.html title="ClusterServiceVersion CR"><code>ClusterServiceVersion</code></a> has been created. This is used to tell the <a href=https://github.com/operator-framework/operator-lifecycle-manager title="Operator Lifecycle Manager">Operator Lifecycle Manager</a> how to install the operator.</p>
+<pre tabindex=0><code>$ oc get csv -n openshift-windows-machine-config-operator
+</code></pre><blockquote>
+<p>📓 <strong>Do you GitOps?</strong></p>
+<p>Assuming the <code>machineset.yaml</code> has been configured <a href=http://guifreelife.com/blog/2021/06/03/OpenShift-Windows-Containers-part-2/#creating-a-windows-machineset>as described</a> and asuming a <a href=https://gitlab.com/dlbewley/openshift-practice/-/blob/master/clusters/az-win/day2/base/>layout like this</a> we can use a more GitOps compatible flow for the WMCO installation.
+A <a href=https://kustomize.io>Kustomize</a> template can be applied with the <a href=https://docs.openshift.com/container-platform/4.7/cli_reference/openshift_cli/developer-cli-commands.html>oc CLI</a> <code>-k</code> flag.</p>
+</blockquote>
+<h1 id=adding-a-windows-node>Adding a Windows Node</h1>
+<p>Now that the WMCO factory is in place we can provide it the raw materials to build a Windows node.</p>
+<h2 id=creating-a-windows-machineset>Creating a Windows MachineSet</h2>
+<p>The Machine API operator uses a <code>MachineSet</code> resource to understand exactly how to build a machine and how many to build. There is already a MachineSet for the Linux workers, so we will <a href=https://docs.openshift.com/container-platform/4.7/windows_containers/creating_windows_machinesets/creating-windows-machineset-azure.html title="Creating Windows MachineSet for Azure">create an Azure Windows MachineSet</a> to enable our Windows machines to be built.</p>
+<blockquote>
+<p>📓 <strong>Start with <code>0</code> replicas</strong></p>
+<p>It is important to create the MachineSet with 0 replicas for now as we fulfill some further prerequisites.</p>
+</blockquote>
+<p>Here is an example with placeholder values.
+Further details on the values to replace in this example MachineSet are <a href=https://github.com/openshift/windows-machine-config-operator/blob/master/docs/machineset-azure.md title="MachineSet Azure docs from WMCO">discussed in the WMCO github repo</a>.</p>
+<p><strong><a href=https://gitlab.com/dlbewley/openshift-practice/-/blob/master/clusters/az-win/day2/base/machineset.yaml>clusters/az-win/day2/base/machineset.yaml</a></strong></p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#75715e># example MachineSet before replacing &#34;&lt;values&gt;&#34;</span>
 <span style=color:#f92672>apiVersion</span>: <span style=color:#ae81ff>machine.openshift.io/v1beta1</span>
 <span style=color:#f92672>kind</span>: <span style=color:#ae81ff>MachineSet</span>
 <span style=color:#f92672>metadata</span>:
@@ -160,10 +309,17 @@ Further details on the values to replace in this example MachineSet are <a href=
           <span style=color:#f92672>vmSize</span>: <span style=color:#ae81ff>Standard_D2s_v3</span>
           <span style=color:#f92672>vnet</span>: <span style=color:#ae81ff>&lt;infrastructureID&gt;-vnet</span>
           <span style=color:#f92672>zone</span>: <span style=color:#e6db74>&#34;&lt;zone&gt;&#34;</span>
-</code></pre></div><p>Every cluster has an infrastructure name that is a combination of the cluster name and a unique string. We will need to use this value in the Windows MachineSet.</p><ul><li>Capture the infrastructure ID</li></ul><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ export CLUSTER_ID<span style=color:#f92672>=</span><span style=color:#66d9ef>$(</span>oc get -o jsonpath<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;{.status.infrastructureName}{&#34;\n&#34;}&#39;</span> infrastructure cluster<span style=color:#66d9ef>)</span>
+</code></pre></div><p>Every cluster has an infrastructure name that is a combination of the cluster name and a unique string. We will need to use this value in the Windows MachineSet.</p>
+<ul>
+<li>Capture the infrastructure ID</li>
+</ul>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ export CLUSTER_ID<span style=color:#f92672>=</span><span style=color:#66d9ef>$(</span>oc get -o jsonpath<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;{.status.infrastructureName}{&#34;\n&#34;}&#39;</span> infrastructure cluster<span style=color:#66d9ef>)</span>
 $ echo $CLUSTER_ID
 win-tmk9g
-</code></pre></div><ul><li>Create the above MachineSet after updating the placeholder values (there are no availability zones in westus region)</li></ul><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ sed <span style=color:#ae81ff>\
+</code></pre></div><ul>
+<li>Create the above MachineSet after updating the placeholder values (there are no availability zones in westus region)</li>
+</ul>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ sed <span style=color:#ae81ff>\
 </span><span style=color:#ae81ff></span>  -e <span style=color:#e6db74>&#34;s/&lt;infrastructureID&gt;/</span>$CLUSTER_ID<span style=color:#e6db74>/&#34;</span> <span style=color:#ae81ff>\
 </span><span style=color:#ae81ff></span>  -e <span style=color:#e6db74>&#34;s/&lt;location&gt;/westus/&#34;</span> <span style=color:#ae81ff>\
 </span><span style=color:#ae81ff></span>  -e <span style=color:#e6db74>&#34;s/&lt;zone&gt;//&#34;</span> <span style=color:#ae81ff>\
@@ -171,17 +327,24 @@ win-tmk9g
 </span><span style=color:#ae81ff></span>  $CLUSTER_DIR/day2/base/machineset.yaml
 
 $ oc apply -n openshift-machine-api -f $CLUSTER_DIR/day2/base/machineset.yaml
-</code></pre></div><h2 id=providing-an-ssh-private-key>Providing an SSH Private Key</h2><p>In part 1 of this series, <a href=http://guifreelife.com/blog/2021/05/18/OpenShift-Windows-Containers-part-1/#generating-an-ssh-key>we generated an ssh key</a> for installing OpenShift.
+</code></pre></div><h2 id=providing-an-ssh-private-key>Providing an SSH Private Key</h2>
+<p>In part 1 of this series, <a href=http://guifreelife.com/blog/2021/05/18/OpenShift-Windows-Containers-part-1/#generating-an-ssh-key>we generated an ssh key</a> for installing OpenShift.
 Now we will give this same key to the WMCO for use in configuring our Windows node.
-By providing the private key, a new public key will be minted by the operator and installed on the node via user-data.</p><ul><li>Create a secret containing the private key that will be used to access the Windows VMs</li></ul><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc create secret generic cloud-private-key <span style=color:#ae81ff>\
+By providing the private key, a new public key will be minted by the operator and installed on the node via user-data.</p>
+<ul>
+<li>Create a secret containing the private key that will be used to access the Windows VMs</li>
+</ul>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc create secret generic cloud-private-key <span style=color:#ae81ff>\
 </span><span style=color:#ae81ff></span>  --from-file<span style=color:#f92672>=</span>private-key.pem<span style=color:#f92672>=</span><span style=color:#e6db74>${</span>HOME<span style=color:#e6db74>}</span>/.ssh/az-win <span style=color:#ae81ff>\
 </span><span style=color:#ae81ff></span>  -n openshift-windows-machine-config-operator
-</code></pre></div><p>After the ssh key is created the WMCO will generate a public key and create a <code>windows-user-data</code> secret for use by the openshift-machine-api when provisioning the machine.</p><pre><code>$ oc logs -n openshift-windows-machine-config-operator \
+</code></pre></div><p>After the ssh key is created the WMCO will generate a public key and create a <code>windows-user-data</code> secret for use by the openshift-machine-api when provisioning the machine.</p>
+<pre tabindex=0><code>$ oc logs -n openshift-windows-machine-config-operator \
     deployment/windows-machine-config-operator | tail -1
 
 2021-05-24T18:26:13.851Z        INFO    secret_controller       secret not found, creating the secret   {&quot;namespace&quot;: &quot;openshift-windows-machine-config-operator&quot;, &quot;name&quot;: &quot;cloud-private-key&quot;, &quot;name&quot;: &quot;windows-user-data&quot;}
 </code></pre><p>You can extract the secret to view the contents.
-Notice the authorized key file modification.</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc extract secret/windows-user-data -n openshift-machine-api --to<span style=color:#f92672>=</span>-
+Notice the authorized key file modification.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc extract secret/windows-user-data -n openshift-machine-api --to<span style=color:#f92672>=</span>-
 <span style=color:#75715e># userData</span>
 &lt;powershell&gt;
   Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0
@@ -208,13 +371,24 @@ Notice the authorized key file modification.</p><div class=highlight><pre style=
   Restart-Service sshd
 &lt;/powershell&gt;
 &lt;persist&gt;true&lt;/persist&gt;
-</code></pre></div><blockquote><p>📓 <strong>Beware of failures creating <em>windows-user-data</em> secret</strong></p><p>If you see an error like:
-<em>​failed to create vm winworker-29pjk: failed to get custom script data: error getting user data secret windows-user-data in namespace openshift-machine-api: Secret &ldquo;windows-user-data&rdquo; not found</em></p><p>Check the operator logs. <em>Hint:</em> Did your ssh key have a passphrase?</p><pre><code>$ oc logs -n openshift-windows-machine-config-operator \
+</code></pre></div><blockquote>
+<p>📓 <strong>Beware of failures creating <em>windows-user-data</em> secret</strong></p>
+<p>If you see an error like:
+<em>​failed to create vm winworker-29pjk: failed to get custom script data: error getting user data secret windows-user-data in namespace openshift-machine-api: Secret &ldquo;windows-user-data&rdquo; not found</em></p>
+<p>Check the operator logs. <em>Hint:</em> Did your ssh key have a passphrase?</p>
+<pre tabindex=0><code>$ oc logs -n openshift-windows-machine-config-operator \
   -f deployment/windows-machine-config-operator 
 $ oc get -n openshift-windows-machine-config-operator \
   secret/windows-user-data
-</code></pre></blockquote><h2 id=scaling-up-the-windows-machineset>Scaling up the Windows MachineSet</h2><p>We created the MachineSet with zero replicas precisely because the windows-user-data secret did not yet exist. Now that it does we can scale up and create our Windows machine.</p><ul><li>Scale up the machineset</li></ul><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc scale machineset winworker --replicas<span style=color:#f92672>=</span><span style=color:#ae81ff>1</span>
-</code></pre></div><p>Eventually there will be a windows machine and it will become a node. We can use some labels to identify the operating systems.</p><pre><code>$ oc get machines -n openshift-machine-api -L machine.openshift.io/os-id
+</code></pre></blockquote>
+<h2 id=scaling-up-the-windows-machineset>Scaling up the Windows MachineSet</h2>
+<p>We created the MachineSet with zero replicas precisely because the windows-user-data secret did not yet exist. Now that it does we can scale up and create our Windows machine.</p>
+<ul>
+<li>Scale up the machineset</li>
+</ul>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc scale machineset winworker --replicas<span style=color:#f92672>=</span><span style=color:#ae81ff>1</span>
+</code></pre></div><p>Eventually there will be a windows machine and it will become a node. We can use some labels to identify the operating systems.</p>
+<pre tabindex=0><code>$ oc get machines -n openshift-machine-api -L machine.openshift.io/os-id
 NAME                            PHASE     TYPE              REGION   ZONE   AGE    OS-ID
 win-77226-master-0              Running   Standard_D8s_v3   westus          3h6m
 win-77226-master-1              Running   Standard_D8s_v3   westus          3h6m
@@ -233,8 +407,20 @@ win-77226-worker-westus-g55j4   Ready    worker   172m   v1.20.0+bafe72f        
 win-77226-worker-westus-n2kwj   Ready    worker   172m   v1.20.0+bafe72f               linux
 win-77226-worker-westus-wv8ql   Ready    worker   172m   v1.20.0+bafe72f               linux
 winworker-74qw4                 Ready    worker   61m    v1.20.0-1030+cac2421340a449   windows
-</code></pre><blockquote><p>📺 <strong>Watch Demo:</strong> Installing WMCO with Kustomize and Deploying a Windows Node<p><asciinema-player src=/casts/az-win-wmco-install.cast cols=640 rows=30 loop=true start-at=0 speed=1 poster=npt:1:24 font-size=smaller></asciinema-player></p></p></blockquote><h1 id=accessing-the-windows-node-via-ssh>Accessing the Windows Node via SSH</h1><p>Our Windows node does not necessarily have a graphical interface, so how do we connect to it? Ssh of course, but to do that requires a bastion that can reach it. We will use a pod for this.</p><h2 id=deploying-a-bastion-pod-as-an-ssh-client>Deploying a Bastion Pod as an SSH Client</h2><ul><li>Create a Deployment to launch the bastion pod, courtesy of Christian Hernandez&rsquo;s <a href=https://github.com/RedHatWorkshops/windows-containers-quickstart title="Windows Containers Quickstart Workshop">Windows Containers Quickstart Workshop</a> -
-<strong><a href=https://gitlab.com/dlbewley/openshift-practice/-/blob/master/clusters/az-win/day2/base/deployment.yaml>clusters/az-win/day2/base/deployment.yaml</a></strong></li></ul><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#f92672>apiVersion</span>: <span style=color:#ae81ff>apps/v1</span>
+</code></pre><blockquote>
+<p>📺 <strong>Watch Demo:</strong> Installing WMCO with Kustomize and Deploying a Windows Node
+<p>
+<asciinema-player src=/casts/az-win-wmco-install.cast cols=640 rows=30 loop=true start-at=0 speed=1 poster=npt:1:24 font-size=smaller></asciinema-player>
+</p></p>
+</blockquote>
+<h1 id=accessing-the-windows-node-via-ssh>Accessing the Windows Node via SSH</h1>
+<p>Our Windows node does not necessarily have a graphical interface, so how do we connect to it? Ssh of course, but to do that requires a bastion that can reach it. We will use a pod for this.</p>
+<h2 id=deploying-a-bastion-pod-as-an-ssh-client>Deploying a Bastion Pod as an SSH Client</h2>
+<ul>
+<li>Create a Deployment to launch the bastion pod, courtesy of Christian Hernandez&rsquo;s <a href=https://github.com/RedHatWorkshops/windows-containers-quickstart title="Windows Containers Quickstart Workshop">Windows Containers Quickstart Workshop</a> -
+<strong><a href=https://gitlab.com/dlbewley/openshift-practice/-/blob/master/clusters/az-win/day2/base/deployment.yaml>clusters/az-win/day2/base/deployment.yaml</a></strong></li>
+</ul>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#f92672>apiVersion</span>: <span style=color:#ae81ff>apps/v1</span>
 <span style=color:#f92672>kind</span>: <span style=color:#ae81ff>Deployment</span>
 <span style=color:#f92672>metadata</span>:
   <span style=color:#f92672>creationTimestamp</span>: <span style=color:#66d9ef>null</span>
@@ -272,8 +458,12 @@ winworker-74qw4                 Ready    worker   61m    v1.20.0-1030+cac2421340
         <span style=color:#f92672>secret</span>:
           <span style=color:#f92672>defaultMode</span>: <span style=color:#ae81ff>256</span>
           <span style=color:#f92672>secretName</span>: <span style=color:#ae81ff>cloud-private-key</span>
-</code></pre></div><blockquote><p>📓 <strong>Pending Pod</strong>
-If you notice that the winc-ssh pod is stuck in &lsquo;pending&rsquo; state, it is likely because the pod needs to mount a secret which <a href=http://guifreelife.com/blog/2021/06/03/OpenShift-Windows-Containers-part-2/#providing-an-ssh-private-key>wasn&rsquo;t created</a> yet.</p></blockquote><p>After the pod has launched we can <code>oc rsh</code> to the pod and then <code>ssh</code> to the IP address of the Windows node. It is worth mentioning that the Azure Windows image will expect you to login as user <code>capi</code> rather than <code>administrator</code>.</p><pre><code>$ oc get nodes -l kubernetes.io/os=windows -o yaml | yq e '.items[].status | .addresses' -
+</code></pre></div><blockquote>
+<p>📓 <strong>Pending Pod</strong>
+If you notice that the winc-ssh pod is stuck in &lsquo;pending&rsquo; state, it is likely because the pod needs to mount a secret which <a href=http://guifreelife.com/blog/2021/06/03/OpenShift-Windows-Containers-part-2/#providing-an-ssh-private-key>wasn&rsquo;t created</a> yet.</p>
+</blockquote>
+<p>After the pod has launched we can <code>oc rsh</code> to the pod and then <code>ssh</code> to the IP address of the Windows node. It is worth mentioning that the Azure Windows image will expect you to login as user <code>capi</code> rather than <code>administrator</code>.</p>
+<pre tabindex=0><code>$ oc get nodes -l kubernetes.io/os=windows -o yaml | yq e '.items[].status | .addresses' -
 - address: winworker-g7tsk
   type: Hostname
 - address: 10.0.32.6
@@ -282,7 +472,14 @@ If you notice that the winc-ssh pod is stuck in &lsquo;pending&rsquo; state, it 
 $ oc rsh -n openshift-windows-machine-config-operator deployment/winc-ssh
 sh-4.4$ export WIN_NODE=10.0.32.6
 sh-4.4$ ssh -i /tmp/ssh/private-key.pem capi@$WIN_NODE
-</code></pre><blockquote><p>📺 <strong>Watch Demo: ssh to Windows node</strong><p><asciinema-player src=/casts/az-win-wmco-ssh.cast cols=640 rows=15 loop=true start-at=0 speed=1 poster=npt:0:12 font-size=smaller></asciinema-player></p></p></blockquote><p>Once logged in you can interact with containers using the legacy docker runtime.</p><pre><code>PS C:\Users\capi&gt; docker network ls
+</code></pre><blockquote>
+<p>📺 <strong>Watch Demo: ssh to Windows node</strong>
+<p>
+<asciinema-player src=/casts/az-win-wmco-ssh.cast cols=640 rows=15 loop=true start-at=0 speed=1 poster=npt:0:12 font-size=smaller></asciinema-player>
+</p></p>
+</blockquote>
+<p>Once logged in you can interact with containers using the legacy docker runtime.</p>
+<pre tabindex=0><code>PS C:\Users\capi&gt; docker network ls
 NETWORK ID          NAME                DRIVER              SCOPE
 16b1dbbcbc00        nat                 nat                 local
 f9ad45f65cb7        none                null                local
@@ -317,7 +514,309 @@ PS C:\Users\capi&gt; docker network inspect nat
         },
         &quot;Labels&quot;: {}
     } ]
-</code></pre><p>🚀 Now that we have docked, all we need now is a containerized Windows application!</p><h1 id=summary>Summary</h1><p>OpenShift enables cloud native workflows for diverse workloads. It enhances automation, resilience, and scalability while enhancing developer productivity for legacy applications. With support for Windows nodes, everyone is invited to dock with the cluster!</p><p>After <a href=http://guifreelife.com/blog/2021/05/18/OpenShift-Windows-Containers-part-1/>deploying OpenShift to Azure</a> and adding a Windows node using the <code>WindowsMachineConfigOperator</code> we are ready to deploy a cross platform application. Stay tuned for <a href=http://guifreelife.com/blog/2021/07/10/OpenShift-Windows-Containers-part-3/ title="Windows Containers Part 3">part 3</a>!</p><h2 id=references>References</h2><ul><li><a href=https://docs.openshift.com/container-platform/4.7/windows_containers/understanding-windows-container-workloads.html title="Understanding Windows Containers">Understanding Windows Containers Support on OpenShift</a></li><li><a href=https://docs.openshift.com/container-platform/4.7/windows_containers/enabling-windows-container-workloads.html title="Enabling Windows container workloads">Enabling Windows container workloads on OpenShift</a></li><li><a href=https://github.com/openshift/windows-machine-config-operator title="Windows Machine Config Operator">Windows Machine Config Operator Project</a></li><li><a href=https://docs.openshift.com/container-platform/4.7/windows_containers/creating_windows_machinesets/creating-windows-machineset-azure.html title="Creating Windows MachineSet for Azure">Creating a Windows MachineSet for Azure</a></li><li><a href=https://github.com/openshift/windows-machine-config-operator/blob/master/docs/machineset-azure.md title="MachineSet Azure docs from WMCO">Azure MachineSet docs from WMCO Project</a></li><li><a href=https://docs.microsoft.com/en-us/virtualization/windowscontainers/container-networking/architecture title="Windows container networking">Windows container networking</a></li><li><a href=https://github.com/giofontana/ocp-windows-image-prepare title="Ansible playbook to prepare Windows OS image for OpenShift (using Packer)">Playbook for Creating Windows Container Images</a></li><li><a href=https://demo.openshift.com/en/latest/installing-windows-node/ title="Video Demo: Installing a Windows Node on OpenShift">Video Demo: Installing a Windows Node on OpenShift</a></li><li><a href=https://github.com/RedHatWorkshops/windows-containers-quickstart title="Windows Containers Quickstart Workshop">Windows Containers Quickstart Workshop</a></li><li><a href=https://github.com/openshift/machine-api-operator title="Machine-API Operator">Machine-API Operator</a></li><li><a href=https://github.com/openshift/machine-config-operator title="Machine-Config Operator">Machine-Config Operator</a></li></ul></div><div id=comments><div id=disqus_thread></div><script type=application/javascript>var disqus_config=function(){};(function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById('disqus_thread').innerHTML='Disqus comments not available by default when the website is previewed locally.';return}var b=document,a=b.createElement('script');a.async=!0,a.src='//dlbewleygithubio.disqus.com/embed.js',a.setAttribute('data-timestamp',+new Date),(b.head||b.body).appendChild(a)})()</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript><a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a></div></div><div class=col-md-3><div class="panel panel-default sidebar-menu"><div class=panel-heading><h3 class=panel-title>Search</h3></div><div class=panel-body><form action=//google.com/search method=get accept-charset=utf-8 role=search><div class=input-group><input type=search name=q class=form-control placeholder=Search>
+</code></pre><p>🚀 Now that we have docked, all we need now is a containerized Windows application!</p>
+<h1 id=summary>Summary</h1>
+<p>OpenShift enables cloud native workflows for diverse workloads. It enhances automation, resilience, and scalability while enhancing developer productivity for legacy applications. With support for Windows nodes, everyone is invited to dock with the cluster!</p>
+<p>After <a href=http://guifreelife.com/blog/2021/05/18/OpenShift-Windows-Containers-part-1/>deploying OpenShift to Azure</a> and adding a Windows node using the <code>WindowsMachineConfigOperator</code> we are ready to deploy a cross platform application. Stay tuned for <a href=http://guifreelife.com/blog/2021/07/10/OpenShift-Windows-Containers-part-3/ title="Windows Containers Part 3">part 3</a>!</p>
+<h2 id=references>References</h2>
+<ul>
+<li><a href=https://docs.openshift.com/container-platform/4.7/windows_containers/understanding-windows-container-workloads.html title="Understanding Windows Containers">Understanding Windows Containers Support on OpenShift</a></li>
+<li><a href=https://docs.openshift.com/container-platform/4.7/windows_containers/enabling-windows-container-workloads.html title="Enabling Windows container workloads">Enabling Windows container workloads on OpenShift</a></li>
+<li><a href=https://github.com/openshift/windows-machine-config-operator title="Windows Machine Config Operator">Windows Machine Config Operator Project</a></li>
+<li><a href=https://docs.openshift.com/container-platform/4.7/windows_containers/creating_windows_machinesets/creating-windows-machineset-azure.html title="Creating Windows MachineSet for Azure">Creating a Windows MachineSet for Azure</a></li>
+<li><a href=https://github.com/openshift/windows-machine-config-operator/blob/master/docs/machineset-azure.md title="MachineSet Azure docs from WMCO">Azure MachineSet docs from WMCO Project</a></li>
+<li><a href=https://docs.microsoft.com/en-us/virtualization/windowscontainers/container-networking/architecture title="Windows container networking">Windows container networking</a></li>
+<li><a href=https://github.com/giofontana/ocp-windows-image-prepare title="Ansible playbook to prepare Windows OS image for OpenShift (using Packer)">Playbook for Creating Windows Container Images</a></li>
+<li><a href=https://demo.openshift.com/en/latest/installing-windows-node/ title="Video Demo: Installing a Windows Node on OpenShift">Video Demo: Installing a Windows Node on OpenShift</a></li>
+<li><a href=https://github.com/RedHatWorkshops/windows-containers-quickstart title="Windows Containers Quickstart Workshop">Windows Containers Quickstart Workshop</a></li>
+<li><a href=https://github.com/openshift/machine-api-operator title="Machine-API Operator">Machine-API Operator</a></li>
+<li><a href=https://github.com/openshift/machine-config-operator title="Machine-Config Operator">Machine-Config Operator</a></li>
+</ul>
+</div>
+<div id=comments>
+<div id=disqus_thread></div>
+<script type=application/javascript>var disqus_config=function(){};(function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById('disqus_thread').innerHTML='Disqus comments not available by default when the website is previewed locally.';return}var b=document,a=b.createElement('script');a.async=!0,a.src='//dlbewleygithubio.disqus.com/embed.js',a.setAttribute('data-timestamp',+new Date),(b.head||b.body).appendChild(a)})()</script>
+<noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript>
+<a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a>
+</div>
+</div>
+<div class=col-md-3>
+<div class="panel panel-default sidebar-menu">
+<div class=panel-heading>
+<h3 class=panel-title>Search</h3>
+</div>
+<div class=panel-body>
+<form action=//google.com/search method=get accept-charset=utf-8 role=search>
+<div class=input-group>
+<input type=search name=q class=form-control placeholder=Search>
 <input type=hidden name=sitesearch value=http://guifreelife.com/>
-<span class=input-group-btn><button type=submit class="btn btn-template-main"><i class="fas fa-search"></i></button></span></div></form></div></div><div class="panel sidebar-menu"><div class=panel-heading><h3 class=panel-title>Tagged</h3></div><div class=panel-body><ul class=tag-cloud><li class=active><a href=/tags/openshift><i class="fas fa-tags"></i>openshift</a></li><li class=active><a href=/tags/OCP4><i class="fas fa-tags"></i>OCP4</a></li><li class=active><a href=/tags/operators><i class="fas fa-tags"></i>operators</a></li><li class=active><a href=/tags/windows><i class="fas fa-tags"></i>windows</a></li></ul></div></div><div class="panel sidebar-menu"><div class=panel-heading><h3 class=panel-title>TOC</h3></div><div class=panel-body><nav id=TableOfContents><ul><li><a href=#enabling-windows-workloads>Enabling Windows Workloads</a></li><li><a href=#understanding-windows-container-images>Understanding Windows Container Images</a></li><li><a href=#reviewing-the-day-1-cluster>Reviewing the Day 1 Cluster</a></li><li><a href=#installing-the-windows-machine-config-operator>Installing the Windows Machine Config Operator</a></li><li><a href=#adding-a-windows-node>Adding a Windows Node</a><ul><li><a href=#creating-a-windows-machineset>Creating a Windows MachineSet</a></li><li><a href=#providing-an-ssh-private-key>Providing an SSH Private Key</a></li><li><a href=#scaling-up-the-windows-machineset>Scaling up the Windows MachineSet</a></li></ul></li><li><a href=#accessing-the-windows-node-via-ssh>Accessing the Windows Node via SSH</a><ul><li><a href=#deploying-a-bastion-pod-as-an-ssh-client>Deploying a Bastion Pod as an SSH Client</a></li></ul></li><li><a href=#summary>Summary</a><ul><li><a href=#references>References</a></li></ul></li></ul></nav></div></div><div class="panel sidebar-menu"><div class=panel-heading><h3 class=panel-title>Tags</h3></div><div class=panel-body><ul class=tag-cloud><li><a href=/tags/aws><i class="fas fa-tags"></i>AWS</a></li><li><a href=/tags/cdk><i class="fas fa-tags"></i>CDK</a></li><li><a href=/tags/ocp3><i class="fas fa-tags"></i>OCP3</a></li><li><a href=/tags/ocp4><i class="fas fa-tags"></i>OCP4</a></li><li><a href=/tags/rhacm><i class="fas fa-tags"></i>RHACM</a></li><li><a href=/tags/rhel><i class="fas fa-tags"></i>RHEL</a></li><li><a href=/tags/ansible><i class="fas fa-tags"></i>ansible</a></li><li><a href=/tags/automation><i class="fas fa-tags"></i>automation</a></li><li><a href=/tags/azure><i class="fas fa-tags"></i>azure</a></li><li><a href=/tags/debugging><i class="fas fa-tags"></i>debugging</a></li><li><a href=/tags/docker><i class="fas fa-tags"></i>docker</a></li><li><a href=/tags/draft><i class="fas fa-tags"></i>draft</a></li><li><a href=/tags/etcd><i class="fas fa-tags"></i>etcd</a></li><li><a href=/tags/git><i class="fas fa-tags"></i>git</a></li><li><a href=/tags/haproxy><i class="fas fa-tags"></i>haproxy</a></li><li><a href=/tags/heat><i class="fas fa-tags"></i>heat</a></li><li><a href=/tags/hybrid-cloud><i class="fas fa-tags"></i>hybrid-cloud</a></li><li><a href=/tags/install><i class="fas fa-tags"></i>install</a></li><li><a href=/tags/kubernetes><i class="fas fa-tags"></i>kubernetes</a></li><li><a href=/tags/mac><i class="fas fa-tags"></i>mac</a></li><li><a href=/tags/metrics><i class="fas fa-tags"></i>metrics</a></li><li><a href=/tags/migration><i class="fas fa-tags"></i>migration</a></li><li><a href=/tags/monitoring><i class="fas fa-tags"></i>monitoring</a></li><li><a href=/tags/networking><i class="fas fa-tags"></i>networking</a></li><li><a href=/tags/openshift><i class="fas fa-tags"></i>openshift</a></li><li><a href=/tags/openstack><i class="fas fa-tags"></i>openstack</a></li><li><a href=/tags/operators><i class="fas fa-tags"></i>operators</a></li><li><a href=/tags/python><i class="fas fa-tags"></i>python</a></li><li><a href=/tags/router><i class="fas fa-tags"></i>router</a></li><li><a href=/tags/ssl><i class="fas fa-tags"></i>ssl</a></li><li><a href=/tags/troubleshooting><i class="fas fa-tags"></i>troubleshooting</a></li><li><a href=/tags/upgrade><i class="fas fa-tags"></i>upgrade</a></li><li><a href=/tags/vagrant><i class="fas fa-tags"></i>vagrant</a></li><li><a href=/tags/windows><i class="fas fa-tags"></i>windows</a></li><li><a href=/tags/zabbix><i class="fas fa-tags"></i>zabbix</a></li><li><a href=/tags/zimbra><i class="fas fa-tags"></i>zimbra</a></li></ul></div></div></div></div></div></div><footer id=footer><div class=container><div class="col-md-4 col-sm-6"><h4>Share</h4><i class="fab fa-2x fa-twitter" title="Share this on Twitter" onclick="window.open('http://twitter.com/home?status=http://guifreelife.com/blog/2021/06/03/OpenShift-Windows-Containers-part-2/')"></i><i class="fab fa-2x fa-facebook" title="Share this on Facebook" onclick="window.open('http://www.facebook.com/share.php?u=http://guifreelife.com/blog/2021/06/03/OpenShift-Windows-Containers-part-2/')"></i><i class="fab fa-2x fa-linkedin" title="Share this on Linkedin" onclick="window.open('https://www.linkedin.com/shareArticle?mini=true&url=http://guifreelife.com/blog/2021/06/03/OpenShift-Windows-Containers-part-2/&title=&summary=&source=')"></i><i class="fab fa-2x fa-google-plus" title="Share this on Google Currents" onclick="window.open('https://plus.google.com/share?url=http://guifreelife.com/blog/2021/06/03/OpenShift-Windows-Containers-part-2/')"></i><i class="fa fa-2x fa-envelope" title="Share this through Email" onclick="window.open('mailto:?&body=http://guifreelife.com/blog/2021/06/03/OpenShift-Windows-Containers-part-2/')"></i><h4>About us</h4><p>GUI Free Life is the personal, technical blog of Dale Bewley. Comments and opinions are my own and not that of my employers.</p><hr class="hidden-md hidden-lg hidden-sm"></div><div class="col-md-4 col-sm-6"><h4>Recent posts</h4><div class=blog-entries><div class="item same-height-row clearfix"><div class="image same-height-always"><a href=http://guifreelife.com/blog/2022/03/10/Debugging-AWS-STS-Authentication-for-OpenShift-Operators/><img src=/images/debug-sts-banner.jpg class=img-responsive alt="Debugging AWS STS Authentication for OpenShift Operators"></a></div><div class="name same-height-always"><h5><a href=http://guifreelife.com/blog/2022/03/10/Debugging-AWS-STS-Authentication-for-OpenShift-Operators/>Debugging AWS STS Authentication for OpenShift Operators</a></h5></div></div><div class="item same-height-row clearfix"><div class="image same-height-always"><a href=http://guifreelife.com/blog/2021/12/21/Red-Hat-Advanced-Cluster-Management-Walkthrough/><img src=/images/port-of-oakland.png class=img-responsive alt="Red Hat Advanced Cluster Management Walkthrough"></a></div><div class="name same-height-always"><h5><a href=http://guifreelife.com/blog/2021/12/21/Red-Hat-Advanced-Cluster-Management-Walkthrough/>Red Hat Advanced Cluster Management Walkthrough</a></h5></div></div><div class="item same-height-row clearfix"><div class="image same-height-always"><a href=http://guifreelife.com/blog/2021/08/18/Protect-Gitignored-but-Tracked-Files/><img src=/img/banners/banner-32.jpg class=img-responsive alt="Protect Gitignored but Tracked Files"></a></div><div class="name same-height-always"><h5><a href=http://guifreelife.com/blog/2021/08/18/Protect-Gitignored-but-Tracked-Files/>Protect Gitignored but Tracked Files</a></h5></div></div></div><hr class="hidden-md hidden-lg"></div><div class="col-md-4 col-sm-6"><h4>Contact</h4><p class=text-uppercase><strong>Dale Bewley</strong><br>Oakland<br>California<br><strong>USA</strong></p><a href=/contact class="btn btn-small btn-template-main">Go to contact page</a><hr class="hidden-md hidden-lg hidden-sm"></div></div></footer><div id=copyright><div class=container><div class=col-md-12><p class=pull-left>Copyright (c) 2021, Dale Bewley; all rights reserved.</p><p class=pull-right>Template by <a href=https://bootstrapious.com/p/universal-business-e-commerce-template>Bootstrapious</a>.
-Ported to Hugo by <a href=https://github.com/devcows/hugo-universal-theme>DevCows</a>.</p></div></div></div></div><script type=application/javascript>var doNotTrack=!1;doNotTrack||(function(a,e,f,g,b,c,d){a.GoogleAnalyticsObject=b,a[b]=a[b]||function(){(a[b].q=a[b].q||[]).push(arguments)},a[b].l=1*new Date,c=e.createElement(f),d=e.getElementsByTagName(f)[0],c.async=1,c.src=g,d.parentNode.insertBefore(c,d)}(window,document,'script','https://www.google-analytics.com/analytics.js','ga'),ga('create','G-39TSW9349X','auto'),ga('send','pageview'))</script><script src=//code.jquery.com/jquery-3.1.1.min.js integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin=anonymous></script><script src=//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js integrity=sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa crossorigin=anonymous></script><script src=//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js></script><script src=//cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/jquery.waypoints.min.js></script><script src=//cdnjs.cloudflare.com/ajax/libs/Counter-Up/1.0/jquery.counterup.min.js></script><script src=//cdnjs.cloudflare.com/ajax/libs/jquery-parallax/1.1.3/jquery-parallax.js></script><script src="//maps.googleapis.com/maps/api/js?key=AIzaSyDacpwSIXi6lk2fS2wzZOSoh7iHm_ZP3UE&v=3.exp"></script><script src=/js/hpneo.gmaps.js></script><script src=/js/gmaps.init.js></script><script src=/js/front.js></script><script src=/js/owl.carousel.min.js></script></body></html>
+<span class=input-group-btn>
+<button type=submit class="btn btn-template-main"><i class="fas fa-search"></i></button>
+</span>
+</div>
+</form>
+</div>
+</div>
+<div class="panel sidebar-menu">
+<div class=panel-heading>
+<h3 class=panel-title>Tagged</h3>
+</div>
+<div class=panel-body>
+<ul class=tag-cloud>
+<li class=active>
+<a href=/tags/openshift><i class="fas fa-tags"></i> openshift</a>
+</li>
+<li class=active>
+<a href=/tags/OCP4><i class="fas fa-tags"></i> OCP4</a>
+</li>
+<li class=active>
+<a href=/tags/operators><i class="fas fa-tags"></i> operators</a>
+</li>
+<li class=active>
+<a href=/tags/windows><i class="fas fa-tags"></i> windows</a>
+</li>
+</ul>
+</div>
+</div>
+<div class="panel sidebar-menu">
+<div class=panel-heading>
+<h3 class=panel-title>TOC</h3>
+</div>
+<div class=panel-body>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#enabling-windows-workloads>Enabling Windows Workloads</a></li>
+<li><a href=#understanding-windows-container-images>Understanding Windows Container Images</a></li>
+<li><a href=#reviewing-the-day-1-cluster>Reviewing the Day 1 Cluster</a></li>
+<li><a href=#installing-the-windows-machine-config-operator>Installing the Windows Machine Config Operator</a></li>
+<li><a href=#adding-a-windows-node>Adding a Windows Node</a>
+<ul>
+<li><a href=#creating-a-windows-machineset>Creating a Windows MachineSet</a></li>
+<li><a href=#providing-an-ssh-private-key>Providing an SSH Private Key</a></li>
+<li><a href=#scaling-up-the-windows-machineset>Scaling up the Windows MachineSet</a></li>
+</ul>
+</li>
+<li><a href=#accessing-the-windows-node-via-ssh>Accessing the Windows Node via SSH</a>
+<ul>
+<li><a href=#deploying-a-bastion-pod-as-an-ssh-client>Deploying a Bastion Pod as an SSH Client</a></li>
+</ul>
+</li>
+<li><a href=#summary>Summary</a>
+<ul>
+<li><a href=#references>References</a></li>
+</ul>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+<div class="panel sidebar-menu">
+<div class=panel-heading>
+<h3 class=panel-title>Tags</h3>
+</div>
+<div class=panel-body>
+<ul class=tag-cloud>
+<li>
+<a href=/tags/aws><i class="fas fa-tags"></i> AWS</a>
+</li>
+<li>
+<a href=/tags/cdk><i class="fas fa-tags"></i> CDK</a>
+</li>
+<li>
+<a href=/tags/ocp3><i class="fas fa-tags"></i> OCP3</a>
+</li>
+<li>
+<a href=/tags/ocp4><i class="fas fa-tags"></i> OCP4</a>
+</li>
+<li>
+<a href=/tags/rhacm><i class="fas fa-tags"></i> RHACM</a>
+</li>
+<li>
+<a href=/tags/rhel><i class="fas fa-tags"></i> RHEL</a>
+</li>
+<li>
+<a href=/tags/ansible><i class="fas fa-tags"></i> ansible</a>
+</li>
+<li>
+<a href=/tags/automation><i class="fas fa-tags"></i> automation</a>
+</li>
+<li>
+<a href=/tags/azure><i class="fas fa-tags"></i> azure</a>
+</li>
+<li>
+<a href=/tags/debugging><i class="fas fa-tags"></i> debugging</a>
+</li>
+<li>
+<a href=/tags/docker><i class="fas fa-tags"></i> docker</a>
+</li>
+<li>
+<a href=/tags/draft><i class="fas fa-tags"></i> draft</a>
+</li>
+<li>
+<a href=/tags/etcd><i class="fas fa-tags"></i> etcd</a>
+</li>
+<li>
+<a href=/tags/git><i class="fas fa-tags"></i> git</a>
+</li>
+<li>
+<a href=/tags/haproxy><i class="fas fa-tags"></i> haproxy</a>
+</li>
+<li>
+<a href=/tags/heat><i class="fas fa-tags"></i> heat</a>
+</li>
+<li>
+<a href=/tags/hybrid-cloud><i class="fas fa-tags"></i> hybrid-cloud</a>
+</li>
+<li>
+<a href=/tags/install><i class="fas fa-tags"></i> install</a>
+</li>
+<li>
+<a href=/tags/kubernetes><i class="fas fa-tags"></i> kubernetes</a>
+</li>
+<li>
+<a href=/tags/mac><i class="fas fa-tags"></i> mac</a>
+</li>
+<li>
+<a href=/tags/metrics><i class="fas fa-tags"></i> metrics</a>
+</li>
+<li>
+<a href=/tags/migration><i class="fas fa-tags"></i> migration</a>
+</li>
+<li>
+<a href=/tags/monitoring><i class="fas fa-tags"></i> monitoring</a>
+</li>
+<li>
+<a href=/tags/networking><i class="fas fa-tags"></i> networking</a>
+</li>
+<li>
+<a href=/tags/openshift><i class="fas fa-tags"></i> openshift</a>
+</li>
+<li>
+<a href=/tags/openstack><i class="fas fa-tags"></i> openstack</a>
+</li>
+<li>
+<a href=/tags/operators><i class="fas fa-tags"></i> operators</a>
+</li>
+<li>
+<a href=/tags/python><i class="fas fa-tags"></i> python</a>
+</li>
+<li>
+<a href=/tags/router><i class="fas fa-tags"></i> router</a>
+</li>
+<li>
+<a href=/tags/ssl><i class="fas fa-tags"></i> ssl</a>
+</li>
+<li>
+<a href=/tags/troubleshooting><i class="fas fa-tags"></i> troubleshooting</a>
+</li>
+<li>
+<a href=/tags/upgrade><i class="fas fa-tags"></i> upgrade</a>
+</li>
+<li>
+<a href=/tags/vagrant><i class="fas fa-tags"></i> vagrant</a>
+</li>
+<li>
+<a href=/tags/windows><i class="fas fa-tags"></i> windows</a>
+</li>
+<li>
+<a href=/tags/zabbix><i class="fas fa-tags"></i> zabbix</a>
+</li>
+<li>
+<a href=/tags/zimbra><i class="fas fa-tags"></i> zimbra</a>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<footer id=footer>
+<div class=container>
+<div class="col-md-4 col-sm-6">
+<h4>Share</h4>
+<i class="fab fa-2x fa-twitter" title="Share this on Twitter" onclick="window.open('http://twitter.com/home?status=http://guifreelife.com/blog/2021/06/03/OpenShift-Windows-Containers-part-2/')"></i>
+<i class="fab fa-2x fa-facebook" title="Share this on Facebook" onclick="window.open('http://www.facebook.com/share.php?u=http://guifreelife.com/blog/2021/06/03/OpenShift-Windows-Containers-part-2/')"></i>
+<i class="fab fa-2x fa-linkedin" title="Share this on Linkedin" onclick="window.open('https://www.linkedin.com/shareArticle?mini=true&url=http://guifreelife.com/blog/2021/06/03/OpenShift-Windows-Containers-part-2/&title=&summary=&source=')"></i>
+<i class="fab fa-2x fa-google-plus" title="Share this on Google Currents" onclick="window.open('https://plus.google.com/share?url=http://guifreelife.com/blog/2021/06/03/OpenShift-Windows-Containers-part-2/')"></i>
+<i class="fa fa-2x fa-envelope" title="Share this through Email" onclick="window.open('mailto:?&body=http://guifreelife.com/blog/2021/06/03/OpenShift-Windows-Containers-part-2/')"></i>
+<h4>About us</h4>
+<p>GUI Free Life is the personal, technical blog of Dale Bewley. Comments and opinions are my own and not that of my employers.</p>
+<hr class="hidden-md hidden-lg hidden-sm">
+</div>
+<div class="col-md-4 col-sm-6">
+<h4>Recent posts</h4>
+<div class=blog-entries>
+<div class="item same-height-row clearfix">
+<div class="image same-height-always">
+<a href=http://guifreelife.com/blog/2022/03/10/Debugging-AWS-STS-Authentication-for-OpenShift-Operators/>
+<img src=/images/debug-sts-banner.jpg class=img-responsive alt="Debugging AWS STS Authentication for OpenShift Operators">
+</a>
+</div>
+<div class="name same-height-always">
+<h5><a href=http://guifreelife.com/blog/2022/03/10/Debugging-AWS-STS-Authentication-for-OpenShift-Operators/>Debugging AWS STS Authentication for OpenShift Operators</a></h5>
+</div>
+</div>
+<div class="item same-height-row clearfix">
+<div class="image same-height-always">
+<a href=http://guifreelife.com/blog/2021/12/21/Red-Hat-Advanced-Cluster-Management-Walkthrough/>
+<img src=/images/port-of-oakland.png class=img-responsive alt="Red Hat Advanced Cluster Management Walkthrough">
+</a>
+</div>
+<div class="name same-height-always">
+<h5><a href=http://guifreelife.com/blog/2021/12/21/Red-Hat-Advanced-Cluster-Management-Walkthrough/>Red Hat Advanced Cluster Management Walkthrough</a></h5>
+</div>
+</div>
+<div class="item same-height-row clearfix">
+<div class="image same-height-always">
+<a href=http://guifreelife.com/blog/2021/08/18/Protect-Gitignored-but-Tracked-Files/>
+<img src=/img/banners/banner-32.jpg class=img-responsive alt="Protect Gitignored but Tracked Files">
+</a>
+</div>
+<div class="name same-height-always">
+<h5><a href=http://guifreelife.com/blog/2021/08/18/Protect-Gitignored-but-Tracked-Files/>Protect Gitignored but Tracked Files</a></h5>
+</div>
+</div>
+</div>
+<hr class="hidden-md hidden-lg">
+</div>
+<div class="col-md-4 col-sm-6">
+<h4>Contact</h4>
+<p class=text-uppercase><strong>Dale Bewley</strong>
+<br>Oakland
+<br>California
+<br>
+<strong>USA</strong>
+</p>
+<a href=/contact class="btn btn-small btn-template-main">Go to contact page</a>
+<hr class="hidden-md hidden-lg hidden-sm">
+</div>
+</div>
+</footer>
+<div id=copyright>
+<div class=container>
+<div class=col-md-12>
+<p class=pull-left>Copyright (c) 2021, Dale Bewley; all rights reserved.</p>
+<p class=pull-right>
+Template by <a href=https://bootstrapious.com/p/universal-business-e-commerce-template>Bootstrapious</a>.
+Ported to Hugo by <a href=https://github.com/devcows/hugo-universal-theme>DevCows</a>.
+</p>
+</div>
+</div>
+</div>
+</div>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-39TSW9349X"></script>
+<script>var doNotTrack=!1;if(!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date),gtag('config','G-39TSW9349X',{anonymize_ip:!1})}</script>
+<script src=//code.jquery.com/jquery-3.1.1.min.js integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin=anonymous></script>
+<script src=//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js integrity=sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa crossorigin=anonymous></script>
+<script src=//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js></script>
+<script src=//cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/jquery.waypoints.min.js></script>
+<script src=//cdnjs.cloudflare.com/ajax/libs/Counter-Up/1.0/jquery.counterup.min.js></script>
+<script src=//cdnjs.cloudflare.com/ajax/libs/jquery-parallax/1.1.3/jquery-parallax.js></script>
+<script src="//maps.googleapis.com/maps/api/js?key=AIzaSyDacpwSIXi6lk2fS2wzZOSoh7iHm_ZP3UE&v=3.exp"></script>
+<script src=/js/hpneo.gmaps.js></script>
+<script src=/js/gmaps.init.js></script>
+<script src=/js/front.js></script>
+<script src=/js/owl.carousel.min.js></script>
+</body>
+</html>

@@ -1,9 +1,125 @@
-<!doctype html><html lang=en-us><head><meta charset=utf-8><meta name=robots content="all,follow"><meta name=googlebot content="index,follow,snippet,archive"><meta name=viewport content="width=device-width,initial-scale=1"><title>OpenShift 4 on OpenStack Networking and Installation</title><meta name=author content="Dale Bewley"><meta name=keywords content="bewley,guifreelife,install,openshift,networking,openstack,OCP4"><meta name=description content="GUI Free Life"><meta name=generator content="Hugo 0.81.0"><link href="//fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,500,700,800" rel=stylesheet type=text/css><link rel=stylesheet href=//use.fontawesome.com/releases/v5.11.2/css/all.css><link rel=stylesheet href=//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css integrity=sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u crossorigin=anonymous><link href=/css/animate.css rel=stylesheet><link href=/css/style.turquoise.css rel=stylesheet id=theme-stylesheet><link href=/css/custom.css rel=stylesheet><!--[if lt IE 9]><script src=https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js></script><script src=https://oss.maxcdn.com/respond/1.4.2/respond.min.js></script><![endif]--><link rel="shortcut icon" href=/img/favicon.ico type=image/x-icon><link rel=apple-touch-icon href=/img/apple-touch-icon.png><link href=/css/owl.carousel.css rel=stylesheet><link href=/css/owl.theme.css rel=stylesheet><link rel=alternate href=http://guifreelife.com/index.xml type=application/rss+xml title="GUI Free Life"><meta property="og:locale" content="en_us"><meta property="og:site_name" content="GUI Free Life"><meta property="og:title" content="OpenShift 4 on OpenStack Networking and Installation"><meta property="og:type" content="article"><meta property="og:url" content="http://guifreelife.com/blog/2020/02/15/OpenShift-4-on-OpenStack-Networking-and-Installation/"><meta property="og:description" content="GUI Free Life"><meta property="og:image" content="http://guifreelife.com/images/openshift-openstack-install-network-00.png"><meta property="og:image:type" content="image/png"><meta property="og:image:width" content="1287"><meta property="og:image:height" content="1007"><meta property="og:updated_time" content="2020-02-15T00:00:00Z"><meta property="article:tag" content="install"><meta property="article:tag" content="openshift"><meta property="article:tag" content="networking"><meta property="article:tag" content="openstack"><meta property="article:tag" content="OCP4"><meta property="article:published_time" content="2020-02-15T00:00:00Z"><meta property="article:modified_time" content="2020-02-15T00:00:00Z"><meta name=twitter:card content="summary_large_image"><meta name=twitter:site content="@dlbewley"><meta name=twitter:title content="OpenShift 4 on OpenStack Networking and Installation"><meta name=twitter:image content="http://guifreelife.com/images/openshift-openstack-install-network-00.png"><meta name=twitter:description content="GUI Free Life"></head><body><div id=all><header class=navbar-affixed-top data-spy=affix data-offset-top=62><div class="navbar navbar-default yamm" role=navigation id=navbar><div class=container><div class=navbar-header><a class="navbar-brand home" href=/><img src=/img/logo.png alt="OpenShift 4 on OpenStack Networking and Installation logo" class="hidden-xs hidden-sm">
+<!doctype html><html lang=en-us>
+<head>
+<meta charset=utf-8>
+<meta name=robots content="all,follow">
+<meta name=googlebot content="index,follow,snippet,archive">
+<meta name=viewport content="width=device-width,initial-scale=1">
+<title>OpenShift 4 on OpenStack Networking and Installation</title>
+<meta name=author content="Dale Bewley">
+<meta name=keywords content="bewley,guifreelife,install,openshift,networking,openstack,OCP4">
+<meta name=description content="GUI Free Life">
+<meta name=generator content="Hugo 0.91.2">
+<link href="//fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,500,700,800" rel=stylesheet type=text/css>
+<link rel=stylesheet href=//use.fontawesome.com/releases/v5.11.2/css/all.css>
+<link rel=stylesheet href=//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css integrity=sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u crossorigin=anonymous>
+<link href=/css/animate.css rel=stylesheet>
+<link href=/css/style.turquoise.css rel=stylesheet id=theme-stylesheet>
+<link href=/css/custom.css rel=stylesheet><!--[if lt IE 9]><script src=https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js></script>
+<script src=https://oss.maxcdn.com/respond/1.4.2/respond.min.js></script><![endif]-->
+<link rel="shortcut icon" href=/img/favicon.ico type=image/x-icon>
+<link rel=apple-touch-icon href=/img/apple-touch-icon.png>
+<link href=/css/owl.carousel.css rel=stylesheet>
+<link href=/css/owl.theme.css rel=stylesheet>
+<link rel=alternate href=http://guifreelife.com/index.xml type=application/rss+xml title="GUI Free Life">
+<meta property="og:locale" content="en_us">
+<meta property="og:site_name" content="GUI Free Life">
+<meta property="og:title" content="OpenShift 4 on OpenStack Networking and Installation">
+<meta property="og:type" content="article">
+<meta property="og:url" content="http://guifreelife.com/blog/2020/02/15/OpenShift-4-on-OpenStack-Networking-and-Installation/">
+<meta property="og:description" content="GUI Free Life">
+<meta property="og:image" content="http://guifreelife.com/images/openshift-openstack-install-network-00.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1287">
+<meta property="og:image:height" content="1007">
+<meta property="og:updated_time" content="2020-02-15T00:00:00Z">
+<meta property="article:tag" content="install">
+<meta property="article:tag" content="openshift">
+<meta property="article:tag" content="networking">
+<meta property="article:tag" content="openstack">
+<meta property="article:tag" content="OCP4">
+<meta property="article:published_time" content="2020-02-15T00:00:00Z">
+<meta property="article:modified_time" content="2020-02-15T00:00:00Z">
+<meta name=twitter:card content="summary_large_image">
+<meta name=twitter:site content="@dlbewley">
+<meta name=twitter:title content="OpenShift 4 on OpenStack Networking and Installation">
+<meta name=twitter:image content="http://guifreelife.com/images/openshift-openstack-install-network-00.png">
+<meta name=twitter:description content="GUI Free Life">
+</head>
+<body>
+<div id=all>
+<header class=navbar-affixed-top data-spy=affix data-offset-top=62>
+<div class="navbar navbar-default yamm" role=navigation id=navbar>
+<div class=container>
+<div class=navbar-header>
+<a class="navbar-brand home" href=/>
+<img src=/img/logo.png alt="OpenShift 4 on OpenStack Networking and Installation logo" class="hidden-xs hidden-sm">
 <img src=/img/logo-small.png alt="OpenShift 4 on OpenStack Networking and Installation logo" class="visible-xs visible-sm">
-<span class=sr-only>OpenShift 4 on OpenStack Networking and Installation - go to homepage</span></a><div class=navbar-buttons><button type=button class="navbar-toggle btn-template-main" data-toggle=collapse data-target=#navigation>
+<span class=sr-only>OpenShift 4 on OpenStack Networking and Installation - go to homepage</span>
+</a>
+<div class=navbar-buttons>
+<button type=button class="navbar-toggle btn-template-main" data-toggle=collapse data-target=#navigation>
 <span class=sr-only>Toggle Navigation</span>
-<i class="fas fa-align-justify"></i></button></div></div><div class="navbar-collapse collapse" id=navigation><ul class="nav navbar-nav navbar-right"><li class=dropdown><a href=/>Home</a></li><li class="dropdown active"><a href=/blog/>Blog</a></li><li class=dropdown><a href=/contact/>Contact</a></li></ul></div><div class="collapse clearfix" id=search><form class=navbar-form role=search><div class=input-group><input type=text class=form-control placeholder=Search>
-<span class=input-group-btn><button type=submit class="btn btn-template-main"><i class="fas fa-search"></i></button></span></div></form></div></div></div></header><style>.bar.background-image-fixed-banner{background:url(/images/openshift-openstack-install-network-00.png)50% 0 no-repeat;background-attachment:fixed;background-size:cover;padding:100px 5%;text-shadow:2px 3px 4px var(--primary-accent),0 0 1em var(--navbar-border-top)}</style><div><div class=container><div class=row><div class=col-md-12><section class="bar background-image-fixed-banner heading h2 color-white text-center"><h1>OpenShift 4 on OpenStack Networking and Installation</h1></section></div></div></div></div><div id=content><div class=container><div class=row><div class=col-md-9 id=blog-post><p class="text-muted text-uppercase mb-small text-right">February 15, 2020</p><div id=post-content><p>OpenShift Containter Platform 4 is much more like Tectonic than OpenShift 3. Particularly when it comes to <a href=https://docs.openshift.com/container-platform/4.3/architecture/architecture-installation.html>installation</a> and node management. Rather then building machines and running <a href=https://github.com/openshift/openshift-ansible/tree/release-3.11>an Ansible playbook</a> to configure them you now have the option of setting a fewer paramters in an install config running an installer to build and configure the cluster from scratch.</p><p>I would like to illustrate how the basics of the networking might look when <a href=https://docs.openshift.com/container-platform/4.3/installing/installing_openstack/installing-openstack-installer-custom.html>installing OpenShift on OpenStack</a>. I also wanted an excuse to try out a new iPad sketch app. These notes are based on recent 4.4 nightly builds on OSP 13 Queens.</p><h1 id=openstack>OpenStack</h1><h2 id=cloud-config>Cloud Config</h2><p>Modify your openstack client config to <a href=https://github.com/openshift/installer/tree/master/docs/user/openstack#self-signed-openstack-ca-certificates>define a <code>cacert</code></a>.</p><p>This step is vital for the bootstrap process to sucessfully download its ignition bundle (fancy new cloud-init thingy) used to configure the machines.</p><p>Maybe your OpenStack client config looks like this. In that case ensure that <code>ca.crt.pem</code> is placed in the current working directory when you run the openshift-install command.</p><ul><li><code>~/.config/openstack/clouds-public.yaml</code></li></ul><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#f92672>public-clouds</span>:
+<i class="fas fa-align-justify"></i>
+</button>
+</div>
+</div>
+<div class="navbar-collapse collapse" id=navigation>
+<ul class="nav navbar-nav navbar-right">
+<li class=dropdown>
+<a href=/>Home</a>
+</li>
+<li class="dropdown active">
+<a href=/blog/>Blog</a>
+</li>
+<li class=dropdown>
+<a href=/contact/>Contact</a>
+</li>
+</ul>
+</div>
+<div class="collapse clearfix" id=search>
+<form class=navbar-form role=search>
+<div class=input-group>
+<input type=text class=form-control placeholder=Search>
+<span class=input-group-btn>
+<button type=submit class="btn btn-template-main"><i class="fas fa-search"></i></button>
+</span>
+</div>
+</form>
+</div>
+</div>
+</div>
+</header>
+<style>.bar.background-image-fixed-banner{background:url(/images/openshift-openstack-install-network-00.png)50% 0 no-repeat;background-attachment:fixed;background-size:cover;padding:100px 5%;text-shadow:2px 3px 4px var(--primary-accent),0 0 1em var(--navbar-border-top)}</style>
+<div>
+<div class=container>
+<div class=row>
+<div class=col-md-12>
+<section class="bar background-image-fixed-banner heading h2 color-white text-center">
+<h1>OpenShift 4 on OpenStack Networking and Installation</h1>
+</section>
+</div>
+</div>
+</div>
+</div>
+<div id=content>
+<div class=container>
+<div class=row>
+<div class=col-md-9 id=blog-post>
+<p class="text-muted text-uppercase mb-small text-right">
+February 15, 2020
+</p>
+<div id=post-content>
+<p>OpenShift Containter Platform 4 is much more like Tectonic than OpenShift 3. Particularly when it comes to <a href=https://docs.openshift.com/container-platform/4.3/architecture/architecture-installation.html>installation</a> and node management. Rather then building machines and running <a href=https://github.com/openshift/openshift-ansible/tree/release-3.11>an Ansible playbook</a> to configure them you now have the option of setting a fewer paramters in an install config running an installer to build and configure the cluster from scratch.</p>
+<p>I would like to illustrate how the basics of the networking might look when <a href=https://docs.openshift.com/container-platform/4.3/installing/installing_openstack/installing-openstack-installer-custom.html>installing OpenShift on OpenStack</a>. I also wanted an excuse to try out a new iPad sketch app. These notes are based on recent 4.4 nightly builds on OSP 13 Queens.</p>
+<h1 id=openstack>OpenStack</h1>
+<h2 id=cloud-config>Cloud Config</h2>
+<p>Modify your openstack client config to <a href=https://github.com/openshift/installer/tree/master/docs/user/openstack#self-signed-openstack-ca-certificates>define a <code>cacert</code></a>.</p>
+<p>This step is vital for the bootstrap process to sucessfully download its ignition bundle (fancy new cloud-init thingy) used to configure the machines.</p>
+<p>Maybe your OpenStack client config looks like this. In that case ensure that <code>ca.crt.pem</code> is placed in the current working directory when you run the openshift-install command.</p>
+<ul>
+<li><code>~/.config/openstack/clouds-public.yaml</code></li>
+</ul>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#f92672>public-clouds</span>:
   <span style=color:#f92672>overcloud</span>:
     <span style=color:#f92672>cacert</span>: <span style=color:#e6db74>&#39;ca.crt.pem&#39;</span> <span style=color:#75715e># file path readable by installer</span>
     <span style=color:#f92672>auth_type</span>: <span style=color:#ae81ff>password</span>
@@ -11,7 +127,10 @@
     <span style=color:#f92672>auth</span>:
       <span style=color:#f92672>auth_url</span>: <span style=color:#e6db74>&#39;https://openstack.example.com:13000/v3&#39;</span>
     <span style=color:#f92672>interface</span>: <span style=color:#ae81ff>public</span>
-</code></pre></div><ul><li><code>~/.config/openstack/clouds.yaml</code></li></ul><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#f92672>clouds</span>:
+</code></pre></div><ul>
+<li><code>~/.config/openstack/clouds.yaml</code></li>
+</ul>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#f92672>clouds</span>:
   <span style=color:#f92672>shiftstack</span>:
     <span style=color:#f92672>profile</span>: <span style=color:#ae81ff>overcloud</span>
     <span style=color:#f92672>auth</span>:
@@ -24,7 +143,10 @@
       <span style=color:#f92672>project_name</span>: <span style=color:#ae81ff>admin</span>
       <span style=color:#f92672>user_domain_name</span>: <span style=color:#ae81ff>Default</span>
       <span style=color:#f92672>project_domain_name</span>: <span style=color:#ae81ff>Default</span>
-</code></pre></div><ul><li><code>~/.config/openstack/secure.yaml</code></li></ul><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#f92672>clouds</span>:
+</code></pre></div><ul>
+<li><code>~/.config/openstack/secure.yaml</code></li>
+</ul>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#f92672>clouds</span>:
   <span style=color:#f92672>shiftstack</span>:
     <span style=color:#f92672>auth</span>:
       <span style=color:#f92672>username</span>: <span style=color:#e6db74>&#39;shiftstack&#39;</span>
@@ -33,7 +155,17 @@
     <span style=color:#f92672>auth</span>:
       <span style=color:#f92672>username</span>: <span style=color:#e6db74>&#39;admin&#39;</span>
       <span style=color:#f92672>password</span>: <span style=color:#e6db74>&#39;password&#39;</span>
-</code></pre></div><h2 id=project-creation>Project Creation</h2><p>First create an OpenStack project and user. I use some Ansible for this that I have not posted yet.</p><ul><li><p>Create project <em>shiftstack</em> and adjust quota as needed.</p></li><li><p>Create user <em>shiftstack</em> with role <em>swiftoperator</em> and <a href=https://docs.ceph.com/docs/master/radosgw/swift/tempurl/>temp URL</a> ability</p></li></ul><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ openstack --os-cloud<span style=color:#f92672>=</span>admin project create --description OpenShift --enable shiftstack
+</code></pre></div><h2 id=project-creation>Project Creation</h2>
+<p>First create an OpenStack project and user. I use some Ansible for this that I have not posted yet.</p>
+<ul>
+<li>
+<p>Create project <em>shiftstack</em> and adjust quota as needed.</p>
+</li>
+<li>
+<p>Create user <em>shiftstack</em> with role <em>swiftoperator</em> and <a href=https://docs.ceph.com/docs/master/radosgw/swift/tempurl/>temp URL</a> ability</p>
+</li>
+</ul>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ openstack --os-cloud<span style=color:#f92672>=</span>admin project create --description OpenShift --enable shiftstack
 $ openstack --os-cloud<span style=color:#f92672>=</span>admin user create --project shiftstack --enable --password password shiftstack
 $ openstack --os-cloud<span style=color:#f92672>=</span>admin role add --user shiftstack --project shiftstack swiftoperator
 $ openstack --os-cloud<span style=color:#f92672>=</span>shiftstack object store account set --property Temp-URL-Key<span style=color:#f92672>=</span>superkey
@@ -46,22 +178,72 @@ $ openstack --os-cloud<span style=color:#f92672>=</span>admin role assignment li
 | _member_      | shiftstack@Default |             | shiftstack@Default |        | False     |
 | _member_      | admin@Default      |             | shiftstack@Default |        | False     |
 +---------------+--------------------+-------------+--------------------+--------+-----------+
-</code></pre></div><ul><li>Create a flavor meeting the requirements</li></ul><h2 id=networking>Networking</h2><p>The OpenShift installer takes advantage of OpenStack <a href=https://docs.openstack.org/api-ref/network/v2/>Neutron</a> featues including</p><p><em>ports</em>
-<img src=/images/openshift-openstack-install-network-port.png alt="Neutron Port"> and <em>floating IPs</em>. <img src=/images/openshift-openstack-install-network-floating.png alt="Neutron Floating IP"></p><h2 id=floating-ips>Floating IPs</h2><p>Before starting the installation process we must establish 2 IP addresses which will be used to access the OpenShift cluster externally. These will <a href=https://github.com/openshift/installer/issues/2670>necessarily be</a> Neutron floating IPs.</p><p>You might typically think of floating IPs as being assigned to a virtual machine instance, but these will be assigned to Neutron ports that exist even if there are no machines.</p><p>Create 2 floating IPs and make note of them.</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ openstack floating ip create --description <span style=color:#e6db74>&#34;API osp-nightly.os.example.com&#34;</span> floating 
+</code></pre></div><ul>
+<li>Create a flavor meeting the requirements</li>
+</ul>
+<h2 id=networking>Networking</h2>
+<p>The OpenShift installer takes advantage of OpenStack <a href=https://docs.openstack.org/api-ref/network/v2/>Neutron</a> featues including</p>
+<p><em>ports</em>
+<img src=/images/openshift-openstack-install-network-port.png alt="Neutron Port"> and <em>floating IPs</em>. <img src=/images/openshift-openstack-install-network-floating.png alt="Neutron Floating IP"></p>
+<h2 id=floating-ips>Floating IPs</h2>
+<p>Before starting the installation process we must establish 2 IP addresses which will be used to access the OpenShift cluster externally. These will <a href=https://github.com/openshift/installer/issues/2670>necessarily be</a> Neutron floating IPs.</p>
+<p>You might typically think of floating IPs as being assigned to a virtual machine instance, but these will be assigned to Neutron ports that exist even if there are no machines.</p>
+<p>Create 2 floating IPs and make note of them.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ openstack floating ip create --description <span style=color:#e6db74>&#34;API osp-nightly.os.example.com&#34;</span> floating 
 $ openstack floating ip create --description <span style=color:#e6db74>&#34;Ingress osp-nightly.os.example.com&#34;</span> floating 
 <span style=color:#75715e># here is what we got</span>
 $ export API_FIP<span style=color:#f92672>=</span>192.0.2.61
 $ export INGRESS_FIP<span style=color:#f92672>=</span>192.0.2.52
-</code></pre></div><p>You could use your local <code>/etc/hosts</code> file for testing, but otherwise you will need to create some DNS records. I have already created a dynamic DNS zone called <code>os.example.com</code> and defined a key that nsupdate can use to inject the required A records.</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ export CLUSTER_NAME<span style=color:#f92672>=</span>osp-nightly
+</code></pre></div><p>You could use your local <code>/etc/hosts</code> file for testing, but otherwise you will need to create some DNS records. I have already created a dynamic DNS zone called <code>os.example.com</code> and defined a key that nsupdate can use to inject the required A records.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ export CLUSTER_NAME<span style=color:#f92672>=</span>osp-nightly
 $ cat <span style=color:#e6db74>&lt;&lt;EOF | nsupdate -v -k Kos.example.com.key
 </span><span style=color:#e6db74>update add api.${CLUSTER_NAME}.os.example.com 300 A $API_FIP
 </span><span style=color:#e6db74>update add *.apps.${CLUSTER_NAME}.os.example.com 300 A $INGRESS_FIP
 </span><span style=color:#e6db74>send
 </span><span style=color:#e6db74>EOF</span>
-</code></pre></div><p>The API load balancer floating IP should also go into the install-config.yaml at <code>/openstack/lbFloatingIP</code>. There is more to be said on the <a href=#install-config>install config</a> later.</p><p>The installer will create a private node network <em>10.0.0.0/24</em> and a router joining this network to the external network you identify as holding your floating IPs.</p><h2 id=ports>Ports</h2><p>In addition to the 2 floating IPs we created, the installer creates 3 Neutron ports to serve as holders of the highly available cluster virtual IPs which provide three functions. These will be on the created private network and have the following well defined IPs by default.</p><ul><li><strong>API</strong> 10.0.0.5</li><li><strong>DNS</strong> 10.0.0.6</li><li><strong>Ingress</strong> 10.0.0.7</li></ul><p>This is all well explained in the <a href=https://github.com/openshift/installer/blob/master/docs/design/openstack/networking-infrastructure.md>OpenStack IPI Networking Infrastructure</a> doc. The <a href=https://github.com/openshift/installer/blob/master/docs/design/baremetal/networking-infrastructure.md>Bare Metal IPI Networking Infrastructure</a> doc is also highly relevant.</p><p>These neutron ports own the private VIP addresses that are keepalived managed even while the machines participating in VRRP change their priorities or come and go.</p><h1 id=install-config>Install Config</h1><p>Now we have to gather all the configuration details necessary for the installation.</p><p>First create an <code>install-config.yaml</code>. This will run you through an interactive dialog where you will pick your provider (openstack of course), your cloud or project, your ssh key, the external network that holds your floating IPs, and your flavor.</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ openshift-insall create install-config --log-level<span style=color:#f92672>=</span>debug --dir<span style=color:#f92672>=</span>osp-nightly
-</code></pre></div><p>Now you must modify the file just created at <code>osp-nightly/install-config.yaml</code>.</p><p>Even though OpenShift 4.3 was announced with OpenStack support, there have been a <a href="https://bugzilla.redhat.com/show_bug.cgi?id=1796822">lot of issues</a> that affect clouds using self-signed certificates for their OpenStack endpoint. It seems to me that would be the norm for an enterprise and therefore OpenStack was not fully supported. This is all good now, but must you make your CA cert available in two ways. One is within the install-config.</p><p>Edit <code>install-config.yaml</code> and:</p><ul><li>Add the <code>$API_FIP</code> at <code>/openstack/lbFloatingIP</code></li><li>Add your enterprise CA cert at <code>/additionalTrustBundle</code></li><li><a href=https://cloud.redhat.com/>Generate a pull secret</a> and add it at <code>/pullSecret</code></li><li>Add your ssh key at <code>/sshKey</code></li></ul><p><strong>Important!</strong> Back up your install-config.yaml now. The install process will delete your install-config.yaml! I do not know why that choice was made.</p><h1 id=installation>Installation</h1><h2 id=bootstrap>Bootstrap</h2><p>And finally, here is where I can show off my Apple Pencil lack of skills! And where we will run the installer.</p><p>Kick off the cluster installation:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>openshift-install create cluster --log-level<span style=color:#f92672>=</span>debug --dir<span style=color:#f92672>=</span>osp-nightly
-</code></pre></div><p>The <a href=https://github.com/openshift/installer>openshift-install tool</a> leverages <a href=https://www.terraform.io/>Terraform</a> to produce Installer Provisioned Infrastructure. It will create a bootstrap node first.</p><p><img src=/images/openshift-openstack-install-network-00.png alt="OpenShift OpenStack Networking"></p><p>This node will be configured to run a tiny 1 node OpenShift cluster, which only exists as a mechanism to serve out the configurations required by the actual cluster being built shortly after. This may remind you of the TripleO Undercloud / Overcloud model.</p><p>When the bootstrap node is first created, it is the only member of all three VRRP or keepalived instances. I try to indicate this by showing the network connection passing through all three blue keepalived &ldquo;domains&rdquo;.</p><p><img src=/images/openshift-openstack-install-network-01.png alt="OpenShift OpenStack Networking"></p><p>Once the bootstrap node is running a small cluster it will be reachable via the API port on <em>10.0.0.5</em> and the floating IP <em>192.0.2.61</em>. The installer (Terraform) will then connect again to OpenStack and build 3 master nodes.</p><p>The masters will obtain their configuration from the bootstrap node and execute the machine config operator which will connect to the OpenStack API to build worker nodes. This step would fail if your <code>cacert</code> is not obtained from your clouds.yaml.</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ openstack console log show --lines <span style=color:#ae81ff>10</span> &lt;boostrap node&gt; <span style=color:#75715e># see TLS errors</span>
-</code></pre></div><p><img src=/images/openshift-openstack-install-network-02.png alt="OpenShift OpenStack Networking"></p><p>The bootstrap node will ultimatly be deleted once the actual cluster is up leaving behind only the masters and worker nodes to participate in VRRP and handle traffic for the VIPs. This is unlike TripleO wich leaves uses the director machine to manage the overcloud.</p><h1 id=ingress-floating-ip>Ingress Floating IP</h1><p>Finally while the association of the API floating IP to the API port is automatically handled by the installer process, the ingress floating IP must be assocated by hand.</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ export CLUSTER_ID<span style=color:#f92672>=</span><span style=color:#e6db74>`</span>jq -r .infraID osp-nightly/metadata.json<span style=color:#e6db74>`</span>
+</code></pre></div><p>The API load balancer floating IP should also go into the install-config.yaml at <code>/openstack/lbFloatingIP</code>. There is more to be said on the <a href=#install-config>install config</a> later.</p>
+<p>The installer will create a private node network <em>10.0.0.0/24</em> and a router joining this network to the external network you identify as holding your floating IPs.</p>
+<h2 id=ports>Ports</h2>
+<p>In addition to the 2 floating IPs we created, the installer creates 3 Neutron ports to serve as holders of the highly available cluster virtual IPs which provide three functions. These will be on the created private network and have the following well defined IPs by default.</p>
+<ul>
+<li><strong>API</strong> 10.0.0.5</li>
+<li><strong>DNS</strong> 10.0.0.6</li>
+<li><strong>Ingress</strong> 10.0.0.7</li>
+</ul>
+<p>This is all well explained in the <a href=https://github.com/openshift/installer/blob/master/docs/design/openstack/networking-infrastructure.md>OpenStack IPI Networking Infrastructure</a> doc. The <a href=https://github.com/openshift/installer/blob/master/docs/design/baremetal/networking-infrastructure.md>Bare Metal IPI Networking Infrastructure</a> doc is also highly relevant.</p>
+<p>These neutron ports own the private VIP addresses that are keepalived managed even while the machines participating in VRRP change their priorities or come and go.</p>
+<h1 id=install-config>Install Config</h1>
+<p>Now we have to gather all the configuration details necessary for the installation.</p>
+<p>First create an <code>install-config.yaml</code>. This will run you through an interactive dialog where you will pick your provider (openstack of course), your cloud or project, your ssh key, the external network that holds your floating IPs, and your flavor.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ openshift-insall create install-config --log-level<span style=color:#f92672>=</span>debug --dir<span style=color:#f92672>=</span>osp-nightly
+</code></pre></div><p>Now you must modify the file just created at <code>osp-nightly/install-config.yaml</code>.</p>
+<p>Even though OpenShift 4.3 was announced with OpenStack support, there have been a <a href="https://bugzilla.redhat.com/show_bug.cgi?id=1796822">lot of issues</a> that affect clouds using self-signed certificates for their OpenStack endpoint. It seems to me that would be the norm for an enterprise and therefore OpenStack was not fully supported. This is all good now, but must you make your CA cert available in two ways. One is within the install-config.</p>
+<p>Edit <code>install-config.yaml</code> and:</p>
+<ul>
+<li>Add the <code>$API_FIP</code> at <code>/openstack/lbFloatingIP</code></li>
+<li>Add your enterprise CA cert at <code>/additionalTrustBundle</code></li>
+<li><a href=https://cloud.redhat.com/>Generate a pull secret</a> and add it at <code>/pullSecret</code></li>
+<li>Add your ssh key at <code>/sshKey</code></li>
+</ul>
+<p><strong>Important!</strong> Back up your install-config.yaml now. The install process will delete your install-config.yaml! I do not know why that choice was made.</p>
+<h1 id=installation>Installation</h1>
+<h2 id=bootstrap>Bootstrap</h2>
+<p>And finally, here is where I can show off my Apple Pencil lack of skills! And where we will run the installer.</p>
+<p>Kick off the cluster installation:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>openshift-install create cluster --log-level<span style=color:#f92672>=</span>debug --dir<span style=color:#f92672>=</span>osp-nightly
+</code></pre></div><p>The <a href=https://github.com/openshift/installer>openshift-install tool</a> leverages <a href=https://www.terraform.io/>Terraform</a> to produce Installer Provisioned Infrastructure. It will create a bootstrap node first.</p>
+<p><img src=/images/openshift-openstack-install-network-00.png alt="OpenShift OpenStack Networking"></p>
+<p>This node will be configured to run a tiny 1 node OpenShift cluster, which only exists as a mechanism to serve out the configurations required by the actual cluster being built shortly after. This may remind you of the TripleO Undercloud / Overcloud model.</p>
+<p>When the bootstrap node is first created, it is the only member of all three VRRP or keepalived instances. I try to indicate this by showing the network connection passing through all three blue keepalived &ldquo;domains&rdquo;.</p>
+<p><img src=/images/openshift-openstack-install-network-01.png alt="OpenShift OpenStack Networking"></p>
+<p>Once the bootstrap node is running a small cluster it will be reachable via the API port on <em>10.0.0.5</em> and the floating IP <em>192.0.2.61</em>. The installer (Terraform) will then connect again to OpenStack and build 3 master nodes.</p>
+<p>The masters will obtain their configuration from the bootstrap node and execute the machine config operator which will connect to the OpenStack API to build worker nodes. This step would fail if your <code>cacert</code> is not obtained from your clouds.yaml.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ openstack console log show --lines <span style=color:#ae81ff>10</span> &lt;boostrap node&gt; <span style=color:#75715e># see TLS errors</span>
+</code></pre></div><p><img src=/images/openshift-openstack-install-network-02.png alt="OpenShift OpenStack Networking"></p>
+<p>The bootstrap node will ultimatly be deleted once the actual cluster is up leaving behind only the masters and worker nodes to participate in VRRP and handle traffic for the VIPs. This is unlike TripleO wich leaves uses the director machine to manage the overcloud.</p>
+<h1 id=ingress-floating-ip>Ingress Floating IP</h1>
+<p>Finally while the association of the API floating IP to the API port is automatically handled by the installer process, the ingress floating IP must be assocated by hand.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ export CLUSTER_ID<span style=color:#f92672>=</span><span style=color:#e6db74>`</span>jq -r .infraID osp-nightly/metadata.json<span style=color:#e6db74>`</span>
 
 $ export API_FIP<span style=color:#f92672>=</span>192.0.2.61
 $ export API_PORT<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;</span><span style=color:#e6db74>${</span>CLUSTER_ID<span style=color:#e6db74>}</span><span style=color:#e6db74>-api-port&#34;</span>
@@ -70,7 +252,8 @@ $ export INGRESS_FIP<span style=color:#f92672>=</span>192.0.2.52
 $ export INGRESS_PORT<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;</span><span style=color:#e6db74>${</span>CLUSTER_ID<span style=color:#e6db74>}</span><span style=color:#e6db74>-ingress-port&#34;</span>
 
 $ openstack --os-cloud<span style=color:#f92672>=</span>shiftstack floating ip set --port $INGRESS_PORT $INGRESS_FIP
-</code></pre></div><p>And here is a look at the final port and FIP assignments</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ openstack --os-cloud<span style=color:#f92672>=</span>shiftstack floating ip list <span style=color:#ae81ff>\
+</code></pre></div><p>And here is a look at the final port and FIP assignments</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ openstack --os-cloud<span style=color:#f92672>=</span>shiftstack floating ip list <span style=color:#ae81ff>\
 </span><span style=color:#ae81ff></span>    -c <span style=color:#e6db74>&#39;Floating IP Address&#39;</span> -c <span style=color:#e6db74>&#39;Fixed IP Address&#39;</span> -c <span style=color:#e6db74>&#39;Port&#39;</span> -c <span style=color:#e6db74>&#39;Floating Network&#39;</span>
 +---------------------+------------------+-----------+--------------------------------------+
 | Floating IP Address | Fixed IP Address | Port      | Floating Network                     |
@@ -97,7 +280,290 @@ $ openstack --os-cloud<span style=color:#f92672>=</span>shiftstack port list <sp
 | d0b6eb02- | osp-nightly-bwgwq-master-port-1 | ACTIVE | ip_address<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;10.0.0.15&#39;</span>, subnet_id<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;815d5df0-&#39;</span> |
 | febae668- |                                 | ACTIVE | ip_address<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;10.0.0.1&#39;</span>, subnet_id<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;815d5df0-&#39;</span>  |
 +-----------+---------------------------------+--------+-----------------------------------------------+
-</code></pre></div></div><div id=comments><div id=disqus_thread></div><script type=application/javascript>var disqus_config=function(){};(function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById('disqus_thread').innerHTML='Disqus comments not available by default when the website is previewed locally.';return}var b=document,a=b.createElement('script');a.async=!0,a.src='//dlbewleygithubio.disqus.com/embed.js',a.setAttribute('data-timestamp',+new Date),(b.head||b.body).appendChild(a)})()</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript><a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a></div></div><div class=col-md-3><div class="panel panel-default sidebar-menu"><div class=panel-heading><h3 class=panel-title>Search</h3></div><div class=panel-body><form action=//google.com/search method=get accept-charset=utf-8 role=search><div class=input-group><input type=search name=q class=form-control placeholder=Search>
+</code></pre></div>
+</div>
+<div id=comments>
+<div id=disqus_thread></div>
+<script type=application/javascript>var disqus_config=function(){};(function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById('disqus_thread').innerHTML='Disqus comments not available by default when the website is previewed locally.';return}var b=document,a=b.createElement('script');a.async=!0,a.src='//dlbewleygithubio.disqus.com/embed.js',a.setAttribute('data-timestamp',+new Date),(b.head||b.body).appendChild(a)})()</script>
+<noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript>
+<a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a>
+</div>
+</div>
+<div class=col-md-3>
+<div class="panel panel-default sidebar-menu">
+<div class=panel-heading>
+<h3 class=panel-title>Search</h3>
+</div>
+<div class=panel-body>
+<form action=//google.com/search method=get accept-charset=utf-8 role=search>
+<div class=input-group>
+<input type=search name=q class=form-control placeholder=Search>
 <input type=hidden name=sitesearch value=http://guifreelife.com/>
-<span class=input-group-btn><button type=submit class="btn btn-template-main"><i class="fas fa-search"></i></button></span></div></form></div></div><div class="panel sidebar-menu"><div class=panel-heading><h3 class=panel-title>Tagged</h3></div><div class=panel-body><ul class=tag-cloud><li class=active><a href=/tags/install><i class="fas fa-tags"></i>install</a></li><li class=active><a href=/tags/openshift><i class="fas fa-tags"></i>openshift</a></li><li class=active><a href=/tags/networking><i class="fas fa-tags"></i>networking</a></li><li class=active><a href=/tags/openstack><i class="fas fa-tags"></i>openstack</a></li><li class=active><a href=/tags/OCP4><i class="fas fa-tags"></i>OCP4</a></li></ul></div></div><div class="panel sidebar-menu"><div class=panel-heading><h3 class=panel-title>TOC</h3></div><div class=panel-body><nav id=TableOfContents><ul><li><a href=#openstack>OpenStack</a><ul><li><a href=#cloud-config>Cloud Config</a></li><li><a href=#project-creation>Project Creation</a></li><li><a href=#networking>Networking</a></li><li><a href=#floating-ips>Floating IPs</a></li><li><a href=#ports>Ports</a></li></ul></li><li><a href=#install-config>Install Config</a></li><li><a href=#installation>Installation</a><ul><li><a href=#bootstrap>Bootstrap</a></li></ul></li><li><a href=#ingress-floating-ip>Ingress Floating IP</a></li></ul></nav></div></div><div class="panel sidebar-menu"><div class=panel-heading><h3 class=panel-title>Tags</h3></div><div class=panel-body><ul class=tag-cloud><li><a href=/tags/aws><i class="fas fa-tags"></i>AWS</a></li><li><a href=/tags/cdk><i class="fas fa-tags"></i>CDK</a></li><li><a href=/tags/ocp3><i class="fas fa-tags"></i>OCP3</a></li><li><a href=/tags/ocp4><i class="fas fa-tags"></i>OCP4</a></li><li><a href=/tags/rhacm><i class="fas fa-tags"></i>RHACM</a></li><li><a href=/tags/rhel><i class="fas fa-tags"></i>RHEL</a></li><li><a href=/tags/ansible><i class="fas fa-tags"></i>ansible</a></li><li><a href=/tags/automation><i class="fas fa-tags"></i>automation</a></li><li><a href=/tags/azure><i class="fas fa-tags"></i>azure</a></li><li><a href=/tags/debugging><i class="fas fa-tags"></i>debugging</a></li><li><a href=/tags/docker><i class="fas fa-tags"></i>docker</a></li><li><a href=/tags/draft><i class="fas fa-tags"></i>draft</a></li><li><a href=/tags/etcd><i class="fas fa-tags"></i>etcd</a></li><li><a href=/tags/git><i class="fas fa-tags"></i>git</a></li><li><a href=/tags/haproxy><i class="fas fa-tags"></i>haproxy</a></li><li><a href=/tags/heat><i class="fas fa-tags"></i>heat</a></li><li><a href=/tags/hybrid-cloud><i class="fas fa-tags"></i>hybrid-cloud</a></li><li><a href=/tags/install><i class="fas fa-tags"></i>install</a></li><li><a href=/tags/kubernetes><i class="fas fa-tags"></i>kubernetes</a></li><li><a href=/tags/mac><i class="fas fa-tags"></i>mac</a></li><li><a href=/tags/metrics><i class="fas fa-tags"></i>metrics</a></li><li><a href=/tags/migration><i class="fas fa-tags"></i>migration</a></li><li><a href=/tags/monitoring><i class="fas fa-tags"></i>monitoring</a></li><li><a href=/tags/networking><i class="fas fa-tags"></i>networking</a></li><li><a href=/tags/openshift><i class="fas fa-tags"></i>openshift</a></li><li><a href=/tags/openstack><i class="fas fa-tags"></i>openstack</a></li><li><a href=/tags/operators><i class="fas fa-tags"></i>operators</a></li><li><a href=/tags/python><i class="fas fa-tags"></i>python</a></li><li><a href=/tags/router><i class="fas fa-tags"></i>router</a></li><li><a href=/tags/ssl><i class="fas fa-tags"></i>ssl</a></li><li><a href=/tags/troubleshooting><i class="fas fa-tags"></i>troubleshooting</a></li><li><a href=/tags/upgrade><i class="fas fa-tags"></i>upgrade</a></li><li><a href=/tags/vagrant><i class="fas fa-tags"></i>vagrant</a></li><li><a href=/tags/windows><i class="fas fa-tags"></i>windows</a></li><li><a href=/tags/zabbix><i class="fas fa-tags"></i>zabbix</a></li><li><a href=/tags/zimbra><i class="fas fa-tags"></i>zimbra</a></li></ul></div></div></div></div></div></div><footer id=footer><div class=container><div class="col-md-4 col-sm-6"><h4>Share</h4><i class="fab fa-2x fa-twitter" title="Share this on Twitter" onclick="window.open('http://twitter.com/home?status=http://guifreelife.com/blog/2020/02/15/OpenShift-4-on-OpenStack-Networking-and-Installation/')"></i><i class="fab fa-2x fa-facebook" title="Share this on Facebook" onclick="window.open('http://www.facebook.com/share.php?u=http://guifreelife.com/blog/2020/02/15/OpenShift-4-on-OpenStack-Networking-and-Installation/')"></i><i class="fab fa-2x fa-linkedin" title="Share this on Linkedin" onclick="window.open('https://www.linkedin.com/shareArticle?mini=true&url=http://guifreelife.com/blog/2020/02/15/OpenShift-4-on-OpenStack-Networking-and-Installation/&title=&summary=&source=')"></i><i class="fab fa-2x fa-google-plus" title="Share this on Google Currents" onclick="window.open('https://plus.google.com/share?url=http://guifreelife.com/blog/2020/02/15/OpenShift-4-on-OpenStack-Networking-and-Installation/')"></i><i class="fa fa-2x fa-envelope" title="Share this through Email" onclick="window.open('mailto:?&body=http://guifreelife.com/blog/2020/02/15/OpenShift-4-on-OpenStack-Networking-and-Installation/')"></i><h4>About us</h4><p>GUI Free Life is the personal, technical blog of Dale Bewley. Comments and opinions are my own and not that of my employers.</p><hr class="hidden-md hidden-lg hidden-sm"></div><div class="col-md-4 col-sm-6"><h4>Recent posts</h4><div class=blog-entries><div class="item same-height-row clearfix"><div class="image same-height-always"><a href=http://guifreelife.com/blog/2022/03/10/Debugging-AWS-STS-Authentication-for-OpenShift-Operators/><img src=/images/debug-sts-banner.jpg class=img-responsive alt="Debugging AWS STS Authentication for OpenShift Operators"></a></div><div class="name same-height-always"><h5><a href=http://guifreelife.com/blog/2022/03/10/Debugging-AWS-STS-Authentication-for-OpenShift-Operators/>Debugging AWS STS Authentication for OpenShift Operators</a></h5></div></div><div class="item same-height-row clearfix"><div class="image same-height-always"><a href=http://guifreelife.com/blog/2021/12/21/Red-Hat-Advanced-Cluster-Management-Walkthrough/><img src=/images/port-of-oakland.png class=img-responsive alt="Red Hat Advanced Cluster Management Walkthrough"></a></div><div class="name same-height-always"><h5><a href=http://guifreelife.com/blog/2021/12/21/Red-Hat-Advanced-Cluster-Management-Walkthrough/>Red Hat Advanced Cluster Management Walkthrough</a></h5></div></div><div class="item same-height-row clearfix"><div class="image same-height-always"><a href=http://guifreelife.com/blog/2021/08/18/Protect-Gitignored-but-Tracked-Files/><img src=/img/banners/banner-32.jpg class=img-responsive alt="Protect Gitignored but Tracked Files"></a></div><div class="name same-height-always"><h5><a href=http://guifreelife.com/blog/2021/08/18/Protect-Gitignored-but-Tracked-Files/>Protect Gitignored but Tracked Files</a></h5></div></div></div><hr class="hidden-md hidden-lg"></div><div class="col-md-4 col-sm-6"><h4>Contact</h4><p class=text-uppercase><strong>Dale Bewley</strong><br>Oakland<br>California<br><strong>USA</strong></p><a href=/contact class="btn btn-small btn-template-main">Go to contact page</a><hr class="hidden-md hidden-lg hidden-sm"></div></div></footer><div id=copyright><div class=container><div class=col-md-12><p class=pull-left>Copyright (c) 2021, Dale Bewley; all rights reserved.</p><p class=pull-right>Template by <a href=https://bootstrapious.com/p/universal-business-e-commerce-template>Bootstrapious</a>.
-Ported to Hugo by <a href=https://github.com/devcows/hugo-universal-theme>DevCows</a>.</p></div></div></div></div><script type=application/javascript>var doNotTrack=!1;doNotTrack||(function(a,e,f,g,b,c,d){a.GoogleAnalyticsObject=b,a[b]=a[b]||function(){(a[b].q=a[b].q||[]).push(arguments)},a[b].l=1*new Date,c=e.createElement(f),d=e.getElementsByTagName(f)[0],c.async=1,c.src=g,d.parentNode.insertBefore(c,d)}(window,document,'script','https://www.google-analytics.com/analytics.js','ga'),ga('create','G-39TSW9349X','auto'),ga('send','pageview'))</script><script src=//code.jquery.com/jquery-3.1.1.min.js integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin=anonymous></script><script src=//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js integrity=sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa crossorigin=anonymous></script><script src=//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js></script><script src=//cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/jquery.waypoints.min.js></script><script src=//cdnjs.cloudflare.com/ajax/libs/Counter-Up/1.0/jquery.counterup.min.js></script><script src=//cdnjs.cloudflare.com/ajax/libs/jquery-parallax/1.1.3/jquery-parallax.js></script><script src="//maps.googleapis.com/maps/api/js?key=AIzaSyDacpwSIXi6lk2fS2wzZOSoh7iHm_ZP3UE&v=3.exp"></script><script src=/js/hpneo.gmaps.js></script><script src=/js/gmaps.init.js></script><script src=/js/front.js></script><script src=/js/owl.carousel.min.js></script></body></html>
+<span class=input-group-btn>
+<button type=submit class="btn btn-template-main"><i class="fas fa-search"></i></button>
+</span>
+</div>
+</form>
+</div>
+</div>
+<div class="panel sidebar-menu">
+<div class=panel-heading>
+<h3 class=panel-title>Tagged</h3>
+</div>
+<div class=panel-body>
+<ul class=tag-cloud>
+<li class=active>
+<a href=/tags/install><i class="fas fa-tags"></i> install</a>
+</li>
+<li class=active>
+<a href=/tags/openshift><i class="fas fa-tags"></i> openshift</a>
+</li>
+<li class=active>
+<a href=/tags/networking><i class="fas fa-tags"></i> networking</a>
+</li>
+<li class=active>
+<a href=/tags/openstack><i class="fas fa-tags"></i> openstack</a>
+</li>
+<li class=active>
+<a href=/tags/OCP4><i class="fas fa-tags"></i> OCP4</a>
+</li>
+</ul>
+</div>
+</div>
+<div class="panel sidebar-menu">
+<div class=panel-heading>
+<h3 class=panel-title>TOC</h3>
+</div>
+<div class=panel-body>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#openstack>OpenStack</a>
+<ul>
+<li><a href=#cloud-config>Cloud Config</a></li>
+<li><a href=#project-creation>Project Creation</a></li>
+<li><a href=#networking>Networking</a></li>
+<li><a href=#floating-ips>Floating IPs</a></li>
+<li><a href=#ports>Ports</a></li>
+</ul>
+</li>
+<li><a href=#install-config>Install Config</a></li>
+<li><a href=#installation>Installation</a>
+<ul>
+<li><a href=#bootstrap>Bootstrap</a></li>
+</ul>
+</li>
+<li><a href=#ingress-floating-ip>Ingress Floating IP</a></li>
+</ul>
+</nav>
+</div>
+</div>
+<div class="panel sidebar-menu">
+<div class=panel-heading>
+<h3 class=panel-title>Tags</h3>
+</div>
+<div class=panel-body>
+<ul class=tag-cloud>
+<li>
+<a href=/tags/aws><i class="fas fa-tags"></i> AWS</a>
+</li>
+<li>
+<a href=/tags/cdk><i class="fas fa-tags"></i> CDK</a>
+</li>
+<li>
+<a href=/tags/ocp3><i class="fas fa-tags"></i> OCP3</a>
+</li>
+<li>
+<a href=/tags/ocp4><i class="fas fa-tags"></i> OCP4</a>
+</li>
+<li>
+<a href=/tags/rhacm><i class="fas fa-tags"></i> RHACM</a>
+</li>
+<li>
+<a href=/tags/rhel><i class="fas fa-tags"></i> RHEL</a>
+</li>
+<li>
+<a href=/tags/ansible><i class="fas fa-tags"></i> ansible</a>
+</li>
+<li>
+<a href=/tags/automation><i class="fas fa-tags"></i> automation</a>
+</li>
+<li>
+<a href=/tags/azure><i class="fas fa-tags"></i> azure</a>
+</li>
+<li>
+<a href=/tags/debugging><i class="fas fa-tags"></i> debugging</a>
+</li>
+<li>
+<a href=/tags/docker><i class="fas fa-tags"></i> docker</a>
+</li>
+<li>
+<a href=/tags/draft><i class="fas fa-tags"></i> draft</a>
+</li>
+<li>
+<a href=/tags/etcd><i class="fas fa-tags"></i> etcd</a>
+</li>
+<li>
+<a href=/tags/git><i class="fas fa-tags"></i> git</a>
+</li>
+<li>
+<a href=/tags/haproxy><i class="fas fa-tags"></i> haproxy</a>
+</li>
+<li>
+<a href=/tags/heat><i class="fas fa-tags"></i> heat</a>
+</li>
+<li>
+<a href=/tags/hybrid-cloud><i class="fas fa-tags"></i> hybrid-cloud</a>
+</li>
+<li>
+<a href=/tags/install><i class="fas fa-tags"></i> install</a>
+</li>
+<li>
+<a href=/tags/kubernetes><i class="fas fa-tags"></i> kubernetes</a>
+</li>
+<li>
+<a href=/tags/mac><i class="fas fa-tags"></i> mac</a>
+</li>
+<li>
+<a href=/tags/metrics><i class="fas fa-tags"></i> metrics</a>
+</li>
+<li>
+<a href=/tags/migration><i class="fas fa-tags"></i> migration</a>
+</li>
+<li>
+<a href=/tags/monitoring><i class="fas fa-tags"></i> monitoring</a>
+</li>
+<li>
+<a href=/tags/networking><i class="fas fa-tags"></i> networking</a>
+</li>
+<li>
+<a href=/tags/openshift><i class="fas fa-tags"></i> openshift</a>
+</li>
+<li>
+<a href=/tags/openstack><i class="fas fa-tags"></i> openstack</a>
+</li>
+<li>
+<a href=/tags/operators><i class="fas fa-tags"></i> operators</a>
+</li>
+<li>
+<a href=/tags/python><i class="fas fa-tags"></i> python</a>
+</li>
+<li>
+<a href=/tags/router><i class="fas fa-tags"></i> router</a>
+</li>
+<li>
+<a href=/tags/ssl><i class="fas fa-tags"></i> ssl</a>
+</li>
+<li>
+<a href=/tags/troubleshooting><i class="fas fa-tags"></i> troubleshooting</a>
+</li>
+<li>
+<a href=/tags/upgrade><i class="fas fa-tags"></i> upgrade</a>
+</li>
+<li>
+<a href=/tags/vagrant><i class="fas fa-tags"></i> vagrant</a>
+</li>
+<li>
+<a href=/tags/windows><i class="fas fa-tags"></i> windows</a>
+</li>
+<li>
+<a href=/tags/zabbix><i class="fas fa-tags"></i> zabbix</a>
+</li>
+<li>
+<a href=/tags/zimbra><i class="fas fa-tags"></i> zimbra</a>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<footer id=footer>
+<div class=container>
+<div class="col-md-4 col-sm-6">
+<h4>Share</h4>
+<i class="fab fa-2x fa-twitter" title="Share this on Twitter" onclick="window.open('http://twitter.com/home?status=http://guifreelife.com/blog/2020/02/15/OpenShift-4-on-OpenStack-Networking-and-Installation/')"></i>
+<i class="fab fa-2x fa-facebook" title="Share this on Facebook" onclick="window.open('http://www.facebook.com/share.php?u=http://guifreelife.com/blog/2020/02/15/OpenShift-4-on-OpenStack-Networking-and-Installation/')"></i>
+<i class="fab fa-2x fa-linkedin" title="Share this on Linkedin" onclick="window.open('https://www.linkedin.com/shareArticle?mini=true&url=http://guifreelife.com/blog/2020/02/15/OpenShift-4-on-OpenStack-Networking-and-Installation/&title=&summary=&source=')"></i>
+<i class="fab fa-2x fa-google-plus" title="Share this on Google Currents" onclick="window.open('https://plus.google.com/share?url=http://guifreelife.com/blog/2020/02/15/OpenShift-4-on-OpenStack-Networking-and-Installation/')"></i>
+<i class="fa fa-2x fa-envelope" title="Share this through Email" onclick="window.open('mailto:?&body=http://guifreelife.com/blog/2020/02/15/OpenShift-4-on-OpenStack-Networking-and-Installation/')"></i>
+<h4>About us</h4>
+<p>GUI Free Life is the personal, technical blog of Dale Bewley. Comments and opinions are my own and not that of my employers.</p>
+<hr class="hidden-md hidden-lg hidden-sm">
+</div>
+<div class="col-md-4 col-sm-6">
+<h4>Recent posts</h4>
+<div class=blog-entries>
+<div class="item same-height-row clearfix">
+<div class="image same-height-always">
+<a href=http://guifreelife.com/blog/2022/03/10/Debugging-AWS-STS-Authentication-for-OpenShift-Operators/>
+<img src=/images/debug-sts-banner.jpg class=img-responsive alt="Debugging AWS STS Authentication for OpenShift Operators">
+</a>
+</div>
+<div class="name same-height-always">
+<h5><a href=http://guifreelife.com/blog/2022/03/10/Debugging-AWS-STS-Authentication-for-OpenShift-Operators/>Debugging AWS STS Authentication for OpenShift Operators</a></h5>
+</div>
+</div>
+<div class="item same-height-row clearfix">
+<div class="image same-height-always">
+<a href=http://guifreelife.com/blog/2021/12/21/Red-Hat-Advanced-Cluster-Management-Walkthrough/>
+<img src=/images/port-of-oakland.png class=img-responsive alt="Red Hat Advanced Cluster Management Walkthrough">
+</a>
+</div>
+<div class="name same-height-always">
+<h5><a href=http://guifreelife.com/blog/2021/12/21/Red-Hat-Advanced-Cluster-Management-Walkthrough/>Red Hat Advanced Cluster Management Walkthrough</a></h5>
+</div>
+</div>
+<div class="item same-height-row clearfix">
+<div class="image same-height-always">
+<a href=http://guifreelife.com/blog/2021/08/18/Protect-Gitignored-but-Tracked-Files/>
+<img src=/img/banners/banner-32.jpg class=img-responsive alt="Protect Gitignored but Tracked Files">
+</a>
+</div>
+<div class="name same-height-always">
+<h5><a href=http://guifreelife.com/blog/2021/08/18/Protect-Gitignored-but-Tracked-Files/>Protect Gitignored but Tracked Files</a></h5>
+</div>
+</div>
+</div>
+<hr class="hidden-md hidden-lg">
+</div>
+<div class="col-md-4 col-sm-6">
+<h4>Contact</h4>
+<p class=text-uppercase><strong>Dale Bewley</strong>
+<br>Oakland
+<br>California
+<br>
+<strong>USA</strong>
+</p>
+<a href=/contact class="btn btn-small btn-template-main">Go to contact page</a>
+<hr class="hidden-md hidden-lg hidden-sm">
+</div>
+</div>
+</footer>
+<div id=copyright>
+<div class=container>
+<div class=col-md-12>
+<p class=pull-left>Copyright (c) 2021, Dale Bewley; all rights reserved.</p>
+<p class=pull-right>
+Template by <a href=https://bootstrapious.com/p/universal-business-e-commerce-template>Bootstrapious</a>.
+Ported to Hugo by <a href=https://github.com/devcows/hugo-universal-theme>DevCows</a>.
+</p>
+</div>
+</div>
+</div>
+</div>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-39TSW9349X"></script>
+<script>var doNotTrack=!1;if(!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date),gtag('config','G-39TSW9349X',{anonymize_ip:!1})}</script>
+<script src=//code.jquery.com/jquery-3.1.1.min.js integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin=anonymous></script>
+<script src=//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js integrity=sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa crossorigin=anonymous></script>
+<script src=//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js></script>
+<script src=//cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/jquery.waypoints.min.js></script>
+<script src=//cdnjs.cloudflare.com/ajax/libs/Counter-Up/1.0/jquery.counterup.min.js></script>
+<script src=//cdnjs.cloudflare.com/ajax/libs/jquery-parallax/1.1.3/jquery-parallax.js></script>
+<script src="//maps.googleapis.com/maps/api/js?key=AIzaSyDacpwSIXi6lk2fS2wzZOSoh7iHm_ZP3UE&v=3.exp"></script>
+<script src=/js/hpneo.gmaps.js></script>
+<script src=/js/gmaps.init.js></script>
+<script src=/js/front.js></script>
+<script src=/js/owl.carousel.min.js></script>
+</body>
+</html>

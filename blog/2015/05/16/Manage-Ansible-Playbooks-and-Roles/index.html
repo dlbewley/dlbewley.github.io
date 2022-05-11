@@ -1,9 +1,134 @@
-<!doctype html><html lang=en-us><head><meta charset=utf-8><meta name=robots content="all,follow"><meta name=googlebot content="index,follow,snippet,archive"><meta name=viewport content="width=device-width,initial-scale=1"><title>How To Scale Up Ansible Playbooks and Roles in a Managable Way</title><meta name=author content="Dale Bewley"><meta name=keywords content="bewley,guifreelife,ansible,automation"><meta name=description content="GUI Free Life"><meta name=generator content="Hugo 0.81.0"><link href="//fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,500,700,800" rel=stylesheet type=text/css><link rel=stylesheet href=//use.fontawesome.com/releases/v5.11.2/css/all.css><link rel=stylesheet href=//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css integrity=sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u crossorigin=anonymous><link href=/css/animate.css rel=stylesheet><link href=/css/style.turquoise.css rel=stylesheet id=theme-stylesheet><link href=/css/custom.css rel=stylesheet><!--[if lt IE 9]><script src=https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js></script><script src=https://oss.maxcdn.com/respond/1.4.2/respond.min.js></script><![endif]--><link rel="shortcut icon" href=/img/favicon.ico type=image/x-icon><link rel=apple-touch-icon href=/img/apple-touch-icon.png><link href=/css/owl.carousel.css rel=stylesheet><link href=/css/owl.theme.css rel=stylesheet><link rel=alternate href=http://guifreelife.com/index.xml type=application/rss+xml title="GUI Free Life"><meta property="og:locale" content="en_us"><meta property="og:site_name" content="GUI Free Life"><meta property="og:title" content="How To Scale Up Ansible Playbooks and Roles in a Managable Way"><meta property="og:type" content="article"><meta property="og:url" content="http://guifreelife.com/blog/2015/05/16/Manage-Ansible-Playbooks-and-Roles/"><meta property="og:description" content="GUI Free Life"><meta property="og:image" content="http://guifreelife.com/img/banners/banner-37.jpg"><meta property="og:image:type" content="image/jpg"><meta property="og:image:width" content="1000"><meta property="og:image:height" content="750"><meta property="og:updated_time" content="2015-05-16T00:00:00Z"><meta property="article:tag" content="ansible"><meta property="article:tag" content="automation"><meta property="article:published_time" content="2015-05-16T00:00:00Z"><meta property="article:modified_time" content="2015-05-16T00:00:00Z"><meta name=twitter:card content="summary_large_image"><meta name=twitter:site content="@dlbewley"><meta name=twitter:title content="How To Scale Up Ansible Playbooks and Roles in a Managable Way"><meta name=twitter:image content="http://guifreelife.com/img/banners/banner-37.jpg"><meta name=twitter:description content="GUI Free Life"></head><body><div id=all><header class=navbar-affixed-top data-spy=affix data-offset-top=62><div class="navbar navbar-default yamm" role=navigation id=navbar><div class=container><div class=navbar-header><a class="navbar-brand home" href=/><img src=/img/logo.png alt="How To Scale Up Ansible Playbooks and Roles in a Managable Way logo" class="hidden-xs hidden-sm">
+<!doctype html><html lang=en-us>
+<head>
+<meta charset=utf-8>
+<meta name=robots content="all,follow">
+<meta name=googlebot content="index,follow,snippet,archive">
+<meta name=viewport content="width=device-width,initial-scale=1">
+<title>How To Scale Up Ansible Playbooks and Roles in a Managable Way</title>
+<meta name=author content="Dale Bewley">
+<meta name=keywords content="bewley,guifreelife,ansible,automation">
+<meta name=description content="GUI Free Life">
+<meta name=generator content="Hugo 0.91.2">
+<link href="//fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,500,700,800" rel=stylesheet type=text/css>
+<link rel=stylesheet href=//use.fontawesome.com/releases/v5.11.2/css/all.css>
+<link rel=stylesheet href=//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css integrity=sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u crossorigin=anonymous>
+<link href=/css/animate.css rel=stylesheet>
+<link href=/css/style.turquoise.css rel=stylesheet id=theme-stylesheet>
+<link href=/css/custom.css rel=stylesheet><!--[if lt IE 9]><script src=https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js></script>
+<script src=https://oss.maxcdn.com/respond/1.4.2/respond.min.js></script><![endif]-->
+<link rel="shortcut icon" href=/img/favicon.ico type=image/x-icon>
+<link rel=apple-touch-icon href=/img/apple-touch-icon.png>
+<link href=/css/owl.carousel.css rel=stylesheet>
+<link href=/css/owl.theme.css rel=stylesheet>
+<link rel=alternate href=http://guifreelife.com/index.xml type=application/rss+xml title="GUI Free Life">
+<meta property="og:locale" content="en_us">
+<meta property="og:site_name" content="GUI Free Life">
+<meta property="og:title" content="How To Scale Up Ansible Playbooks and Roles in a Managable Way">
+<meta property="og:type" content="article">
+<meta property="og:url" content="http://guifreelife.com/blog/2015/05/16/Manage-Ansible-Playbooks-and-Roles/">
+<meta property="og:description" content="GUI Free Life">
+<meta property="og:image" content="http://guifreelife.com/img/banners/banner-37.jpg">
+<meta property="og:image:type" content="image/jpg">
+<meta property="og:image:width" content="1000">
+<meta property="og:image:height" content="750">
+<meta property="og:updated_time" content="2015-05-16T00:00:00Z">
+<meta property="article:tag" content="ansible">
+<meta property="article:tag" content="automation">
+<meta property="article:published_time" content="2015-05-16T00:00:00Z">
+<meta property="article:modified_time" content="2015-05-16T00:00:00Z">
+<meta name=twitter:card content="summary_large_image">
+<meta name=twitter:site content="@dlbewley">
+<meta name=twitter:title content="How To Scale Up Ansible Playbooks and Roles in a Managable Way">
+<meta name=twitter:image content="http://guifreelife.com/img/banners/banner-37.jpg">
+<meta name=twitter:description content="GUI Free Life">
+</head>
+<body>
+<div id=all>
+<header class=navbar-affixed-top data-spy=affix data-offset-top=62>
+<div class="navbar navbar-default yamm" role=navigation id=navbar>
+<div class=container>
+<div class=navbar-header>
+<a class="navbar-brand home" href=/>
+<img src=/img/logo.png alt="How To Scale Up Ansible Playbooks and Roles in a Managable Way logo" class="hidden-xs hidden-sm">
 <img src=/img/logo-small.png alt="How To Scale Up Ansible Playbooks and Roles in a Managable Way logo" class="visible-xs visible-sm">
-<span class=sr-only>How To Scale Up Ansible Playbooks and Roles in a Managable Way - go to homepage</span></a><div class=navbar-buttons><button type=button class="navbar-toggle btn-template-main" data-toggle=collapse data-target=#navigation>
+<span class=sr-only>How To Scale Up Ansible Playbooks and Roles in a Managable Way - go to homepage</span>
+</a>
+<div class=navbar-buttons>
+<button type=button class="navbar-toggle btn-template-main" data-toggle=collapse data-target=#navigation>
 <span class=sr-only>Toggle Navigation</span>
-<i class="fas fa-align-justify"></i></button></div></div><div class="navbar-collapse collapse" id=navigation><ul class="nav navbar-nav navbar-right"><li class=dropdown><a href=/>Home</a></li><li class="dropdown active"><a href=/blog/>Blog</a></li><li class=dropdown><a href=/contact/>Contact</a></li></ul></div><div class="collapse clearfix" id=search><form class=navbar-form role=search><div class=input-group><input type=text class=form-control placeholder=Search>
-<span class=input-group-btn><button type=submit class="btn btn-template-main"><i class="fas fa-search"></i></button></span></div></form></div></div></div></header><style>.bar.background-image-fixed-banner{background:url(/img/banners/banner-37.jpg)50% 0 no-repeat;background-attachment:fixed;background-size:cover;padding:100px 5%;text-shadow:2px 3px 4px var(--primary-accent),0 0 1em var(--navbar-border-top)}</style><div><div class=container><div class=row><div class=col-md-12><section class="bar background-image-fixed-banner heading h2 color-white text-center"><h1>How To Scale Up Ansible Playbooks and Roles in a Managable Way</h1></section></div></div></div></div><div id=content><div class=container><div class=row><div class=col-md-9 id=blog-post><p class="text-muted text-uppercase mb-small text-right">May 16, 2015</p><div id=post-content><h1 id=ansible-is-awesome-ansible-is-a-mess>Ansible is Awesome! Ansible is a Mess!</h1><p>So you found <a href=http://www.ansible.com>Ansible</a>, and you were all Woah! Ansible is awesome! Ansibilize all the things! Then you created a git repo and started hacking.</p><p>Playbooks look in the current directory to find roles, libraries, and inventories, so naturally you put everything in one big git repo, right?</p><p>You tried to follow the <a href=http://docs.ansible.com/playbooks_best_practices.html>best practices</a> for writing playbooks, you created <a href=http://docs.ansible.com/playbooks_roles.html>roles</a>, and maybe you wrote a <a href=http://docs.ansible.com/developing_plugins.html>filter plugin</a> or a <a href=http://docs.ansible.com/developing_modules.html>custom module</a> for configuring an application unique to your environment. Eventually you wound up with a big repo of playbooks and inventory files and buried roles and realized there must be a better way to do this.</p><h1 id=there-are-no-masters>There Are No Masters</h1><p>Ansible does not use an agent on the managed host, and it doesn&rsquo;t have a central server (unless you use <a href=http://docs.ansible.com/tower.html>Ansible Tower</a>, kinda). Basically anyone on your team can install ansible on their workstation and start adding to your mess or create another one just making things worse and worse.</p><p><strong>How do you break this down into managable pieces?</strong></p><ul><li>How to you separate your playbooks and your roles?</li><li>How do you properly create roles?</li><li>How do you access roles created by others on your team or on <a href=http://galaxy.ansible.com/>Ansible Galaxy</a>?</li><li>How do you use your own roles along with other people&rsquo;s roles in the same playbook?</li><li>How do you make sure all the above are available to your other admins?</li></ul><h1 id=playbook-repos-provide-a-context>Playbook Repos Provide a Context</h1><p>Most of my use of Ansible is for provisioning of services rather than deploying a specific application. So, my ansible bits are not inside of an application&rsquo;s git repo. How should they be tracked then?</p><p>How about creating a repo called <code>playbook-task</code>, so for provisioning something large like a multi-server Zimbra install, I create a repo called <code>playbook-zimbra</code>. The playbook repo will of course have at least one playbook yaml file, but it also defines what I call an ansible runtime context: config file, inventory file, group variables, host variables, roles, libraries, etc.</p><p>When creating a role within a playbook, the goal should be to make it as general as possible. Once a role is able to define its own reasonable defaults and parameterize all options as variables, it should be <a href=http://guifreelife.com/blog/2015/03/15/Split-Ansible-Git-Repo-and-Retain-Commit-History/>split out</a> of the playbook repo into its own repo.</p><h1 id=creating-roles>Creating Roles</h1><p>It is usually better to follow an existing convention, even when it may be overkill, because it makes it easier for others and future-you to figure out what&rsquo;s going on. <em>Never underestimate the value of standards and conventions!</em> Sometimes coming to a convention isn&rsquo;t easy though.</p><p>Ansible does make it easy to create a skeleton for your role that is consistent with the rest of the world.</p><p>Just start by running <code>ansible-galaxy init role_name</code>. Most likely you want to create a git repo out of that role, so do that too.</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>cd ~/src
+<i class="fas fa-align-justify"></i>
+</button>
+</div>
+</div>
+<div class="navbar-collapse collapse" id=navigation>
+<ul class="nav navbar-nav navbar-right">
+<li class=dropdown>
+<a href=/>Home</a>
+</li>
+<li class="dropdown active">
+<a href=/blog/>Blog</a>
+</li>
+<li class=dropdown>
+<a href=/contact/>Contact</a>
+</li>
+</ul>
+</div>
+<div class="collapse clearfix" id=search>
+<form class=navbar-form role=search>
+<div class=input-group>
+<input type=text class=form-control placeholder=Search>
+<span class=input-group-btn>
+<button type=submit class="btn btn-template-main"><i class="fas fa-search"></i></button>
+</span>
+</div>
+</form>
+</div>
+</div>
+</div>
+</header>
+<style>.bar.background-image-fixed-banner{background:url(/img/banners/banner-37.jpg)50% 0 no-repeat;background-attachment:fixed;background-size:cover;padding:100px 5%;text-shadow:2px 3px 4px var(--primary-accent),0 0 1em var(--navbar-border-top)}</style>
+<div>
+<div class=container>
+<div class=row>
+<div class=col-md-12>
+<section class="bar background-image-fixed-banner heading h2 color-white text-center">
+<h1>How To Scale Up Ansible Playbooks and Roles in a Managable Way</h1>
+</section>
+</div>
+</div>
+</div>
+</div>
+<div id=content>
+<div class=container>
+<div class=row>
+<div class=col-md-9 id=blog-post>
+<p class="text-muted text-uppercase mb-small text-right">
+May 16, 2015
+</p>
+<div id=post-content>
+<h1 id=ansible-is-awesome-ansible-is-a-mess>Ansible is Awesome! Ansible is a Mess!</h1>
+<p>So you found <a href=http://www.ansible.com>Ansible</a>, and you were all Woah! Ansible is awesome! Ansibilize all the things! Then you created a git repo and started hacking.</p>
+<p>Playbooks look in the current directory to find roles, libraries, and inventories, so naturally you put everything in one big git repo, right?</p>
+<p>You tried to follow the <a href=http://docs.ansible.com/playbooks_best_practices.html>best practices</a> for writing playbooks, you created <a href=http://docs.ansible.com/playbooks_roles.html>roles</a>, and maybe you wrote a <a href=http://docs.ansible.com/developing_plugins.html>filter plugin</a> or a <a href=http://docs.ansible.com/developing_modules.html>custom module</a> for configuring an application unique to your environment. Eventually you wound up with a big repo of playbooks and inventory files and buried roles and realized there must be a better way to do this.</p>
+<h1 id=there-are-no-masters>There Are No Masters</h1>
+<p>Ansible does not use an agent on the managed host, and it doesn&rsquo;t have a central server (unless you use <a href=http://docs.ansible.com/tower.html>Ansible Tower</a>, kinda). Basically anyone on your team can install ansible on their workstation and start adding to your mess or create another one just making things worse and worse.</p>
+<p><strong>How do you break this down into managable pieces?</strong></p>
+<ul>
+<li>How to you separate your playbooks and your roles?</li>
+<li>How do you properly create roles?</li>
+<li>How do you access roles created by others on your team or on <a href=http://galaxy.ansible.com/>Ansible Galaxy</a>?</li>
+<li>How do you use your own roles along with other people&rsquo;s roles in the same playbook?</li>
+<li>How do you make sure all the above are available to your other admins?</li>
+</ul>
+<h1 id=playbook-repos-provide-a-context>Playbook Repos Provide a Context</h1>
+<p>Most of my use of Ansible is for provisioning of services rather than deploying a specific application. So, my ansible bits are not inside of an application&rsquo;s git repo. How should they be tracked then?</p>
+<p>How about creating a repo called <code>playbook-task</code>, so for provisioning something large like a multi-server Zimbra install, I create a repo called <code>playbook-zimbra</code>. The playbook repo will of course have at least one playbook yaml file, but it also defines what I call an ansible runtime context: config file, inventory file, group variables, host variables, roles, libraries, etc.</p>
+<p>When creating a role within a playbook, the goal should be to make it as general as possible. Once a role is able to define its own reasonable defaults and parameterize all options as variables, it should be <a href=http://guifreelife.com/blog/2015/03/15/Split-Ansible-Git-Repo-and-Retain-Commit-History/>split out</a> of the playbook repo into its own repo.</p>
+<h1 id=creating-roles>Creating Roles</h1>
+<p>It is usually better to follow an existing convention, even when it may be overkill, because it makes it easier for others and future-you to figure out what&rsquo;s going on. <em>Never underestimate the value of standards and conventions!</em> Sometimes coming to a convention isn&rsquo;t easy though.</p>
+<p>Ansible does make it easy to create a skeleton for your role that is consistent with the rest of the world.</p>
+<p>Just start by running <code>ansible-galaxy init role_name</code>. Most likely you want to create a git repo out of that role, so do that too.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>cd ~/src
 ansible-galaxy init foorole
 cd foorole
 git init
@@ -11,21 +136,46 @@ git add .
 git commit -m firstsies
 git remote add origin git@github.com:dlbewley/foorole.git
 git push -u origin master
-</code></pre></div><p>Now you have a git repo named <em>foorole</em>. You might rename the repo to <em>ansible-foorole</em>, but I prefer to push the repo with the name of <em>foorole</em> and only name my working directory <em>ansible-foorole</em>.</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#75715e># create a foorole repo on github then push to it</span>
+</code></pre></div><p>Now you have a git repo named <em>foorole</em>. You might rename the repo to <em>ansible-foorole</em>, but I prefer to push the repo with the name of <em>foorole</em> and only name my working directory <em>ansible-foorole</em>.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#75715e># create a foorole repo on github then push to it</span>
 git remote add origin git@github.com:dlbewley/foorole.git
 git push -u origin master
 cd ~/src
 git clone git@github.com:dlbewley/foorole.git ansible-foorole
-</code></pre></div><h1 id=ansible-galaxy>Ansible Galaxy</h1><p><a href=http://galaxy.ansible.com/>Ansible Galaxy</a> is essentially a framework that makes it super simple to use a stranger&rsquo;s role in your playbook. Roles are refrenced as <code>stranger_name.role_name</code>.</p><p><strong>You can reference these strangers' roles in a few ways.</strong></p><ul><li><p><a href=http://docs.ansible.com/galaxy.html#installing-roles>Install</a> them individually:
-<code>ansible-galaxy install username.rolename</code></p></li><li><p>List them one per line in a <code>requirements.txt</code> and install all at once:
-<code>ansible-galaxy install -r requirements.txt</code></p></li><li><p>List them as a <a href=http://docs.ansible.com/playbooks_roles.html#role-dependencies>role dependency</a> in another role to be install automatically:
-Add to <code>dependencies: []</code> in <code>foorole/meta/main.yml</code></p></li></ul><p>Role dependencies <a href=https://github.com/ansible/ansible/blob/devel/bin/ansible-galaxy>currently</a> only work with roles hosted on <a href=http://galaxy.ansible.com>Ansible Galaxy</a>. See <code>fetch_role()</code>, basically it assumes it will be downloading a <code>.tar.gz</code> of a git repo, most likely from github.</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>    <span style=color:#75715e># first grab the file and save it to a temp location</span>
+</code></pre></div><h1 id=ansible-galaxy>Ansible Galaxy</h1>
+<p><a href=http://galaxy.ansible.com/>Ansible Galaxy</a> is essentially a framework that makes it super simple to use a stranger&rsquo;s role in your playbook. Roles are refrenced as <code>stranger_name.role_name</code>.</p>
+<p><strong>You can reference these strangers' roles in a few ways.</strong></p>
+<ul>
+<li>
+<p><a href=http://docs.ansible.com/galaxy.html#installing-roles>Install</a> them individually:
+<code>ansible-galaxy install username.rolename</code></p>
+</li>
+<li>
+<p>List them one per line in a <code>requirements.txt</code> and install all at once:
+<code>ansible-galaxy install -r requirements.txt</code></p>
+</li>
+<li>
+<p>List them as a <a href=http://docs.ansible.com/playbooks_roles.html#role-dependencies>role dependency</a> in another role to be install automatically:
+Add to <code>dependencies: []</code> in <code>foorole/meta/main.yml</code></p>
+</li>
+</ul>
+<p>Role dependencies <a href=https://github.com/ansible/ansible/blob/devel/bin/ansible-galaxy>currently</a> only work with roles hosted on <a href=http://galaxy.ansible.com>Ansible Galaxy</a>. See <code>fetch_role()</code>, basically it assumes it will be downloading a <code>.tar.gz</code> of a git repo, most likely from github.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>    <span style=color:#75715e># first grab the file and save it to a temp location</span>
     <span style=color:#66d9ef>if</span> <span style=color:#e6db74>&#39;://&#39;</span> <span style=color:#f92672>in</span> role_name:
         archive_url <span style=color:#f92672>=</span> role_name
     <span style=color:#66d9ef>else</span>: 
         archive_url <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;https://github.com/</span><span style=color:#e6db74>%s</span><span style=color:#e6db74>/</span><span style=color:#e6db74>%s</span><span style=color:#e6db74>/archive/</span><span style=color:#e6db74>%s</span><span style=color:#e6db74>.tar.gz&#39;</span> <span style=color:#f92672>%</span> (role_data[<span style=color:#e6db74>&#34;github_user&#34;</span>], role_data[<span style=color:#e6db74>&#34;github_repo&#34;</span>], target)
-    <span style=color:#66d9ef>print</span> <span style=color:#e6db74>&#34;- downloading role from </span><span style=color:#e6db74>%s</span><span style=color:#e6db74>&#34;</span> <span style=color:#f92672>%</span> archive_url
-</code></pre></div><ul><li>List them in <code>requirements.yml</code>. More on this below.</li></ul><p><strong>But maybe you don&rsquo;t trust these strangers. Then what?</strong></p><h1 id=build-your-own-galaxy>Build Your Own Galaxy</h1><p>In addition to <code>requirements.txt</code> which assumes Ansible Galaxy as the source of the role, as of v1.8 there is support for a <code>requirements.yml</code> which let&rsquo;s you point at a <code>.tar.gz</code> or SCM repo somewhere else, like your own local <a href=https://about.gitlab.com/>gitlab</a>.</p><h1 id=installing-roles>Installing Roles</h1><p>There are tools or at least a tool, called <a href=http://mirskytech.github.io/ansible-role-manager/>Ansible Role Manager</a>, which can help you manage roles, but another option is just a Makefile.</p><p>Something like this will allow you to type <code>make install</code> to resolve your <code>requirements.yml</code>:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-makefile data-lang=makefile><span style=color:#a6e22e>.PHONY</span><span style=color:#f92672>:</span> galaxy-install ping
+    print <span style=color:#e6db74>&#34;- downloading role from </span><span style=color:#e6db74>%s</span><span style=color:#e6db74>&#34;</span> <span style=color:#f92672>%</span> archive_url
+</code></pre></div><ul>
+<li>List them in <code>requirements.yml</code>. More on this below.</li>
+</ul>
+<p><strong>But maybe you don&rsquo;t trust these strangers. Then what?</strong></p>
+<h1 id=build-your-own-galaxy>Build Your Own Galaxy</h1>
+<p>In addition to <code>requirements.txt</code> which assumes Ansible Galaxy as the source of the role, as of v1.8 there is support for a <code>requirements.yml</code> which let&rsquo;s you point at a <code>.tar.gz</code> or SCM repo somewhere else, like your own local <a href=https://about.gitlab.com/>gitlab</a>.</p>
+<h1 id=installing-roles>Installing Roles</h1>
+<p>There are tools or at least a tool, called <a href=http://mirskytech.github.io/ansible-role-manager/>Ansible Role Manager</a>, which can help you manage roles, but another option is just a Makefile.</p>
+<p>Something like this will allow you to type <code>make install</code> to resolve your <code>requirements.yml</code>:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-makefile data-lang=makefile><span style=color:#a6e22e>.PHONY</span><span style=color:#f92672>:</span> galaxy-install ping
 
 <span style=color:#a6e22e>install</span><span style=color:#f92672>:</span> galaxy-install
 
@@ -34,12 +184,300 @@ Add to <code>dependencies: []</code> in <code>foorole/meta/main.yml</code></p></
 
 <span style=color:#a6e22e>ping</span><span style=color:#f92672>:</span>
 	ansible all -i hosts -m ping
-</code></pre></div><p>Where do these roles get installed? Ansible-galaxy will install these roles to the first directory found in your <a href=http://docs.ansible.com/intro_configuration.html#roles-path>roles_path</a>. Remember that. We can take advantage of that.</p><h2 id=roles-path>Roles Path</h2><p>If you are working on a playbook which may have roles stored along side it, and you want to use roles from Ansible Galaxy, what do you do?</p><p>Remember, I just said that that <code>ansible-galaxy install</code> places roles in the first directory in your <code>roles_path</code>? Just create a ansible.cfg in your playbook directory that looks something like this:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ini data-lang=ini><span style=color:#66d9ef>[defaults]</span>
+</code></pre></div><p>Where do these roles get installed? Ansible-galaxy will install these roles to the first directory found in your <a href=http://docs.ansible.com/intro_configuration.html#roles-path>roles_path</a>. Remember that. We can take advantage of that.</p>
+<h2 id=roles-path>Roles Path</h2>
+<p>If you are working on a playbook which may have roles stored along side it, and you want to use roles from Ansible Galaxy, what do you do?</p>
+<p>Remember, I just said that that <code>ansible-galaxy install</code> places roles in the first directory in your <code>roles_path</code>? Just create a ansible.cfg in your playbook directory that looks something like this:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ini data-lang=ini><span style=color:#66d9ef>[defaults]</span>
 <span style=color:#a6e22e>remote_user</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>root</span>
 <span style=color:#a6e22e>inventory_file</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>hosts</span>
 <span style=color:#a6e22e>roles_path</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>required-roles:roles</span>
-</code></pre></div><p>Then add <code>required-roles</code> to your <code>.gitignore</code>. Now, you can disentangle your roles and external roles within your playbook. I have to give credit to <a href=https://twitter.com/command_tab>@command_tab</a> for changing my life with this tip. :)</p><h1 id=organizing-repos-when-working-with-other-admins>Organizing Repos When Working with Other Admins</h1><p>You might run ansible from a laptop, your workstation, a VM. Your colleagues may do the same. How do you make sure each environment is consistent and compatible?</p><p>As you scale up use of Ansible on your team, what sort of groundwork can you lay for keeping things organized?
-I suggest a <code>Ansible</code> name space in a Gitlab instance then try to put all the ansible related bits in there as long as it makes sense. Sometimes a playbook is tightly bound to an application and it seems to make sense to keep it in a <code>ansible</code> sub dir of that repo.</p><p>How about some repo naming conventions?</p><ul><li><a href=http://docs.ansible.com/playbooks_roles.html>Role</a> repos should be named after the role and have no prefix</li><li><a href=http://docs.ansible.com/developing_modules.html>Module</a> repos should have a prefix of <code>module-</code></li><li><a href=http://docs.ansible.com/developing_plugins.html>Plugin</a> repos should have a prefix of <code>plugin-</code></li><li><a href=http://docs.ansible.com/playbooks.html>Playbook</a> repos should have a prefix of <code>playbook-</code></li></ul><h1 id=still-to-be-determined>Still To Be Determined</h1><p>Distributing <a href=http://docs.ansible.com/intro_inventory.html>inventory</a> is a problem I haven&rsquo;t quite figured out yet. For now, each playbook has it&rsquo;s own static inventory file and that works just fine for somethings, but it isn&rsquo;t generally scalable.</p><p>A <a href=http://docs.ansible.com/intro_dynamic_inventory.html>dynamic inventory</a> script which queries a LDAP directory seems like the obvious choice, but with thousands of hosts how can this be done efficiently? <a href=http://docs.ansible.com/intro_patterns.html>Patterns</a> are applied to host lists after the inventory is constructed. Somehow, the limitation needs to be included in the LDAP filter.</p></div><div id=comments><div id=disqus_thread></div><script type=application/javascript>var disqus_config=function(){};(function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById('disqus_thread').innerHTML='Disqus comments not available by default when the website is previewed locally.';return}var b=document,a=b.createElement('script');a.async=!0,a.src='//dlbewleygithubio.disqus.com/embed.js',a.setAttribute('data-timestamp',+new Date),(b.head||b.body).appendChild(a)})()</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript><a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a></div></div><div class=col-md-3><div class="panel panel-default sidebar-menu"><div class=panel-heading><h3 class=panel-title>Search</h3></div><div class=panel-body><form action=//google.com/search method=get accept-charset=utf-8 role=search><div class=input-group><input type=search name=q class=form-control placeholder=Search>
+</code></pre></div><p>Then add <code>required-roles</code> to your <code>.gitignore</code>. Now, you can disentangle your roles and external roles within your playbook. I have to give credit to <a href=https://twitter.com/command_tab>@command_tab</a> for changing my life with this tip. :)</p>
+<h1 id=organizing-repos-when-working-with-other-admins>Organizing Repos When Working with Other Admins</h1>
+<p>You might run ansible from a laptop, your workstation, a VM. Your colleagues may do the same. How do you make sure each environment is consistent and compatible?</p>
+<p>As you scale up use of Ansible on your team, what sort of groundwork can you lay for keeping things organized?
+I suggest a <code>Ansible</code> name space in a Gitlab instance then try to put all the ansible related bits in there as long as it makes sense. Sometimes a playbook is tightly bound to an application and it seems to make sense to keep it in a <code>ansible</code> sub dir of that repo.</p>
+<p>How about some repo naming conventions?</p>
+<ul>
+<li><a href=http://docs.ansible.com/playbooks_roles.html>Role</a> repos should be named after the role and have no prefix</li>
+<li><a href=http://docs.ansible.com/developing_modules.html>Module</a> repos should have a prefix of <code>module-</code></li>
+<li><a href=http://docs.ansible.com/developing_plugins.html>Plugin</a> repos should have a prefix of <code>plugin-</code></li>
+<li><a href=http://docs.ansible.com/playbooks.html>Playbook</a> repos should have a prefix of <code>playbook-</code></li>
+</ul>
+<h1 id=still-to-be-determined>Still To Be Determined</h1>
+<p>Distributing <a href=http://docs.ansible.com/intro_inventory.html>inventory</a> is a problem I haven&rsquo;t quite figured out yet. For now, each playbook has it&rsquo;s own static inventory file and that works just fine for somethings, but it isn&rsquo;t generally scalable.</p>
+<p>A <a href=http://docs.ansible.com/intro_dynamic_inventory.html>dynamic inventory</a> script which queries a LDAP directory seems like the obvious choice, but with thousands of hosts how can this be done efficiently? <a href=http://docs.ansible.com/intro_patterns.html>Patterns</a> are applied to host lists after the inventory is constructed. Somehow, the limitation needs to be included in the LDAP filter.</p>
+</div>
+<div id=comments>
+<div id=disqus_thread></div>
+<script type=application/javascript>var disqus_config=function(){};(function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById('disqus_thread').innerHTML='Disqus comments not available by default when the website is previewed locally.';return}var b=document,a=b.createElement('script');a.async=!0,a.src='//dlbewleygithubio.disqus.com/embed.js',a.setAttribute('data-timestamp',+new Date),(b.head||b.body).appendChild(a)})()</script>
+<noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript>
+<a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a>
+</div>
+</div>
+<div class=col-md-3>
+<div class="panel panel-default sidebar-menu">
+<div class=panel-heading>
+<h3 class=panel-title>Search</h3>
+</div>
+<div class=panel-body>
+<form action=//google.com/search method=get accept-charset=utf-8 role=search>
+<div class=input-group>
+<input type=search name=q class=form-control placeholder=Search>
 <input type=hidden name=sitesearch value=http://guifreelife.com/>
-<span class=input-group-btn><button type=submit class="btn btn-template-main"><i class="fas fa-search"></i></button></span></div></form></div></div><div class="panel sidebar-menu"><div class=panel-heading><h3 class=panel-title>Tagged</h3></div><div class=panel-body><ul class=tag-cloud><li class=active><a href=/tags/ansible><i class="fas fa-tags"></i>ansible</a></li><li class=active><a href=/tags/automation><i class="fas fa-tags"></i>automation</a></li></ul></div></div><div class="panel sidebar-menu"><div class=panel-heading><h3 class=panel-title>TOC</h3></div><div class=panel-body><nav id=TableOfContents><ul><li><a href=#ansible-is-awesome-ansible-is-a-mess>Ansible is Awesome! Ansible is a Mess!</a></li><li><a href=#there-are-no-masters>There Are No Masters</a></li><li><a href=#playbook-repos-provide-a-context>Playbook Repos Provide a Context</a></li><li><a href=#creating-roles>Creating Roles</a></li><li><a href=#ansible-galaxy>Ansible Galaxy</a></li><li><a href=#build-your-own-galaxy>Build Your Own Galaxy</a></li><li><a href=#installing-roles>Installing Roles</a><ul><li><a href=#roles-path>Roles Path</a></li></ul></li><li><a href=#organizing-repos-when-working-with-other-admins>Organizing Repos When Working with Other Admins</a></li><li><a href=#still-to-be-determined>Still To Be Determined</a></li></ul></nav></div></div><div class="panel sidebar-menu"><div class=panel-heading><h3 class=panel-title>Tags</h3></div><div class=panel-body><ul class=tag-cloud><li><a href=/tags/aws><i class="fas fa-tags"></i>AWS</a></li><li><a href=/tags/cdk><i class="fas fa-tags"></i>CDK</a></li><li><a href=/tags/ocp3><i class="fas fa-tags"></i>OCP3</a></li><li><a href=/tags/ocp4><i class="fas fa-tags"></i>OCP4</a></li><li><a href=/tags/rhacm><i class="fas fa-tags"></i>RHACM</a></li><li><a href=/tags/rhel><i class="fas fa-tags"></i>RHEL</a></li><li><a href=/tags/ansible><i class="fas fa-tags"></i>ansible</a></li><li><a href=/tags/automation><i class="fas fa-tags"></i>automation</a></li><li><a href=/tags/azure><i class="fas fa-tags"></i>azure</a></li><li><a href=/tags/debugging><i class="fas fa-tags"></i>debugging</a></li><li><a href=/tags/docker><i class="fas fa-tags"></i>docker</a></li><li><a href=/tags/draft><i class="fas fa-tags"></i>draft</a></li><li><a href=/tags/etcd><i class="fas fa-tags"></i>etcd</a></li><li><a href=/tags/git><i class="fas fa-tags"></i>git</a></li><li><a href=/tags/haproxy><i class="fas fa-tags"></i>haproxy</a></li><li><a href=/tags/heat><i class="fas fa-tags"></i>heat</a></li><li><a href=/tags/hybrid-cloud><i class="fas fa-tags"></i>hybrid-cloud</a></li><li><a href=/tags/install><i class="fas fa-tags"></i>install</a></li><li><a href=/tags/kubernetes><i class="fas fa-tags"></i>kubernetes</a></li><li><a href=/tags/mac><i class="fas fa-tags"></i>mac</a></li><li><a href=/tags/metrics><i class="fas fa-tags"></i>metrics</a></li><li><a href=/tags/migration><i class="fas fa-tags"></i>migration</a></li><li><a href=/tags/monitoring><i class="fas fa-tags"></i>monitoring</a></li><li><a href=/tags/networking><i class="fas fa-tags"></i>networking</a></li><li><a href=/tags/openshift><i class="fas fa-tags"></i>openshift</a></li><li><a href=/tags/openstack><i class="fas fa-tags"></i>openstack</a></li><li><a href=/tags/operators><i class="fas fa-tags"></i>operators</a></li><li><a href=/tags/python><i class="fas fa-tags"></i>python</a></li><li><a href=/tags/router><i class="fas fa-tags"></i>router</a></li><li><a href=/tags/ssl><i class="fas fa-tags"></i>ssl</a></li><li><a href=/tags/troubleshooting><i class="fas fa-tags"></i>troubleshooting</a></li><li><a href=/tags/upgrade><i class="fas fa-tags"></i>upgrade</a></li><li><a href=/tags/vagrant><i class="fas fa-tags"></i>vagrant</a></li><li><a href=/tags/windows><i class="fas fa-tags"></i>windows</a></li><li><a href=/tags/zabbix><i class="fas fa-tags"></i>zabbix</a></li><li><a href=/tags/zimbra><i class="fas fa-tags"></i>zimbra</a></li></ul></div></div></div></div></div></div><footer id=footer><div class=container><div class="col-md-4 col-sm-6"><h4>Share</h4><i class="fab fa-2x fa-twitter" title="Share this on Twitter" onclick="window.open('http://twitter.com/home?status=http://guifreelife.com/blog/2015/05/16/Manage-Ansible-Playbooks-and-Roles/')"></i><i class="fab fa-2x fa-facebook" title="Share this on Facebook" onclick="window.open('http://www.facebook.com/share.php?u=http://guifreelife.com/blog/2015/05/16/Manage-Ansible-Playbooks-and-Roles/')"></i><i class="fab fa-2x fa-linkedin" title="Share this on Linkedin" onclick="window.open('https://www.linkedin.com/shareArticle?mini=true&url=http://guifreelife.com/blog/2015/05/16/Manage-Ansible-Playbooks-and-Roles/&title=&summary=&source=')"></i><i class="fab fa-2x fa-google-plus" title="Share this on Google Currents" onclick="window.open('https://plus.google.com/share?url=http://guifreelife.com/blog/2015/05/16/Manage-Ansible-Playbooks-and-Roles/')"></i><i class="fa fa-2x fa-envelope" title="Share this through Email" onclick="window.open('mailto:?&body=http://guifreelife.com/blog/2015/05/16/Manage-Ansible-Playbooks-and-Roles/')"></i><h4>About us</h4><p>GUI Free Life is the personal, technical blog of Dale Bewley. Comments and opinions are my own and not that of my employers.</p><hr class="hidden-md hidden-lg hidden-sm"></div><div class="col-md-4 col-sm-6"><h4>Recent posts</h4><div class=blog-entries><div class="item same-height-row clearfix"><div class="image same-height-always"><a href=http://guifreelife.com/blog/2022/03/10/Debugging-AWS-STS-Authentication-for-OpenShift-Operators/><img src=/images/debug-sts-banner.jpg class=img-responsive alt="Debugging AWS STS Authentication for OpenShift Operators"></a></div><div class="name same-height-always"><h5><a href=http://guifreelife.com/blog/2022/03/10/Debugging-AWS-STS-Authentication-for-OpenShift-Operators/>Debugging AWS STS Authentication for OpenShift Operators</a></h5></div></div><div class="item same-height-row clearfix"><div class="image same-height-always"><a href=http://guifreelife.com/blog/2021/12/21/Red-Hat-Advanced-Cluster-Management-Walkthrough/><img src=/images/port-of-oakland.png class=img-responsive alt="Red Hat Advanced Cluster Management Walkthrough"></a></div><div class="name same-height-always"><h5><a href=http://guifreelife.com/blog/2021/12/21/Red-Hat-Advanced-Cluster-Management-Walkthrough/>Red Hat Advanced Cluster Management Walkthrough</a></h5></div></div><div class="item same-height-row clearfix"><div class="image same-height-always"><a href=http://guifreelife.com/blog/2021/08/18/Protect-Gitignored-but-Tracked-Files/><img src=/img/banners/banner-32.jpg class=img-responsive alt="Protect Gitignored but Tracked Files"></a></div><div class="name same-height-always"><h5><a href=http://guifreelife.com/blog/2021/08/18/Protect-Gitignored-but-Tracked-Files/>Protect Gitignored but Tracked Files</a></h5></div></div></div><hr class="hidden-md hidden-lg"></div><div class="col-md-4 col-sm-6"><h4>Contact</h4><p class=text-uppercase><strong>Dale Bewley</strong><br>Oakland<br>California<br><strong>USA</strong></p><a href=/contact class="btn btn-small btn-template-main">Go to contact page</a><hr class="hidden-md hidden-lg hidden-sm"></div></div></footer><div id=copyright><div class=container><div class=col-md-12><p class=pull-left>Copyright (c) 2021, Dale Bewley; all rights reserved.</p><p class=pull-right>Template by <a href=https://bootstrapious.com/p/universal-business-e-commerce-template>Bootstrapious</a>.
-Ported to Hugo by <a href=https://github.com/devcows/hugo-universal-theme>DevCows</a>.</p></div></div></div></div><script type=application/javascript>var doNotTrack=!1;doNotTrack||(function(a,e,f,g,b,c,d){a.GoogleAnalyticsObject=b,a[b]=a[b]||function(){(a[b].q=a[b].q||[]).push(arguments)},a[b].l=1*new Date,c=e.createElement(f),d=e.getElementsByTagName(f)[0],c.async=1,c.src=g,d.parentNode.insertBefore(c,d)}(window,document,'script','https://www.google-analytics.com/analytics.js','ga'),ga('create','G-39TSW9349X','auto'),ga('send','pageview'))</script><script src=//code.jquery.com/jquery-3.1.1.min.js integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin=anonymous></script><script src=//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js integrity=sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa crossorigin=anonymous></script><script src=//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js></script><script src=//cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/jquery.waypoints.min.js></script><script src=//cdnjs.cloudflare.com/ajax/libs/Counter-Up/1.0/jquery.counterup.min.js></script><script src=//cdnjs.cloudflare.com/ajax/libs/jquery-parallax/1.1.3/jquery-parallax.js></script><script src="//maps.googleapis.com/maps/api/js?key=AIzaSyDacpwSIXi6lk2fS2wzZOSoh7iHm_ZP3UE&v=3.exp"></script><script src=/js/hpneo.gmaps.js></script><script src=/js/gmaps.init.js></script><script src=/js/front.js></script><script src=/js/owl.carousel.min.js></script></body></html>
+<span class=input-group-btn>
+<button type=submit class="btn btn-template-main"><i class="fas fa-search"></i></button>
+</span>
+</div>
+</form>
+</div>
+</div>
+<div class="panel sidebar-menu">
+<div class=panel-heading>
+<h3 class=panel-title>Tagged</h3>
+</div>
+<div class=panel-body>
+<ul class=tag-cloud>
+<li class=active>
+<a href=/tags/ansible><i class="fas fa-tags"></i> ansible</a>
+</li>
+<li class=active>
+<a href=/tags/automation><i class="fas fa-tags"></i> automation</a>
+</li>
+</ul>
+</div>
+</div>
+<div class="panel sidebar-menu">
+<div class=panel-heading>
+<h3 class=panel-title>TOC</h3>
+</div>
+<div class=panel-body>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#ansible-is-awesome-ansible-is-a-mess>Ansible is Awesome! Ansible is a Mess!</a></li>
+<li><a href=#there-are-no-masters>There Are No Masters</a></li>
+<li><a href=#playbook-repos-provide-a-context>Playbook Repos Provide a Context</a></li>
+<li><a href=#creating-roles>Creating Roles</a></li>
+<li><a href=#ansible-galaxy>Ansible Galaxy</a></li>
+<li><a href=#build-your-own-galaxy>Build Your Own Galaxy</a></li>
+<li><a href=#installing-roles>Installing Roles</a>
+<ul>
+<li><a href=#roles-path>Roles Path</a></li>
+</ul>
+</li>
+<li><a href=#organizing-repos-when-working-with-other-admins>Organizing Repos When Working with Other Admins</a></li>
+<li><a href=#still-to-be-determined>Still To Be Determined</a></li>
+</ul>
+</nav>
+</div>
+</div>
+<div class="panel sidebar-menu">
+<div class=panel-heading>
+<h3 class=panel-title>Tags</h3>
+</div>
+<div class=panel-body>
+<ul class=tag-cloud>
+<li>
+<a href=/tags/aws><i class="fas fa-tags"></i> AWS</a>
+</li>
+<li>
+<a href=/tags/cdk><i class="fas fa-tags"></i> CDK</a>
+</li>
+<li>
+<a href=/tags/ocp3><i class="fas fa-tags"></i> OCP3</a>
+</li>
+<li>
+<a href=/tags/ocp4><i class="fas fa-tags"></i> OCP4</a>
+</li>
+<li>
+<a href=/tags/rhacm><i class="fas fa-tags"></i> RHACM</a>
+</li>
+<li>
+<a href=/tags/rhel><i class="fas fa-tags"></i> RHEL</a>
+</li>
+<li>
+<a href=/tags/ansible><i class="fas fa-tags"></i> ansible</a>
+</li>
+<li>
+<a href=/tags/automation><i class="fas fa-tags"></i> automation</a>
+</li>
+<li>
+<a href=/tags/azure><i class="fas fa-tags"></i> azure</a>
+</li>
+<li>
+<a href=/tags/debugging><i class="fas fa-tags"></i> debugging</a>
+</li>
+<li>
+<a href=/tags/docker><i class="fas fa-tags"></i> docker</a>
+</li>
+<li>
+<a href=/tags/draft><i class="fas fa-tags"></i> draft</a>
+</li>
+<li>
+<a href=/tags/etcd><i class="fas fa-tags"></i> etcd</a>
+</li>
+<li>
+<a href=/tags/git><i class="fas fa-tags"></i> git</a>
+</li>
+<li>
+<a href=/tags/haproxy><i class="fas fa-tags"></i> haproxy</a>
+</li>
+<li>
+<a href=/tags/heat><i class="fas fa-tags"></i> heat</a>
+</li>
+<li>
+<a href=/tags/hybrid-cloud><i class="fas fa-tags"></i> hybrid-cloud</a>
+</li>
+<li>
+<a href=/tags/install><i class="fas fa-tags"></i> install</a>
+</li>
+<li>
+<a href=/tags/kubernetes><i class="fas fa-tags"></i> kubernetes</a>
+</li>
+<li>
+<a href=/tags/mac><i class="fas fa-tags"></i> mac</a>
+</li>
+<li>
+<a href=/tags/metrics><i class="fas fa-tags"></i> metrics</a>
+</li>
+<li>
+<a href=/tags/migration><i class="fas fa-tags"></i> migration</a>
+</li>
+<li>
+<a href=/tags/monitoring><i class="fas fa-tags"></i> monitoring</a>
+</li>
+<li>
+<a href=/tags/networking><i class="fas fa-tags"></i> networking</a>
+</li>
+<li>
+<a href=/tags/openshift><i class="fas fa-tags"></i> openshift</a>
+</li>
+<li>
+<a href=/tags/openstack><i class="fas fa-tags"></i> openstack</a>
+</li>
+<li>
+<a href=/tags/operators><i class="fas fa-tags"></i> operators</a>
+</li>
+<li>
+<a href=/tags/python><i class="fas fa-tags"></i> python</a>
+</li>
+<li>
+<a href=/tags/router><i class="fas fa-tags"></i> router</a>
+</li>
+<li>
+<a href=/tags/ssl><i class="fas fa-tags"></i> ssl</a>
+</li>
+<li>
+<a href=/tags/troubleshooting><i class="fas fa-tags"></i> troubleshooting</a>
+</li>
+<li>
+<a href=/tags/upgrade><i class="fas fa-tags"></i> upgrade</a>
+</li>
+<li>
+<a href=/tags/vagrant><i class="fas fa-tags"></i> vagrant</a>
+</li>
+<li>
+<a href=/tags/windows><i class="fas fa-tags"></i> windows</a>
+</li>
+<li>
+<a href=/tags/zabbix><i class="fas fa-tags"></i> zabbix</a>
+</li>
+<li>
+<a href=/tags/zimbra><i class="fas fa-tags"></i> zimbra</a>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<footer id=footer>
+<div class=container>
+<div class="col-md-4 col-sm-6">
+<h4>Share</h4>
+<i class="fab fa-2x fa-twitter" title="Share this on Twitter" onclick="window.open('http://twitter.com/home?status=http://guifreelife.com/blog/2015/05/16/Manage-Ansible-Playbooks-and-Roles/')"></i>
+<i class="fab fa-2x fa-facebook" title="Share this on Facebook" onclick="window.open('http://www.facebook.com/share.php?u=http://guifreelife.com/blog/2015/05/16/Manage-Ansible-Playbooks-and-Roles/')"></i>
+<i class="fab fa-2x fa-linkedin" title="Share this on Linkedin" onclick="window.open('https://www.linkedin.com/shareArticle?mini=true&url=http://guifreelife.com/blog/2015/05/16/Manage-Ansible-Playbooks-and-Roles/&title=&summary=&source=')"></i>
+<i class="fab fa-2x fa-google-plus" title="Share this on Google Currents" onclick="window.open('https://plus.google.com/share?url=http://guifreelife.com/blog/2015/05/16/Manage-Ansible-Playbooks-and-Roles/')"></i>
+<i class="fa fa-2x fa-envelope" title="Share this through Email" onclick="window.open('mailto:?&body=http://guifreelife.com/blog/2015/05/16/Manage-Ansible-Playbooks-and-Roles/')"></i>
+<h4>About us</h4>
+<p>GUI Free Life is the personal, technical blog of Dale Bewley. Comments and opinions are my own and not that of my employers.</p>
+<hr class="hidden-md hidden-lg hidden-sm">
+</div>
+<div class="col-md-4 col-sm-6">
+<h4>Recent posts</h4>
+<div class=blog-entries>
+<div class="item same-height-row clearfix">
+<div class="image same-height-always">
+<a href=http://guifreelife.com/blog/2022/03/10/Debugging-AWS-STS-Authentication-for-OpenShift-Operators/>
+<img src=/images/debug-sts-banner.jpg class=img-responsive alt="Debugging AWS STS Authentication for OpenShift Operators">
+</a>
+</div>
+<div class="name same-height-always">
+<h5><a href=http://guifreelife.com/blog/2022/03/10/Debugging-AWS-STS-Authentication-for-OpenShift-Operators/>Debugging AWS STS Authentication for OpenShift Operators</a></h5>
+</div>
+</div>
+<div class="item same-height-row clearfix">
+<div class="image same-height-always">
+<a href=http://guifreelife.com/blog/2021/12/21/Red-Hat-Advanced-Cluster-Management-Walkthrough/>
+<img src=/images/port-of-oakland.png class=img-responsive alt="Red Hat Advanced Cluster Management Walkthrough">
+</a>
+</div>
+<div class="name same-height-always">
+<h5><a href=http://guifreelife.com/blog/2021/12/21/Red-Hat-Advanced-Cluster-Management-Walkthrough/>Red Hat Advanced Cluster Management Walkthrough</a></h5>
+</div>
+</div>
+<div class="item same-height-row clearfix">
+<div class="image same-height-always">
+<a href=http://guifreelife.com/blog/2021/08/18/Protect-Gitignored-but-Tracked-Files/>
+<img src=/img/banners/banner-32.jpg class=img-responsive alt="Protect Gitignored but Tracked Files">
+</a>
+</div>
+<div class="name same-height-always">
+<h5><a href=http://guifreelife.com/blog/2021/08/18/Protect-Gitignored-but-Tracked-Files/>Protect Gitignored but Tracked Files</a></h5>
+</div>
+</div>
+</div>
+<hr class="hidden-md hidden-lg">
+</div>
+<div class="col-md-4 col-sm-6">
+<h4>Contact</h4>
+<p class=text-uppercase><strong>Dale Bewley</strong>
+<br>Oakland
+<br>California
+<br>
+<strong>USA</strong>
+</p>
+<a href=/contact class="btn btn-small btn-template-main">Go to contact page</a>
+<hr class="hidden-md hidden-lg hidden-sm">
+</div>
+</div>
+</footer>
+<div id=copyright>
+<div class=container>
+<div class=col-md-12>
+<p class=pull-left>Copyright (c) 2021, Dale Bewley; all rights reserved.</p>
+<p class=pull-right>
+Template by <a href=https://bootstrapious.com/p/universal-business-e-commerce-template>Bootstrapious</a>.
+Ported to Hugo by <a href=https://github.com/devcows/hugo-universal-theme>DevCows</a>.
+</p>
+</div>
+</div>
+</div>
+</div>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-39TSW9349X"></script>
+<script>var doNotTrack=!1;if(!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date),gtag('config','G-39TSW9349X',{anonymize_ip:!1})}</script>
+<script src=//code.jquery.com/jquery-3.1.1.min.js integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin=anonymous></script>
+<script src=//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js integrity=sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa crossorigin=anonymous></script>
+<script src=//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js></script>
+<script src=//cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/jquery.waypoints.min.js></script>
+<script src=//cdnjs.cloudflare.com/ajax/libs/Counter-Up/1.0/jquery.counterup.min.js></script>
+<script src=//cdnjs.cloudflare.com/ajax/libs/jquery-parallax/1.1.3/jquery-parallax.js></script>
+<script src="//maps.googleapis.com/maps/api/js?key=AIzaSyDacpwSIXi6lk2fS2wzZOSoh7iHm_ZP3UE&v=3.exp"></script>
+<script src=/js/hpneo.gmaps.js></script>
+<script src=/js/gmaps.init.js></script>
+<script src=/js/front.js></script>
+<script src=/js/owl.carousel.min.js></script>
+</body>
+</html>
