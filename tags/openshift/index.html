@@ -31,7 +31,7 @@
 <meta property="og:image:type" content="image/png">
 <meta property="og:image:width" content="179">
 <meta property="og:image:height" content="50">
-<meta property="og:updated_time" content="2022-03-10T00:00:00Z">
+<meta property="og:updated_time" content="2022-05-13T00:00:00Z">
 <meta name=twitter:card content="summary">
 <meta name=twitter:site content="@dlbewley">
 <meta name=twitter:title content="openshift">
@@ -95,6 +95,30 @@
 <div class=container>
 <div class=row>
 <div class=col-md-9 id=blog-listing-medium>
+<section class=post>
+<div class=row>
+<div class=col-md-4>
+<div class=image>
+<a href=http://guifreelife.com/blog/2022/05/13/OpenShift-Virtualization-on-vSphere/>
+<img src=/images/shutterstock_2100290518.jpg class=img-responsive alt>
+</a>
+</div>
+</div>
+<div class=col-md-8>
+<h2><a href=http://guifreelife.com/blog/2022/05/13/OpenShift-Virtualization-on-vSphere/>OpenShift Virtualization on vSphere</a></h2>
+<div class=clearfix>
+<p class=author-category>
+</p>
+<p class=date-comments>
+<a href=http://guifreelife.com/blog/2022/05/13/OpenShift-Virtualization-on-vSphere/><i class="far fa-calendar"></i> May 13, 2022</a>
+</p>
+</div>
+<p class=intro><p>OpenShift Virtualization builds upon <a href=https://kubevirt.io title=KubeVirt.io>KubeVirt</a> to provide a container native home for your virtual machine workloads. While bare metal is the only officially support platform today, this post will walk through enabling OpenShift Virtualization on vSphere in a lab environment. With nested virtualization you&rsquo;ll be able to spin up containerized VMs bridged to your physical networks.</p></p>
+<p class=read-more><a href=http://guifreelife.com/blog/2022/05/13/OpenShift-Virtualization-on-vSphere/ class="btn btn-template-main">Continue reading</a>
+</p>
+</div>
+</div>
+</section>
 <section class=post>
 <div class=row>
 <div class=col-md-4>
@@ -320,31 +344,6 @@ TASK [openshift_node : Approve the node] ***************************************
 </div>
 </div>
 </section>
-<section class=post>
-<div class=row>
-<div class=col-md-4>
-<div class=image>
-<a href=http://guifreelife.com/blog/2019/02/19/Downgrade-Etcd-for-OpenShift-Compatibility/>
-<img src=/img/banners/banner-27.jpg class=img-responsive alt>
-</a>
-</div>
-</div>
-<div class=col-md-8>
-<h2><a href=http://guifreelife.com/blog/2019/02/19/Downgrade-Etcd-for-OpenShift-Compatibility/>Downgrade Etcd 3.3.11 to 3.2.22 for OpenShift Compatibility</a></h2>
-<div class=clearfix>
-<p class=author-category>
-</p>
-<p class=date-comments>
-<a href=http://guifreelife.com/blog/2019/02/19/Downgrade-Etcd-for-OpenShift-Compatibility/><i class="far fa-calendar"></i> February 19, 2019</a>
-</p>
-</div>
-<p class=intro>While I was working on migrating etcd to my master nodes I was bitten by an incompatible etcd v3.3.11 RPM made available via RHEL Server Extras repo. Before I got to my last master the RPM was no longer available, and the scaleup playbook failed. I became aware that 3.3.11 is not compatible and should not have been made available.
-Unfortunately all members of my etcd cluster were already upgraded and the fix is to take down the cluster, downgrade etcd, and restore from snapshot.</p>
-<p class=read-more><a href=http://guifreelife.com/blog/2019/02/19/Downgrade-Etcd-for-OpenShift-Compatibility/ class="btn btn-template-main">Continue reading</a>
-</p>
-</div>
-</div>
-</section>
 <ul class=pager>
 <li class="previous disabled"><a href=#>&larr; Newer</a></li>
 <li class=next><a href=/tags/openshift/page/2/>Older &rarr;</a></li>
@@ -473,6 +472,9 @@ Unfortunately all members of my etcd cluster were already upgraded and the fix i
 <a href=/tags/vagrant><i class="fas fa-tags"></i> vagrant</a>
 </li>
 <li>
+<a href=/tags/virtualization><i class="fas fa-tags"></i> virtualization</a>
+</li>
+<li>
 <a href=/tags/windows><i class="fas fa-tags"></i> windows</a>
 </li>
 <li>
@@ -506,6 +508,16 @@ Unfortunately all members of my etcd cluster were already upgraded and the fix i
 <div class=blog-entries>
 <div class="item same-height-row clearfix">
 <div class="image same-height-always">
+<a href=http://guifreelife.com/blog/2022/05/13/OpenShift-Virtualization-on-vSphere/>
+<img src=/images/shutterstock_2100290518.jpg class=img-responsive alt="OpenShift Virtualization on vSphere">
+</a>
+</div>
+<div class="name same-height-always">
+<h5><a href=http://guifreelife.com/blog/2022/05/13/OpenShift-Virtualization-on-vSphere/>OpenShift Virtualization on vSphere</a></h5>
+</div>
+</div>
+<div class="item same-height-row clearfix">
+<div class="image same-height-always">
 <a href=http://guifreelife.com/blog/2022/03/10/Debugging-AWS-STS-Authentication-for-OpenShift-Operators/>
 <img src=/images/debug-sts-banner.jpg class=img-responsive alt="Debugging AWS STS Authentication for OpenShift Operators">
 </a>
@@ -522,16 +534,6 @@ Unfortunately all members of my etcd cluster were already upgraded and the fix i
 </div>
 <div class="name same-height-always">
 <h5><a href=http://guifreelife.com/blog/2021/12/21/Red-Hat-Advanced-Cluster-Management-Walkthrough/>Red Hat Advanced Cluster Management Walkthrough</a></h5>
-</div>
-</div>
-<div class="item same-height-row clearfix">
-<div class="image same-height-always">
-<a href=http://guifreelife.com/blog/2021/08/18/Protect-Gitignored-but-Tracked-Files/>
-<img src=/img/banners/banner-32.jpg class=img-responsive alt="Protect Gitignored but Tracked Files">
-</a>
-</div>
-<div class="name same-height-always">
-<h5><a href=http://guifreelife.com/blog/2021/08/18/Protect-Gitignored-but-Tracked-Files/>Protect Gitignored but Tracked Files</a></h5>
 </div>
 </div>
 </div>

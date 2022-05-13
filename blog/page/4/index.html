@@ -31,7 +31,7 @@
 <meta property="og:image:type" content="image/png">
 <meta property="og:image:width" content="179">
 <meta property="og:image:height" content="50">
-<meta property="og:updated_time" content="2022-03-10T00:00:00Z">
+<meta property="og:updated_time" content="2022-05-13T00:00:00Z">
 <meta name=twitter:card content="summary">
 <meta name=twitter:site content="@dlbewley">
 <meta name=twitter:title content="Blogs">
@@ -95,6 +95,32 @@
 <div class=container>
 <div class=row>
 <div class=col-md-9 id=blog-listing-medium>
+<section class=post>
+<div class=row>
+<div class=col-md-4>
+<div class=image>
+<a href=http://guifreelife.com/blog/2015/12/12/Playbook-to-Prepare-for-OpenShift-Enterprise-3.1-Install/>
+<img src=/img/banners/banner-35.jpg class=img-responsive alt>
+</a>
+</div>
+</div>
+<div class=col-md-8>
+<h2><a href=http://guifreelife.com/blog/2015/12/12/Playbook-to-Prepare-for-OpenShift-Enterprise-3.1-Install/>Ansible Playbook to Prepare for OpenShift Enterprise 3.1</a></h2>
+<div class=clearfix>
+<p class=author-category>
+</p>
+<p class=date-comments>
+<a href=http://guifreelife.com/blog/2015/12/12/Playbook-to-Prepare-for-OpenShift-Enterprise-3.1-Install/><i class="far fa-calendar"></i> December 12, 2015</a>
+</p>
+</div>
+<p class=intro>This playbook is written for RHEL 7.2 and OSE v3.1. It will perform the following steps which should take place before running the openshift-ansible byo playbook.
+Install prerequisite RPMs like docker, python, etc. Persist the systemd journal for easier debugging Setup docker ephemeral storage on 2nd disk Turn off swap Enable use of NFS in selinux Prerequisites See my Testing OpenShift Enterprise V3 post for the prereqs.
+The Playbook The lastest version is available here.</p>
+<p class=read-more><a href=http://guifreelife.com/blog/2015/12/12/Playbook-to-Prepare-for-OpenShift-Enterprise-3.1-Install/ class="btn btn-template-main">Continue reading</a>
+</p>
+</div>
+</div>
+</section>
 <section class=post>
 <div class=row>
 <div class=col-md-4>
@@ -333,32 +359,6 @@ It generally is not important to know the last access time of all the files, so 
 </div>
 </div>
 </section>
-<section class=post>
-<div class=row>
-<div class=col-md-4>
-<div class=image>
-<a href=http://guifreelife.com/blog/2015/02/01/Ansible-Customizing-Order-Of-Hosts-in-List/>
-<img src=/img/banners/banner-11.jpg class=img-responsive alt>
-</a>
-</div>
-</div>
-<div class=col-md-8>
-<h2><a href=http://guifreelife.com/blog/2015/02/01/Ansible-Customizing-Order-Of-Hosts-in-List/>Using Ansible Filters to Customize the Order Of Hosts in a List</a></h2>
-<div class=clearfix>
-<p class=author-category>
-</p>
-<p class=date-comments>
-<a href=http://guifreelife.com/blog/2015/02/01/Ansible-Customizing-Order-Of-Hosts-in-List/><i class="far fa-calendar"></i> February 1, 2015</a>
-</p>
-</div>
-<p class=intro>Zimbra is a email / collaboration suite that is typically deployed in a cluster or clusters of dedicated servers which fill roles like LDAP master, LDAP replica, Proxy, MTA, Mailstore, etc.
-The LDAP servers are used by all the other servers to store configuration and provisioning data. Servers in the cluster understand where to find the LDAP master (read/write) and LDAP replicas (read only) though values defined in /opt/zimbra/conf/localconfig.xml.
-There are 2 values relevant to LDAP server lists and they have values like this:</p>
-<p class=read-more><a href=http://guifreelife.com/blog/2015/02/01/Ansible-Customizing-Order-Of-Hosts-in-List/ class="btn btn-template-main">Continue reading</a>
-</p>
-</div>
-</div>
-</section>
 <ul class=pager>
 <li class=previous><a href=/blog/page/3/>&larr; Newer</a></li>
 <li class=next><a href=/blog/page/5/>Older &rarr;</a></li>
@@ -487,6 +487,9 @@ There are 2 values relevant to LDAP server lists and they have values like this:
 <a href=/tags/vagrant><i class="fas fa-tags"></i> vagrant</a>
 </li>
 <li>
+<a href=/tags/virtualization><i class="fas fa-tags"></i> virtualization</a>
+</li>
+<li>
 <a href=/tags/windows><i class="fas fa-tags"></i> windows</a>
 </li>
 <li>
@@ -520,6 +523,16 @@ There are 2 values relevant to LDAP server lists and they have values like this:
 <div class=blog-entries>
 <div class="item same-height-row clearfix">
 <div class="image same-height-always">
+<a href=http://guifreelife.com/blog/2022/05/13/OpenShift-Virtualization-on-vSphere/>
+<img src=/images/shutterstock_2100290518.jpg class=img-responsive alt="OpenShift Virtualization on vSphere">
+</a>
+</div>
+<div class="name same-height-always">
+<h5><a href=http://guifreelife.com/blog/2022/05/13/OpenShift-Virtualization-on-vSphere/>OpenShift Virtualization on vSphere</a></h5>
+</div>
+</div>
+<div class="item same-height-row clearfix">
+<div class="image same-height-always">
 <a href=http://guifreelife.com/blog/2022/03/10/Debugging-AWS-STS-Authentication-for-OpenShift-Operators/>
 <img src=/images/debug-sts-banner.jpg class=img-responsive alt="Debugging AWS STS Authentication for OpenShift Operators">
 </a>
@@ -536,16 +549,6 @@ There are 2 values relevant to LDAP server lists and they have values like this:
 </div>
 <div class="name same-height-always">
 <h5><a href=http://guifreelife.com/blog/2021/12/21/Red-Hat-Advanced-Cluster-Management-Walkthrough/>Red Hat Advanced Cluster Management Walkthrough</a></h5>
-</div>
-</div>
-<div class="item same-height-row clearfix">
-<div class="image same-height-always">
-<a href=http://guifreelife.com/blog/2021/08/18/Protect-Gitignored-but-Tracked-Files/>
-<img src=/img/banners/banner-32.jpg class=img-responsive alt="Protect Gitignored but Tracked Files">
-</a>
-</div>
-<div class="name same-height-always">
-<h5><a href=http://guifreelife.com/blog/2021/08/18/Protect-Gitignored-but-Tracked-Files/>Protect Gitignored but Tracked Files</a></h5>
 </div>
 </div>
 </div>

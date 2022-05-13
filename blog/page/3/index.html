@@ -31,7 +31,7 @@
 <meta property="og:image:type" content="image/png">
 <meta property="og:image:width" content="179">
 <meta property="og:image:height" content="50">
-<meta property="og:updated_time" content="2022-03-10T00:00:00Z">
+<meta property="og:updated_time" content="2022-05-13T00:00:00Z">
 <meta name=twitter:card content="summary">
 <meta name=twitter:site content="@dlbewley">
 <meta name=twitter:title content="Blogs">
@@ -95,6 +95,34 @@
 <div class=container>
 <div class=row>
 <div class=col-md-9 id=blog-listing-medium>
+<section class=post>
+<div class=row>
+<div class=col-md-4>
+<div class=image>
+<a href=http://guifreelife.com/blog/2017/08/09/Pushing-To-OpenShift-Registry/>
+<img src=/img/banners/banner-21.jpg class=img-responsive alt>
+</a>
+</div>
+</div>
+<div class=col-md-8>
+<h2><a href=http://guifreelife.com/blog/2017/08/09/Pushing-To-OpenShift-Registry/>How to push an image to an unexposed OpenShift Docker registry</a></h2>
+<div class=clearfix>
+<p class=author-category>
+</p>
+<p class=date-comments>
+<a href=http://guifreelife.com/blog/2017/08/09/Pushing-To-OpenShift-Registry/><i class="far fa-calendar"></i> August 9, 2017</a>
+</p>
+</div>
+<p class=intro>How do I push an image to the OpenShift Docker registry if it is not exposed outside the cluster?
+Login to a member node
+Get on a machine that has docker and participates in the cluster SDN or can somehow access that network. (eg. 172.30.0.0/16)
+Get the IP of the registry
+oc get svc docker-registry -n default --template "{{ .spec.clusterIP }}" SVC_REGISTRY=$(oc get svc docker-registry -n default --template "{{ .spec.clusterIP }}") Get a token for your session</p>
+<p class=read-more><a href=http://guifreelife.com/blog/2017/08/09/Pushing-To-OpenShift-Registry/ class="btn btn-template-main">Continue reading</a>
+</p>
+</div>
+</div>
+</section>
 <section class=post>
 <div class=row>
 <div class=col-md-4>
@@ -333,32 +361,6 @@ Master controller manager server and API endpoint Etcd configuration and state s
 </div>
 </div>
 </section>
-<section class=post>
-<div class=row>
-<div class=col-md-4>
-<div class=image>
-<a href=http://guifreelife.com/blog/2015/12/12/Playbook-to-Prepare-for-OpenShift-Enterprise-3.1-Install/>
-<img src=/img/banners/banner-35.jpg class=img-responsive alt>
-</a>
-</div>
-</div>
-<div class=col-md-8>
-<h2><a href=http://guifreelife.com/blog/2015/12/12/Playbook-to-Prepare-for-OpenShift-Enterprise-3.1-Install/>Ansible Playbook to Prepare for OpenShift Enterprise 3.1</a></h2>
-<div class=clearfix>
-<p class=author-category>
-</p>
-<p class=date-comments>
-<a href=http://guifreelife.com/blog/2015/12/12/Playbook-to-Prepare-for-OpenShift-Enterprise-3.1-Install/><i class="far fa-calendar"></i> December 12, 2015</a>
-</p>
-</div>
-<p class=intro>This playbook is written for RHEL 7.2 and OSE v3.1. It will perform the following steps which should take place before running the openshift-ansible byo playbook.
-Install prerequisite RPMs like docker, python, etc. Persist the systemd journal for easier debugging Setup docker ephemeral storage on 2nd disk Turn off swap Enable use of NFS in selinux Prerequisites See my Testing OpenShift Enterprise V3 post for the prereqs.
-The Playbook The lastest version is available here.</p>
-<p class=read-more><a href=http://guifreelife.com/blog/2015/12/12/Playbook-to-Prepare-for-OpenShift-Enterprise-3.1-Install/ class="btn btn-template-main">Continue reading</a>
-</p>
-</div>
-</div>
-</section>
 <ul class=pager>
 <li class=previous><a href=/blog/page/2/>&larr; Newer</a></li>
 <li class=next><a href=/blog/page/4/>Older &rarr;</a></li>
@@ -487,6 +489,9 @@ The Playbook The lastest version is available here.</p>
 <a href=/tags/vagrant><i class="fas fa-tags"></i> vagrant</a>
 </li>
 <li>
+<a href=/tags/virtualization><i class="fas fa-tags"></i> virtualization</a>
+</li>
+<li>
 <a href=/tags/windows><i class="fas fa-tags"></i> windows</a>
 </li>
 <li>
@@ -520,6 +525,16 @@ The Playbook The lastest version is available here.</p>
 <div class=blog-entries>
 <div class="item same-height-row clearfix">
 <div class="image same-height-always">
+<a href=http://guifreelife.com/blog/2022/05/13/OpenShift-Virtualization-on-vSphere/>
+<img src=/images/shutterstock_2100290518.jpg class=img-responsive alt="OpenShift Virtualization on vSphere">
+</a>
+</div>
+<div class="name same-height-always">
+<h5><a href=http://guifreelife.com/blog/2022/05/13/OpenShift-Virtualization-on-vSphere/>OpenShift Virtualization on vSphere</a></h5>
+</div>
+</div>
+<div class="item same-height-row clearfix">
+<div class="image same-height-always">
 <a href=http://guifreelife.com/blog/2022/03/10/Debugging-AWS-STS-Authentication-for-OpenShift-Operators/>
 <img src=/images/debug-sts-banner.jpg class=img-responsive alt="Debugging AWS STS Authentication for OpenShift Operators">
 </a>
@@ -536,16 +551,6 @@ The Playbook The lastest version is available here.</p>
 </div>
 <div class="name same-height-always">
 <h5><a href=http://guifreelife.com/blog/2021/12/21/Red-Hat-Advanced-Cluster-Management-Walkthrough/>Red Hat Advanced Cluster Management Walkthrough</a></h5>
-</div>
-</div>
-<div class="item same-height-row clearfix">
-<div class="image same-height-always">
-<a href=http://guifreelife.com/blog/2021/08/18/Protect-Gitignored-but-Tracked-Files/>
-<img src=/img/banners/banner-32.jpg class=img-responsive alt="Protect Gitignored but Tracked Files">
-</a>
-</div>
-<div class="name same-height-always">
-<h5><a href=http://guifreelife.com/blog/2021/08/18/Protect-Gitignored-but-Tracked-Files/>Protect Gitignored but Tracked Files</a></h5>
 </div>
 </div>
 </div>
