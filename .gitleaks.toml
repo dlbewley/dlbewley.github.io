@@ -1,0 +1,5 @@
+[allowlist]
+description = "Allowlist"
+regexes = [
+    '''AIzaSyDacpwSIXi6lk2fS2wzZOSoh7iHm_ZP3UE'''
+]
