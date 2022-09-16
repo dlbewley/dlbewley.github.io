@@ -42,6 +42,8 @@
 <meta name=twitter:title content="Recovering kubeconfig for a Cluster Created with RHACM">
 <meta name=twitter:image content="http://guifreelife.com/img/banners/banner-22.jpg">
 <meta name=twitter:description content="GUI Free Life">
+<link rel=stylesheet type=text/css href=/css/asciinema-player.css>
+<script src=/js/asciinema-player.js></script>
 </head>
 <body>
 <div id=all>
@@ -114,6 +116,22 @@ August 13, 2021
 <h1 id=script>Script</h1>
 <p>Use this script to extract the kubeconfig and kubeadmin credentials of a managed cluster that was deployed by RHACM.</p>
 <script type=application/javascript src=https://gist.github.com/dlbewley/f57eb2bb5b69d2db0df7b171329a68cc.js></script>
+<h1 id=example>Example</h1>
+<p><strong>Demo: Recover Kubeconfig for RHACM Deployed Cluster</strong></p>
+<blockquote>
+<span class=expand>
+<span class=expand-label style=cursor:pointer onclick="$h=$(this),$h.next('div').slideToggle(200,function(){$h.children('i').attr('class',function(){return $h.next('div').is(':visible')?'fas fa-chevron-down':'fas fa-chevron-right'})})">
+📺 ASCII Screencast
+<i class="fas fa-chevron-down"></i>
+</span>
+<div class=expand-content style="display:block;margin:10px 0">
+<p>Kubeconfig of an RHACM created cluster can be downloaded from CLI.</p>
+<p>
+<asciinema-player src=/casts/extract-kubeconfig-20220614.cast cols=640 rows=20 start-at=0 speed=1 poster=npt:0:22 font-size=smaller></asciinema-player>
+</p>
+</div>
+</span>
+</blockquote>
 </div>
 <div id=comments>
 <div id=disqus_thread></div>
@@ -166,6 +184,7 @@ August 13, 2021
 <ul>
 <li><a href=#clusterdeployment>ClusterDeployment</a></li>
 <li><a href=#script>Script</a></li>
+<li><a href=#example>Example</a></li>
 </ul>
 </nav>
 </div>
