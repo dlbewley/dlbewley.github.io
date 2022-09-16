@@ -99,6 +99,31 @@
 <div class=row>
 <div class=col-md-4>
 <div class=image>
+<a href=http://guifreelife.com/blog/2019/05/09/Replace-Bootstrap-Kubeconfig/>
+<img src=/img/banners/banner-5.jpg class=img-responsive alt>
+</a>
+</div>
+</div>
+<div class=col-md-8>
+<h2><a href=http://guifreelife.com/blog/2019/05/09/Replace-Bootstrap-Kubeconfig/>Playbook to replace bootstrap.kubeconfig and node certificates on OpenShift 3.10 3.11</a></h2>
+<div class=clearfix>
+<p class=author-category>
+</p>
+<p class=date-comments>
+<a href=http://guifreelife.com/blog/2019/05/09/Replace-Bootstrap-Kubeconfig/><i class="far fa-calendar"></i> May 9, 2019</a>
+</p>
+</div>
+<p class=intro>If you are a serial upgrader like me, you may have found that at one point during your 3.10.xx patching (say 3.10.119) you hit this error during the data plane upgrade:
+TASK [openshift_node : Approve the node] ************************************************************ task path: /usr/share/ansible/openshift-ansible/roles/openshift_node/tasks/upgrade/restart.yml:49 Using module file /usr/share/ansible/openshift-ansible/roles/lib_openshift/library/oc_csr_approve.py ... FAILED - RETRYING: Approve the node (30 retries left).Result was: { "all_subjects_found": [], "attempts": 1, "changed": false, "client_approve_results": [], "client_csrs": {}, "failed": true, "invocation": { "module_args": { "node_list": [ "ose-test-node-01.</p>
+<p class=read-more><a href=http://guifreelife.com/blog/2019/05/09/Replace-Bootstrap-Kubeconfig/ class="btn btn-template-main">Continue reading</a>
+</p>
+</div>
+</div>
+</section>
+<section class=post>
+<div class=row>
+<div class=col-md-4>
+<div class=image>
 <a href=http://guifreelife.com/blog/2019/02/19/Downgrade-Etcd-for-OpenShift-Compatibility/>
 <img src=/img/banners/banner-27.jpg class=img-responsive alt>
 </a>
@@ -330,31 +355,6 @@ HTTP 49,999 HTTPS 50,000 Haproxy Stats 51,936 How To Open infra node firewalls O
 </div>
 </div>
 </section>
-<section class=post>
-<div class=row>
-<div class=col-md-4>
-<div class=image>
-<a href=http://guifreelife.com/blog/2016/11/14/OpenShift-Cluster-Metrics-and-Cassandra-Troubleshooting/>
-<img src=/img/banners/banner-12.jpg class=img-responsive alt>
-</a>
-</div>
-</div>
-<div class=col-md-8>
-<h2><a href=http://guifreelife.com/blog/2016/11/14/OpenShift-Cluster-Metrics-and-Cassandra-Troubleshooting/>OpenShift Cluster Metrics and Cassandra Troubleshooting</a></h2>
-<div class=clearfix>
-<p class=author-category>
-</p>
-<p class=date-comments>
-<a href=http://guifreelife.com/blog/2016/11/14/OpenShift-Cluster-Metrics-and-Cassandra-Troubleshooting/><i class="far fa-calendar"></i> November 14, 2016</a>
-</p>
-</div>
-<p class=intro>OpenShift gathers cluster metrics such as CPU, memory, and network bandwidth per pod which can assist in troubleshooting and capacity planning. The metrics are also used to support horizontal pod autoscaling, which makes the metrics service not just helpful, but critical to operation.
-Missing Liveness Probes There are 3 major components in the metrics collection process. Heapster gathers stats from Docker and feeds them to Hawkular Metrics to tuck away for safe keeping in Cassandra.</p>
-<p class=read-more><a href=http://guifreelife.com/blog/2016/11/14/OpenShift-Cluster-Metrics-and-Cassandra-Troubleshooting/ class="btn btn-template-main">Continue reading</a>
-</p>
-</div>
-</div>
-</section>
 <ul class=pager>
 <li class=previous><a href=/tags/openshift/>&larr; Newer</a></li>
 <li class=next><a href=/tags/openshift/page/3/>Older &rarr;</a></li>
@@ -397,6 +397,9 @@ Missing Liveness Probes There are 3 major components in the metrics collection p
 </li>
 <li>
 <a href=/tags/RHACM><i class="fas fa-tags"></i> RHACM</a>
+</li>
+<li>
+<a href=/tags/RHACS><i class="fas fa-tags"></i> RHACS</a>
 </li>
 <li>
 <a href=/tags/RHEL><i class="fas fa-tags"></i> RHEL</a>
@@ -474,6 +477,9 @@ Missing Liveness Probes There are 3 major components in the metrics collection p
 <a href=/tags/ssl><i class="fas fa-tags"></i> ssl</a>
 </li>
 <li>
+<a href=/tags/stackrox><i class="fas fa-tags"></i> stackrox</a>
+</li>
+<li>
 <a href=/tags/troubleshooting><i class="fas fa-tags"></i> troubleshooting</a>
 </li>
 <li>
@@ -484,6 +490,9 @@ Missing Liveness Probes There are 3 major components in the metrics collection p
 </li>
 <li>
 <a href=/tags/virtualization><i class="fas fa-tags"></i> virtualization</a>
+</li>
+<li>
+<a href=/tags/webinar><i class="fas fa-tags"></i> webinar</a>
 </li>
 <li>
 <a href=/tags/windows><i class="fas fa-tags"></i> windows</a>
@@ -539,12 +548,12 @@ Missing Liveness Probes There are 3 major components in the metrics collection p
 </div>
 <div class="item same-height-row clearfix">
 <div class="image same-height-always">
-<a href=http://guifreelife.com/blog/2021/12/21/Red-Hat-Advanced-Cluster-Management-Walkthrough/>
-<img src=/images/port-of-oakland.png class=img-responsive alt="Red Hat Advanced Cluster Management Walkthrough">
+<a href=http://guifreelife.com/blog/2021/12/22/Red-Hat-Advanced-Cluster-Security-Walkthrough/>
+<img src=/images/rhacs-network-sim.png class=img-responsive alt="Red Hat Advanced Cluster Security Walkthrough">
 </a>
 </div>
 <div class="name same-height-always">
-<h5><a href=http://guifreelife.com/blog/2021/12/21/Red-Hat-Advanced-Cluster-Management-Walkthrough/>Red Hat Advanced Cluster Management Walkthrough</a></h5>
+<h5><a href=http://guifreelife.com/blog/2021/12/22/Red-Hat-Advanced-Cluster-Security-Walkthrough/>Red Hat Advanced Cluster Security Walkthrough</a></h5>
 </div>
 </div>
 </div>
