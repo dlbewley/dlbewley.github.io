@@ -31,7 +31,7 @@
 <meta property="og:image:type" content="image/png">
 <meta property="og:image:width" content="179">
 <meta property="og:image:height" content="50">
-<meta property="og:updated_time" content="2022-05-13T00:00:00Z">
+<meta property="og:updated_time" content="2022-09-19T00:00:00Z">
 <meta name=twitter:card content="summary">
 <meta name=twitter:site content="@dlbewley">
 <meta name=twitter:title content="GUI Free Life">
@@ -221,17 +221,6 @@
 </div>
 <div class="col-md-4 col-1 col-even">
 <div class=box-simple>
-<a href=https://github.com/dlbewley/>
-<div class=icon>
-<i class="fab fa-github"></i>
-</div>
-</a>
-<h3>Projects</h3>
-<p><a href=https://github.com/dlbewley/>Github</a>, <a href=https://gitlab.com/dlbewley/>Gitlab</a></p>
-</div>
-</div>
-<div class="col-md-4 col-2 col-odd">
-<div class=box-simple>
 <a href=tags/RHEL>
 <div class=icon>
 <i class="fab fa-redhat"></i>
@@ -239,6 +228,17 @@
 </a>
 <h3>Linux</h3>
 <p>Opensource and Linux</p>
+</div>
+</div>
+<div class="col-md-4 col-2 col-odd">
+<div class=box-simple>
+<a href=https://github.com/dlbewley/>
+<div class=icon>
+<i class="fab fa-github"></i>
+</div>
+</a>
+<h3>Projects</h3>
+<p><a href=https://github.com/dlbewley/>Github</a>, <a href=https://gitlab.com/dlbewley/>Gitlab</a></p>
 </div>
 </div>
 </div>
@@ -271,6 +271,33 @@ GUI Free Life
 <p class=lead>
 </p>
 <div class=row>
+<div class="col-md-3 col-sm-6">
+<div class="box-image-text blog">
+<div class=top>
+<div class=image style=overflow:hidden>
+<img src=/images/thumb/openshift-ha-cluster-routing.png class=img-responsive alt>
+</div>
+<div class=bg></div>
+<div class=text>
+<p class=buttons>
+<a href=http://guifreelife.com/blog/2017/08/20/OpenShift-on-OpenStack/ class="btn btn-template-transparent-primary"><i class="fas fa-link"></i> Read more</a>
+</p>
+</div>
+</div>
+<div class=content>
+<h4><a href=http://guifreelife.com/blog/2017/08/20/OpenShift-on-OpenStack/>Installing OpenShift on OpenStack</a></h4>
+<p class=author-category>
+on August 20, 2017
+</p>
+<p class=intro>This is a work in progress
+The OpenShift Container Platform (OCP) can run on many types of infrastructure; from a Docker contrainer, to a single VM, to a fleet of baremetal or VMs on an infrastructure provider such as RHV, VMware, Amazon EC2, Google Compute Engine, or OpenStack Platform (OSP). This post is to document my experimentation with setting up OCP on OSP.
+Doc Overview So where are the docs?</p>
+<p class=read-more>
+<a href=http://guifreelife.com/blog/2017/08/20/OpenShift-on-OpenStack/ class="btn btn-template-main">Continue reading</a>
+</p>
+</div>
+</div>
+</div>
 <div class="col-md-3 col-sm-6">
 <div class="box-image-text blog">
 <div class=top>
@@ -353,35 +380,6 @@ I threw together a script and a playbook to deploy it.</p>
 </div>
 </div>
 </div>
-<div class="col-md-3 col-sm-6">
-<div class="box-image-text blog">
-<div class=top>
-<div class=image style=overflow:hidden>
-<img src=/img/banners/banner-6.jpg class=img-responsive alt>
-</div>
-<div class=bg></div>
-<div class=text>
-<p class=buttons>
-<a href=http://guifreelife.com/blog/2017/01/29/OpenShift-Multiple-Sharded-Routers/ class="btn btn-template-transparent-primary"><i class="fas fa-link"></i> Read more</a>
-</p>
-</div>
-</div>
-<div class=content>
-<h4><a href=http://guifreelife.com/blog/2017/01/29/OpenShift-Multiple-Sharded-Routers/>Configuring OpenShift with Multiple Sharded Routers</a></h4>
-<p class=author-category>
-on January 29, 2017
-</p>
-<p class=intro>I needed to host a service that would be consumed by a closed client that insists on speaking HTTPS on port 50,000. To solve this, I added a 2nd router deployment and used the OpenShift router sharding feature to selectively enable routes on the 2nd router by way of selectors.
-To summarize:
-Existing HA router:
-HTTP 80 HTTPS 443 Haproxy Stats 1,936 Added HA router:
-HTTP 49,999 HTTPS 50,000 Haproxy Stats 51,936 How To Open infra node firewalls Open firewall on infra nodes where router will run to allow new http and https port iptables -A OS_FIREWALL_ALLOW -m tcp -p tcp --dport 49999 -j ACCEPT iptables -A OS_FIREWALL_ALLOW -m tcp -p tcp --dport 50000 -j ACCEPT This can also be done with Ansible and the os_firewall role in your playbook.</p>
-<p class=read-more>
-<a href=http://guifreelife.com/blog/2017/01/29/OpenShift-Multiple-Sharded-Routers/ class="btn btn-template-main">Continue reading</a>
-</p>
-</div>
-</div>
-</div>
 </div>
 </div>
 </div>
@@ -404,6 +402,16 @@ HTTP 49,999 HTTPS 50,000 Haproxy Stats 51,936 How To Open infra node firewalls O
 <div class=blog-entries>
 <div class="item same-height-row clearfix">
 <div class="image same-height-always">
+<a href=http://guifreelife.com/blog/2022/09/19/Hybrid-Cloud-Management-with-Red-Hat/>
+<img src=/images/port-of-oakland-night.png class=img-responsive alt="Hybrid Cloud Management With Red Hat">
+</a>
+</div>
+<div class="name same-height-always">
+<h5><a href=http://guifreelife.com/blog/2022/09/19/Hybrid-Cloud-Management-with-Red-Hat/>Hybrid Cloud Management With Red Hat</a></h5>
+</div>
+</div>
+<div class="item same-height-row clearfix">
+<div class="image same-height-always">
 <a href=http://guifreelife.com/blog/2022/05/13/OpenShift-Virtualization-on-vSphere/>
 <img src=/images/shutterstock_2100290518.jpg class=img-responsive alt="OpenShift Virtualization on vSphere">
 </a>
@@ -420,16 +428,6 @@ HTTP 49,999 HTTPS 50,000 Haproxy Stats 51,936 How To Open infra node firewalls O
 </div>
 <div class="name same-height-always">
 <h5><a href=http://guifreelife.com/blog/2022/03/10/Debugging-AWS-STS-Authentication-for-OpenShift-Operators/>Debugging AWS STS Authentication for OpenShift Operators</a></h5>
-</div>
-</div>
-<div class="item same-height-row clearfix">
-<div class="image same-height-always">
-<a href=http://guifreelife.com/blog/2021/12/22/Red-Hat-Advanced-Cluster-Security-Walkthrough/>
-<img src=/images/rhacs-network-sim.png class=img-responsive alt="Red Hat Advanced Cluster Security Walkthrough">
-</a>
-</div>
-<div class="name same-height-always">
-<h5><a href=http://guifreelife.com/blog/2021/12/22/Red-Hat-Advanced-Cluster-Security-Walkthrough/>Red Hat Advanced Cluster Security Walkthrough</a></h5>
 </div>
 </div>
 </div>

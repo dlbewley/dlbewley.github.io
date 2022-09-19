@@ -31,7 +31,7 @@
 <meta property="og:image:type" content="image/png">
 <meta property="og:image:width" content="179">
 <meta property="og:image:height" content="50">
-<meta property="og:updated_time" content="2022-05-13T00:00:00Z">
+<meta property="og:updated_time" content="2022-09-19T00:00:00Z">
 <meta name=twitter:card content="summary">
 <meta name=twitter:site content="@dlbewley">
 <meta name=twitter:title content="openshift">
@@ -95,6 +95,34 @@
 <div class=container>
 <div class=row>
 <div class=col-md-9 id=blog-listing-medium>
+<section class=post>
+<div class=row>
+<div class=col-md-4>
+<div class=image>
+<a href=http://guifreelife.com/blog/2017/01/29/OpenShift-Multiple-Sharded-Routers/>
+<img src=/img/banners/banner-6.jpg class=img-responsive alt>
+</a>
+</div>
+</div>
+<div class=col-md-8>
+<h2><a href=http://guifreelife.com/blog/2017/01/29/OpenShift-Multiple-Sharded-Routers/>Configuring OpenShift with Multiple Sharded Routers</a></h2>
+<div class=clearfix>
+<p class=author-category>
+</p>
+<p class=date-comments>
+<a href=http://guifreelife.com/blog/2017/01/29/OpenShift-Multiple-Sharded-Routers/><i class="far fa-calendar"></i> January 29, 2017</a>
+</p>
+</div>
+<p class=intro>I needed to host a service that would be consumed by a closed client that insists on speaking HTTPS on port 50,000. To solve this, I added a 2nd router deployment and used the OpenShift router sharding feature to selectively enable routes on the 2nd router by way of selectors.
+To summarize:
+Existing HA router:
+HTTP 80 HTTPS 443 Haproxy Stats 1,936 Added HA router:
+HTTP 49,999 HTTPS 50,000 Haproxy Stats 51,936 How To Open infra node firewalls Open firewall on infra nodes where router will run to allow new http and https port iptables -A OS_FIREWALL_ALLOW -m tcp -p tcp --dport 49999 -j ACCEPT iptables -A OS_FIREWALL_ALLOW -m tcp -p tcp --dport 50000 -j ACCEPT This can also be done with Ansible and the os_firewall role in your playbook.</p>
+<p class=read-more><a href=http://guifreelife.com/blog/2017/01/29/OpenShift-Multiple-Sharded-Routers/ class="btn btn-template-main">Continue reading</a>
+</p>
+</div>
+</div>
+</section>
 <section class=post>
 <div class=row>
 <div class=col-md-4>
@@ -332,31 +360,6 @@ Getting Started Docs Overview Training Download Prerequisites OpenShift Enterpri
 </div>
 </div>
 </section>
-<section class=post>
-<div class=row>
-<div class=col-md-4>
-<div class=image>
-<a href=http://guifreelife.com/blog/2015/06/28/Testing-Openshift-Origin-V3-with-Ansible-and-Vagrant-on-OS-X/>
-<img src=/images/openshift-virtualbox-0.png class=img-responsive alt>
-</a>
-</div>
-</div>
-<div class=col-md-8>
-<h2><a href=http://guifreelife.com/blog/2015/06/28/Testing-Openshift-Origin-V3-with-Ansible-and-Vagrant-on-OS-X/>Testing Openshift Origin V3 with Ansible and Vagrant on OS X</a></h2>
-<div class=clearfix>
-<p class=author-category>
-</p>
-<p class=date-comments>
-<a href=http://guifreelife.com/blog/2015/06/28/Testing-Openshift-Origin-V3-with-Ansible-and-Vagrant-on-OS-X/><i class="far fa-calendar"></i> June 28, 2015</a>
-</p>
-</div>
-<p class=intro>The OpenShift Origin project provides Ansible playbooks and roles for installing OpenShift on various infratructure. I&rsquo;m going to try out the example using Vagrant and VirtualBox on my Mac. I&rsquo;m not very familiar with Vagrant or OpenShift v3 yet, so I&rsquo;m just going to think out loud and see how it goes. I&rsquo;ve also recently started testing OpenShift Enterprise.
-Some Background OpenShift Origin is an opensource PaaS (platform as a service).</p>
-<p class=read-more><a href=http://guifreelife.com/blog/2015/06/28/Testing-Openshift-Origin-V3-with-Ansible-and-Vagrant-on-OS-X/ class="btn btn-template-main">Continue reading</a>
-</p>
-</div>
-</div>
-</section>
 <ul class=pager>
 <li class=previous><a href=/tags/openshift/page/2/>&larr; Newer</a></li>
 <li class=next><a href=/tags/openshift/page/4/>Older &rarr;</a></li>
@@ -530,6 +533,16 @@ Some Background OpenShift Origin is an opensource PaaS (platform as a service).<
 <div class=blog-entries>
 <div class="item same-height-row clearfix">
 <div class="image same-height-always">
+<a href=http://guifreelife.com/blog/2022/09/19/Hybrid-Cloud-Management-with-Red-Hat/>
+<img src=/images/port-of-oakland-night.png class=img-responsive alt="Hybrid Cloud Management With Red Hat">
+</a>
+</div>
+<div class="name same-height-always">
+<h5><a href=http://guifreelife.com/blog/2022/09/19/Hybrid-Cloud-Management-with-Red-Hat/>Hybrid Cloud Management With Red Hat</a></h5>
+</div>
+</div>
+<div class="item same-height-row clearfix">
+<div class="image same-height-always">
 <a href=http://guifreelife.com/blog/2022/05/13/OpenShift-Virtualization-on-vSphere/>
 <img src=/images/shutterstock_2100290518.jpg class=img-responsive alt="OpenShift Virtualization on vSphere">
 </a>
@@ -546,16 +559,6 @@ Some Background OpenShift Origin is an opensource PaaS (platform as a service).<
 </div>
 <div class="name same-height-always">
 <h5><a href=http://guifreelife.com/blog/2022/03/10/Debugging-AWS-STS-Authentication-for-OpenShift-Operators/>Debugging AWS STS Authentication for OpenShift Operators</a></h5>
-</div>
-</div>
-<div class="item same-height-row clearfix">
-<div class="image same-height-always">
-<a href=http://guifreelife.com/blog/2021/12/22/Red-Hat-Advanced-Cluster-Security-Walkthrough/>
-<img src=/images/rhacs-network-sim.png class=img-responsive alt="Red Hat Advanced Cluster Security Walkthrough">
-</a>
-</div>
-<div class="name same-height-always">
-<h5><a href=http://guifreelife.com/blog/2021/12/22/Red-Hat-Advanced-Cluster-Security-Walkthrough/>Red Hat Advanced Cluster Security Walkthrough</a></h5>
 </div>
 </div>
 </div>
