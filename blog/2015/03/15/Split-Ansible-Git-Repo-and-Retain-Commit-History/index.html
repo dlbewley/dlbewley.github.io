@@ -109,7 +109,7 @@ March 15, 2015
 <div id=post-content>
 <p>Starting with a jumbled git repo of various <a href=http://www.ansible.com/>Ansible</a> roles, playbooks, inventories, group_vars, etc. I want to create a new repo out of a selection of the subdirectories and retain the commit history.</p>
 <p>I have an <code>ansible-test</code> repo with a tree that looks roughly like this:</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-text data-lang=text>.
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-text data-lang=text>.
 ├── adhoc/
 │   ├── rolling-reboot.yml
 │   └── scripts/
@@ -153,84 +153,84 @@ March 15, 2015
 <ul>
 <li>With the orig repo in <code>~/src/ansible-test</code> I created a new clone in <code>~/src/testing/ansible-test</code></li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>mkdir ~/src/testing
-cd ~/src/testing
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>mkdir ~/src/testing
+<span style=color:#658b00>cd</span> ~/src/testing
 git clone ~/src/ansible-test 
-cd ~/src/testing/ansible-test
+<span style=color:#658b00>cd</span> ~/src/testing/ansible-test
 </code></pre></div><ul>
 <li>Make branches holding the commits we care about</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>git subtree split --prefix<span style=color:#f92672>=</span>runtime/roles/zimbra  --branch<span style=color:#f92672>=</span>zimbra
-git subtree split --prefix<span style=color:#f92672>=</span>runtime/library       --branch<span style=color:#f92672>=</span>library
-git subtree split --prefix<span style=color:#f92672>=</span>runtime/group_vars    --branch<span style=color:#f92672>=</span>groupvars
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>git subtree split --prefix=runtime/roles/zimbra  --branch=zimbra
+git subtree split --prefix=runtime/library       --branch=library
+git subtree split --prefix=runtime/group_vars    --branch=groupvars
 </code></pre></div><ul>
 <li>Create a new repo to pull these branches into</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>cd ~/src/testing
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#658b00>cd</span> ~/src/testing
 mkdir playbook-zimbra
-cd playbook-zimbra
+<span style=color:#658b00>cd</span> playbook-zimbra
 git init
 </code></pre></div><ul>
 <li>Pull in the branches and rebase the files into the subdir that was in the original repo. All these git moves feel very wrong.</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>git pull ~/src/testing/ansible-test zimbra
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>git pull ~/src/testing/ansible-test zimbra
 mkdir -p roles/zimbra
 git add roles
-<span style=color:#66d9ef>for</span> f in <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>	README.md <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>	defaults <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>	files <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>	handlers <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>	meta <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>	tasks <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>	templates <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>	vars <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>	; <span style=color:#66d9ef>do</span>
-	git mv $f roles/zimbra
-<span style=color:#66d9ef>done</span>
-git commit -m <span style=color:#e6db74>&#39;restore dir lost in split&#39;</span>
+<span style=color:#8b008b;font-weight:700>for</span> f in <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>	README.md <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>	defaults <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>	files <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>	handlers <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>	meta <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>	tasks <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>	templates <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>	vars <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>	; <span style=color:#8b008b;font-weight:700>do</span>
+	git mv <span style=color:#00688b>$f</span> roles/zimbra
+<span style=color:#8b008b;font-weight:700>done</span>
+git commit -m <span style=color:#cd5555>&#39;restore dir lost in split&#39;</span>
 </code></pre></div><ul>
 <li>Continue merging in the other branches created by <code>git subtree</code>.</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>git co -b library
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>git co -b library
 
 git pull ~/src/testing/ansible-test library
 mkdir library
 git add library
-<span style=color:#66d9ef>for</span> f in <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>	zmprov <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>	zmlocalconfig <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>	; <span style=color:#66d9ef>do</span>
-	git mv $f library;
-<span style=color:#66d9ef>done</span>
-git commit -m <span style=color:#e6db74>&#39;restore dir lost in split&#39;</span>
+<span style=color:#8b008b;font-weight:700>for</span> f in <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>	zmprov <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>	zmlocalconfig <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>	; <span style=color:#8b008b;font-weight:700>do</span>
+	git mv <span style=color:#00688b>$f</span> library;
+<span style=color:#8b008b;font-weight:700>done</span>
+git commit -m <span style=color:#cd5555>&#39;restore dir lost in split&#39;</span>
 
 git pull ~/src/testing/ansible-test groupvars
 mkdir group_vars
 git add group_vars
-<span style=color:#66d9ef>for</span> f in <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>	zimbra-prod <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>	zimbra-test <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>	; <span style=color:#66d9ef>do</span>
-	git mv $f group_vars;
-<span style=color:#66d9ef>done</span>
+<span style=color:#8b008b;font-weight:700>for</span> f in <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>	zimbra-prod <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>	zimbra-test <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>	; <span style=color:#8b008b;font-weight:700>do</span>
+	git mv <span style=color:#00688b>$f</span> group_vars;
+<span style=color:#8b008b;font-weight:700>done</span>
 
-<span style=color:#75715e>#git rm foo-group</span>
+<span style=color:#228b22>#git rm foo-group</span>
 git rm trac*
-git commit -m <span style=color:#e6db74>&#39;restore dir lost in split&#39;</span>
+git commit -m <span style=color:#cd5555>&#39;restore dir lost in split&#39;</span>
 </code></pre></div><h2 id=clean-up-the-old-original-repo>Clean up the old original repo</h2>
 <p>Now back in the original <code>ansible-test</code> repo, let&rsquo;s get rid of the things we just split out to our new repo.</p>
 <ul>
 <li>Remove the temp branches</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>cd ~/src/testing/ansible-test
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#658b00>cd</span> ~/src/testing/ansible-test
 git branch -D zimbra
 git branch -D library
 git branch -D groupvars
 </code></pre></div><ul>
 <li>Remove the extracted directories. They are still in the commit history, which is fine, but we don&rsquo;t want any more commits on them.</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>cd ~/src/testing/ansible-test
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#658b00>cd</span> ~/src/testing/ansible-test
 git rm -rf library
 git rm -rf roles/zimbra
 git rm groupvars/zimbra-prod
@@ -241,39 +241,39 @@ git rm groupvars/zimbra-test
 <ul>
 <li>With the orig repo in <code>~/src/ansible-test</code> I created a new clone in <code>~/src/testing/ansible-test</code></li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>mkdir ~/src/testing
-cd ~/src/testing
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>mkdir ~/src/testing
+<span style=color:#658b00>cd</span> ~/src/testing
 git clone ~/src/ansible-test 
-cd ~/src/testing/ansible-test
+<span style=color:#658b00>cd</span> ~/src/testing/ansible-test
 </code></pre></div><ul>
 <li>The least common denominator directory in my old <code>ansible-test</code> repo is the <code>runtime/</code> directory. So, I&rsquo;ll start by doing a split there to a new branch called <code>runtime</code>.</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>cd ~/src/testing/ansible-test
-git subtree split --prefix<span style=color:#f92672>=</span>runtime  --branch<span style=color:#f92672>=</span>runtime
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#658b00>cd</span> ~/src/testing/ansible-test
+git subtree split --prefix=runtime  --branch=runtime
 </code></pre></div><ul>
 <li>Create a new repo and pull in the runtime branch</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>cd ~/src/testing
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#658b00>cd</span> ~/src/testing
 mkdir playbook-zimbra
-cd playbook-zimbra
+<span style=color:#658b00>cd</span> playbook-zimbra
 git init
 git pull ~/src/testing/ansible-test runtime
 </code></pre></div><ul>
 <li>Now filter away the commits we don&rsquo;t want.</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>git filter-branch --tree-filter <span style=color:#e6db74>&#39;rm -rf roles/foo-role group_vars/foo-group library/foo-lib foo.yml&#39;</span> HEAD
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>git filter-branch --tree-filter <span style=color:#cd5555>&#39;rm -rf roles/foo-role group_vars/foo-group library/foo-lib foo.yml&#39;</span> HEAD
 rm -rf .git/refs/original
 </code></pre></div><ul>
 <li>And finalize the location of the playbooks and ansible config.</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>git mv roles/zimbra/ansible.cfg .
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>git mv roles/zimbra/ansible.cfg .
 git mv roles/zimbra/hosts* .
 git mv roles/zimbra/*yml .
-git commit -m <span style=color:#e6db74>&#39;move playbook config out of role dir&#39;</span>
+git commit -m <span style=color:#cd5555>&#39;move playbook config out of role dir&#39;</span>
 </code></pre></div><ul>
 <li>Commit and push to origin out on github, gitlab, etc.</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>git remote add origin gitlab@gitlab:ansible/playbook-zimbra.git
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>git remote add origin gitlab@gitlab:ansible/playbook-zimbra.git
 git push -u origin master
 git checkout -b develop
 git push -u origin develop
@@ -282,12 +282,12 @@ git push -u origin develop
 <ul>
 <li>Remove the extracted directories. They are still in the commit history, which is fine, but we don&rsquo;t want any more commits on them.</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>cd ~/src/testing/ansible-test/runtime
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#658b00>cd</span> ~/src/testing/ansible-test/runtime
 git rm -rf library
 git rm -rf roles/zimbra
 git rm groupvars/zimbra-prod
 git rm groupvars/zimbra-test
-commit -m <span style=color:#e6db74>&#39;move to playbook-zimbra repo&#39;</span>
+commit -m <span style=color:#cd5555>&#39;move to playbook-zimbra repo&#39;</span>
 </code></pre></div>
 </div>
 <div id=comments>

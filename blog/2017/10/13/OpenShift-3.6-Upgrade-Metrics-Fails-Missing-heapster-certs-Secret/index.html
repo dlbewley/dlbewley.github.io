@@ -110,13 +110,13 @@ October 13, 2017
 <p>After your upgrade to OpenShift v3.6 did the <a href=https://docs.openshift.com/container-platform/3.6/install_config/cluster_metrics.html>deployment of cluster metrics</a> wind up with empty graphs? Check if the heapster pod failed to start due to a missing secret called <code>heapster-certs</code> in the <code>openshift-infra</code> namespace.</p>
 <h1 id=problem>Problem</h1>
 <p><strong>Heapster pod is failing to start</strong></p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc get pods
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc get pods
 NAME                         READY     STATUS              RESTARTS   AGE
-hawkular-cassandra-1-l1f3s   1/1       Running             <span style=color:#ae81ff>0</span>          9m
-hawkular-metrics-rdl07       1/1       Running             <span style=color:#ae81ff>0</span>          9m
-heapster-cfpcj               0/1       ContainerCreating   <span style=color:#ae81ff>0</span>          3m
+hawkular-cassandra-1-l1f3s   1/1       Running             <span style=color:#b452cd>0</span>          9m
+hawkular-metrics-rdl07       1/1       Running             <span style=color:#b452cd>0</span>          9m
+heapster-cfpcj               0/1       ContainerCreating   <span style=color:#b452cd>0</span>          3m
 </code></pre></div><p><strong>Check what volumes it is attempting to mount</strong></p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc volume rc/heapster
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc volume rc/heapster
 replicationcontrollers/heapster
   secret/heapster-secrets as heapster-secrets
     mounted at /secrets
@@ -127,17 +127,17 @@ replicationcontrollers/heapster
   secret/heapster-certs as heapster-certs
     mounted at /heapster-certs
 </code></pre></div><p><strong>Check for the existence of the heapster-certs secret</strong></p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc get secrets heapster-certs
-Error from server <span style=color:#f92672>(</span>NotFound<span style=color:#f92672>)</span>: secrets <span style=color:#e6db74>&#34;heapster-certs&#34;</span> not found
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc get secrets heapster-certs
+Error from server (NotFound): secrets <span style=color:#cd5555>&#34;heapster-certs&#34;</span> not found
 </code></pre></div><h1 id=solution>Solution</h1>
 <p>Maybe you, like I, overlooked a <a href=https://docs.openshift.com/container-platform/3.3/release_notes/ocp_3_3_release_notes.html#ocp-33-technology-preview>v3.3 tech preview feature</a> called <a href=https://docs.openshift.com/container-platform/3.3/dev_guide/secrets.html#service-serving-certificate-secrets>service serving certificates</a>. You missed that this became mandatory in v3.6 because it is <a href="https://bugzilla.redhat.com/show_bug.cgi?id=1501994">not yet</a> in the release notes. See also <a href="https://bugzilla.redhat.com/show_bug.cgi?id=1500981">this bug</a>.</p>
 <p>However, even if you have <code>/etc/origin/master/service-signer.crt</code> in my case it was not visible because of <a href=https://github.com/openshift/openshift-ansible/commit/3e5d38caf39d53c917a78542a04ebb6a109e7e6f>this commit</a> to the v3.3 upgrade playbook had a typo placing <code>servicesServingCert</code> instead of <code>serviceServingCert</code> in <code>/etc/origin/master/master-config.yaml</code>. e.g.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#f92672>controllerConfig</span>:
-  <span style=color:#f92672>serviceServingCert</span>:
-    <span style=color:#f92672>signer</span>:
-      <span style=color:#f92672>certFile</span>: <span style=color:#ae81ff>service-signer.crt</span>
-      <span style=color:#f92672>keyFile</span>: <span style=color:#ae81ff>service-signer.key</span>
-</code></pre></div><p>And now it has been fixed in <a href=https://github.com/openshift/openshift-ansible/pull/5765>PR 5765</a></p>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#8b008b;font-weight:700>controllerConfig</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>serviceServingCert</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>signer</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>certFile</span>:<span style=color:#bbb> </span>service-signer.crt<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>keyFile</span>:<span style=color:#bbb> </span>service-signer.key<span style=color:#bbb>
+</span></code></pre></div><p>And now it has been fixed in <a href=https://github.com/openshift/openshift-ansible/pull/5765>PR 5765</a></p>
 </div>
 <div id=comments>
 <div id=disqus_thread></div>

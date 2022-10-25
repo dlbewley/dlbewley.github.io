@@ -137,7 +137,7 @@ ingress                                              False       True          T
 <p>The Ingress operator needs to authenticate to interact with Route53 service. To do so it seeks to assume a role that was provisioned by the <a href=https://github.com/openshift/cloud-credential-operator title="Cloud Credential Operator">cloud-credential-operator</a>, <code>ccoctl</code>, or <a href=https://docs.openshift.com/container-platform/4.7/authentication/managing_cloud_provider_credentials/cco-mode-sts.html title="Configuring Cloud Credential Operator with STS v4.7 docs include greater detail">by hand</a>.</p>
 <p>This role is named in a secret along with the location of a secret token signed by a key trused by the OpenID Connect Provider you configured in AWS IAM.</p>
 <p>Start by describing the cluster operator (<code>oc describe co ingress</code>) but more importantly, check the logs of the ingress operator pod.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc logs -n openshift-ingress-operator deployment/ingress-operator -c ingress-operator
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc logs -n openshift-ingress-operator deployment/ingress-operator -c ingress-operator
 </code></pre></div><blockquote>
 <p>2022-02-25T17:08:36.019Z ERROR operator.init.controller-runtime.manager.controller.dns_controller controller/controller.go:253 Reconciler error {&ldquo;name&rdquo;: &ldquo;default-wildcard&rdquo;, &ldquo;namespace&rdquo;: &ldquo;openshift-ingress-operator&rdquo;, &ldquo;error&rdquo;:
 failed to create DNS provider: failed to create AWS DNS manager: failed to validate aws provider service endpoints: [failed to list route53 hosted zones: <strong>WebIdentityErr: failed to retrieve credentials caused by: InvalidIdentityToken: Couldn&rsquo;t retrieve verification key from your identity provider, please reference AssumeRoleWithWebIdentity documentation for requirements</strong>
@@ -155,11 +155,11 @@ status code: 400, request id: 6aa3127f-e9b8-44e1-87e6-a739746f0370, &mldr;</p>
 <h2 id=cloud-credentials-secret>Cloud-credentials Secret</h2>
 <p>The <code>cloud-credentials</code> secret holds the <a href=https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html title="Amazon Resource Name">ARN</a> of the role which the pod should assume once authenticated, and the location of the token used to authenticate with. That token will be <a href=https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/#service-account-token-volume-projection title="Service Account Token Volume Projection">automatically</a> available.</p>
 <blockquote>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc -n openshift-ingress-operator extract secret/cloud-credentials --to<span style=color:#f92672>=</span>-
-<span style=color:#75715e># credentials</span>
-<span style=color:#f92672>[</span>default<span style=color:#f92672>]</span>
-role_arn <span style=color:#f92672>=</span> arn:aws:iam::1234567890:role/ocp-oidc-openshift-ingress-operator-cloud-credentials
-web_identity_token_file <span style=color:#f92672>=</span> /var/run/secrets/openshift/serviceaccount/token
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc -n openshift-ingress-operator extract secret/cloud-credentials --to=-
+<span style=color:#228b22># credentials</span>
+[default]
+<span style=color:#00688b>role_arn</span> = arn:aws:iam::1234567890:role/ocp-oidc-openshift-ingress-operator-cloud-credentials
+<span style=color:#00688b>web_identity_token_file</span> = /var/run/secrets/openshift/serviceaccount/token
 </code></pre></div><p><strong>Role ARN</strong></p>
 <p>The <code>role_arn</code> refers to the IAM role which may have been created by the <code>cloud-crendential-operator</code> or other means.</p>
 <p>Save this value to <code>$ROLE_ARN</code>.</p>
@@ -170,42 +170,42 @@ web_identity_token_file <span style=color:#f92672>=</span> /var/run/secrets/open
 <h2 id=viewing-the-contents-of-the-role>Viewing the Contents of the Role</h2>
 <p>Before moving on let&rsquo;s pause and understand a bit more about the IAM role the operator seeks to assume.</p>
 <p>The definition of the IAM role used by an operator will be derived from the <code>CredentialsRequest</code> resources bundled with the operator.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ RELEASE_IMAGE<span style=color:#f92672>=</span>quay.io/openshift-release-dev/ocp-release:4.9.21-x86_64
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ <span style=color:#00688b>RELEASE_IMAGE</span>=quay.io/openshift-release-dev/ocp-release:4.9.21-x86_64
 $ mkdir -p credrequests
-$ oc adm release extract <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    --credentials-requests --cloud<span style=color:#f92672>=</span>aws <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    --to<span style=color:#f92672>=</span>credrequests/ $RELEASE_IMAGE
+$ oc adm release extract <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    --credentials-requests --cloud=aws <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    --to=credrequests/ <span style=color:#00688b>$RELEASE_IMAGE</span>
 
 $ cat credrequests/0000_50_cluster-ingress-operator_00-ingress-credentials-request.yaml
-</code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#f92672>apiVersion</span>: <span style=color:#ae81ff>cloudcredential.openshift.io/v1</span>
-<span style=color:#f92672>kind</span>: <span style=color:#ae81ff>CredentialsRequest</span>
-<span style=color:#f92672>metadata</span>:
-  <span style=color:#f92672>annotations</span>:
-    <span style=color:#f92672>include.release.openshift.io/ibm-cloud-managed</span>: <span style=color:#e6db74>&#34;true&#34;</span>
-    <span style=color:#f92672>include.release.openshift.io/self-managed-high-availability</span>: <span style=color:#e6db74>&#34;true&#34;</span>
-    <span style=color:#f92672>include.release.openshift.io/single-node-developer</span>: <span style=color:#e6db74>&#34;true&#34;</span>
-  <span style=color:#f92672>labels</span>:
-    <span style=color:#f92672>controller-tools.k8s.io</span>: <span style=color:#e6db74>&#34;1.0&#34;</span>
-  <span style=color:#f92672>name</span>: <span style=color:#ae81ff>openshift-ingress</span>
-  <span style=color:#f92672>namespace</span>: <span style=color:#ae81ff>openshift-cloud-credential-operator</span>
-<span style=color:#f92672>spec</span>:
-  <span style=color:#f92672>providerSpec</span>:
-    <span style=color:#f92672>apiVersion</span>: <span style=color:#ae81ff>cloudcredential.openshift.io/v1</span>
-    <span style=color:#f92672>kind</span>: <span style=color:#ae81ff>AWSProviderSpec</span>
-    <span style=color:#f92672>statementEntries</span>:
-    - <span style=color:#f92672>action</span>:
-      - <span style=color:#ae81ff>elasticloadbalancing:DescribeLoadBalancers</span>
-      - <span style=color:#ae81ff>route53:ListHostedZones</span>
-      - <span style=color:#ae81ff>route53:ChangeResourceRecordSets</span>
-      - <span style=color:#ae81ff>tag:GetResources</span>
-      <span style=color:#f92672>effect</span>: <span style=color:#ae81ff>Allow</span>
-      <span style=color:#f92672>resource</span>: <span style=color:#e6db74>&#39;*&#39;</span>
-  <span style=color:#f92672>secretRef</span>:
-    <span style=color:#f92672>name</span>: <span style=color:#ae81ff>cloud-credentials</span>
-    <span style=color:#f92672>namespace</span>: <span style=color:#ae81ff>openshift-ingress-operator</span>
-  <span style=color:#f92672>serviceAccountNames</span>:
-  - <span style=color:#ae81ff>ingress-operator</span>
-</code></pre></div><h1 id=examining-the-json-web-token>Examining the JSON Web Token</h1>
+</code></pre></div><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#8b008b;font-weight:700>apiVersion</span>:<span style=color:#bbb> </span>cloudcredential.openshift.io/v1<span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>kind</span>:<span style=color:#bbb> </span>CredentialsRequest<span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>metadata</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>annotations</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>include.release.openshift.io/ibm-cloud-managed</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;true&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>include.release.openshift.io/self-managed-high-availability</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;true&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>include.release.openshift.io/single-node-developer</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;true&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>labels</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>controller-tools.k8s.io</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;1.0&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>openshift-ingress<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>namespace</span>:<span style=color:#bbb> </span>openshift-cloud-credential-operator<span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>spec</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>providerSpec</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>apiVersion</span>:<span style=color:#bbb> </span>cloudcredential.openshift.io/v1<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>kind</span>:<span style=color:#bbb> </span>AWSProviderSpec<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>statementEntries</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>    </span>- <span style=color:#8b008b;font-weight:700>action</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>      </span>- elasticloadbalancing:DescribeLoadBalancers<span style=color:#bbb>
+</span><span style=color:#bbb>      </span>- route53:ListHostedZones<span style=color:#bbb>
+</span><span style=color:#bbb>      </span>- route53:ChangeResourceRecordSets<span style=color:#bbb>
+</span><span style=color:#bbb>      </span>- tag:GetResources<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>effect</span>:<span style=color:#bbb> </span>Allow<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>resource</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#39;*&#39;</span><span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>secretRef</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>cloud-credentials<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>namespace</span>:<span style=color:#bbb> </span>openshift-ingress-operator<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>serviceAccountNames</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>  </span>- ingress-operator<span style=color:#bbb>
+</span></code></pre></div><h1 id=examining-the-json-web-token>Examining the JSON Web Token</h1>
 <p>The <a href=https://datatracker.ietf.org/doc/html/rfc7519 title="JSON Web Token">JWT</a> or JSON Web Token which contains <strong>3 fields</strong> delimited by a &ldquo;<strong>.</strong>&rdquo;.</p>
 <ol>
 <li>Key ID which should match the IDP Key ID. <em>Confirm this in the OIDC provider config</em></li>
@@ -215,41 +215,41 @@ $ cat credrequests/0000_50_cluster-ingress-operator_00-ingress-credentials-reque
 <p>Note the key ID (<code>kid</code>)</p>
 <blockquote>
 <p><strong>Field 1</strong></p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ export TOKEN<span style=color:#f92672>=</span>/tmp/token
-$ oc  -n openshift-ingress-operator -c ingress-operator <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>       rsh deployment/ingress-operator <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>       cat /var/run/secrets/openshift/serviceaccount/token &gt; $TOKEN
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ <span style=color:#658b00>export</span> <span style=color:#00688b>TOKEN</span>=/tmp/token
+$ oc  -n openshift-ingress-operator -c ingress-operator <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>       rsh deployment/ingress-operator <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>       cat /var/run/secrets/openshift/serviceaccount/token &gt; <span style=color:#00688b>$TOKEN</span>
 
-$ cat $TOKEN | awk -F. <span style=color:#e6db74>&#39;{ print $1 }&#39;</span> | base64 -d | jq
-</code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-json data-lang=json>{
-  <span style=color:#f92672>&#34;alg&#34;</span>: <span style=color:#e6db74>&#34;RS256&#34;</span>,
-  <span style=color:#f92672>&#34;kid&#34;</span>: <span style=color:#e6db74>&#34;TrJph8YY31qgQcN_KTaQspV7dY6Uks1BynN3YsoxJ5s&#34;</span>
+$ cat <span style=color:#00688b>$TOKEN</span> | awk -F. <span style=color:#cd5555>&#39;{ print $1 }&#39;</span> | base64 -d | jq
+</code></pre></div><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-json data-lang=json>{
+  <span style=color:#8b008b;font-weight:700>&#34;alg&#34;</span>: <span style=color:#cd5555>&#34;RS256&#34;</span>,
+  <span style=color:#8b008b;font-weight:700>&#34;kid&#34;</span>: <span style=color:#cd5555>&#34;TrJph8YY31qgQcN_KTaQspV7dY6Uks1BynN3YsoxJ5s&#34;</span>
 }
 </code></pre></div></blockquote>
 <p>In the 2nd field we want to note the audience (<code>aud</code>), the issuer (<code>iss</code>), and the service account name (<code>serviceaccount</code>) scoped by namespace.</p>
 <blockquote>
 <p><strong>Field 2</strong></p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ cat $TOKEN | awk -F. <span style=color:#e6db74>&#39;{ print $2 }&#39;</span> | base64 -d | jq
-</code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-json data-lang=json>{
-  <span style=color:#f92672>&#34;aud&#34;</span>: [
-    <span style=color:#e6db74>&#34;openshift&#34;</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ cat <span style=color:#00688b>$TOKEN</span> | awk -F. <span style=color:#cd5555>&#39;{ print $2 }&#39;</span> | base64 -d | jq
+</code></pre></div><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-json data-lang=json>{
+  <span style=color:#8b008b;font-weight:700>&#34;aud&#34;</span>: [
+    <span style=color:#cd5555>&#34;openshift&#34;</span>
   ],
-  <span style=color:#f92672>&#34;exp&#34;</span>: <span style=color:#ae81ff>1642528257</span>,
-  <span style=color:#f92672>&#34;iat&#34;</span>: <span style=color:#ae81ff>1642524657</span>,
-  <span style=color:#f92672>&#34;iss&#34;</span>: <span style=color:#e6db74>&#34;https://ocp-oidc-oidc.s3.us-west-2.amazonaws.com&#34;</span>,
-  <span style=color:#f92672>&#34;kubernetes.io&#34;</span>: {
-    <span style=color:#f92672>&#34;namespace&#34;</span>: <span style=color:#e6db74>&#34;openshift-ingress-operator&#34;</span>,
-    <span style=color:#f92672>&#34;pod&#34;</span>: {
-      <span style=color:#f92672>&#34;name&#34;</span>: <span style=color:#e6db74>&#34;ingress-operator-5b8c4b8d8b-8kb8b&#34;</span>,
-      <span style=color:#f92672>&#34;uid&#34;</span>: <span style=color:#e6db74>&#34;cf9ee1e6-387f-445d-b8c0-90f40ad8a174&#34;</span>
+  <span style=color:#8b008b;font-weight:700>&#34;exp&#34;</span>: <span style=color:#b452cd>1642528257</span>,
+  <span style=color:#8b008b;font-weight:700>&#34;iat&#34;</span>: <span style=color:#b452cd>1642524657</span>,
+  <span style=color:#8b008b;font-weight:700>&#34;iss&#34;</span>: <span style=color:#cd5555>&#34;https://ocp-oidc-oidc.s3.us-west-2.amazonaws.com&#34;</span>,
+  <span style=color:#8b008b;font-weight:700>&#34;kubernetes.io&#34;</span>: {
+    <span style=color:#8b008b;font-weight:700>&#34;namespace&#34;</span>: <span style=color:#cd5555>&#34;openshift-ingress-operator&#34;</span>,
+    <span style=color:#8b008b;font-weight:700>&#34;pod&#34;</span>: {
+      <span style=color:#8b008b;font-weight:700>&#34;name&#34;</span>: <span style=color:#cd5555>&#34;ingress-operator-5b8c4b8d8b-8kb8b&#34;</span>,
+      <span style=color:#8b008b;font-weight:700>&#34;uid&#34;</span>: <span style=color:#cd5555>&#34;cf9ee1e6-387f-445d-b8c0-90f40ad8a174&#34;</span>
     },
-    <span style=color:#f92672>&#34;serviceaccount&#34;</span>: {
-      <span style=color:#f92672>&#34;name&#34;</span>: <span style=color:#e6db74>&#34;ingress-operator&#34;</span>,
-      <span style=color:#f92672>&#34;uid&#34;</span>: <span style=color:#e6db74>&#34;38313504-2c4c-4d1b-92a9-c7db391a8a59&#34;</span>
+    <span style=color:#8b008b;font-weight:700>&#34;serviceaccount&#34;</span>: {
+      <span style=color:#8b008b;font-weight:700>&#34;name&#34;</span>: <span style=color:#cd5555>&#34;ingress-operator&#34;</span>,
+      <span style=color:#8b008b;font-weight:700>&#34;uid&#34;</span>: <span style=color:#cd5555>&#34;38313504-2c4c-4d1b-92a9-c7db391a8a59&#34;</span>
     }
   },
-  <span style=color:#f92672>&#34;nbf&#34;</span>: <span style=color:#ae81ff>1642524657</span>,
-  <span style=color:#f92672>&#34;sub&#34;</span>: <span style=color:#e6db74>&#34;system:serviceaccount:openshift-ingress-operator:ingress-operator&#34;</span>
+  <span style=color:#8b008b;font-weight:700>&#34;nbf&#34;</span>: <span style=color:#b452cd>1642524657</span>,
+  <span style=color:#8b008b;font-weight:700>&#34;sub&#34;</span>: <span style=color:#cd5555>&#34;system:serviceaccount:openshift-ingress-operator:ingress-operator&#34;</span>
 }
 </code></pre></div></blockquote>
 <blockquote>
@@ -263,53 +263,53 @@ $ cat $TOKEN | awk -F. <span style=color:#e6db74>&#39;{ print $1 }&#39;</span> |
 <h2 id=verify-openid-connect-idp-reachability>Verify OpenID Connect IDP Reachability</h2>
 <p><strong>Can you reach the IDP issuer&rsquo;s openid-configuration?</strong></p>
 <p>The configuration file MUST be publicly reachable for OIDC to function as Amazon makes the call to this resource on your behalf. <em>This must succeed on and off VPC!</em></p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>ISSUER<span style=color:#f92672>=</span><span style=color:#66d9ef>$(</span>cat $TOKEN | awk -F. <span style=color:#e6db74>&#39;{ print $2 }&#39;</span> | base64 -d| jq -r .iss<span style=color:#66d9ef>)</span>
-<span style=color:#75715e># try this from a pod and from your laptop</span>
-curl -s $ISSUER/.well-known/openid-configuration <span style=color:#f92672>||</span> echo <span style=color:#e6db74>&#34;Failure&#34;</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#00688b>ISSUER</span>=<span style=color:#8b008b;font-weight:700>$(</span>cat <span style=color:#00688b>$TOKEN</span> | awk -F. <span style=color:#cd5555>&#39;{ print $2 }&#39;</span> | base64 -d| jq -r .iss<span style=color:#8b008b;font-weight:700>)</span>
+<span style=color:#228b22># try this from a pod and from your laptop</span>
+curl -s <span style=color:#00688b>$ISSUER</span>/.well-known/openid-configuration || <span style=color:#658b00>echo</span> <span style=color:#cd5555>&#34;Failure&#34;</span>
 </code></pre></div><p><strong>Can you reach the IDP issuer&rsquo;s public keys?</strong></p>
 <p>The keys MUST be publicly reachable for OIDC to function as Amazon makes the call to this resource on your behalf. <em>This must succeed on and off VPC!</em></p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>KEYS<span style=color:#f92672>=</span><span style=color:#66d9ef>$(</span>curl -s $ISSUER/.well-known/openid-configuration | jq -r .jwks_uri<span style=color:#66d9ef>)</span>
-<span style=color:#75715e># try this from a pod and from your laptop</span>
-curl -s $KEYS <span style=color:#f92672>||</span> echo <span style=color:#e6db74>&#34;Failure&#34;</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#00688b>KEYS</span>=<span style=color:#8b008b;font-weight:700>$(</span>curl -s <span style=color:#00688b>$ISSUER</span>/.well-known/openid-configuration | jq -r .jwks_uri<span style=color:#8b008b;font-weight:700>)</span>
+<span style=color:#228b22># try this from a pod and from your laptop</span>
+curl -s <span style=color:#00688b>$KEYS</span> || <span style=color:#658b00>echo</span> <span style=color:#cd5555>&#34;Failure&#34;</span>
 </code></pre></div><h1 id=testing-authentication-with-the-token>Testing Authentication with the Token</h1>
 <p>Use the token to attempt to the assume the role.</p>
 <p><strong>First confirm you are authenitcated to AWS normally.</strong></p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ aws sts get-caller-identity
-<span style=color:#f92672>{</span>
-    <span style=color:#e6db74>&#34;UserId&#34;</span>: <span style=color:#e6db74>&#34;AROATPFFJRK73QH4YHANK:i-07d6dbc1345299a43&#34;</span>,
-    <span style=color:#e6db74>&#34;Account&#34;</span>: <span style=color:#e6db74>&#34;1234567890&#34;</span>,
-    <span style=color:#e6db74>&#34;Arn&#34;</span>: <span style=color:#e6db74>&#34;arn:aws:sts::1234567890:assumed-role/managed-roles-ocp-BastionInstanceRole-X15RKXKW1US9/i-07d6dbc1345299a43&#34;</span>
-<span style=color:#f92672>}</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ aws sts get-caller-identity
+{
+    <span style=color:#cd5555>&#34;UserId&#34;</span>: <span style=color:#cd5555>&#34;AROATPFFJRK73QH4YHANK:i-07d6dbc1345299a43&#34;</span>,
+    <span style=color:#cd5555>&#34;Account&#34;</span>: <span style=color:#cd5555>&#34;1234567890&#34;</span>,
+    <span style=color:#cd5555>&#34;Arn&#34;</span>: <span style=color:#cd5555>&#34;arn:aws:sts::1234567890:assumed-role/managed-roles-ocp-BastionInstanceRole-X15RKXKW1US9/i-07d6dbc1345299a43&#34;</span>
+}
 </code></pre></div><p><strong>Can you &ldquo;assume role with web identity&rdquo; using this token?</strong></p>
 <p>Copy the token to your a host where the aws CLI is configured and available. Then do what the pod is trying to do.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#75715e># Remember role_arn and token location here:</span>
-<span style=color:#75715e>#  oc -n openshift-ingress-operator extract secret/cloud-credentials --to=-</span>
-echo $ROLE_ARN
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#228b22># Remember role_arn and token location here:</span>
+<span style=color:#228b22>#  oc -n openshift-ingress-operator extract secret/cloud-credentials --to=-</span>
+<span style=color:#658b00>echo</span> <span style=color:#00688b>$ROLE_ARN</span>
 arn:aws:iam::1234567890:role/ocp-oidc-cf-openshift-ingress-operator-cloud-credentials
-echo $TOKEN
+<span style=color:#658b00>echo</span> <span style=color:#00688b>$TOKEN</span>
 /tmp/token
 
-aws sts assume-role-with-web-identity <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    --duration-seconds <span style=color:#ae81ff>900</span> <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    --role-session-name <span style=color:#e6db74>&#34;assumeroletest&#34;</span> <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    --role-arn <span style=color:#e6db74>&#34;</span>$ROLE_ARN<span style=color:#e6db74>&#34;</span> <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    --web-identity-token <span style=color:#e6db74>&#34;</span><span style=color:#66d9ef>$(</span>cat $TOKEN<span style=color:#66d9ef>)</span><span style=color:#e6db74>&#34;</span>
+aws sts assume-role-with-web-identity <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    --duration-seconds <span style=color:#b452cd>900</span> <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    --role-session-name <span style=color:#cd5555>&#34;assumeroletest&#34;</span> <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    --role-arn <span style=color:#cd5555>&#34;</span><span style=color:#00688b>$ROLE_ARN</span><span style=color:#cd5555>&#34;</span> <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    --web-identity-token <span style=color:#cd5555>&#34;</span><span style=color:#8b008b;font-weight:700>$(</span>cat <span style=color:#00688b>$TOKEN</span><span style=color:#8b008b;font-weight:700>)</span><span style=color:#cd5555>&#34;</span>
 </code></pre></div><p>You should get back a block of JSON for success</p>
 <blockquote>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-json data-lang=json>{
-    <span style=color:#f92672>&#34;Credentials&#34;</span>: {
-        <span style=color:#f92672>&#34;AccessKeyId&#34;</span>: <span style=color:#e6db74>&#34;ASIAT...............&#34;</span>,
-        <span style=color:#f92672>&#34;SecretAccessKey&#34;</span>: <span style=color:#e6db74>&#34;cgp/a/ziU.......&#34;</span>,
-        <span style=color:#f92672>&#34;SessionToken&#34;</span>: <span style=color:#e6db74>&#34;IQoJb3JpZ2luX2VjE..&#34;</span>,
-        <span style=color:#f92672>&#34;Expiration&#34;</span>: <span style=color:#e6db74>&#34;2022-02-25T22:09:33+00:00&#34;</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-json data-lang=json>{
+    <span style=color:#8b008b;font-weight:700>&#34;Credentials&#34;</span>: {
+        <span style=color:#8b008b;font-weight:700>&#34;AccessKeyId&#34;</span>: <span style=color:#cd5555>&#34;ASIAT...............&#34;</span>,
+        <span style=color:#8b008b;font-weight:700>&#34;SecretAccessKey&#34;</span>: <span style=color:#cd5555>&#34;cgp/a/ziU.......&#34;</span>,
+        <span style=color:#8b008b;font-weight:700>&#34;SessionToken&#34;</span>: <span style=color:#cd5555>&#34;IQoJb3JpZ2luX2VjE..&#34;</span>,
+        <span style=color:#8b008b;font-weight:700>&#34;Expiration&#34;</span>: <span style=color:#cd5555>&#34;2022-02-25T22:09:33+00:00&#34;</span>
     },
-    <span style=color:#f92672>&#34;SubjectFromWebIdentityToken&#34;</span>: <span style=color:#e6db74>&#34;system:serviceaccount:openshift-ingress-operator:ingress-operator&#34;</span>,
-    <span style=color:#f92672>&#34;AssumedRoleUser&#34;</span>: {
-        <span style=color:#f92672>&#34;AssumedRoleId&#34;</span>: <span style=color:#e6db74>&#34;AROATPFFJRK72IHENLQ7D:assumeroletest&#34;</span>,
-        <span style=color:#f92672>&#34;Arn&#34;</span>: <span style=color:#e6db74>&#34;arn:aws:sts::1234567890:assumed-role/ocp-oidc-cf-openshift-ingress-operator-cloud-credentials/assumeroletest&#34;</span>
+    <span style=color:#8b008b;font-weight:700>&#34;SubjectFromWebIdentityToken&#34;</span>: <span style=color:#cd5555>&#34;system:serviceaccount:openshift-ingress-operator:ingress-operator&#34;</span>,
+    <span style=color:#8b008b;font-weight:700>&#34;AssumedRoleUser&#34;</span>: {
+        <span style=color:#8b008b;font-weight:700>&#34;AssumedRoleId&#34;</span>: <span style=color:#cd5555>&#34;AROATPFFJRK72IHENLQ7D:assumeroletest&#34;</span>,
+        <span style=color:#8b008b;font-weight:700>&#34;Arn&#34;</span>: <span style=color:#cd5555>&#34;arn:aws:sts::1234567890:assumed-role/ocp-oidc-cf-openshift-ingress-operator-cloud-credentials/assumeroletest&#34;</span>
     },
-    <span style=color:#f92672>&#34;Provider&#34;</span>: <span style=color:#e6db74>&#34;arn:aws:iam::1234567890:oidc-provider/ocp-oidc-oidc.s3.us-west-2.amazonaws.com&#34;</span>,
-    <span style=color:#f92672>&#34;Audience&#34;</span>: <span style=color:#e6db74>&#34;openshift&#34;</span>
+    <span style=color:#8b008b;font-weight:700>&#34;Provider&#34;</span>: <span style=color:#cd5555>&#34;arn:aws:iam::1234567890:oidc-provider/ocp-oidc-oidc.s3.us-west-2.amazonaws.com&#34;</span>,
+    <span style=color:#8b008b;font-weight:700>&#34;Audience&#34;</span>: <span style=color:#cd5555>&#34;openshift&#34;</span>
 }
 </code></pre></div></blockquote>
 <p>If you see an error like this, your pod can not authenticate or isn&rsquo;t authorized to assume the role.</p>
@@ -327,18 +327,18 @@ aws sts assume-role-with-web-identity <span style=color:#ae81ff>\
 </ul>
 <blockquote>
 <p><strong>IAM Role Trust Relationship</strong> Note service account in the condition</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-json data-lang=json>{
-    <span style=color:#f92672>&#34;Version&#34;</span>: <span style=color:#e6db74>&#34;2012-10-17&#34;</span>,
-    <span style=color:#f92672>&#34;Statement&#34;</span>: [
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-json data-lang=json>{
+    <span style=color:#8b008b;font-weight:700>&#34;Version&#34;</span>: <span style=color:#cd5555>&#34;2012-10-17&#34;</span>,
+    <span style=color:#8b008b;font-weight:700>&#34;Statement&#34;</span>: [
         {
-            <span style=color:#f92672>&#34;Effect&#34;</span>: <span style=color:#e6db74>&#34;Allow&#34;</span>,
-            <span style=color:#f92672>&#34;Principal&#34;</span>: {
-                <span style=color:#f92672>&#34;Federated&#34;</span>: <span style=color:#e6db74>&#34;arn:aws:iam::1234567890:oidc-provider/ocp-oidc-oidc.s3.us-west-2.amazonaws.com&#34;</span>
+            <span style=color:#8b008b;font-weight:700>&#34;Effect&#34;</span>: <span style=color:#cd5555>&#34;Allow&#34;</span>,
+            <span style=color:#8b008b;font-weight:700>&#34;Principal&#34;</span>: {
+                <span style=color:#8b008b;font-weight:700>&#34;Federated&#34;</span>: <span style=color:#cd5555>&#34;arn:aws:iam::1234567890:oidc-provider/ocp-oidc-oidc.s3.us-west-2.amazonaws.com&#34;</span>
             },
-            <span style=color:#f92672>&#34;Action&#34;</span>: <span style=color:#e6db74>&#34;sts:AssumeRoleWithWebIdentity&#34;</span>,
-            <span style=color:#f92672>&#34;Condition&#34;</span>: {
-                <span style=color:#f92672>&#34;StringEquals&#34;</span>: {
-                    <span style=color:#f92672>&#34;ocp-oidc-oidc.s3.us-west-2.amazonaws.com:sub&#34;</span>: <span style=color:#e6db74>&#34;system:serviceaccount:openshift-ingress-operator:ingress-operator&#34;</span>
+            <span style=color:#8b008b;font-weight:700>&#34;Action&#34;</span>: <span style=color:#cd5555>&#34;sts:AssumeRoleWithWebIdentity&#34;</span>,
+            <span style=color:#8b008b;font-weight:700>&#34;Condition&#34;</span>: {
+                <span style=color:#8b008b;font-weight:700>&#34;StringEquals&#34;</span>: {
+                    <span style=color:#8b008b;font-weight:700>&#34;ocp-oidc-oidc.s3.us-west-2.amazonaws.com:sub&#34;</span>: <span style=color:#cd5555>&#34;system:serviceaccount:openshift-ingress-operator:ingress-operator&#34;</span>
                 }
             }
         }

@@ -123,41 +123,41 @@ May 17, 2016
 <ul>
 <li>Start by prepping the yum repos.</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml>---
-<span style=color:#75715e># file: upgrade-prep.yml</span>
-<span style=color:#75715e># </span>
-<span style=color:#75715e># After running this see:</span>
-<span style=color:#75715e># - https://docs.openshift.com/enterprise/latest/install_config/upgrading/automated_upgrades.html</span>
-<span style=color:#75715e># - https://docs.openshift.com/enterprise/latest/install_config/upgrading/manual_upgrades.html</span>
-
-- <span style=color:#f92672>hosts</span>: <span style=color:#ae81ff>all</span>
-  <span style=color:#f92672>gather_facts</span>: <span style=color:#66d9ef>yes</span>
-
-  <span style=color:#f92672>vars</span>:
-    <span style=color:#f92672>ose_ver_old</span>: <span style=color:#ae81ff>3.1</span>
-    <span style=color:#f92672>ose_ver_new</span>: <span style=color:#ae81ff>3.2</span>
-
-  <span style=color:#f92672>tasks</span>:
-
-  - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>enable yum repos for upgrade version</span>
-    <span style=color:#f92672>command</span>: <span style=color:#e6db74>&#39;/usr/sbin/subscription-manager repos --disable=&#34;rhel-7-server-ose-{{ose_ver_old}}-rpms&#34; --enable=&#34;rhel-7-server-ose-{{ose_ver_new}}-rpms&#34;&#39;</span>
-
-  - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>update openshift-utils</span>
-    <span style=color:#f92672>yum</span>:
-      <span style=color:#f92672>name</span>: <span style=color:#ae81ff>atomic-openshift-utils</span>
-      <span style=color:#f92672>state</span>: <span style=color:#ae81ff>latest</span>
-</code></pre></div><ul>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#008b45;text-decoration:underline>---</span><span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#228b22># file: upgrade-prep.yml</span><span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#228b22># </span><span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#228b22># After running this see:</span><span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#228b22># - https://docs.openshift.com/enterprise/latest/install_config/upgrading/automated_upgrades.html</span><span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#228b22># - https://docs.openshift.com/enterprise/latest/install_config/upgrading/manual_upgrades.html</span><span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb></span>- <span style=color:#8b008b;font-weight:700>hosts</span>:<span style=color:#bbb> </span>all<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>gather_facts</span>:<span style=color:#bbb> </span><span style=color:#8b008b;font-weight:700>yes</span><span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>vars</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>ose_ver_old</span>:<span style=color:#bbb> </span><span style=color:#b452cd>3.1</span><span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>ose_ver_new</span>:<span style=color:#bbb> </span><span style=color:#b452cd>3.2</span><span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>tasks</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb>  </span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>enable yum repos for upgrade version<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>command</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#39;/usr/sbin/subscription-manager repos --disable=&#34;rhel-7-server-ose-{{ose_ver_old}}-rpms&#34; --enable=&#34;rhel-7-server-ose-{{ose_ver_new}}-rpms&#34;&#39;</span><span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb>  </span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>update openshift-utils<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>yum</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>atomic-openshift-utils<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>state</span>:<span style=color:#bbb> </span>latest<span style=color:#bbb>
+</span></code></pre></div><ul>
 <li>Then run the upgrade</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>ansible-playbook -i hosts openshift-ansible/playbooks/byo/openshift-cluster/upgrades/v3_1_to_v3_2/upgrade.yml | <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>  tee ansible-upgrade-<span style=color:#66d9ef>$(</span>date +%Y%m%d-%H%M<span style=color:#66d9ef>)</span>.log
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>ansible-playbook -i hosts openshift-ansible/playbooks/byo/openshift-cluster/upgrades/v3_1_to_v3_2/upgrade.yml | <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>  tee ansible-upgrade-<span style=color:#8b008b;font-weight:700>$(</span>date +%Y%m%d-%H%M<span style=color:#8b008b;font-weight:700>)</span>.log
 </code></pre></div><ul>
 <li></li>
 </ul>
 <h1 id=ip-failover>IP Failover</h1>
 <p>I previously described the <a href=/blog/2016/03/01/OpenShift-3-HA-Routing>native HA routing I am using</a>.</p>
 <p><strong>Basically:</strong></p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc get nodes -l <span style=color:#e6db74>&#34;region=infra&#34;</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc get nodes -l <span style=color:#cd5555>&#34;region=infra&#34;</span>
 NAME                           STATUS                     AGE
 ose-prod-master-01.example.com   Ready,SchedulingDisabled   71d
 ose-prod-master-02.example.com   Ready,SchedulingDisabled   71d
@@ -166,44 +166,44 @@ ose-prod-node-01.example.com     Ready                      71d
 ose-prod-node-02.example.com     Ready                      71d
 ose-prod-node-03.example.com     Ready                      71d
 
-$ oc scale --replicas<span style=color:#f92672>=</span><span style=color:#ae81ff>0</span> dc router
+$ oc scale --replicas=<span style=color:#b452cd>0</span> dc router
 
-$ oadm router ha-router-primary <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    --replicas<span style=color:#f92672>=</span><span style=color:#ae81ff>3</span> <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    --selector<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;ha-router=primary&#34;</span> <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    --selector<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;region=infra&#34;</span> <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    --labels<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;ha-router=primary&#34;</span> <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    --credentials<span style=color:#f92672>=</span>/etc/origin/master/openshift-router.kubeconfig <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    --default-cert<span style=color:#f92672>=</span>201602_router_wildcard.os.example.com.pem <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    --service-account<span style=color:#f92672>=</span>router
+$ oadm router ha-router-primary <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    --replicas=<span style=color:#b452cd>3</span> <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    --selector=<span style=color:#cd5555>&#34;ha-router=primary&#34;</span> <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    --selector=<span style=color:#cd5555>&#34;region=infra&#34;</span> <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    --labels=<span style=color:#cd5555>&#34;ha-router=primary&#34;</span> <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    --credentials=/etc/origin/master/openshift-router.kubeconfig <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    --default-cert=201602_router_wildcard.os.example.com.pem <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    --service-account=router
 
-$ oadm ipfailover ipf-ha-router-primary <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    --replicas<span style=color:#f92672>=</span><span style=color:#ae81ff>3</span> <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    --watch-port<span style=color:#f92672>=</span><span style=color:#ae81ff>80</span> <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    --selector<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;ha-router=primary&#34;</span> <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    --virtual-ips<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;192.0.2.101-103&#34;</span> <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    --credentials<span style=color:#f92672>=</span>/etc/origin/master/openshift-router.kubeconfig <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    --service-account<span style=color:#f92672>=</span>router <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    --create
+$ oadm ipfailover ipf-ha-router-primary <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    --replicas=<span style=color:#b452cd>3</span> <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    --watch-port=<span style=color:#b452cd>80</span> <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    --selector=<span style=color:#cd5555>&#34;ha-router=primary&#34;</span> <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    --virtual-ips=<span style=color:#cd5555>&#34;192.0.2.101-103&#34;</span> <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    --credentials=/etc/origin/master/openshift-router.kubeconfig <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    --service-account=router <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    --create
 </code></pre></div><h2 id=ipf-image>IPF Image</h2>
 <p>The upgrade playbook updated the image used by the default router dc, but since I use Native HA with IPfailover I do not use that router. Mine is called <code>ha-router-primary</code>. I was able to manually update the image for <code>ha-router-primary</code> as described <a href=https://docs.openshift.com/enterprise/3.2/install_config/upgrading/manual_upgrades.html#upgrading-the-router>here</a>.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc get dc -n default
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc get dc -n default
 NAME                    TRIGGERS       LATEST
-docker-registry         ConfigChange   <span style=color:#ae81ff>3</span>
-ha-router-primary       ConfigChange   <span style=color:#ae81ff>2</span>
-ipf-ha-router-primary   ConfigChange   <span style=color:#ae81ff>1</span>
-router                  ConfigChange   <span style=color:#ae81ff>3</span>      &lt;-- unused. <span style=color:#ae81ff>0</span> replicas.
+docker-registry         ConfigChange   <span style=color:#b452cd>3</span>
+ha-router-primary       ConfigChange   <span style=color:#b452cd>2</span>
+ipf-ha-router-primary   ConfigChange   <span style=color:#b452cd>1</span>
+router                  ConfigChange   <span style=color:#b452cd>3</span>      &lt;-- unused. <span style=color:#b452cd>0</span> replicas.
 
-$ oc get dc ha-router-primary -n default -o json | jq <span style=color:#e6db74>&#39;. | {name: .spec.template.spec.containers[].name, image: .spec.template.spec.containers[].image}&#39;</span>
-<span style=color:#f92672>{</span>
-  <span style=color:#e6db74>&#34;image&#34;</span>: <span style=color:#e6db74>&#34;openshift3/ose-haproxy-router:v3.2.0.20-3&#34;</span>,
-  <span style=color:#e6db74>&#34;name&#34;</span>: <span style=color:#e6db74>&#34;router&#34;</span>
-<span style=color:#f92672>}</span>
-$ oc get dc ipf-ha-router-primary -n default -o json | jq <span style=color:#e6db74>&#39;. | {name: .spec.template.spec.containers[].name, image: .spec.template.spec.containers[].image}&#39;</span>
-<span style=color:#f92672>{</span>
-  <span style=color:#e6db74>&#34;image&#34;</span>: <span style=color:#e6db74>&#34;openshift3/ose-keepalived-ipfailover:v3.1.1.6&#34;</span>,
-  <span style=color:#e6db74>&#34;name&#34;</span>: <span style=color:#e6db74>&#34;ipf-ha-router-primary-keepalived&#34;</span>
-<span style=color:#f92672>}</span>
+$ oc get dc ha-router-primary -n default -o json | jq <span style=color:#cd5555>&#39;. | {name: .spec.template.spec.containers[].name, image: .spec.template.spec.containers[].image}&#39;</span>
+{
+  <span style=color:#cd5555>&#34;image&#34;</span>: <span style=color:#cd5555>&#34;openshift3/ose-haproxy-router:v3.2.0.20-3&#34;</span>,
+  <span style=color:#cd5555>&#34;name&#34;</span>: <span style=color:#cd5555>&#34;router&#34;</span>
+}
+$ oc get dc ipf-ha-router-primary -n default -o json | jq <span style=color:#cd5555>&#39;. | {name: .spec.template.spec.containers[].name, image: .spec.template.spec.containers[].image}&#39;</span>
+{
+  <span style=color:#cd5555>&#34;image&#34;</span>: <span style=color:#cd5555>&#34;openshift3/ose-keepalived-ipfailover:v3.1.1.6&#34;</span>,
+  <span style=color:#cd5555>&#34;name&#34;</span>: <span style=color:#cd5555>&#34;ipf-ha-router-primary-keepalived&#34;</span>
+}
 </code></pre></div><p>However, that leaves the ipfailover pods still at <code>v3.1.1.6</code>. Presumably it should use <code>v3.2.0.20-3</code>, but I&rsquo;m not sure how to validate that.</p>
 <ul>
 <li>
@@ -214,14 +214,14 @@ $ oc get dc ipf-ha-router-primary -n default -o json | jq <span style=color:#e6d
 </li>
 </ul>
 <p>Well, I can go search <a href=https://access.redhat.com/search/#/container-images>registry.access.redhat.com</a>, but the results don&rsquo;t list the version tags. Trying a <code>docker pull openshift3/ose-keepalived-ipfailover:v3.2.0.20-3</code> works, so let&rsquo;s do it. The <a href=https://github.com/openshift/origin/blob/master/docs/cli.md#oc-patch>oc patch</a> command makes this &ldquo;easy&rdquo; if you like counting braces.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc patch dc ipf-ha-router-primary -p <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span> <span style=color:#e6db74>&#39;{&#34;spec&#34;: {&#34;template&#34;: {&#34;spec&#34;: {&#34;containers&#34;: [{&#34;name&#34;: &#34;ipf-ha-router-primary-keepalived&#34;, &#34;image&#34;: &#34;openshift3/ose-keepalived-ipfailover:v3.2.0.20-3&#34;}]}}}}&#39;</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc patch dc ipf-ha-router-primary -p <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span> <span style=color:#cd5555>&#39;{&#34;spec&#34;: {&#34;template&#34;: {&#34;spec&#34;: {&#34;containers&#34;: [{&#34;name&#34;: &#34;ipf-ha-router-primary-keepalived&#34;, &#34;image&#34;: &#34;openshift3/ose-keepalived-ipfailover:v3.2.0.20-3&#34;}]}}}}&#39;</span>
 </code></pre></div><p>When the change is made it will be detected and the ipfailover pods will be recreated automatically. I didn&rsquo;t detect any downtime when doing this.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc get dc ipf-ha-router-primary -n default -o json | jq <span style=color:#e6db74>&#39;. | {name: .spec.template.spec.containers[].name, image: .spec.template.spec.containers[].image}&#39;</span>
-<span style=color:#f92672>{</span>
-  <span style=color:#e6db74>&#34;name&#34;</span>: <span style=color:#e6db74>&#34;ipf-ha-router-primary-keepalived&#34;</span>,
-  <span style=color:#e6db74>&#34;image&#34;</span>: <span style=color:#e6db74>&#34;openshift3/ose-keepalived-ipfailover:v3.2.0.20-3&#34;</span>
-<span style=color:#f92672>}</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc get dc ipf-ha-router-primary -n default -o json | jq <span style=color:#cd5555>&#39;. | {name: .spec.template.spec.containers[].name, image: .spec.template.spec.containers[].image}&#39;</span>
+{
+  <span style=color:#cd5555>&#34;name&#34;</span>: <span style=color:#cd5555>&#34;ipf-ha-router-primary-keepalived&#34;</span>,
+  <span style=color:#cd5555>&#34;image&#34;</span>: <span style=color:#cd5555>&#34;openshift3/ose-keepalived-ipfailover:v3.2.0.20-3&#34;</span>
+}
 </code></pre></div><p>On a related note, I&rsquo;m hoping to see <a href="https://bugzilla.redhat.com/show_bug.cgi?id=1324594">this bugzilla</a> integrated into the keepalived image soon, so <a href=https://sysdig.com/>Sysdig</a> can be used on the infra nodes.</p>
 <h2 id=ipfailover-readiness-check>IPfailover Readiness Check</h2>
 <p>The <code>oc status -v</code> command tells me I have no readiness check for my <code>ipf-ha-router-primary</code> dc. The <a href=https://docs.openshift.com/enterprise/3.2/admin_guide/high_availability.html>docs</a> however do not mention a suitable check for ipfailover.</p>
@@ -233,22 +233,22 @@ $ oc get dc ipf-ha-router-primary -n default -o json | jq <span style=color:#e6d
     try: oc set probe dc/docker-registry --readiness ...
   * dc/ipf-ha-router-primary has no readiness probe to verify pods are ready to accept traffic or ensure deployment is successful.
     try: oc set probe dc/ipf-ha-router-primary --readiness ...
-</code></pre><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc get dc/ipf-ha-router-primary
+</code></pre><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc get dc/ipf-ha-router-primary
 NAME                    REVISION   REPLICAS   TRIGGERED BY
-ipf-ha-router-primary   <span style=color:#ae81ff>1</span>          <span style=color:#ae81ff>3</span>          config
+ipf-ha-router-primary   <span style=color:#b452cd>1</span>          <span style=color:#b452cd>3</span>          config
 
 $ oc describe dc/ipf-ha-router-primary
 Name:           ipf-ha-router-primary
-Created:        <span style=color:#ae81ff>10</span> weeks ago
-Labels:         ha-router<span style=color:#f92672>=</span>primary
+Created:        <span style=color:#b452cd>10</span> weeks ago
+Labels:         ha-router=primary
 Annotations:    &lt;none&gt;
-Latest Version: <span style=color:#ae81ff>1</span>
-Selector:       ha-router<span style=color:#f92672>=</span>primary
-Replicas:       <span style=color:#ae81ff>3</span>
+Latest Version: <span style=color:#b452cd>1</span>
+Selector:       ha-router=primary
+Replicas:       <span style=color:#b452cd>3</span>
 Triggers:       Config
 Strategy:       Recreate
 Template:
-  Labels:               ha-router<span style=color:#f92672>=</span>primary
+  Labels:               ha-router=primary
   Service Account:      router
   Containers:
   ipf-ha-router-primary-keepalived:
@@ -260,40 +260,40 @@ Template:
     Environment Variables:
       OPENSHIFT_CA_DATA:        -----BEGIN CERTIFICATE-----
 ...
-WgXt+xTlODyXtB9CmeGWK+dqH3M8AgfRUJQ<span style=color:#f92672>=</span>
+WgXt+xTlODyXtB9CmeGWK+dqH3M8AgfRUJQ=
 -----END CERTIFICATE-----
 
       OPENSHIFT_CERT_DATA:      -----BEGIN CERTIFICATE-----
 ...
-MWdnBMd2iCXSsVJIafxc60o<span style=color:#f92672>=</span>
+<span style=color:#00688b>MWdnBMd2iCXSsVJIafxc60o</span>=
 -----END CERTIFICATE-----
 
       OPENSHIFT_HA_CONFIG_NAME:         ipf-ha-router-primary
-      OPENSHIFT_HA_MONITOR_PORT:        <span style=color:#ae81ff>80</span>
+      OPENSHIFT_HA_MONITOR_PORT:        <span style=color:#b452cd>80</span>
       OPENSHIFT_HA_NETWORK_INTERFACE:
-      OPENSHIFT_HA_REPLICA_COUNT:       <span style=color:#ae81ff>3</span>
-      OPENSHIFT_HA_USE_UNICAST:         false
+      OPENSHIFT_HA_REPLICA_COUNT:       <span style=color:#b452cd>3</span>
+      OPENSHIFT_HA_USE_UNICAST:         <span style=color:#658b00>false</span>
       OPENSHIFT_HA_VIRTUAL_IPS:         192.0.2.101-103
-      OPENSHIFT_INSECURE:               false
+      OPENSHIFT_INSECURE:               <span style=color:#658b00>false</span>
       OPENSHIFT_KEY_DATA:               -----BEGIN RSA PRIVATE KEY-----
 ...
-xO/p48yGpN1JeqBQy7mlFQAIn1/4vBvfnjc/rljeqn19u01NuGkqJQ<span style=color:#f92672>==</span>
+xO/p48yGpN1JeqBQy7mlFQAIn1/4vBvfnjc/rljeqn19u01NuGkqJQ==
 -----END RSA PRIVATE KEY-----
 
       OPENSHIFT_MASTER: https://master.os.example.com:8443
   Volumes:
   lib-modules:
-    Type:       HostPath <span style=color:#f92672>(</span>bare host directory volume<span style=color:#f92672>)</span>
+    Type:       HostPath (bare host directory volume)
     Path:       /lib/modules
 
-Deployment <span style=color:#75715e>#1 (latest):</span>
+Deployment <span style=color:#228b22>#1 (latest):</span>
         Name:           ipf-ha-router-primary-1
-        Created:        <span style=color:#ae81ff>10</span> weeks ago
+        Created:        <span style=color:#b452cd>10</span> weeks ago
         Status:         Complete
-        Replicas:       <span style=color:#ae81ff>3</span> current / <span style=color:#ae81ff>3</span> desired
-        Selector:       deployment<span style=color:#f92672>=</span>ipf-ha-router-primary-1,deploymentconfig<span style=color:#f92672>=</span>ipf-ha-router-primary,ha-router<span style=color:#f92672>=</span>primary
-        Labels:         ha-router<span style=color:#f92672>=</span>primary,openshift.io/deployment-config.name<span style=color:#f92672>=</span>ipf-ha-router-primary
-        Pods Status:    <span style=color:#ae81ff>3</span> Running / <span style=color:#ae81ff>0</span> Waiting / <span style=color:#ae81ff>0</span> Succeeded / <span style=color:#ae81ff>0</span> Failed
+        Replicas:       <span style=color:#b452cd>3</span> current / <span style=color:#b452cd>3</span> desired
+        Selector:       <span style=color:#00688b>deployment</span>=ipf-ha-router-primary-1,deploymentconfig=ipf-ha-router-primary,ha-router=primary
+        Labels:         ha-router=primary,openshift.io/deployment-config.name=ipf-ha-router-primary
+        Pods Status:    <span style=color:#b452cd>3</span> Running / <span style=color:#b452cd>0</span> Waiting / <span style=color:#b452cd>0</span> Succeeded / <span style=color:#b452cd>0</span> Failed
 
 No events.
 </code></pre></div><h2 id=downtime-during-upgrade>Downtime During Upgrade</h2>
@@ -354,20 +354,20 @@ May 17 11:33:23 ose-prod-node-05.example.com forward-journal[33427]: time=&quot;
 <p>Cluster policies and roles changed, so update them to the latest. To see what needs to change run <code>oadm policy reconcile-cluster-roles</code> and <code>oadm policy reconcile-cluster-role-bindings</code>.
 See <a href=https://docs.openshift.com/enterprise/3.2/install_config/upgrading/manual_upgrades.html#updating-policy-definitions>the docs</a>.</p>
 <p>The <a href=https://github.com/openshift/openshift-docs/issues/2131>docs say</a> to restart <code>atomic-openshift-master</code>, but I think that should `atomic-openshift-master-api</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#75715e># examine output before continuing</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#228b22># examine output before continuing</span>
 $ oadm policy reconcile-cluster-roles
-<span style=color:#75715e># make the changes suggested by above on one master</span>
+<span style=color:#228b22># make the changes suggested by above on one master</span>
 $ oadm policy reconcile-cluster-roles  --confirm
-<span style=color:#75715e># restart api on all masters</span>
+<span style=color:#228b22># restart api on all masters</span>
 $ systemctl restart atomic-openshift-master-api
-<span style=color:#75715e># update policy role bindings</span>
-$ oadm policy reconcile-cluster-role-bindings <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    --exclude-groups<span style=color:#f92672>=</span>system:authenticated <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    --exclude-groups<span style=color:#f92672>=</span>system:authenticated:oauth <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    --exclude-groups<span style=color:#f92672>=</span>system:unauthenticated <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    --exclude-users<span style=color:#f92672>=</span>system:anonymous <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    --additive-only<span style=color:#f92672>=</span>true <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    --confirm
+<span style=color:#228b22># update policy role bindings</span>
+$ oadm policy reconcile-cluster-role-bindings <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    --exclude-groups=system:authenticated <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    --exclude-groups=system:authenticated:oauth <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    --exclude-groups=system:unauthenticated <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    --exclude-users=system:anonymous <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    --additive-only=<span style=color:#658b00>true</span> <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    --confirm
 </code></pre></div><p>Even after this I&rsquo;m seeing these warnings from <code>oadm diagnostics</code>, and developers can no longer use the source build strategy. Big problem.</p>
 <pre tabindex=0><code>$ oadm diagnostics
 ...
@@ -431,11 +431,11 @@ RoleBinding[system:discovery-binding]:
 </code></pre><ul>
 <li>Reconcile the role bindings again but do not exclude <code>system:authenticated</code></li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oadm policy reconcile-cluster-role-bindings <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>&gt;     --exclude-groups<span style=color:#f92672>=</span>system:unauthenticated <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>&gt;     --exclude-users<span style=color:#f92672>=</span>system:anonymous <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>&gt;     --additive-only<span style=color:#f92672>=</span>true <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>&gt;     --confirm
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oadm policy reconcile-cluster-role-bindings <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>&gt;     --exclude-groups=system:unauthenticated <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>&gt;     --exclude-users=system:anonymous <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>&gt;     --additive-only=<span style=color:#658b00>true</span> <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>&gt;     --confirm
 clusterrolebinding/self-provisioners
 clusterrolebinding/system:build-strategy-docker-binding
 clusterrolebinding/system:build-strategy-custom-binding
@@ -443,47 +443,47 @@ clusterrolebinding/system:build-strategy-source-binding
 </code></pre></div><ul>
 <li>Compare the difference</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-diff data-lang=diff><span style=color:#f92672>--- describe-clusterPolicyBindings-default-before.txt        2016-06-01 09:24:28.030082834 -0700
-</span><span style=color:#f92672></span><span style=color:#a6e22e>+++ describe-clusterPolicyBindings-default-after.txt 2016-06-01 09:26:18.664093120 -0700
-</span><span style=color:#a6e22e></span><span style=color:#75715e>@@ -2,7 +2,7 @@
-</span><span style=color:#75715e></span> Created:                                               12 weeks ago
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-diff data-lang=diff><span style=color:#a00>--- describe-clusterPolicyBindings-default-before.txt        2016-06-01 09:24:28.030082834 -0700
+</span><span style=color:#a00></span><span style=color:#0a0>+++ describe-clusterPolicyBindings-default-after.txt 2016-06-01 09:26:18.664093120 -0700
+</span><span style=color:#0a0></span><span style=color:purple;font-weight:700>@@ -2,7 +2,7 @@
+</span><span style=color:purple;font-weight:700></span> Created:                                               12 weeks ago
  Labels:                                                        &lt;none&gt;
  Annotations:                                           &lt;none&gt;
-<span style=color:#f92672>-Last Modified:                                         2016-05-21 11:32:48 -0700 PDT
-</span><span style=color:#f92672></span><span style=color:#a6e22e>+Last Modified:                                         2016-06-01 09:25:53 -0700 PDT
-</span><span style=color:#a6e22e></span> Policy:                                                        &lt;none&gt;
+<span style=color:#a00>-Last Modified:                                         2016-05-21 11:32:48 -0700 PDT
+</span><span style=color:#a00></span><span style=color:#0a0>+Last Modified:                                         2016-06-01 09:25:53 -0700 PDT
+</span><span style=color:#0a0></span> Policy:                                                        &lt;none&gt;
  RoleBinding[basic-users]:
                                                         Role:                   basic-user
-<span style=color:#75715e>@@ -31,7 +31,7 @@
-</span><span style=color:#75715e></span> RoleBinding[self-provisioners]:
+<span style=color:purple;font-weight:700>@@ -31,7 +31,7 @@
+</span><span style=color:purple;font-weight:700></span> RoleBinding[self-provisioners]:
                                                         Role:                   self-provisioner
                                                         Users:                  &lt;none&gt;
-<span style=color:#f92672>-                                                       Groups:                 system:authenticated
-</span><span style=color:#f92672></span><span style=color:#a6e22e>+                                                       Groups:                 system:authenticated:oauth, system:authenticated
-</span><span style=color:#a6e22e></span>                                                        ServiceAccounts:        &lt;none&gt;
+<span style=color:#a00>-                                                       Groups:                 system:authenticated
+</span><span style=color:#a00></span><span style=color:#0a0>+                                                       Groups:                 system:authenticated:oauth, system:authenticated
+</span><span style=color:#0a0></span>                                                        ServiceAccounts:        &lt;none&gt;
                                                         Subjects:               &lt;none&gt;
  RoleBinding[system:build-controller]:
-<span style=color:#75715e>@@ -43,19 +43,19 @@
-</span><span style=color:#75715e></span> RoleBinding[system:build-strategy-custom-binding]:
+<span style=color:purple;font-weight:700>@@ -43,19 +43,19 @@
+</span><span style=color:purple;font-weight:700></span> RoleBinding[system:build-strategy-custom-binding]:
                                                         Role:                   system:build-strategy-custom
                                                         Users:                  &lt;none&gt;
-<span style=color:#f92672>-                                                       Groups:                 &lt;none&gt;
-</span><span style=color:#f92672></span><span style=color:#a6e22e>+                                                       Groups:                 system:authenticated
-</span><span style=color:#a6e22e></span>                                                        ServiceAccounts:        &lt;none&gt;
+<span style=color:#a00>-                                                       Groups:                 &lt;none&gt;
+</span><span style=color:#a00></span><span style=color:#0a0>+                                                       Groups:                 system:authenticated
+</span><span style=color:#0a0></span>                                                        ServiceAccounts:        &lt;none&gt;
                                                         Subjects:               &lt;none&gt;
  RoleBinding[system:build-strategy-docker-binding]:
                                                         Role:                   system:build-strategy-docker
                                                         Users:                  &lt;none&gt;
-<span style=color:#f92672>-                                                       Groups:                 &lt;none&gt;
-</span><span style=color:#f92672></span><span style=color:#a6e22e>+                                                       Groups:                 system:authenticated
-</span><span style=color:#a6e22e></span>                                                        ServiceAccounts:        &lt;none&gt;
+<span style=color:#a00>-                                                       Groups:                 &lt;none&gt;
+</span><span style=color:#a00></span><span style=color:#0a0>+                                                       Groups:                 system:authenticated
+</span><span style=color:#0a0></span>                                                        ServiceAccounts:        &lt;none&gt;
                                                         Subjects:               &lt;none&gt;
  RoleBinding[system:build-strategy-source-binding]:
                                                         Role:                   system:build-strategy-source
                                                         Users:                  &lt;none&gt;
-<span style=color:#f92672>-                                                       Groups:                 &lt;none&gt;
-</span><span style=color:#f92672></span><span style=color:#a6e22e>+                                                       Groups:                 system:authenticated
-</span><span style=color:#a6e22e></span>                                                        ServiceAccounts:        &lt;none&gt;
+<span style=color:#a00>-                                                       Groups:                 &lt;none&gt;
+</span><span style=color:#a00></span><span style=color:#0a0>+                                                       Groups:                 system:authenticated
+</span><span style=color:#0a0></span>                                                        ServiceAccounts:        &lt;none&gt;
                                                         Subjects:               &lt;none&gt;
  RoleBinding[system:daemonset-controller]:
 </code></pre></div><p>Now the source build strategy works again and the diagnostics output looks mostly reasonable. Not sure about the <code>self-provisioners</code> yet.</p>
@@ -514,22 +514,22 @@ Info:  clusterrolebinding/self-provisioners has extra subject {SystemGroup  syst
 <p>It used to be that you had to know the metrics URL and visit <a href=https://metrics.os.example.com>https://metrics.os.example.com</a> and accept the cert so you could view the resource usage of your pods. There is now a nice link to this URL from the pod metrics page. However, even though I can vist the URL sucessfully, the metrics tab lists a <em>Forbidden</em> error at the bottom, and no graphs. I suspect this may be related to the metrics running <code>openshift3/metrics-hawkular-metrics:3.1.1</code> still.</p>
 <p>I could just dump the stats and <a href=https://docs.openshift.com/enterprise/3.2/install_config/cluster_metrics.html>start over</a>, but I&rsquo;ll try updating the replication controllers first.</p>
 <p>Get the list, and then use <code>oc edit</code> to set the version to 3.2.0.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc get rc -n openshift-infra -o wide
-NAME                   DESIRED   CURRENT   AGE       CONTAINER<span style=color:#f92672>(</span>S<span style=color:#f92672>)</span>           IMAGE<span style=color:#f92672>(</span>S<span style=color:#f92672>)</span>                                                               SELECTOR
-hawkular-cassandra-1   <span style=color:#ae81ff>1</span>         <span style=color:#ae81ff>1</span>         73d       hawkular-cassandra-1   registry.access.redhat.com/openshift3/metrics-cassandra:3.1.1          name<span style=color:#f92672>=</span>hawkular-cassandra-1
-hawkular-metrics       <span style=color:#ae81ff>1</span>         <span style=color:#ae81ff>1</span>         73d       hawkular-metrics       registry.access.redhat.com/openshift3/metrics-hawkular-metrics:3.1.1   name<span style=color:#f92672>=</span>hawkular-metrics
-heapster               <span style=color:#ae81ff>1</span>         <span style=color:#ae81ff>1</span>         73d       heapster               registry.access.redhat.com/openshift3/metrics-heapster:3.1.1           name<span style=color:#f92672>=</span>heapster
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc get rc -n openshift-infra -o wide
+NAME                   DESIRED   CURRENT   AGE       CONTAINER(S)           IMAGE(S)                                                               SELECTOR
+hawkular-cassandra-1   <span style=color:#b452cd>1</span>         <span style=color:#b452cd>1</span>         73d       hawkular-cassandra-1   registry.access.redhat.com/openshift3/metrics-cassandra:3.1.1          <span style=color:#00688b>name</span>=hawkular-cassandra-1
+hawkular-metrics       <span style=color:#b452cd>1</span>         <span style=color:#b452cd>1</span>         73d       hawkular-metrics       registry.access.redhat.com/openshift3/metrics-hawkular-metrics:3.1.1   <span style=color:#00688b>name</span>=hawkular-metrics
+heapster               <span style=color:#b452cd>1</span>         <span style=color:#b452cd>1</span>         73d       heapster               registry.access.redhat.com/openshift3/metrics-heapster:3.1.1           <span style=color:#00688b>name</span>=heapster
 </code></pre></div><p>Edit the replication controller and change the image tag from <code>3.1.1</code> to <code>3.2.0</code></p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc edit rc hawkular-cassandra-1
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc edit rc hawkular-cassandra-1
 </code></pre></div><p>The pod needs to be removed so the replication controller can recreate it. I think you could pre-emptively pull the new image if you are worried about the downtime.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc get pods
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc get pods
 NAME                         READY     STATUS    RESTARTS   AGE
-hawkular-cassandra-1-t7mp5   1/1       Running   <span style=color:#ae81ff>0</span>          4d
-hawkular-metrics-2ccne       1/1       Running   <span style=color:#ae81ff>0</span>          4d
-heapster-6usys               1/1       Running   <span style=color:#ae81ff>4</span>          4d
+hawkular-cassandra-1-t7mp5   1/1       Running   <span style=color:#b452cd>0</span>          4d
+hawkular-metrics-2ccne       1/1       Running   <span style=color:#b452cd>0</span>          4d
+heapster-6usys               1/1       Running   <span style=color:#b452cd>4</span>          4d
 
 $ oc delete pod hawkular-cassandra-1-t7mp5
-pod <span style=color:#e6db74>&#34;hawkular-cassandra-1-t7mp5&#34;</span> deleted
+pod <span style=color:#cd5555>&#34;hawkular-cassandra-1-t7mp5&#34;</span> deleted
 
 $ oc get events --watch
 </code></pre></div><p>Unfortunately I wound up with a <code>CrashLoopBackOff</code> for the cassandra pod. Watching the logs it seemed to be replaying transactions, so I&rsquo;m not sure if it was a timeout or what exactly.</p>
@@ -576,52 +576,52 @@ WARN  04:08:00 UnknownHostException for service 'hawkular-cassandra-nodes'. It m
 WARN  04:08:02 UnknownHostException for service 'hawkular-cassandra-nodes'. It may not be up yet. Trying again
 ...
 </code></pre><p>Not only that, but it looks like there are some compatibility issues.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc logs heapster-jdpgi
-exec: <span style=color:#e6db74>&#34;./heapster-wrapper.sh&#34;</span>: stat ./heapster-wrapper.sh: no such file or directory
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc logs heapster-jdpgi
+exec: <span style=color:#cd5555>&#34;./heapster-wrapper.sh&#34;</span>: stat ./heapster-wrapper.sh: no such file or directory
 </code></pre></div><p>There is a new debug command in 3.2, but I wasn&rsquo;t able to learn much from it other than the startup command for the pod.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc debug pod heapster-jdpgi
-Debugging with pod/heapster-jdpgi-debug, original command: ./heapster-wrapper.sh --wrapper.username_file<span style=color:#f92672>=</span>/hawkular-account/hawkular-metrics.username --wrapper.password_file<span style=color:#f92672>=</span>/hawkular-account/hawkular-metrics.password --wrapper.allowed_users_file<span style=color:#f92672>=</span>/secrets/heapster.allowed-users --source<span style=color:#f92672>=</span>kubernetes:https://kubernetes.default.svc:443?useServiceAccount<span style=color:#f92672>=</span>true&amp;kubeletHttps<span style=color:#f92672>=</span>true&amp;kubeletPort<span style=color:#f92672>=</span><span style=color:#ae81ff>10250</span> --sink<span style=color:#f92672>=</span>hawkular:https://hawkular-metrics:443?tenant<span style=color:#f92672>=</span>_system&amp;labelToTenant<span style=color:#f92672>=</span>pod_namespace&amp;caCert<span style=color:#f92672>=</span>/hawkular-cert/hawkular-metrics-ca.certificate&amp;user<span style=color:#f92672>=</span>%username%&amp;pass<span style=color:#f92672>=</span>%password%&amp;filter<span style=color:#f92672>=</span>label<span style=color:#f92672>(</span>container_name:^/system.slice.*|^/user.slice<span style=color:#f92672>)</span> --logtostderr<span style=color:#f92672>=</span>true --tls_cert<span style=color:#f92672>=</span>/secrets/heapster.cert --tls_key<span style=color:#f92672>=</span>/secrets/heapster.key --tls_client_ca<span style=color:#f92672>=</span>/secrets/heapster.client-ca --allowed_users<span style=color:#f92672>=</span>%allowed_users%
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc debug pod heapster-jdpgi
+Debugging with pod/heapster-jdpgi-debug, original command: ./heapster-wrapper.sh --wrapper.username_file=/hawkular-account/hawkular-metrics.username --wrapper.password_file=/hawkular-account/hawkular-metrics.password --wrapper.allowed_users_file=/secrets/heapster.allowed-users --source=kubernetes:https://kubernetes.default.svc:443?useServiceAccount=true&amp;<span style=color:#00688b>kubeletHttps</span>=true&amp;<span style=color:#00688b>kubeletPort</span>=<span style=color:#b452cd>10250</span> --sink=hawkular:https://hawkular-metrics:443?tenant=_system&amp;<span style=color:#00688b>labelToTenant</span>=pod_namespace&amp;<span style=color:#00688b>caCert</span>=/hawkular-cert/hawkular-metrics-ca.certificate&amp;<span style=color:#00688b>user</span>=%username%&amp;<span style=color:#00688b>pass</span>=%password%&amp;<span style=color:#00688b>filter</span>=label(container_name:^/system.slice.*|^/user.slice) --logtostderr=<span style=color:#658b00>true</span> --tls_cert=/secrets/heapster.cert --tls_key=/secrets/heapster.key --tls_client_ca=/secrets/heapster.client-ca --allowed_users=%allowed_users%
 </code></pre></div><h2 id=redeploy-cluster-metrics>Redeploy Cluster Metrics</h2>
 <p>So, it seems there is some missing documentation here. I&rsquo;m going to go ahead and <a href=https://docs.openshift.com/enterprise/3.2/install_config/cluster_metrics.html>redeploy cluster metrics</a> instead of trying to fix it.</p>
 <ul>
 <li>Clear the decks and remove the old deployment</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc delete all --selector<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;metrics-infra&#34;</span>
-replicationcontroller <span style=color:#e6db74>&#34;hawkular-cassandra-1&#34;</span> deleted
-replicationcontroller <span style=color:#e6db74>&#34;hawkular-metrics&#34;</span> deleted
-replicationcontroller <span style=color:#e6db74>&#34;heapster&#34;</span> deleted
-route <span style=color:#e6db74>&#34;hawkular-metrics&#34;</span> deleted
-service <span style=color:#e6db74>&#34;hawkular-cassandra&#34;</span> deleted
-service <span style=color:#e6db74>&#34;hawkular-cassandra-nodes&#34;</span> deleted
-service <span style=color:#e6db74>&#34;hawkular-metrics&#34;</span> deleted
-service <span style=color:#e6db74>&#34;heapster&#34;</span> deleted
-pod <span style=color:#e6db74>&#34;hawkular-cassandra-1-iwl9z&#34;</span> deleted
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc delete all --selector=<span style=color:#cd5555>&#34;metrics-infra&#34;</span>
+replicationcontroller <span style=color:#cd5555>&#34;hawkular-cassandra-1&#34;</span> deleted
+replicationcontroller <span style=color:#cd5555>&#34;hawkular-metrics&#34;</span> deleted
+replicationcontroller <span style=color:#cd5555>&#34;heapster&#34;</span> deleted
+route <span style=color:#cd5555>&#34;hawkular-metrics&#34;</span> deleted
+service <span style=color:#cd5555>&#34;hawkular-cassandra&#34;</span> deleted
+service <span style=color:#cd5555>&#34;hawkular-cassandra-nodes&#34;</span> deleted
+service <span style=color:#cd5555>&#34;hawkular-metrics&#34;</span> deleted
+service <span style=color:#cd5555>&#34;heapster&#34;</span> deleted
+pod <span style=color:#cd5555>&#34;hawkular-cassandra-1-iwl9z&#34;</span> deleted
 
-$ oc delete templates --selector<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;metrics-infra&#34;</span>
-template <span style=color:#e6db74>&#34;hawkular-cassandra-node-emptydir&#34;</span> deleted
-template <span style=color:#e6db74>&#34;hawkular-cassandra-node-pv&#34;</span> deleted
-template <span style=color:#e6db74>&#34;hawkular-cassandra-services&#34;</span> deleted
-template <span style=color:#e6db74>&#34;hawkular-heapster&#34;</span> deleted
-template <span style=color:#e6db74>&#34;hawkular-metrics&#34;</span> deleted
-template <span style=color:#e6db74>&#34;hawkular-support&#34;</span> deleted
+$ oc delete templates --selector=<span style=color:#cd5555>&#34;metrics-infra&#34;</span>
+template <span style=color:#cd5555>&#34;hawkular-cassandra-node-emptydir&#34;</span> deleted
+template <span style=color:#cd5555>&#34;hawkular-cassandra-node-pv&#34;</span> deleted
+template <span style=color:#cd5555>&#34;hawkular-cassandra-services&#34;</span> deleted
+template <span style=color:#cd5555>&#34;hawkular-heapster&#34;</span> deleted
+template <span style=color:#cd5555>&#34;hawkular-metrics&#34;</span> deleted
+template <span style=color:#cd5555>&#34;hawkular-support&#34;</span> deleted
 
-$ oc delete secrets --selector<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;metrics-infra&#34;</span>
-secret <span style=color:#e6db74>&#34;hawkular-cassandra-certificate&#34;</span> deleted
-secret <span style=color:#e6db74>&#34;hawkular-cassandra-secrets&#34;</span> deleted
-secret <span style=color:#e6db74>&#34;hawkular-metrics-account&#34;</span> deleted
-secret <span style=color:#e6db74>&#34;hawkular-metrics-certificate&#34;</span> deleted
-secret <span style=color:#e6db74>&#34;hawkular-metrics-secrets&#34;</span> deleted
-secret <span style=color:#e6db74>&#34;heapster-secrets&#34;</span> deleted
+$ oc delete secrets --selector=<span style=color:#cd5555>&#34;metrics-infra&#34;</span>
+secret <span style=color:#cd5555>&#34;hawkular-cassandra-certificate&#34;</span> deleted
+secret <span style=color:#cd5555>&#34;hawkular-cassandra-secrets&#34;</span> deleted
+secret <span style=color:#cd5555>&#34;hawkular-metrics-account&#34;</span> deleted
+secret <span style=color:#cd5555>&#34;hawkular-metrics-certificate&#34;</span> deleted
+secret <span style=color:#cd5555>&#34;hawkular-metrics-secrets&#34;</span> deleted
+secret <span style=color:#cd5555>&#34;heapster-secrets&#34;</span> deleted
 
-$ oc delete pvc --selector<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;metrics-infra&#34;</span>
-persistentvolumeclaim <span style=color:#e6db74>&#34;metrics-cassandra-1&#34;</span> deleted
+$ oc delete pvc --selector=<span style=color:#cd5555>&#34;metrics-infra&#34;</span>
+persistentvolumeclaim <span style=color:#cd5555>&#34;metrics-cassandra-1&#34;</span> deleted
 
-$ oc delete sa --selector<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;metrics-infra&#34;</span>
-serviceaccount <span style=color:#e6db74>&#34;cassandra&#34;</span> deleted
-serviceaccount <span style=color:#e6db74>&#34;hawkular&#34;</span> deleted
-serviceaccount <span style=color:#e6db74>&#34;heapster&#34;</span> deleted
+$ oc delete sa --selector=<span style=color:#cd5555>&#34;metrics-infra&#34;</span>
+serviceaccount <span style=color:#cd5555>&#34;cassandra&#34;</span> deleted
+serviceaccount <span style=color:#cd5555>&#34;hawkular&#34;</span> deleted
+serviceaccount <span style=color:#cd5555>&#34;heapster&#34;</span> deleted
 </code></pre></div><p>The <em>Reclaim Policy</em> on the PV used by metrics is <em>retain</em>, so go empty out that volume before continuing.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc describe pv metrics
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc describe pv metrics
 Name:           metrics
 Labels:         &lt;none&gt;
 Status:         Released
@@ -631,26 +631,26 @@ Access Modes:   RWO,RWX
 Capacity:       50Gi
 Message:
 Source:
-    Type:       NFS <span style=color:#f92672>(</span>an NFS mount that lasts the lifetime of a pod<span style=color:#f92672>)</span>
+    Type:       NFS (an NFS mount that lasts the lifetime of a pod)
     Server:     openshift-data.example.com
     Path:       /openshift/prod/metrics
-    ReadOnly:   false
+    ReadOnly:   <span style=color:#658b00>false</span>
 </code></pre></div><ul>
 <li>Deploy the metrics again and wait for it to complete.</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc process -f /usr/share/ansible/openshift-ansible/roles/openshift_examples/files/examples/v1.2/infrastructure-templates/enterprise/metrics-deployer.yaml <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>  -v HAWKULAR_METRICS_HOSTNAME<span style=color:#f92672>=</span>metrics.os.example.com <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>  | oc create -f -
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc process -f /usr/share/ansible/openshift-ansible/roles/openshift_examples/files/examples/v1.2/infrastructure-templates/enterprise/metrics-deployer.yaml <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>  -v <span style=color:#00688b>HAWKULAR_METRICS_HOSTNAME</span>=metrics.os.example.com <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>  | oc create -f -
 </code></pre></div><ul>
 <li>Now replace the hawkular route with a <a href=https://docs.openshift.com/enterprise/latest/install_config/cluster_metrics.html#metrics-reencrypting-route>reencrypting router</a></li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc describe route hawkular-metrics
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc describe route hawkular-metrics
 Name:                   hawkular-metrics
-Created:                <span style=color:#ae81ff>2</span> hours ago
-Labels:                 metrics-infra<span style=color:#f92672>=</span>support
+Created:                <span style=color:#b452cd>2</span> hours ago
+Labels:                 metrics-infra=support
 Annotations:            &lt;none&gt;
 Requested Host:         metrics.os.example.com
-                          exposed on router ha-router-primary <span style=color:#ae81ff>2</span> hours ago
+                          exposed on router ha-router-primary <span style=color:#b452cd>2</span> hours ago
 Path:                   &lt;none&gt;
 TLS Termination:        passthrough
 Insecure Policy:        &lt;none&gt;
@@ -661,8 +661,8 @@ Endpoints:              10.1.7.5:8444
 $ oc describe service hawkular-metrics
 Name:                   hawkular-metrics
 Namespace:              openshift-infra
-Labels:                 metrics-infra<span style=color:#f92672>=</span>hawkular-metrics,name<span style=color:#f92672>=</span>hawkular-metrics
-Selector:               name<span style=color:#f92672>=</span>hawkular-metrics
+Labels:                 metrics-infra=hawkular-metrics,name=hawkular-metrics
+Selector:               <span style=color:#00688b>name</span>=hawkular-metrics
 Type:                   ClusterIP
 IP:                     172.30.113.214
 Port:                   https-endpoint  443/TCP
@@ -672,21 +672,21 @@ No events.
 </code></pre></div><ul>
 <li>Create <code>route-metrics-reencrypt.yaml</code> with the <em>wildcard.os.example.com</em> cert.</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc get routes
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc get routes
 NAME               HOST/PORT              PATH      SERVICE            TERMINATION   LABELS
-hawkular-metrics   metrics.os.example.com             hawkular-metrics   passthrough   metrics-infra<span style=color:#f92672>=</span>support
+hawkular-metrics   metrics.os.example.com             hawkular-metrics   passthrough   metrics-infra=support
 
 $ vim route-metrics-reencrypt.yaml
 
 $ oc delete route hawkular-metrics
-route <span style=color:#e6db74>&#34;hawkular-metrics&#34;</span> deleted
+route <span style=color:#cd5555>&#34;hawkular-metrics&#34;</span> deleted
 
 $ oc create -f route-metrics-reencrypt.yaml
-route <span style=color:#e6db74>&#34;hawkular-metrics&#34;</span> created
+route <span style=color:#cd5555>&#34;hawkular-metrics&#34;</span> created
 
 $ oc get routes
 NAME               HOST/PORT              PATH      SERVICE                 TERMINATION   LABELS
-hawkular-metrics   metrics.os.example.com             hawkular-metrics:8444   reencrypt     metrics-infra<span style=color:#f92672>=</span>support
+hawkular-metrics   metrics.os.example.com             hawkular-metrics:8444   reencrypt     metrics-infra=support
 </code></pre></div><p>After this, metrics work again, even better! FWIW there is some mixed content on the page.</p>
 <blockquote>
 <p>Mixed Content: The page at &lsquo;<a href="https://metrics.os.example.com/hawkular/metrics'">https://metrics.os.example.com/hawkular/metrics'</a> was loaded over HTTPS, but requested an insecure stylesheet &lsquo;<a href="http://fonts.googleapis.com/css?family=Exo+2'">http://fonts.googleapis.com/css?family=Exo+2'</a>. This request has been blocked; the content must be served over HTTPS.</p>

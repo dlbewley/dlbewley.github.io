@@ -120,109 +120,109 @@ December 12, 2015
 <p>See my <a href=http://guifreelife.com/blog/2015/07/28/Testing-OpenShift-Enterprise-V3>Testing OpenShift Enterprise V3</a> post for the prereqs.</p>
 <h1 id=the-playbook>The Playbook</h1>
 <p>The lastest version is <a href=https://github.com/dlbewley/playbook-openshift/blob/master/prep.yml>available here</a>.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml>---
-<span style=color:#75715e># file: prep.yml</span>
-<span style=color:#75715e># @dlbewley</span>
-<span style=color:#75715e># Playbook to prep OpenShift Enterprise hosts for installation. Run this before</span>
-<span style=color:#75715e># the openshift-ansible byo playbook.</span>
-
-- <span style=color:#f92672>hosts</span>: <span style=color:#ae81ff>all</span>
-  <span style=color:#75715e>#-----</span>
-
-  <span style=color:#f92672>vars</span>:
-  <span style=color:#75715e>#-----</span>
-
-  - <span style=color:#f92672>docker_storage_setup</span>: |<span style=color:#e6db74>
-</span><span style=color:#e6db74>      DEVS=/dev/vdb
-</span><span style=color:#e6db74>      VG=docker-vg</span>      
-
-  <span style=color:#f92672>tasks</span>:
-  <span style=color:#75715e>#-----</span>
-
-  - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>Remove NetworkManager</span>
-    <span style=color:#f92672>yum</span>:
-      <span style=color:#f92672>name</span>: <span style=color:#ae81ff>NetworkManager</span>
-      <span style=color:#f92672>state</span>: <span style=color:#ae81ff>absent</span>
-
-  - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>Install prereqs</span>
-    <span style=color:#f92672>yum</span>:
-      <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;{{ item }}&#34;</span>
-      <span style=color:#f92672>state</span>: <span style=color:#ae81ff>present</span>
-    <span style=color:#f92672>with_items</span>:
-      - <span style=color:#ae81ff>atomic-openshift-utils</span>
-      - <span style=color:#ae81ff>bind-utils</span>
-      - <span style=color:#ae81ff>bridge-utils</span>
-      - <span style=color:#ae81ff>docker</span>
-      - <span style=color:#ae81ff>gcc</span>
-      - <span style=color:#ae81ff>git</span>
-      - <span style=color:#ae81ff>iptables-services</span>
-      - <span style=color:#ae81ff>net-tools</span>
-      - <span style=color:#ae81ff>openssh-clients</span>
-      - <span style=color:#ae81ff>python</span>
-      - <span style=color:#ae81ff>python-virtualenv</span>
-      - <span style=color:#ae81ff>wget</span>
-
-  - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>Install life enhancers on master</span>
-    <span style=color:#f92672>yum</span>:
-      <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;{{ item }}&#34;</span>
-      <span style=color:#f92672>state</span>: <span style=color:#ae81ff>present</span>
-    <span style=color:#f92672>with_items</span>:
-      - <span style=color:#ae81ff>bash-completion</span>
-      - <span style=color:#ae81ff>deltarpm</span>
-      - <span style=color:#ae81ff>etcd</span>
-      - <span style=color:#ae81ff>tmux</span>
-      - <span style=color:#ae81ff>vim-enhanced</span>
-    <span style=color:#f92672>when</span>: <span style=color:#e6db74>&#34;&#39;masters&#39; in group_names&#34;</span>
-
-  - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>Make journald logs persistent to assist troubleshooting</span>
-    <span style=color:#f92672>file</span>:
-      <span style=color:#f92672>name</span>: <span style=color:#ae81ff>/var/log/journal</span>
-      <span style=color:#f92672>state</span>: <span style=color:#ae81ff>directory</span>
-    <span style=color:#f92672>notify</span>: <span style=color:#ae81ff>restart journald</span>
-
-  <span style=color:#75715e># openshift-ansible/roles/openshift_node/tasks/storage_plugins/nfs.yml</span>
-  <span style=color:#75715e># enables sebool &#39;virt_use_nfs&#39;, but i still had to use &#39;all_squash&#39; rather</span>
-  <span style=color:#75715e># than &#39;root_squash&#39; on the NFS export. </span>
-  <span style=color:#75715e># Will the following fix that? Not yet tested.</span>
-  - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>OpenShift use nfs files</span>
-    <span style=color:#f92672>seboolean</span>:
-      <span style=color:#f92672>name</span>: <span style=color:#ae81ff>openshift_use_nfs</span>
-      <span style=color:#f92672>state</span>: <span style=color:#66d9ef>yes</span>
-      <span style=color:#f92672>persistent</span>: <span style=color:#66d9ef>yes</span>
-    <span style=color:#f92672>when</span>: <span style=color:#e6db74>&#34;&#39;nodes&#39; in group_names&#34;</span>
-
-  <span style=color:#75715e># https://docs.openshift.com/enterprise/3.1/admin_guide/overcommit.html#disable-swap-memory</span>
-  - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>Remove swaps from fstab</span>
-    <span style=color:#f92672>lineinfile</span>:
-      <span style=color:#f92672>dest</span>: <span style=color:#ae81ff>/etc/fstab</span>
-      <span style=color:#f92672>regexp</span>: <span style=color:#e6db74>&#39;^/[\S]+\s+swap\s+swap&#39;</span>
-      <span style=color:#f92672>state</span>: <span style=color:#ae81ff>absent</span>
-    <span style=color:#f92672>notify</span>: <span style=color:#ae81ff>disable swap</span>
-    <span style=color:#f92672>when</span>: <span style=color:#e6db74>&#34;&#39;nodes&#39; in group_names&#34;</span>
-
-  - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>Setup docker storage config</span>
-    <span style=color:#f92672>copy</span>:
-      <span style=color:#f92672>content</span>: <span style=color:#e6db74>&#34;{{ docker_storage_setup }}&#34;</span>
-      <span style=color:#f92672>dest</span>: <span style=color:#ae81ff>/etc/sysconfig/docker-storage-setup</span>
-    <span style=color:#f92672>notify</span>: <span style=color:#ae81ff>docker storage setup</span>
-    <span style=color:#f92672>when</span>: <span style=color:#e6db74>&#34;&#39;nodes&#39; in group_names&#34;</span>
-
-
-  <span style=color:#f92672>handlers</span>:
-  <span style=color:#75715e>#-------</span>
-
-  - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>disable swap</span>
-    <span style=color:#f92672>command</span>: <span style=color:#ae81ff>swapoff --all</span>
-    <span style=color:#f92672>ignore_errors</span>: <span style=color:#66d9ef>yes</span>
-
-  - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>restart journald</span>
-    <span style=color:#f92672>service</span>:
-      <span style=color:#f92672>name</span>: <span style=color:#ae81ff>systemd-journald</span>
-      <span style=color:#f92672>state</span>: <span style=color:#ae81ff>restarted</span>
-  
-  - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>docker storage setup</span>
-    <span style=color:#f92672>command</span>: <span style=color:#ae81ff>docker-storage-setup</span>
-</code></pre></div>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#008b45;text-decoration:underline>---</span><span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#228b22># file: prep.yml</span><span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#228b22># @dlbewley</span><span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#228b22># Playbook to prep OpenShift Enterprise hosts for installation. Run this before</span><span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#228b22># the openshift-ansible byo playbook.</span><span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb></span>- <span style=color:#8b008b;font-weight:700>hosts</span>:<span style=color:#bbb> </span>all<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#228b22>#-----</span><span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>vars</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#228b22>#-----</span><span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb>  </span>- <span style=color:#8b008b;font-weight:700>docker_storage_setup</span>:<span style=color:#bbb> </span>|<span style=color:#cd5555>
+</span><span style=color:#cd5555>      DEVS=/dev/vdb
+</span><span style=color:#cd5555>      VG=docker-vg</span><span style=color:#bbb>      
+</span><span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>tasks</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#228b22>#-----</span><span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb>  </span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>Remove NetworkManager<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>yum</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>NetworkManager<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>state</span>:<span style=color:#bbb> </span>absent<span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb>  </span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>Install prereqs<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>yum</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;{{ item }}&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>state</span>:<span style=color:#bbb> </span>present<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>with_items</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>      </span>- atomic-openshift-utils<span style=color:#bbb>
+</span><span style=color:#bbb>      </span>- bind-utils<span style=color:#bbb>
+</span><span style=color:#bbb>      </span>- bridge-utils<span style=color:#bbb>
+</span><span style=color:#bbb>      </span>- docker<span style=color:#bbb>
+</span><span style=color:#bbb>      </span>- gcc<span style=color:#bbb>
+</span><span style=color:#bbb>      </span>- git<span style=color:#bbb>
+</span><span style=color:#bbb>      </span>- iptables-services<span style=color:#bbb>
+</span><span style=color:#bbb>      </span>- net-tools<span style=color:#bbb>
+</span><span style=color:#bbb>      </span>- openssh-clients<span style=color:#bbb>
+</span><span style=color:#bbb>      </span>- python<span style=color:#bbb>
+</span><span style=color:#bbb>      </span>- python-virtualenv<span style=color:#bbb>
+</span><span style=color:#bbb>      </span>- wget<span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb>  </span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>Install life enhancers on master<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>yum</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;{{ item }}&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>state</span>:<span style=color:#bbb> </span>present<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>with_items</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>      </span>- bash-completion<span style=color:#bbb>
+</span><span style=color:#bbb>      </span>- deltarpm<span style=color:#bbb>
+</span><span style=color:#bbb>      </span>- etcd<span style=color:#bbb>
+</span><span style=color:#bbb>      </span>- tmux<span style=color:#bbb>
+</span><span style=color:#bbb>      </span>- vim-enhanced<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>when</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;&#39;masters&#39; in group_names&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb>  </span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>Make journald logs persistent to assist troubleshooting<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>file</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>/var/log/journal<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>state</span>:<span style=color:#bbb> </span>directory<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>notify</span>:<span style=color:#bbb> </span>restart journald<span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#228b22># openshift-ansible/roles/openshift_node/tasks/storage_plugins/nfs.yml</span><span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#228b22># enables sebool &#39;virt_use_nfs&#39;, but i still had to use &#39;all_squash&#39; rather</span><span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#228b22># than &#39;root_squash&#39; on the NFS export. </span><span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#228b22># Will the following fix that? Not yet tested.</span><span style=color:#bbb>
+</span><span style=color:#bbb>  </span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>OpenShift use nfs files<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>seboolean</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>openshift_use_nfs<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>state</span>:<span style=color:#bbb> </span><span style=color:#8b008b;font-weight:700>yes</span><span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>persistent</span>:<span style=color:#bbb> </span><span style=color:#8b008b;font-weight:700>yes</span><span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>when</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;&#39;nodes&#39; in group_names&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#228b22># https://docs.openshift.com/enterprise/3.1/admin_guide/overcommit.html#disable-swap-memory</span><span style=color:#bbb>
+</span><span style=color:#bbb>  </span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>Remove swaps from fstab<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>lineinfile</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>dest</span>:<span style=color:#bbb> </span>/etc/fstab<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>regexp</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#39;^/[\S]+\s+swap\s+swap&#39;</span><span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>state</span>:<span style=color:#bbb> </span>absent<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>notify</span>:<span style=color:#bbb> </span>disable swap<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>when</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;&#39;nodes&#39; in group_names&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb>  </span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>Setup docker storage config<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>copy</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>content</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;{{ docker_storage_setup }}&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>dest</span>:<span style=color:#bbb> </span>/etc/sysconfig/docker-storage-setup<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>notify</span>:<span style=color:#bbb> </span>docker storage setup<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>when</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;&#39;nodes&#39; in group_names&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>handlers</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#228b22>#-------</span><span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb>  </span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>disable swap<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>command</span>:<span style=color:#bbb> </span>swapoff --all<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>ignore_errors</span>:<span style=color:#bbb> </span><span style=color:#8b008b;font-weight:700>yes</span><span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb>  </span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>restart journald<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>service</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>systemd-journald<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>state</span>:<span style=color:#bbb> </span>restarted<span style=color:#bbb>
+</span><span style=color:#bbb>  
+</span><span style=color:#bbb>  </span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>docker storage setup<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>command</span>:<span style=color:#bbb> </span>docker-storage-setup<span style=color:#bbb>
+</span></code></pre></div>
 </div>
 <div id=comments>
 <div id=disqus_thread></div>

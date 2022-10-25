@@ -121,18 +121,18 @@ March 9, 2021
 </blockquote>
 <p>By creating APIs and <a href=https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/>Custom Resource Definitions</a> for all aspects of a cluster, OpenShift essentially turns the cluster into a &ldquo;kubernetes application&rdquo;.</p>
 <p>For example here is a list of machine configuration related CRDs now available for management by Kubernetes.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>$ oc api-resources --api-group<span style=color:#f92672>=</span>machineconfiguration.openshift.io
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>$ oc api-resources --api-group=machineconfiguration.openshift.io
 NAME                      SHORTNAMES   APIGROUP                            NAMESPACED   KIND
-containerruntimeconfigs   ctrcfg       machineconfiguration.openshift.io   false        ContainerRuntimeConfig
-controllerconfigs                      machineconfiguration.openshift.io   false        ControllerConfig
-kubeletconfigs                         machineconfiguration.openshift.io   false        KubeletConfig
-machineconfigpools        mcp          machineconfiguration.openshift.io   false        MachineConfigPool
-machineconfigs            mc           machineconfiguration.openshift.io   false        MachineConfig
+containerruntimeconfigs   ctrcfg       machineconfiguration.openshift.io   <span style=color:#658b00>false</span>        ContainerRuntimeConfig
+controllerconfigs                      machineconfiguration.openshift.io   <span style=color:#658b00>false</span>        ControllerConfig
+kubeletconfigs                         machineconfiguration.openshift.io   <span style=color:#658b00>false</span>        KubeletConfig
+machineconfigpools        mcp          machineconfiguration.openshift.io   <span style=color:#658b00>false</span>        MachineConfigPool
+machineconfigs            mc           machineconfiguration.openshift.io   <span style=color:#658b00>false</span>        MachineConfig
 </code></pre></div><h1 id=operators-manage-the-workloads>Operators Manage the Workloads</h1>
 <p>The <a href=https://github.com/operator-framework/operator-sdk title="Operator SDK Repository">Operator SDK</a> behind this work leverages technologies including Ansible, Helm, and Golang to bundle software and related operational knowledge into a Kubernetes Operator. OpenShift enables easy installation of community and ISV applications from customizatble catalog sources such as <a href=https://operatorhub.io/>OperatorHub</a> and <a href=https://marketplace.redhat.com/>Red Hat Marketplace</a>.</p>
 <p>After installation of a workload operator, the update or removal is managed by the <a href=https://github.com/operator-framework/operator-lifecycle-manager title="Operator Lifecycle Manager">Operator Lifecycle Manager</a> or OLM. When a new release of the operator is published the OLM facilitates an update to the new operator bundle.</p>
 <p>You can see the list of installed optional workload operators with the <code>oc get operators</code> command.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>$ oc get operators
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>$ oc get operators
 NAME                                                  AGE
 advanced-cluster-management.open-cluster-management   65d
 argocd-operator.dale                                  21d
@@ -144,7 +144,7 @@ splunk-certified.splunk                               56d
 <h1 id=operators-manage-the-platform>Operators Manage the Platform</h1>
 <p>There is a <a href=https://docs.openshift.com/container-platform/latest/operators/operator-reference.html title="Red Hat Operators">set of operators</a> that do not require manual installation. These operators comprise the services such as DNS, etcd, monitoring, and cloud API automation that make up the OpenShift cluster.</p>
 <p>These are called exposed by a the <a href=https://github.com/openshift/cluster-version-operator/blob/master/docs/dev/clusteroperator.md title="Cluster Operator">ClusterOperator</a> custom resource. You can see them with the <code>oc get clusteroperators</code> command.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>$ oc get clusteroperators
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>$ oc get clusteroperators
 NAME                                       VERSION   AVAILABLE   PROGRESSING   DEGRADED   SINCE
 authentication                             4.6.12    True        False         False      5m9s
 cloud-credential                           4.6.12    True        False         False      102d
@@ -178,71 +178,71 @@ service-ca                                 4.6.12    True        False         F
 storage                                    4.6.12    True        False         False      77d
 </code></pre></div><p>By examining these cluster operators with <code>oc describe</code> you can deduce a sense of their purpose and context.
 For example you can see that the &ldquo;authentication&rdquo; clusteroperator has a relation to the namespace &ldquo;openshift-authentication&rdquo;. This would be a logical place to look for further details such as events and pod logs.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>$ oc describe clusteroperator/authentication
-</code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#f92672>Name</span>:         <span style=color:#ae81ff>authentication</span>
-<span style=color:#f92672>Namespace</span>:
-<span style=color:#f92672>Labels</span>:       <span style=color:#ae81ff>&lt;none&gt;</span>
-<span style=color:#f92672>Annotations:  exclude.release.openshift.io/internal-openshift-hosted</span>: <span style=color:#66d9ef>true</span>
-              <span style=color:#f92672>include.release.openshift.io/self-managed-high-availability</span>: <span style=color:#66d9ef>true</span>
-<span style=color:#f92672>API Version</span>:  <span style=color:#ae81ff>config.openshift.io/v1</span>
-<span style=color:#f92672>Kind</span>:         <span style=color:#ae81ff>ClusterOperator</span>
-<span style=color:#f92672>Metadata</span>:
-  <span style=color:#ae81ff>snip...</span>
-<span style=color:#f92672>Status</span>:
-  <span style=color:#f92672>Related Objects</span>:
-    <span style=color:#f92672>Group</span>:      <span style=color:#ae81ff>operator.openshift.io</span>
-    <span style=color:#f92672>Name</span>:       <span style=color:#ae81ff>cluster</span>
-    <span style=color:#f92672>Resource</span>:   <span style=color:#ae81ff>authentications</span>
-    <span style=color:#f92672>Group</span>:      <span style=color:#ae81ff>config.openshift.io</span>
-    <span style=color:#f92672>Name</span>:       <span style=color:#ae81ff>cluster</span>
-    <span style=color:#f92672>Resource</span>:   <span style=color:#ae81ff>authentications</span>
-    <span style=color:#f92672>Group</span>:      <span style=color:#ae81ff>config.openshift.io</span>
-    <span style=color:#f92672>Name</span>:       <span style=color:#ae81ff>cluster</span>
-    <span style=color:#f92672>Resource</span>:   <span style=color:#ae81ff>infrastructures</span>
-    <span style=color:#f92672>Group</span>:      <span style=color:#ae81ff>config.openshift.io</span>
-    <span style=color:#f92672>Name</span>:       <span style=color:#ae81ff>cluster</span>
-    <span style=color:#f92672>Resource</span>:   <span style=color:#ae81ff>oauths</span>
-    <span style=color:#f92672>Group</span>:      <span style=color:#ae81ff>route.openshift.io</span>
-    <span style=color:#f92672>Name</span>:       <span style=color:#ae81ff>oauth-openshift</span>
-    <span style=color:#f92672>Namespace</span>:  <span style=color:#ae81ff>openshift-authentication</span>
-    <span style=color:#f92672>Resource</span>:   <span style=color:#ae81ff>routes</span>
-    <span style=color:#f92672>Group</span>:
-    <span style=color:#f92672>Name</span>:       <span style=color:#ae81ff>oauth-openshift</span>
-    <span style=color:#f92672>Namespace</span>:  <span style=color:#ae81ff>openshift-authentication</span>
-    <span style=color:#f92672>Resource</span>:   <span style=color:#ae81ff>services</span>
-    <span style=color:#f92672>Group</span>:
-    <span style=color:#f92672>Name</span>:       <span style=color:#ae81ff>openshift-authentication</span>
-    <span style=color:#f92672>Resource</span>:   <span style=color:#ae81ff>namespaces</span>
-    <span style=color:#f92672>Group</span>:
-    <span style=color:#f92672>Name</span>:       <span style=color:#ae81ff>openshift-authentication-operator</span>
-    <span style=color:#ae81ff>snip...</span>
-  <span style=color:#f92672>Versions</span>:
-    <span style=color:#f92672>Name</span>:     <span style=color:#ae81ff>oauth-apiserver</span>
-    <span style=color:#f92672>Version</span>:  <span style=color:#ae81ff>4.6.12</span>
-    <span style=color:#f92672>Name</span>:     <span style=color:#ae81ff>operator</span>
-    <span style=color:#f92672>Version</span>:  <span style=color:#ae81ff>4.6.12</span>
-    <span style=color:#f92672>Name</span>:     <span style=color:#ae81ff>oauth-openshift</span>
-    <span style=color:#f92672>Version</span>:  <span style=color:#ae81ff>4.6</span><span style=color:#ae81ff>.12_openshift</span>
-</code></pre></div><p>These operators watch for specific custom resources that they understand how to implement. For example, the <code>authentication</code> operator understands how to turn an <code>authentication</code> custom resource into an appropriately configured service.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>$ oc api-resources --api-group<span style=color:#f92672>=</span>config.openshift.io --sort-by<span style=color:#f92672>=</span>name
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>$ oc describe clusteroperator/authentication
+</code></pre></div><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#8b008b;font-weight:700>Name</span>:<span style=color:#bbb>         </span>authentication<span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>Namespace</span>:<span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>Labels</span>:<span style=color:#bbb>       </span>&lt;none&gt;<span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>Annotations:  exclude.release.openshift.io/internal-openshift-hosted</span>:<span style=color:#bbb> </span><span style=color:#8b008b;font-weight:700>true</span><span style=color:#bbb>
+</span><span style=color:#bbb>              </span><span style=color:#8b008b;font-weight:700>include.release.openshift.io/self-managed-high-availability</span>:<span style=color:#bbb> </span><span style=color:#8b008b;font-weight:700>true</span><span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>API Version</span>:<span style=color:#bbb>  </span>config.openshift.io/v1<span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>Kind</span>:<span style=color:#bbb>         </span>ClusterOperator<span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>Metadata</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>  </span>snip...<span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>Status</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>Related Objects</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>Group</span>:<span style=color:#bbb>      </span>operator.openshift.io<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>Name</span>:<span style=color:#bbb>       </span>cluster<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>Resource</span>:<span style=color:#bbb>   </span>authentications<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>Group</span>:<span style=color:#bbb>      </span>config.openshift.io<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>Name</span>:<span style=color:#bbb>       </span>cluster<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>Resource</span>:<span style=color:#bbb>   </span>authentications<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>Group</span>:<span style=color:#bbb>      </span>config.openshift.io<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>Name</span>:<span style=color:#bbb>       </span>cluster<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>Resource</span>:<span style=color:#bbb>   </span>infrastructures<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>Group</span>:<span style=color:#bbb>      </span>config.openshift.io<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>Name</span>:<span style=color:#bbb>       </span>cluster<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>Resource</span>:<span style=color:#bbb>   </span>oauths<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>Group</span>:<span style=color:#bbb>      </span>route.openshift.io<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>Name</span>:<span style=color:#bbb>       </span>oauth-openshift<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>Namespace</span>:<span style=color:#bbb>  </span>openshift-authentication<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>Resource</span>:<span style=color:#bbb>   </span>routes<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>Group</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>Name</span>:<span style=color:#bbb>       </span>oauth-openshift<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>Namespace</span>:<span style=color:#bbb>  </span>openshift-authentication<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>Resource</span>:<span style=color:#bbb>   </span>services<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>Group</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>Name</span>:<span style=color:#bbb>       </span>openshift-authentication<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>Resource</span>:<span style=color:#bbb>   </span>namespaces<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>Group</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>Name</span>:<span style=color:#bbb>       </span>openshift-authentication-operator<span style=color:#bbb>
+</span><span style=color:#bbb>    </span>snip...<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>Versions</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>Name</span>:<span style=color:#bbb>     </span>oauth-apiserver<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>Version</span>:<span style=color:#bbb>  </span><span style=color:#b452cd>4.6.12</span><span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>Name</span>:<span style=color:#bbb>     </span>operator<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>Version</span>:<span style=color:#bbb>  </span><span style=color:#b452cd>4.6.12</span><span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>Name</span>:<span style=color:#bbb>     </span>oauth-openshift<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>Version</span>:<span style=color:#bbb>  </span><span style=color:#b452cd>4.6</span>.12_openshift<span style=color:#bbb>
+</span></code></pre></div><p>These operators watch for specific custom resources that they understand how to implement. For example, the <code>authentication</code> operator understands how to turn an <code>authentication</code> custom resource into an appropriately configured service.</p>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>$ oc api-resources --api-group=config.openshift.io --sort-by=name
 NAME               SHORTNAMES   APIGROUP              NAMESPACED   KIND
-apiservers                      config.openshift.io   false        APIServer
-authentications                 config.openshift.io   false        Authentication
-builds                          config.openshift.io   false        Build
-clusteroperators   co           config.openshift.io   false        ClusterOperator
-clusterversions                 config.openshift.io   false        ClusterVersion
-consoles                        config.openshift.io   false        Console
-dnses                           config.openshift.io   false        DNS
-featuregates                    config.openshift.io   false        FeatureGate
-images                          config.openshift.io   false        Image
-infrastructures                 config.openshift.io   false        Infrastructure
-ingresses                       config.openshift.io   false        Ingress
-networks                        config.openshift.io   false        Network
-oauths                          config.openshift.io   false        OAuth
-operatorhubs                    config.openshift.io   false        OperatorHub
-projects                        config.openshift.io   false        Project
-proxies                         config.openshift.io   false        Proxy
-schedulers                      config.openshift.io   false        Scheduler
+apiservers                      config.openshift.io   <span style=color:#658b00>false</span>        APIServer
+authentications                 config.openshift.io   <span style=color:#658b00>false</span>        Authentication
+builds                          config.openshift.io   <span style=color:#658b00>false</span>        Build
+clusteroperators   co           config.openshift.io   <span style=color:#658b00>false</span>        ClusterOperator
+clusterversions                 config.openshift.io   <span style=color:#658b00>false</span>        ClusterVersion
+consoles                        config.openshift.io   <span style=color:#658b00>false</span>        Console
+dnses                           config.openshift.io   <span style=color:#658b00>false</span>        DNS
+featuregates                    config.openshift.io   <span style=color:#658b00>false</span>        FeatureGate
+images                          config.openshift.io   <span style=color:#658b00>false</span>        Image
+infrastructures                 config.openshift.io   <span style=color:#658b00>false</span>        Infrastructure
+ingresses                       config.openshift.io   <span style=color:#658b00>false</span>        Ingress
+networks                        config.openshift.io   <span style=color:#658b00>false</span>        Network
+oauths                          config.openshift.io   <span style=color:#658b00>false</span>        OAuth
+operatorhubs                    config.openshift.io   <span style=color:#658b00>false</span>        OperatorHub
+projects                        config.openshift.io   <span style=color:#658b00>false</span>        Project
+proxies                         config.openshift.io   <span style=color:#658b00>false</span>        Proxy
+schedulers                      config.openshift.io   <span style=color:#658b00>false</span>        Scheduler
 </code></pre></div><p>To understand how to define an &ldquo;authentication&rdquo;, in addition to the product documentation, you can refer to the <code>spec</code> in <a href=https://docs.openshift.com/container-platform/4.6/rest_api/config_apis/authentication-config-openshift-io-v1.html>the API documentation</a> Or take advantage of the explain command eg. <code>oc explain DNS; oc explain DNS.spec</code>.</p>
 <h2 id=cluster-version-operator>Cluster Version Operator</h2>
 <p>These cluster operators like &ldquo;authentication&rdquo; and &ldquo;console&rdquo; report their status and are kept in up to date by the <a href=https://github.com/openshift/cluster-version-operator>Cluster Version Operator</a>. The CVO is responsible for orchestrating over the air updates to the cluster. By acting on a payload representing the artifacts which make up an OpenShift release, the CVO ensures that everything from the RHEL CoreOS version on the nodes to the OpenShift web console are running on the same release.</p>
@@ -253,19 +253,19 @@ schedulers                      config.openshift.io   false        Scheduler
 <p>More detail may be found in
 <a href=https://docs.openshift.com/container-platform/latest/updating/updating-cluster-between-minor.html title="Upgrading Between Minor Releases OpenShift Documentation">the documentation</a> and <a href=https://www.openshift.com/blog/openshift-update-service-update-manager-for-your-cluster title=openshift-update-service-update-manager-for-your-cluster>this blog post</a> describing support for a locally hosted OpenShift Update Service.</p>
 <p>The source of our update graph can be seen in ClusterVersion resource nameed &ldquo;version&rdquo;. An alternative command would be <code>oc describe clusterversion</code>. Notice this cluster is tracking the <em>stable-4.6</em> channel and retrieving the graph from <code>https://api.openshift.com/api/upgrades_info/v1/graph</code>.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>$ oc get ClusterVersion/version -o jsonpath<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;{.spec}&#34;</span> | jq
-</code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-json data-lang=json>{
-  <span style=color:#f92672>&#34;channel&#34;</span>: <span style=color:#e6db74>&#34;stable-4.6&#34;</span>,
-  <span style=color:#f92672>&#34;clusterID&#34;</span>: <span style=color:#e6db74>&#34;e640ac63-7a14-4f72-99c5-e363a071e2d8&#34;</span>,
-  <span style=color:#f92672>&#34;desiredUpdate&#34;</span>: {
-    <span style=color:#f92672>&#34;image&#34;</span>: <span style=color:#e6db74>&#34;quay.io/openshift-release-dev/ocp-release@sha256:5c3618ab914eb66267b7c552a9b51c3018c3a8f8acf08ce1ff7ae4bfdd3a82bd&#34;</span>,
-    <span style=color:#f92672>&#34;version&#34;</span>: <span style=color:#e6db74>&#34;4.6.12&#34;</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>$ oc get ClusterVersion/version -o <span style=color:#00688b>jsonpath</span>=<span style=color:#cd5555>&#34;{.spec}&#34;</span> | jq
+</code></pre></div><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-json data-lang=json>{
+  <span style=color:#8b008b;font-weight:700>&#34;channel&#34;</span>: <span style=color:#cd5555>&#34;stable-4.6&#34;</span>,
+  <span style=color:#8b008b;font-weight:700>&#34;clusterID&#34;</span>: <span style=color:#cd5555>&#34;e640ac63-7a14-4f72-99c5-e363a071e2d8&#34;</span>,
+  <span style=color:#8b008b;font-weight:700>&#34;desiredUpdate&#34;</span>: {
+    <span style=color:#8b008b;font-weight:700>&#34;image&#34;</span>: <span style=color:#cd5555>&#34;quay.io/openshift-release-dev/ocp-release@sha256:5c3618ab914eb66267b7c552a9b51c3018c3a8f8acf08ce1ff7ae4bfdd3a82bd&#34;</span>,
+    <span style=color:#8b008b;font-weight:700>&#34;version&#34;</span>: <span style=color:#cd5555>&#34;4.6.12&#34;</span>
   },
-  <span style=color:#f92672>&#34;upstream&#34;</span>: <span style=color:#e6db74>&#34;https://api.openshift.com/api/upgrades_info/v1/graph&#34;</span>
+  <span style=color:#8b008b;font-weight:700>&#34;upstream&#34;</span>: <span style=color:#cd5555>&#34;https://api.openshift.com/api/upgrades_info/v1/graph&#34;</span>
 }
 </code></pre></div><p>The <code>oc adm upgrade</code> command will use the information from that graph and present any suitable updates.
 <a href=https://access.redhat.com/labs/ocpupgradegraph/update_channel title="Red Hat OpenShift Container Platform Update Graph">Red Hat OpenShift Container Platform Update Graph</a> generates a dynamic graphical representation of the update options.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>$ oc adm upgrade
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>$ oc adm upgrade
 Cluster version is 4.6.12
 
 Updates:
@@ -275,13 +275,13 @@ VERSION IMAGE
 4.6.15  quay.io/openshift-release-dev/ocp-release@sha256:b70f550e3fa94af2f7d60a3437ec0275194db36f2dc49991da2336fe21e2824c
 </code></pre></div><h2 id=examining-the-content-of-a-release-payload>Examining the Content of a Release Payload</h2>
 <p>We can get some info about a release, including the list of container images providing cluster operators, with the <code>oc adm release info</code> command.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>$ oc adm release info <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>quay.io/openshift-release-dev/ocp-release@sha256:8a9e40df2a19db4cc51dc8624d54163bef6e88b7d88cc0f577652ba25466e338
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>$ oc adm release info <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>quay.io/openshift-release-dev/ocp-release@sha256:8a9e40df2a19db4cc51dc8624d54163bef6e88b7d88cc0f577652ba25466e338
 Name:      4.6.13
 Digest:    sha256:8a9e40df2a19db4cc51dc8624d54163bef6e88b7d88cc0f577652ba25466e338
 Created:   2021-01-20T13:12:02Z
 OS/Arch:   linux/amd64
-Manifests: <span style=color:#ae81ff>444</span>
+Manifests: <span style=color:#b452cd>444</span>
 
 Pull From: quay.io/openshift-release-dev/ocp-release@sha256:8a9e40df2a19db4cc51dc8624d54163bef6e88b7d88cc0f577652ba25466e338
 
@@ -325,51 +325,51 @@ If there are any errors reported by Ignition during the provisioning phase, the 
 <p>As shown above, the OpenShift release image contains a reference to a <a href=https://github.com/coreos/coreos-assembler title="CoreOS Assembler">specific release of RHCOS</a> eg. <code>machine-os 46.82.202101191342-0 Red Hat Enterprise Linux CoreOS</code>.</p>
 <p>RHEL CoreOS like RHEL Atomic Host uses <a href=https://github.com/ostreedev/ostree title=OSTree>libostree</a> to apply operating system updates in a transactional manner. During an update the MCD downloads the container image provided in the <code>osImageURL</code> attribute of the Ignition config. This is image essentially a wrapper around an OSTree commit which is extracted and written to
 <code>/ostree/deploy/rhcos/deploy/&lt;hash></code>. The boot configuration is then updated to point to the new OSTree where it will be used upon reboot.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>sh-4.4# rpm-ostree status
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>sh-4.4# rpm-ostree status
 State: idle
 AutomaticUpdates: disabled
 Deployments:
 * pivot://quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:6069ffcc5dcd227c867a86970f3d2076221081a81b6c92fbecfd044ef160161e
               CustomOrigin: Managed by machine-config-operator
-                   Version: 46.82.202101131942-0 <span style=color:#f92672>(</span>2021-01-13T19:45:25Z<span style=color:#f92672>)</span>
+                   Version: 46.82.202101131942-0 (2021-01-13T19:45:25Z)
                     Commit: 046de410ba240083996855d797207e09374bbfdf65e5be34baa1e1f1ab49918a
-                            |- art-rhaos-4.6 <span style=color:#f92672>(</span>2021-01-13T17:25:39Z<span style=color:#f92672>)</span>
-                            |- rhel8-fast-datapath <span style=color:#f92672>(</span>2020-11-23T19:03:06Z<span style=color:#f92672>)</span>
-                            |- rhel8-baseos <span style=color:#f92672>(</span>2021-01-12T14:14:01Z<span style=color:#f92672>)</span>
-                            <span style=color:#e6db74>`</span>- rhel8-appstream <span style=color:#f92672>(</span>2021-01-13T10:43:31Z<span style=color:#f92672>)</span>
+                            |- art-rhaos-4.6 (2021-01-13T17:25:39Z)
+                            |- rhel8-fast-datapath (2020-11-23T19:03:06Z)
+                            |- rhel8-baseos (2021-01-12T14:14:01Z)
+                            <span style=color:#cd5555>`</span>- rhel8-appstream (2021-01-13T10:43:31Z)
                     Staged: no
                  StateRoot: rhcos
 
   pivot://quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:4c5b83a192734ad6aa33da798f51b4b7ebe0f633ed63d53867a0c3fb73993024
               CustomOrigin: Managed by machine-config-operator
-                   Version: 46.82.202012051820-0 <span style=color:#f92672>(</span>2020-12-05T18:24:10Z<span style=color:#f92672>)</span>
+                   Version: 46.82.202012051820-0 (2020-12-05T18:24:10Z)
                     Commit: 7e014b64b96536487eb3701fa4f0e604697730bde2f2f9034c4f56c024c67119
-                            |- art-rhaos-4.6 <span style=color:#f92672>(</span>2020-12-05T14:07:54Z<span style=color:#f92672>)</span>
-                            |- rhel8-fast-datapath <span style=color:#f92672>(</span>2020-11-23T19:03:06Z<span style=color:#f92672>)</span>
-                            |- rhel8-baseos <span style=color:#f92672>(</span>2020-11-23T17:53:53Z<span style=color:#f92672>)</span>
-                            <span style=color:#e6db74>`</span>- rhel8-appstream <span style=color:#f92672>(</span>2020-11-30T10:18:29Z<span style=color:#f92672>)</span>
+                            |- art-rhaos-4.6 (2020-12-05T14:07:54Z)
+                            |- rhel8-fast-datapath (2020-11-23T19:03:06Z)
+                            |- rhel8-baseos (2020-11-23T17:53:53Z)
+                            <span style=color:#cd5555>`</span>- rhel8-appstream (2020-11-30T10:18:29Z)
                  StateRoot: rhcos
 </code></pre></div><h3 id=machine-config-daemon-troubleshooting>Machine Config Daemon Troubleshooting</h3>
 <p>The MCD is of course running in a pod, so you can spy on its logs on each node and observe its actions or check for problems. For example, while unusual (I&rsquo;ve seen the following once), it adds some behind the scenes context. After finding a node as NotReady a problem with the boot config was exposed in the logs.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>oc project openshift-machine-config-operator
-<span style=color:#66d9ef>for</span> POD in <span style=color:#e6db74>`</span>oc get pod -o name -l k8s-app<span style=color:#f92672>=</span>machine-config-daemon<span style=color:#e6db74>`</span>; <span style=color:#66d9ef>do</span>
-  echo ----
-  echo Checking $POD <span style=color:#66d9ef>for</span> osImageURL mismatch
-  oc get $POD -o wide
-  echo
-  oc logs $POD -c  machine-config-daemon  | grep <span style=color:#e6db74>&#34;expected target osImageURL&#34;</span> | tail -1
-<span style=color:#66d9ef>done</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>oc project openshift-machine-config-operator
+<span style=color:#8b008b;font-weight:700>for</span> POD in <span style=color:#cd5555>`</span>oc get pod -o name -l k8s-app=machine-config-daemon<span style=color:#cd5555>`</span>; <span style=color:#8b008b;font-weight:700>do</span>
+  <span style=color:#658b00>echo</span> ----
+  <span style=color:#658b00>echo</span> Checking <span style=color:#00688b>$POD</span> <span style=color:#8b008b;font-weight:700>for</span> osImageURL mismatch
+  oc get <span style=color:#00688b>$POD</span> -o wide
+  <span style=color:#658b00>echo</span>
+  oc logs <span style=color:#00688b>$POD</span> -c  machine-config-daemon  | grep <span style=color:#cd5555>&#34;expected target osImageURL&#34;</span> | tail -1
+<span style=color:#8b008b;font-weight:700>done</span>
 ...snip...
 ----
-Checking pod/machine-config-daemon-nn5p8 <span style=color:#66d9ef>for</span> osImageURL mismatch
+Checking pod/machine-config-daemon-nn5p8 <span style=color:#8b008b;font-weight:700>for</span> osImageURL mismatch
 NAME                          READY   STATUS    RESTARTS   AGE   IP             NODE                  NOMINATED NODE   READINESS GATES
-machine-config-daemon-nn5p8   2/2     Running   <span style=color:#ae81ff>0</span>          15m   192.168.4.63   vipi-7zc6h-master-1   &lt;none&gt;           &lt;none&gt;
+machine-config-daemon-nn5p8   2/2     Running   <span style=color:#b452cd>0</span>          15m   192.168.4.63   vipi-7zc6h-master-1   &lt;none&gt;           &lt;none&gt;
 
-E0209 18:23:14.965590  <span style=color:#ae81ff>116436</span> writer.go:135<span style=color:#f92672>]</span> Marking Degraded due to: unexpected on-disk state validating against <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span> rendered-master-ff38f849e21009792e7db36fe2c27ef9: expected target osImageURL <span style=color:#e6db74>&#34;quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:6069ffcc5dcd227c867a86970f3d2076221081a81b6c92fbecfd044ef160161e&#34;</span>,<span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span> have <span style=color:#e6db74>&#34;quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:4c5b83a192734ad6aa33da798f51b4b7ebe0f633ed63d53867a0c3fb73993024&#34;</span>
+E0209 18:23:14.965590  <span style=color:#b452cd>116436</span> writer.go:135] Marking Degraded due to: unexpected on-disk state validating against <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span> rendered-master-ff38f849e21009792e7db36fe2c27ef9: expected target osImageURL <span style=color:#cd5555>&#34;quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:6069ffcc5dcd227c867a86970f3d2076221081a81b6c92fbecfd044ef160161e&#34;</span>,<span style=color:#cd5555>\
+</span><span style=color:#cd5555></span> have <span style=color:#cd5555>&#34;quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:4c5b83a192734ad6aa33da798f51b4b7ebe0f633ed63d53867a0c3fb73993024&#34;</span>
 </code></pre></div><p>Updating the boot config allowed the host to come back into compliance.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>oc debug node/vipi-7zc6h-master-1
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>oc debug node/vipi-7zc6h-master-1
 sh-4.4# chroot /host
 sh-4.4# rpm-ostree status -v
 ...snip...

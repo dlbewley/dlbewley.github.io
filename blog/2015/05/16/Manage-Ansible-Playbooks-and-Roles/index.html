@@ -128,19 +128,19 @@ May 16, 2015
 <p>It is usually better to follow an existing convention, even when it may be overkill, because it makes it easier for others and future-you to figure out what&rsquo;s going on. <em>Never underestimate the value of standards and conventions!</em> Sometimes coming to a convention isn&rsquo;t easy though.</p>
 <p>Ansible does make it easy to create a skeleton for your role that is consistent with the rest of the world.</p>
 <p>Just start by running <code>ansible-galaxy init role_name</code>. Most likely you want to create a git repo out of that role, so do that too.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>cd ~/src
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#658b00>cd</span> ~/src
 ansible-galaxy init foorole
-cd foorole
+<span style=color:#658b00>cd</span> foorole
 git init
 git add .
 git commit -m firstsies
 git remote add origin git@github.com:dlbewley/foorole.git
 git push -u origin master
 </code></pre></div><p>Now you have a git repo named <em>foorole</em>. You might rename the repo to <em>ansible-foorole</em>, but I prefer to push the repo with the name of <em>foorole</em> and only name my working directory <em>ansible-foorole</em>.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#75715e># create a foorole repo on github then push to it</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#228b22># create a foorole repo on github then push to it</span>
 git remote add origin git@github.com:dlbewley/foorole.git
 git push -u origin master
-cd ~/src
+<span style=color:#658b00>cd</span> ~/src
 git clone git@github.com:dlbewley/foorole.git ansible-foorole
 </code></pre></div><h1 id=ansible-galaxy>Ansible Galaxy</h1>
 <p><a href=http://galaxy.ansible.com/>Ansible Galaxy</a> is essentially a framework that makes it super simple to use a stranger&rsquo;s role in your playbook. Roles are refrenced as <code>stranger_name.role_name</code>.</p>
@@ -160,12 +160,12 @@ Add to <code>dependencies: []</code> in <code>foorole/meta/main.yml</code></p>
 </li>
 </ul>
 <p>Role dependencies <a href=https://github.com/ansible/ansible/blob/devel/bin/ansible-galaxy>currently</a> only work with roles hosted on <a href=http://galaxy.ansible.com>Ansible Galaxy</a>. See <code>fetch_role()</code>, basically it assumes it will be downloading a <code>.tar.gz</code> of a git repo, most likely from github.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>    <span style=color:#75715e># first grab the file and save it to a temp location</span>
-    <span style=color:#66d9ef>if</span> <span style=color:#e6db74>&#39;://&#39;</span> <span style=color:#f92672>in</span> role_name:
-        archive_url <span style=color:#f92672>=</span> role_name
-    <span style=color:#66d9ef>else</span>: 
-        archive_url <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;https://github.com/</span><span style=color:#e6db74>%s</span><span style=color:#e6db74>/</span><span style=color:#e6db74>%s</span><span style=color:#e6db74>/archive/</span><span style=color:#e6db74>%s</span><span style=color:#e6db74>.tar.gz&#39;</span> <span style=color:#f92672>%</span> (role_data[<span style=color:#e6db74>&#34;github_user&#34;</span>], role_data[<span style=color:#e6db74>&#34;github_repo&#34;</span>], target)
-    print <span style=color:#e6db74>&#34;- downloading role from </span><span style=color:#e6db74>%s</span><span style=color:#e6db74>&#34;</span> <span style=color:#f92672>%</span> archive_url
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>    <span style=color:#228b22># first grab the file and save it to a temp location</span>
+    <span style=color:#8b008b;font-weight:700>if</span> <span style=color:#cd5555>&#39;://&#39;</span> <span style=color:#8b008b>in</span> role_name:
+        archive_url = role_name
+    <span style=color:#8b008b;font-weight:700>else</span>: 
+        archive_url = <span style=color:#cd5555>&#39;https://github.com/</span><span style=color:#cd5555>%s</span><span style=color:#cd5555>/</span><span style=color:#cd5555>%s</span><span style=color:#cd5555>/archive/</span><span style=color:#cd5555>%s</span><span style=color:#cd5555>.tar.gz&#39;</span> % (role_data[<span style=color:#cd5555>&#34;github_user&#34;</span>], role_data[<span style=color:#cd5555>&#34;github_repo&#34;</span>], target)
+    <span style=color:#658b00>print</span> <span style=color:#cd5555>&#34;- downloading role from </span><span style=color:#cd5555>%s</span><span style=color:#cd5555>&#34;</span> % archive_url
 </code></pre></div><ul>
 <li>List them in <code>requirements.yml</code>. More on this below.</li>
 </ul>
@@ -175,23 +175,23 @@ Add to <code>dependencies: []</code> in <code>foorole/meta/main.yml</code></p>
 <h1 id=installing-roles>Installing Roles</h1>
 <p>There are tools or at least a tool, called <a href=http://mirskytech.github.io/ansible-role-manager/>Ansible Role Manager</a>, which can help you manage roles, but another option is just a Makefile.</p>
 <p>Something like this will allow you to type <code>make install</code> to resolve your <code>requirements.yml</code>:</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-makefile data-lang=makefile><span style=color:#a6e22e>.PHONY</span><span style=color:#f92672>:</span> galaxy-install ping
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-makefile data-lang=makefile><span style=color:#008b45>.PHONY</span>: galaxy-install ping
 
-<span style=color:#a6e22e>install</span><span style=color:#f92672>:</span> galaxy-install
+<span style=color:#008b45>install</span>: galaxy-install
 
-<span style=color:#a6e22e>galaxy-install</span><span style=color:#f92672>:</span>
+<span style=color:#008b45>galaxy-install</span>:
 	ansible-galaxy install -r requirements.yml --force
 
-<span style=color:#a6e22e>ping</span><span style=color:#f92672>:</span>
+<span style=color:#008b45>ping</span>:
 	ansible all -i hosts -m ping
 </code></pre></div><p>Where do these roles get installed? Ansible-galaxy will install these roles to the first directory found in your <a href=http://docs.ansible.com/intro_configuration.html#roles-path>roles_path</a>. Remember that. We can take advantage of that.</p>
 <h2 id=roles-path>Roles Path</h2>
 <p>If you are working on a playbook which may have roles stored along side it, and you want to use roles from Ansible Galaxy, what do you do?</p>
 <p>Remember, I just said that that <code>ansible-galaxy install</code> places roles in the first directory in your <code>roles_path</code>? Just create a ansible.cfg in your playbook directory that looks something like this:</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ini data-lang=ini><span style=color:#66d9ef>[defaults]</span>
-<span style=color:#a6e22e>remote_user</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>root</span>
-<span style=color:#a6e22e>inventory_file</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>hosts</span>
-<span style=color:#a6e22e>roles_path</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>required-roles:roles</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ini data-lang=ini><span style=color:#8b008b;font-weight:700>[defaults]</span>
+<span style=color:#658b00>remote_user</span> = <span style=color:#cd5555>root</span>
+<span style=color:#658b00>inventory_file</span> = <span style=color:#cd5555>hosts</span>
+<span style=color:#658b00>roles_path</span> = <span style=color:#cd5555>required-roles:roles</span>
 </code></pre></div><p>Then add <code>required-roles</code> to your <code>.gitignore</code>. Now, you can disentangle your roles and external roles within your playbook. I have to give credit to <a href=https://twitter.com/command_tab>@command_tab</a> for changing my life with this tip. :)</p>
 <h1 id=organizing-repos-when-working-with-other-admins>Organizing Repos When Working with Other Admins</h1>
 <p>You might run ansible from a laptop, your workstation, a VM. Your colleagues may do the same. How do you make sure each environment is consistent and compatible?</p>

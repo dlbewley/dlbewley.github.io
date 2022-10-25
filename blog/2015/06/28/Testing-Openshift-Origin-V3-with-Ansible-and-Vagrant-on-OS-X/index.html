@@ -124,28 +124,28 @@ June 28, 2015
 <p>Now following the instructions in <a href=https://github.com/openshift/openshift-ansible/blob/master/README_vagrant.md>README_vagrant.md</a> create three boxes that will form the OpenShift cluster. One master and two nodes.</p>
 </li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>cd ~/src <span style=color:#f92672>&amp;&amp;</span> git@github.com:openshift/openshift-ansible.git
-cd openshift-ansible
-<span style=color:#75715e># Install the requisite vagrant plugins</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#658b00>cd</span> ~/src &amp;&amp; git@github.com:openshift/openshift-ansible.git
+<span style=color:#658b00>cd</span> openshift-ansible
+<span style=color:#228b22># Install the requisite vagrant plugins</span>
 $ vagrant plugin install vagrant-hostmaster
-<span style=color:#75715e># Create the virtual boxes, but don&#39;t run ansible yet</span>
+<span style=color:#228b22># Create the virtual boxes, but don&#39;t run ansible yet</span>
 $ vagrant up --no-provision
 
-<span style=color:#75715e># Later we will provision like this:</span>
-<span style=color:#75715e>#  vagrant provision</span>
-<span style=color:#75715e># When we want to try again it will look like this</span>
-<span style=color:#75715e>#  vagrant reload --provision</span>
+<span style=color:#228b22># Later we will provision like this:</span>
+<span style=color:#228b22>#  vagrant provision</span>
+<span style=color:#228b22># When we want to try again it will look like this</span>
+<span style=color:#228b22>#  vagrant reload --provision</span>
 </code></pre></div><ul>
 <li>You may want to go ahead and put this into a file called <code>reset.sh</code> so you can more easily test over and over.</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#75715e>#!/bin/bash
-</span><span style=color:#75715e></span><span style=color:#66d9ef>for</span> node in node1 node2 master; <span style=color:#66d9ef>do</span>
-  vagrant destroy -f $node;
-<span style=color:#66d9ef>done</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#1e889b>#!/bin/bash
+</span><span style=color:#1e889b></span><span style=color:#8b008b;font-weight:700>for</span> node in node1 node2 master; <span style=color:#8b008b;font-weight:700>do</span>
+  vagrant destroy -f <span style=color:#00688b>$node</span>;
+<span style=color:#8b008b;font-weight:700>done</span>
 vagrant up --no-provision
 vagrant provision
 </code></pre></div><p>There are now 3 machines (boxes) which where added to <code>/etc/hosts</code> by vagrant.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-text data-lang=text>tail -5 /etc/hosts
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-text data-lang=text>tail -5 /etc/hosts
 ## vagrant-hostmanager-start id: bfad3436-5a92-4f03-b555-55bd186dd0ba
 192.168.100.200	ose3-node1.example.com
 192.168.100.201	ose3-node2.example.com
@@ -153,14 +153,14 @@ vagrant provision
 ## vagrant-hostmanager-end
 </code></pre></div><p>You can in the VirtualBox GUI that they are running.</p>
 <p><img src=/images/openshift-virtualbox-0.png alt="virtual box screenshot"></p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ vagrant status
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ vagrant status
 Current machine states:
 
-node1                     running <span style=color:#f92672>(</span>virtualbox<span style=color:#f92672>)</span>
-node2                     running <span style=color:#f92672>(</span>virtualbox<span style=color:#f92672>)</span>
-master                    running <span style=color:#f92672>(</span>virtualbox<span style=color:#f92672>)</span>
+node1                     running (virtualbox)
+node2                     running (virtualbox)
+master                    running (virtualbox)
 </code></pre></div><p>They can be accessed over ssh using their short vagrant names like this:</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ vagrant ssh master
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ vagrant ssh master
 $ vagrant ssh node1
 $ vagrant ssh node2
 </code></pre></div><p>Not only that, but port 8443 on the Mac localhost is forwarded to port 8443 on the master node. Nothing is listening on the master just yet though.</p>
@@ -168,38 +168,38 @@ $ vagrant ssh node2
 <h2 id=provisioning-with-ansible>Provisioning with Ansible</h2>
 <p>Run the <a href=https://github.com/openshift/openshift-ansible/blob/master/playbooks/byo/config.yml>byo/config.yml</a> Ansible playbook on the cluster by way of the <code>vagrant provision</code> command.
 This basically implements the tasks from <a href=https://github.com/openshift/openshift-ansible/blob/master/README_origin.md>README_origin.md</a>, so read that for background.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ vagrant provision
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ vagrant provision
 </code></pre></div><h2 id=sanity-check-openshift>Sanity Check OpenShift</h2>
 <p>Expect an <em>ok</em> from the healthcheck</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ vagrant ssh node2 
-<span style=color:#f92672>[</span>vagrant@ose3-node2 ~<span style=color:#f92672>]</span>$ curl -k https://ose3-master.example.com:8443/healthz
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ vagrant ssh node2 
+[vagrant@ose3-node2 ~]$ curl -k https://ose3-master.example.com:8443/healthz
 ok
 </code></pre></div><p><img src=/images/openshift-console-0.png alt="console screenshot"></p>
 <p>OpenShift console command <code>oc</code> is similar to <code>kubectl</code>. Let&rsquo;s blindly try a few commands.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ vagrant ssh master
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ vagrant ssh master
 
-<span style=color:#f92672>[</span>vagrant@ose3-master ~<span style=color:#f92672>]</span>$ oc get nodes
+[vagrant@ose3-master ~]$ oc get nodes
 NAME                      LABELS                                           STATUS                     AGE
-ose3-master.example.com   kubernetes.io/hostname<span style=color:#f92672>=</span>ose3-master.example.com   Ready,SchedulingDisabled   11h
-ose3-node1.example.com    kubernetes.io/hostname<span style=color:#f92672>=</span>ose3-node1.example.com    Ready                      11h
-ose3-node2.example.com    kubernetes.io/hostname<span style=color:#f92672>=</span>ose3-node2.example.com    Ready                      11h
+ose3-master.example.com   kubernetes.io/hostname=ose3-master.example.com   Ready,SchedulingDisabled   11h
+ose3-node1.example.com    kubernetes.io/hostname=ose3-node1.example.com    Ready                      11h
+ose3-node2.example.com    kubernetes.io/hostname=ose3-node2.example.com    Ready                      11h
 
-<span style=color:#f92672>[</span>vagrant@ose3-master ~<span style=color:#f92672>]</span>$ oc get services
-NAME         CLUSTER_IP   EXTERNAL_IP   PORT<span style=color:#f92672>(</span>S<span style=color:#f92672>)</span>   SELECTOR   AGE
+[vagrant@ose3-master ~]$ oc get services
+NAME         CLUSTER_IP   EXTERNAL_IP   PORT(S)   SELECTOR   AGE
 kubernetes   172.30.0.1   &lt;none&gt;        443/TCP   &lt;none&gt;     11h
 
-<span style=color:#f92672>[</span>vagrant@ose3-master ~<span style=color:#f92672>]</span>$ oc get all
+[vagrant@ose3-master ~]$ oc get all
 NAME      TYPE      SOURCE
 NAME      TYPE      STATUS    POD
 NAME      DOCKER REPO   TAGS      UPDATED
 NAME      TRIGGERS   LATEST VERSION
-CONTROLLER   CONTAINER<span style=color:#f92672>(</span>S<span style=color:#f92672>)</span>   IMAGE<span style=color:#f92672>(</span>S<span style=color:#f92672>)</span>   SELECTOR   REPLICAS   AGE
+CONTROLLER   CONTAINER(S)   IMAGE(S)   SELECTOR   REPLICAS   AGE
 NAME      HOST/PORT   PATH      SERVICE   LABELS    TLS TERMINATION
-NAME         CLUSTER_IP   EXTERNAL_IP   PORT<span style=color:#f92672>(</span>S<span style=color:#f92672>)</span>   SELECTOR   AGE
+NAME         CLUSTER_IP   EXTERNAL_IP   PORT(S)   SELECTOR   AGE
 kubernetes   172.30.0.1   &lt;none&gt;        443/TCP   &lt;none&gt;     11h
 NAME      READY     STATUS    RESTARTS   AGE
 
-<span style=color:#f92672>[</span>vagrant@ose3-master ~<span style=color:#f92672>]</span>$ openshift version
+[vagrant@ose3-master ~]$ openshift version
 openshift v1.0.6-2-ge2a02a8
 kubernetes v1.1.0-alpha.0-1605-g44c91b1
 </code></pre></div><h2 id=configure-openshift>Configure OpenShift</h2>
@@ -212,77 +212,77 @@ or the <a href=https://github.com/openshift/origin/blob/master/CONTRIBUTING.adoc
 <ul>
 <li>Create a docker registry. Origin uses <code>/etc/origin</code> while enterprise uses <code>/etc/openshift</code>.</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ vagrant ssh master
-<span style=color:#f92672>[</span>vagrant@ose3-master ~<span style=color:#f92672>]</span>$ export KUBECONFIG<span style=color:#f92672>=</span>/etc/origin/master/admin.kubeconfig
-<span style=color:#f92672>[</span>vagrant@ose3-master ~<span style=color:#f92672>]</span>$ export CREDENTIALS<span style=color:#f92672>=</span>/etc/openshift/master/openshift-registry.kubeconfig
-<span style=color:#f92672>[</span>vagrant@ose3-master ~<span style=color:#f92672>]</span>$ sudo chmod +r $KUBECONFIG $CREDENTIALS
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ vagrant ssh master
+[vagrant@ose3-master ~]$ <span style=color:#658b00>export</span> <span style=color:#00688b>KUBECONFIG</span>=/etc/origin/master/admin.kubeconfig
+[vagrant@ose3-master ~]$ <span style=color:#658b00>export</span> <span style=color:#00688b>CREDENTIALS</span>=/etc/openshift/master/openshift-registry.kubeconfig
+[vagrant@ose3-master ~]$ sudo chmod +r <span style=color:#00688b>$KUBECONFIG</span> <span style=color:#00688b>$CREDENTIALS</span>
 
-<span style=color:#f92672>[</span>vagrant@ose3-master ~<span style=color:#f92672>]</span>$ oadm registry --create --credentials<span style=color:#f92672>=</span>$CREDENTIALS --config<span style=color:#f92672>=</span>$KUBECONFIG
+[vagrant@ose3-master ~]$ oadm registry --create --credentials=<span style=color:#00688b>$CREDENTIALS</span> --config=<span style=color:#00688b>$KUBECONFIG</span>
 deploymentconfigs/docker-registry
 services/docker-registry
 
-<span style=color:#f92672>[</span>vagrant@ose3-master ~<span style=color:#f92672>]</span>$ oc get pods
+[vagrant@ose3-master ~]$ oc get pods
 NAME                       READY     STATUS    RESTARTS   AGE
-docker-registry-1-deploy   0/1       Pending   <span style=color:#ae81ff>0</span>          45s
+docker-registry-1-deploy   0/1       Pending   <span style=color:#b452cd>0</span>          45s
 
-<span style=color:#f92672>[</span>vagrant@ose3-master ~<span style=color:#f92672>]</span>$ oc get pods
+[vagrant@ose3-master ~]$ oc get pods
 NAME                       READY     STATUS         RESTARTS   AGE
-docker-registry-1-deploy   0/1       ExitCode:255   <span style=color:#ae81ff>0</span>          6m
+docker-registry-1-deploy   0/1       ExitCode:255   <span style=color:#b452cd>0</span>          6m
 
-<span style=color:#f92672>[</span>vagrant@ose3-master ~<span style=color:#f92672>]</span>$  oc logs docker-registry-1-deploy
-F1009 03:06:30.593315       <span style=color:#ae81ff>1</span> deployer.go:64<span style=color:#f92672>]</span> couldn<span style=color:#960050;background-color:#1e0010>&#39;</span>t get deployment default/docker-registry-1: Get https://ose3-master.example.com:8443/api/v1/namespaces/default/replicationcontrollers/docker-registry-1: dial tcp: lookup ose3-master.example.com: no such host
+[vagrant@ose3-master ~]$  oc logs docker-registry-1-deploy
+F1009 03:06:30.593315       <span style=color:#b452cd>1</span> deployer.go:64] couldn<span style=color:#a61717;background-color:#e3d2d2>&#39;</span>t get deployment default/docker-registry-1: Get https://ose3-master.example.com:8443/api/v1/namespaces/default/replicationcontrollers/docker-registry-1: dial tcp: lookup ose3-master.example.com: no such host
 
-<span style=color:#f92672>[</span>vagrant@ose3-master ~<span style=color:#f92672>]</span>$ oc get all
+[vagrant@ose3-master ~]$ oc get all
 NAME      TYPE      SOURCE
 NAME      TYPE      STATUS    POD
 NAME      DOCKER REPO   TAGS      UPDATED
 NAME              TRIGGERS       LATEST VERSION
-docker-registry   ConfigChange   <span style=color:#ae81ff>1</span>
-CONTROLLER          CONTAINER<span style=color:#f92672>(</span>S<span style=color:#f92672>)</span>   IMAGE<span style=color:#f92672>(</span>S<span style=color:#f92672>)</span>                                  SELECTOR                                                                                REPLICAS   AGE
-docker-registry-1   registry       openshift/origin-docker-registry:v1.0.6   deployment<span style=color:#f92672>=</span>docker-registry-1,deploymentconfig<span style=color:#f92672>=</span>docker-registry,docker-registry<span style=color:#f92672>=</span>default   <span style=color:#ae81ff>0</span>          6m
+docker-registry   ConfigChange   <span style=color:#b452cd>1</span>
+CONTROLLER          CONTAINER(S)   IMAGE(S)                                  SELECTOR                                                                                REPLICAS   AGE
+docker-registry-1   registry       openshift/origin-docker-registry:v1.0.6   <span style=color:#00688b>deployment</span>=docker-registry-1,deploymentconfig=docker-registry,docker-registry=default   <span style=color:#b452cd>0</span>          6m
 NAME      HOST/PORT   PATH      SERVICE   LABELS    TLS TERMINATION
-NAME              CLUSTER_IP    EXTERNAL_IP   PORT<span style=color:#f92672>(</span>S<span style=color:#f92672>)</span>    SELECTOR                  AGE
-docker-registry   172.30.8.16   &lt;none&gt;        5000/TCP   docker-registry<span style=color:#f92672>=</span>default   6m
+NAME              CLUSTER_IP    EXTERNAL_IP   PORT(S)    SELECTOR                  AGE
+docker-registry   172.30.8.16   &lt;none&gt;        5000/TCP   docker-registry=default   6m
 kubernetes        172.30.0.1    &lt;none&gt;        443/TCP    &lt;none&gt;                    11h
 NAME                       READY     STATUS         RESTARTS   AGE
-docker-registry-1-deploy   0/1       ExitCode:255   <span style=color:#ae81ff>0</span>          6m
+docker-registry-1-deploy   0/1       ExitCode:255   <span style=color:#b452cd>0</span>          6m
 </code></pre></div><h3 id=fix-dns-issue>Fix DNS Issue</h3>
 <p>The <a href=https://github.com/smdahlen/vagrant-hostmanager>vagrant plugin hostmanager</a> sets up the hosts files on the nodes, but as this RedHat <a href=https://access.redhat.com/solutions/1520803>knowledgebase article</a> points out, the resolver also needs to work.</p>
 <p>The <a href=https://github.com/mattes/vagrant-dnsmasq>vagrant dnsmasq plugin</a>, may be a fix, but since I had some ruby problems I tried the <a href=https://github.com/phinze/landrush>vagrant landrush plugin</a> instead.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>brew install landrush
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>brew install landrush
 vagrant plugin install vagrant-landrush
 </code></pre></div><p>Then update the <code>Vagrantfile</code> like this:</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-diff data-lang=diff>diff --git a/Vagrantfile b/Vagrantfile
-index a832ae8..bfa13ac 100644
-<span style=color:#f92672>--- a/Vagrantfile
-</span><span style=color:#f92672></span><span style=color:#a6e22e>+++ b/Vagrantfile
-</span><span style=color:#a6e22e></span><span style=color:#75715e>@@ -11,6 +11,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-</span><span style=color:#75715e></span>   deployment_type = ENV[&#39;OPENSHIFT_DEPLOYMENT_TYPE&#39;] || &#39;origin&#39;
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-diff data-lang=diff><span style=color:navy;font-weight:700>diff --git a/Vagrantfile b/Vagrantfile
+</span><span style=color:navy;font-weight:700>index a832ae8..bfa13ac 100644
+</span><span style=color:navy;font-weight:700></span><span style=color:#a00>--- a/Vagrantfile
+</span><span style=color:#a00></span><span style=color:#0a0>+++ b/Vagrantfile
+</span><span style=color:#0a0></span><span style=color:purple;font-weight:700>@@ -11,6 +11,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+</span><span style=color:purple;font-weight:700></span>   deployment_type = ENV[&#39;OPENSHIFT_DEPLOYMENT_TYPE&#39;] || &#39;origin&#39;
    num_nodes = (ENV[&#39;OPENSHIFT_NUM_NODES&#39;] || 2).to_i
 
-<span style=color:#a6e22e>+  config.landrush.enabled = true
-</span><span style=color:#a6e22e>+  config.landrush.tld = &#39;example.com&#39;
-</span><span style=color:#a6e22e></span>   config.hostmanager.enabled = true
+<span style=color:#0a0>+  config.landrush.enabled = true
+</span><span style=color:#0a0>+  config.landrush.tld = &#39;example.com&#39;
+</span><span style=color:#0a0></span>   config.hostmanager.enabled = true
    config.hostmanager.manage_host = true
    config.hostmanager.include_offline = true
-<span style=color:#75715e>@@ -39,6 +41,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-</span><span style=color:#75715e></span>     config.vm.define &#34;node#{node_index}&#34; do |node|
+<span style=color:purple;font-weight:700>@@ -39,6 +41,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+</span><span style=color:purple;font-weight:700></span>     config.vm.define &#34;node#{node_index}&#34; do |node|
        node.vm.hostname = &#34;ose3-node#{node_index}.example.com&#34;
        node.vm.network :private_network, ip: &#34;192.168.100.#{200 + n}&#34;
-<span style=color:#a6e22e>+      node.landrush.host_ip_address =  &#34;192.168.100.#{200 + n}&#34;
-</span><span style=color:#a6e22e></span>       config.vm.provision &#34;shell&#34;, inline: &#34;nmcli connection reload; systemctl restart network.service&#34;
+<span style=color:#0a0>+      node.landrush.host_ip_address =  &#34;192.168.100.#{200 + n}&#34;
+</span><span style=color:#0a0></span>       config.vm.provision &#34;shell&#34;, inline: &#34;nmcli connection reload; systemctl restart network.service&#34;
      end
    end
-<span style=color:#75715e>@@ -47,6 +50,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-</span><span style=color:#75715e></span>     master.vm.hostname = &#34;ose3-master.example.com&#34;
+<span style=color:purple;font-weight:700>@@ -47,6 +50,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+</span><span style=color:purple;font-weight:700></span>     master.vm.hostname = &#34;ose3-master.example.com&#34;
      master.vm.network :private_network, ip: &#34;192.168.100.100&#34;
      master.vm.network :forwarded_port, guest: 8443, host: 8443
-<span style=color:#a6e22e>+    master.landrush.host_ip_address = &#34;192.168.100.100&#34;
-</span><span style=color:#a6e22e></span>     config.vm.provision &#34;shell&#34;, inline: &#34;nmcli connection reload; systemctl restart network.service&#34;
+<span style=color:#0a0>+    master.landrush.host_ip_address = &#34;192.168.100.100&#34;
+</span><span style=color:#0a0></span>     config.vm.provision &#34;shell&#34;, inline: &#34;nmcli connection reload; systemctl restart network.service&#34;
      master.vm.provision &#34;ansible&#34; do |ansible|
        ansible.limit = &#39;all&#39;
 </code></pre></div><p>DNS works better, but registry creation still fails with a host lookup failure.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-text data-lang=text>[vagrant@ose3-master ~]$ oc get pods
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-text data-lang=text>[vagrant@ose3-master ~]$ oc get pods
 NAME                       READY     STATUS         RESTARTS   AGE
 docker-registry-1-deploy   0/1       ExitCode:255   0          4m
 [vagrant@ose3-master ~]$ oc logs docker-registry-1-deploy
@@ -292,7 +292,7 @@ F0726 02:41:00.845168       1 deployer.go:64] couldn&#39;t get deployment defaul
 <ul>
 <li>Login as <em>test</em> / <em>test</em> then create a project and an app. This will peform a docker build, but will fail when it attempts to push to the registry above.</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-text data-lang=text>$ vagrant ssh master
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-text data-lang=text>$ vagrant ssh master
 [vagrant@ose3-master ~]$ oc login
 Username: test
 Authentication required for https://ose3-master.example.com:8443 (openshift)
@@ -343,8 +343,8 @@ ruby-sample-build-1-build   0/1       ExitCode:255   0          1m
 <ul>
 <li>Add admin user to the <em>test</em> Project.</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ vagrant ssh master
-<span style=color:#f92672>[</span>vagrant@ose3-master ~<span style=color:#f92672>]</span>$ oadm policy add-role-to-user admin admin -n test
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ vagrant ssh master
+[vagrant@ose3-master ~]$ oadm policy add-role-to-user admin admin -n <span style=color:#658b00>test</span>
 </code></pre></div><p>Be sure you updated your hosts file as described above then browse to one of the following and login as <em>admin</em> / <em>admin</em>:</p>
 <ul>
 <li>https://localhost:8443/console/</li>

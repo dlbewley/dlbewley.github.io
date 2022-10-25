@@ -233,33 +233,33 @@ Perhaps we should use os.example.com as the &ldquo;TLD&rdquo; and use subdomain 
 <ul>
 <li>On <em>all the hosts</em> Register VM with RedHat Subscription Manager</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>subscription-manager register --username<span style=color:#f92672>=</span>rhel-username --password<span style=color:#f92672>=</span>&lt;password&gt;
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>subscription-manager register --username=rhel-username --password=&lt;password&gt;
 
 subscription-manager list --available
 </code></pre></div><ul>
 <li>On <em>all the hosts</em> find the pool ID of the Red Hat OpenShift Enterprise license:</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#f92672>[</span>root@ose-master-01 ~<span style=color:#f92672>]</span><span style=color:#75715e># subscription-manager list --available</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>[root@ose-master-01 ~]<span style=color:#228b22># subscription-manager list --available</span>
 +-------------------------------------------+
     Available Subscriptions
 +-------------------------------------------+
-Subscription Name:   OpenShift Enterprise, Standard <span style=color:#f92672>(</span>1-2 Sockets<span style=color:#f92672>)</span>
+Subscription Name:   OpenShift Enterprise, Standard (1-2 Sockets)
 Provides:            Red Hat Beta
                      Red Hat OpenShift Enterprise
                      Red Hat OpenShift Enterprise Application Node
-                     Red Hat Software Collections <span style=color:#f92672>(</span><span style=color:#66d9ef>for</span> RHEL Server<span style=color:#f92672>)</span>
+                     Red Hat Software Collections (<span style=color:#8b008b;font-weight:700>for</span> RHEL Server)
                      JBoss Enterprise Web Server
-                     Oracle Java <span style=color:#f92672>(</span><span style=color:#66d9ef>for</span> RHEL Server<span style=color:#f92672>)</span>
+                     Oracle Java (<span style=color:#8b008b;font-weight:700>for</span> RHEL Server)
                      Red Hat OpenShift Enterprise Client Tools
                      Red Hat Enterprise Linux Server
-                     Red Hat Software Collections Beta <span style=color:#f92672>(</span><span style=color:#66d9ef>for</span> RHEL Server<span style=color:#f92672>)</span>
+                     Red Hat Software Collections Beta (<span style=color:#8b008b;font-weight:700>for</span> RHEL Server)
                      Red Hat Enterprise Linux Atomic Host
 SKU:                 MCT2863
-Contract:            <span style=color:#ae81ff>10000001</span>
+Contract:            <span style=color:#b452cd>10000001</span>
 Pool ID:             8000000000000000000000000000000a
 Provides Management: No
-Available:           <span style=color:#ae81ff>3</span>
-Suggested:           <span style=color:#ae81ff>1</span>
+Available:           <span style=color:#b452cd>3</span>
+Suggested:           <span style=color:#b452cd>1</span>
 Service Level:       Standard
 Service Type:        L1-L3
 Subscription Type:   Stackable
@@ -269,19 +269,19 @@ System Type:         Physical
 Subscription Name:   OpenShift Enterprise Broker Infrastructure
 Provides:            Red Hat Beta
                      Red Hat OpenShift Enterprise
-                     Red Hat Software Collections <span style=color:#f92672>(</span><span style=color:#66d9ef>for</span> RHEL Server<span style=color:#f92672>)</span>
-                     Oracle Java <span style=color:#f92672>(</span><span style=color:#66d9ef>for</span> RHEL Server<span style=color:#f92672>)</span>
+                     Red Hat Software Collections (<span style=color:#8b008b;font-weight:700>for</span> RHEL Server)
+                     Oracle Java (<span style=color:#8b008b;font-weight:700>for</span> RHEL Server)
                      Red Hat OpenShift Enterprise Client Tools
                      Red Hat Enterprise Linux Server
-                     Red Hat Software Collections Beta <span style=color:#f92672>(</span><span style=color:#66d9ef>for</span> RHEL Server<span style=color:#f92672>)</span>
+                     Red Hat Software Collections Beta (<span style=color:#8b008b;font-weight:700>for</span> RHEL Server)
                      Red Hat Enterprise Linux Atomic Host
                      Red Hat OpenShift Enterprise Infrastructure
 SKU:                 MCT2741
-Contract:            <span style=color:#ae81ff>10000001</span>
-Pool ID:             <span style=color:#ae81ff>80000000000000000000000000000001</span>
+Contract:            <span style=color:#b452cd>10000001</span>
+Pool ID:             <span style=color:#b452cd>80000000000000000000000000000001</span>
 Provides Management: Yes
-Available:           <span style=color:#ae81ff>2</span>
-Suggested:           <span style=color:#ae81ff>1</span>
+Available:           <span style=color:#b452cd>2</span>
+Suggested:           <span style=color:#b452cd>1</span>
 Service Level:       Layered
 Service Type:        L1-L3
 Subscription Type:   Standard
@@ -291,32 +291,32 @@ System Type:         Physical
 </code></pre></div><ul>
 <li>On all the hosts, attach to that pool ID</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>subscription-manager attach --pool<span style=color:#f92672>=</span>8a000000000000000000000000000000
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>subscription-manager attach --pool=8a000000000000000000000000000000
 </code></pre></div><ul>
 <li>On <em>all 3 hosts</em>: Adjust subscriptions</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>subscription-manager repos --disable<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;*&#34;</span>
-subscription-manager repos <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    --enable<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;rhel-7-server-rpms&#34;</span> <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    --enable<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;rhel-7-server-extras-rpms&#34;</span> <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    --enable<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;rhel-7-server-optional-rpms&#34;</span> <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    --enable<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;rhel-7-server-ose-3.0-rpms&#34;</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>subscription-manager repos --disable=<span style=color:#cd5555>&#34;*&#34;</span>
+subscription-manager repos <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    --enable=<span style=color:#cd5555>&#34;rhel-7-server-rpms&#34;</span> <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    --enable=<span style=color:#cd5555>&#34;rhel-7-server-extras-rpms&#34;</span> <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    --enable=<span style=color:#cd5555>&#34;rhel-7-server-optional-rpms&#34;</span> <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    --enable=<span style=color:#cd5555>&#34;rhel-7-server-ose-3.0-rpms&#34;</span>
 </code></pre></div><ul>
 <li>On <em>all 3 hosts</em>: Install Prereqs</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>yum -y remove <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>  NetworkManager
-<span style=color:#75715e># install reqs</span>
-yum -y install <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>  python python-virtualenv openssh-clients gcc <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>  wget git net-tools bind-utils iptables-services bridge-utils <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>  docker
-<span style=color:#75715e># install life enhancers</span>
-yum -y install <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>  vim-enhanced deltarpm bash-completion tmux
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>yum -y remove <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>  NetworkManager
+<span style=color:#228b22># install reqs</span>
+yum -y install <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>  python python-virtualenv openssh-clients gcc <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>  wget git net-tools bind-utils iptables-services bridge-utils <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>  docker
+<span style=color:#228b22># install life enhancers</span>
+yum -y install <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>  vim-enhanced deltarpm bash-completion tmux
 yum -y update
 </code></pre></div><p>It may be helpful to keep journald logs around across reboots while we are still testing.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>mkdir /var/log/journal
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>mkdir /var/log/journal
 systemctl restart systemd-journald
 </code></pre></div><p>The following units may produce some interesting logs (<code>journalctl -f -u $unit</code>).</p>
 <ul>
@@ -331,14 +331,14 @@ systemctl restart systemd-journald
 <ul>
 <li>On <em>ose3-node1</em> and on <em>ose3-node2</em> create a LVM thin pool on the 2nd disk. This should be done before the installer playbook runs, and that is why we have to install docker by hand.</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>cat <span style=color:#e6db74>&lt;&lt;EOF &gt; /etc/sysconfig/docker-storage-setup
-</span><span style=color:#e6db74>DEVS=/dev/vdb
-</span><span style=color:#e6db74>VG=docker-vg
-</span><span style=color:#e6db74>EOF</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>cat <span style=color:#cd5555>&lt;&lt;EOF &gt; /etc/sysconfig/docker-storage-setup
+</span><span style=color:#cd5555>DEVS=/dev/vdb
+</span><span style=color:#cd5555>VG=docker-vg
+</span><span style=color:#cd5555>EOF</span>
 
 docker-storage-setup
 </code></pre></div><p>Example:</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-text data-lang=text>root@ose-node-01 ~]# cat &lt;&lt;EOF &gt; /etc/sysconfig/docker-storage-setup
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-text data-lang=text>root@ose-node-01 ~]# cat &lt;&lt;EOF &gt; /etc/sysconfig/docker-storage-setup
 &gt; DEVS=/dev/vdb
 &gt; VG=docker-vg
 &gt; EOF
@@ -401,7 +401,7 @@ DOCKER_STORAGE_OPTIONS=--storage-driver devicemapper --storage-opt dm.fs=xfs --s
   root        rhel      -wi-ao---- 26.47g
   swap        rhel      -wi-ao----  3.00g
 </code></pre></div><p>The docker-pool volume should be 60% of the available volume group and will grow to fill the volume group via LVM monitoring.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-text data-lang=text>[root@ose-node-01 ~]# lvdisplay docker-vg/docker-pool
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-text data-lang=text>[root@ose-node-01 ~]# lvdisplay docker-vg/docker-pool
   --- Logical volume ---
   LV Name                docker-pool
   VG Name                docker-vg
@@ -430,8 +430,8 @@ DOCKER_STORAGE_OPTIONS=--storage-driver devicemapper --storage-opt dm.fs=xfs --s
 <li>Enable insecure docker registries</li>
 </ul>
 <p>The docs said to do this, but <a href=https://github.com/openshift/openshift-ansible/blob/master/roles/openshift_node/tasks/main.yml#L66>ansible does this during the install to follow</a>. <strong>Documentation bug to file?</strong></p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#f92672>[</span>root@ose3-node1 ~<span style=color:#f92672>]</span><span style=color:#75715e># grep OPTIONS /etc/sysconfig/docker</span>
-OPTIONS<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;--insecure-registry=172.30.0.0/16 --selinux-enabled&#39;</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>[root@ose3-node1 ~]<span style=color:#228b22># grep OPTIONS /etc/sysconfig/docker</span>
+<span style=color:#00688b>OPTIONS</span>=<span style=color:#cd5555>&#39;--insecure-registry=172.30.0.0/16 --selinux-enabled&#39;</span>
 </code></pre></div><p>Skip the above for the moment.</p>
 <h1 id=perform-advanced-ansible-based-install>Perform Advanced Ansible-based Install</h1>
 <p>Now proceed with the OpenShift <a href=https://docs.openshift.com/enterprise/3.1/install_config/install/advanced_install.html>advanced installation method</a>.</p>
@@ -445,46 +445,46 @@ OPTIONS<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;--insecu
 <pre tabindex=0><code>yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 yum -y install ansible
 </code></pre><p>Setup ssh on the master, such that the ansible installer can run in the next step.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>ssh-keygen
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>ssh-keygen
 cp -p .ssh/id_rsa.pub .ssh/authorized_keys
-chmod <span style=color:#ae81ff>600</span> .ssh/authorized_keys
-<span style=color:#66d9ef>for</span> h in <span style=color:#e6db74>`</span>seq -f <span style=color:#e6db74>&#39;ose-node-%02g&#39;</span> <span style=color:#ae81ff>1</span> 3<span style=color:#e6db74>`</span>; <span style=color:#66d9ef>do</span>
-  ssh-copy-id $h
-<span style=color:#66d9ef>done</span>
+chmod <span style=color:#b452cd>600</span> .ssh/authorized_keys
+<span style=color:#8b008b;font-weight:700>for</span> h in <span style=color:#cd5555>`</span>seq -f <span style=color:#cd5555>&#39;ose-node-%02g&#39;</span> <span style=color:#b452cd>1</span> 3<span style=color:#cd5555>`</span>; <span style=color:#8b008b;font-weight:700>do</span>
+  ssh-copy-id <span style=color:#00688b>$h</span>
+<span style=color:#8b008b;font-weight:700>done</span>
 </code></pre></div><h2 id=create-ansible-inventory-file>Create Ansible Inventory File</h2>
 <p>Based on the <a href=https://github.com/openshift/openshift-ansible/blob/master/inventory/byo/hosts.example>byo/inventory/hosts.example</a>
 example inventory and advice <a href=https://docs.openshift.com/enterprise/3.1/install_config/install/advanced_install.html#configuring-ansible>here</a>,
 we&rsquo;ll make our inventory own and place it in <code>/etc/ansible/hosts</code> on the master.</p>
 <p>We&rsquo;ll have to identify values for use by the playbook such as our Portral Network default subdomain etc.</p>
 <h2 id=install-openshift>Install Openshift</h2>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#75715e># run this twice to validate connectivity cache the ssh keys answer yes repeatedly</span>
-<span style=color:#f92672>[</span>root@ose-master-01 ~<span style=color:#f92672>]</span><span style=color:#75715e># ansible all -m ping</span>
-<span style=color:#f92672>[</span>root@ose-master-01 ~<span style=color:#f92672>]</span><span style=color:#75715e># ansible all -m ping</span>
-ose-node-02.example.com | success &gt;&gt; <span style=color:#f92672>{</span>
-    <span style=color:#e6db74>&#34;changed&#34;</span>: false,
-    <span style=color:#e6db74>&#34;ping&#34;</span>: <span style=color:#e6db74>&#34;pong&#34;</span>
-<span style=color:#f92672>}</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#228b22># run this twice to validate connectivity cache the ssh keys answer yes repeatedly</span>
+[root@ose-master-01 ~]<span style=color:#228b22># ansible all -m ping</span>
+[root@ose-master-01 ~]<span style=color:#228b22># ansible all -m ping</span>
+ose-node-02.example.com | success &gt;&gt; {
+    <span style=color:#cd5555>&#34;changed&#34;</span>: false,
+    <span style=color:#cd5555>&#34;ping&#34;</span>: <span style=color:#cd5555>&#34;pong&#34;</span>
+}
 
-ose-master-01.example.com | success &gt;&gt; <span style=color:#f92672>{</span>
-    <span style=color:#e6db74>&#34;changed&#34;</span>: false,
-    <span style=color:#e6db74>&#34;ping&#34;</span>: <span style=color:#e6db74>&#34;pong&#34;</span>
-<span style=color:#f92672>}</span>
+ose-master-01.example.com | success &gt;&gt; {
+    <span style=color:#cd5555>&#34;changed&#34;</span>: false,
+    <span style=color:#cd5555>&#34;ping&#34;</span>: <span style=color:#cd5555>&#34;pong&#34;</span>
+}
 
-ose-node-01.example.com | success &gt;&gt; <span style=color:#f92672>{</span>
-    <span style=color:#e6db74>&#34;changed&#34;</span>: false,
-    <span style=color:#e6db74>&#34;ping&#34;</span>: <span style=color:#e6db74>&#34;pong&#34;</span>
-<span style=color:#f92672>}</span>
+ose-node-01.example.com | success &gt;&gt; {
+    <span style=color:#cd5555>&#34;changed&#34;</span>: false,
+    <span style=color:#cd5555>&#34;ping&#34;</span>: <span style=color:#cd5555>&#34;pong&#34;</span>
+}
 
-ose-node-03.example.com | success &gt;&gt; <span style=color:#f92672>{</span>
-    <span style=color:#e6db74>&#34;changed&#34;</span>: false,
-    <span style=color:#e6db74>&#34;ping&#34;</span>: <span style=color:#e6db74>&#34;pong&#34;</span>
-<span style=color:#f92672>}</span>
+ose-node-03.example.com | success &gt;&gt; {
+    <span style=color:#cd5555>&#34;changed&#34;</span>: false,
+    <span style=color:#cd5555>&#34;ping&#34;</span>: <span style=color:#cd5555>&#34;pong&#34;</span>
+}
 </code></pre></div><ul>
 <li>Run the <em>bring your own</em> playbook</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>ansible-playbook openshift-ansible/playbooks/byo/config.yml
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>ansible-playbook openshift-ansible/playbooks/byo/config.yml
 </code></pre></div><p>Look around a big</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-text data-lang=text>[root@ose-master-01 ~]# oc get nodes
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-text data-lang=text>[root@ose-master-01 ~]# oc get nodes
 NAME                      LABELS                                                              STATUS                     AGE
 ose-master-01.example.com   kubernetes.io/hostname=1.1.1.124,region=infra,zone=default     Ready,SchedulingDisabled   5m
 ose-node-01.example.com     kubernetes.io/hostname=1.1.1.94,region=primary,zone=default    Ready                      5m
@@ -511,7 +511,7 @@ kubernetes   172.30.1.1   &lt;none&gt;        443/TCP   &lt;none&gt;     9m
 <ul>
 <li><a href=https://docs.openshift.com/enterprise/3.1/install_config/install/docker_registry.html>Create a Docker Registry</a> on the master</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-text data-lang=text>[root@ose-master-01 ~]# oadm registry \
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-text data-lang=text>[root@ose-master-01 ~]# oadm registry \
 &gt;     --service-account=registry \
 &gt;     --config=/etc/openshift/master/admin.kubeconfig \
 &gt;     --credentials=/etc/openshift/master/openshift-registry.kubeconfig \
@@ -568,19 +568,19 @@ users:
 <ul>
 <li>To see what the router would look like run:</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>oadm router -o yaml <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    --credentials<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;/etc/openshift/master/openshift-router.kubeconfig&#39;</span> <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    --images<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;registry.access.redhat.com/openshift3/ose-${component}:${version}&#39;</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>oadm router -o yaml <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    --credentials=<span style=color:#cd5555>&#39;/etc/openshift/master/openshift-router.kubeconfig&#39;</span> <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    --images=<span style=color:#cd5555>&#39;registry.access.redhat.com/openshift3/ose-${component}:${version}&#39;</span>
 </code></pre></div><ul>
 <li><em>On ose3-master</em> create a router and note the stats password.</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>oadm router router1 --replicas<span style=color:#f92672>=</span><span style=color:#ae81ff>2</span> <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    --credentials<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;/etc/openshift/master/openshift-router.kubeconfig&#39;</span> <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    --images<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;registry.access.redhat.com/openshift3/ose-${component}:${version}&#39;</span>
-password <span style=color:#66d9ef>for</span> stats user admin has been set to noB000002X
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>oadm router router1 --replicas=<span style=color:#b452cd>2</span> <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    --credentials=<span style=color:#cd5555>&#39;/etc/openshift/master/openshift-router.kubeconfig&#39;</span> <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    --images=<span style=color:#cd5555>&#39;registry.access.redhat.com/openshift3/ose-${component}:${version}&#39;</span>
+password <span style=color:#8b008b;font-weight:700>for</span> stats user admin has been <span style=color:#658b00>set</span> to noB000002X
 deploymentconfigs/router1
 services/router1
-</code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-text data-lang=text>[root@ose3-master ~]# oc get pods
+</code></pre></div><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-text data-lang=text>[root@ose3-master ~]# oc get pods
 NAME                      READY     REASON    RESTARTS   AGE
 docker-registry-1-udgkk   1/1       Running   0          45m
 router1-1-miamx           1/1       Running   0          19m
@@ -591,31 +591,31 @@ router1-1-y1wk8           1/1       Running   0          20m
 <ul>
 <li>Create the core set of image streams, which use RHEL 7 based images:</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>oc create -f <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    /usr/share/openshift/examples/image-streams/image-streams-rhel7.json <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    -n openshift
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>oc create -f <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    /usr/share/openshift/examples/image-streams/image-streams-rhel7.json <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    -n openshift
 </code></pre></div><ul>
 <li>Create Database Service Templates</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>oc create -f <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    /usr/share/openshift/examples/db-templates -n openshift
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>oc create -f <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    /usr/share/openshift/examples/db-templates -n openshift
 </code></pre></div><ul>
 <li>Create Quick Start Templates</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>oc create -f <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    /usr/share/openshift/examples/quickstart-templates -n openshift
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>oc create -f <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    /usr/share/openshift/examples/quickstart-templates -n openshift
 </code></pre></div><h2 id=configure-authentication-bypass>Configure Authentication Bypass</h2>
 <ul>
 <li><a href=https://docs.openshift.com/enterprise/3.1/admin_guide/configuring_authentication.html>Auth</a></li>
 </ul>
 <p>By default <code>/etc/openshift/master/master-config.yaml</code> denys all. Let&rsquo;s allow any username to work regardless of password.
 Set this value in the ansible hosts file before installation to allow logins for any user regardless of password. Obviously, this is only appropriate for a testing environment.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-text data-lang=text># Allow all auth
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-text data-lang=text># Allow all auth
 openshift_master_identity_providers=[{&#39;name&#39;: &#39;allow_all&#39;, &#39;login&#39;: &#39;true&#39;, &#39;challenge&#39;: &#39;true&#39;, &#39;kind&#39;: &#39;AllowAllPasswordIdentityProvider&#39;}]
 </code></pre></div><ul>
 <li>Now restart the server on ose3-master.</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>systemctl restart openshift-master
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>systemctl restart openshift-master
 </code></pre></div><h1 id=grok-some-openshift-concepts>Grok Some OpenShift Concepts</h1>
 <p><em>Users</em></p>
 <p>The <code>oc whoami</code> command will tell you what user you are. The root user is the <code>cluster-admin</code> with super ports.</p>

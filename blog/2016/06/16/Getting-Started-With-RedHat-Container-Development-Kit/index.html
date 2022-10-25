@@ -119,10 +119,10 @@ June 16, 2016
 <p>Place credentials in <code>~/.vagrant.d/Vagrantfile</code> to enable updates for VMs by automatically registering with RedHat Subscription Manager</p>
 </li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ruby data-lang=ruby><span style=color:#66d9ef>Vagrant</span><span style=color:#f92672>.</span>configure(<span style=color:#e6db74>&#39;2&#39;</span>) <span style=color:#66d9ef>do</span> <span style=color:#f92672>|</span>config<span style=color:#f92672>|</span>
- config<span style=color:#f92672>.</span>registration<span style=color:#f92672>.</span>username <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;&lt;your Red Hat username&gt;&#39;</span>
- config<span style=color:#f92672>.</span>registration<span style=color:#f92672>.</span>password <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;&lt;your Red Hat password&gt;&#39;</span>
-<span style=color:#66d9ef>end</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ruby data-lang=ruby><span style=color:#00688b>Vagrant</span>.configure(<span style=color:#cd5555>&#39;2&#39;</span>) <span style=color:#8b008b;font-weight:700>do</span> |config|
+ config.registration.username = <span style=color:#cd5555>&#39;&lt;your Red Hat username&gt;&#39;</span>
+ config.registration.password = <span style=color:#cd5555>&#39;&lt;your Red Hat password&gt;&#39;</span>
+<span style=color:#8b008b;font-weight:700>end</span>
 </code></pre></div><h1 id=mac-os-x-prereqs>Mac OS X Prereqs</h1>
 <ul>
 <li>
@@ -146,12 +146,12 @@ June 16, 2016
 <ul>
 <li>Install vagrant plugins</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>cd ~/cdk/plugins
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#658b00>cd</span> ~/cdk/plugins
 vagrant plugin install *.gem
 </code></pre></div><ul>
 <li>Import the vagrant box to <code>~/.vagrant.d/boxes/</code></li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>vagrant box add --name cdkv2 ~/Downloads/rhel-cdk-kubernetes-7.2*.x86_64.vagrant-virtualbox.box
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>vagrant box add --name cdkv2 ~/Downloads/rhel-cdk-kubernetes-7.2*.x86_64.vagrant-virtualbox.box
 </code></pre></div><ul>
 <li>Remove <code>~/Downloads/rhel-cdk-kubernetes-7.2*.x86_64.vagrant-virtualbox.box</code></li>
 </ul>
@@ -161,7 +161,7 @@ vagrant plugin install *.gem
 <ul>
 <li>Start CDK and print helpful environment info</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>cd ~/cdk/components/rhel/rhel-ose/
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#658b00>cd</span> ~/cdk/components/rhel/rhel-ose/
 vagrant up
 vagrant provision
 </code></pre></div><ul>
@@ -176,28 +176,28 @@ vagrant provision
 <p>If you forget where to find the console vagrant can remind you</p>
 </li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>cd ~/cdk/components/rhel/rhel-ose/
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#658b00>cd</span> ~/cdk/components/rhel/rhel-ose/
 vagrant service-manager env openshift
 </code></pre></div><ul>
 <li>Curl the sample app that ships in the CDK</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>curl http://helloflask-sample-project.rhel-cdk.10.1.2.2.xip.io/api
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>curl http://helloflask-sample-project.rhel-cdk.10.1.2.2.xip.io/api
 </code></pre></div><p>How the heck did that work?! Checkout <a href=http://xip.io>xip.io</a>.</p>
 <ul>
 <li>SSH to your openshift VM and list the openshift images</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>cd ~/cdk/components/rhel/rhel-ose/
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#658b00>cd</span> ~/cdk/components/rhel/rhel-ose/
 vagrant ssh
-<span style=color:#f92672>[</span>vagrant@rhel-cdk ~<span style=color:#f92672>]</span>$ docker search registry.access.redhat.com/openshift3
+[vagrant@rhel-cdk ~]$ docker search registry.access.redhat.com/openshift3
 INDEX        NAME                                                              DESCRIPTION                                     STARS     OFFICIAL   AUTOMATED
-redhat.com   registry.access.redhat.com/openshift3/image-inspector             Image Inspector can extract the RPM compos...   <span style=color:#ae81ff>0</span>
-redhat.com   registry.access.redhat.com/openshift3/jenkins-1-rhel7             Jenkins image which can be used to set up ...   <span style=color:#ae81ff>0</span>
-redhat.com   registry.access.redhat.com/openshift3/logging-auth-proxy          Container used to enable authorization and...   <span style=color:#ae81ff>0</span>
+redhat.com   registry.access.redhat.com/openshift3/image-inspector             Image Inspector can extract the RPM compos...   <span style=color:#b452cd>0</span>
+redhat.com   registry.access.redhat.com/openshift3/jenkins-1-rhel7             Jenkins image which can be used to <span style=color:#658b00>set</span> up ...   <span style=color:#b452cd>0</span>
+redhat.com   registry.access.redhat.com/openshift3/logging-auth-proxy          Container used to <span style=color:#658b00>enable</span> authorization and...   <span style=color:#b452cd>0</span>
 ...
 </code></pre></div><ul>
 <li>Try each of these</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ docker search registry.access.redhat.com/rhscl
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ docker search registry.access.redhat.com/rhscl
 $ docker search registry.access.redhat.com/openshift3
 $ docker search registry.access.redhat.com/rhel
 $ docker search registry.access.redhat.com/jboss
@@ -207,31 +207,31 @@ $ docker search registry.access.redhat.com/jboss
 <ul>
 <li>Download Red Hat Container Developer Kit <code>cdk-2.1.0.zip</code> <a href=http://developers.redhat.com/downloads/>from here</a> and unzip to <code>~/cdk-2.1</code>.</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>mv ~/cdk ~/cdk-2.0
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>mv ~/cdk ~/cdk-2.0
 ln -s ~/cdk-2.1 ~/cdk
 </code></pre></div><ul>
 <li>Update Vagrant Plugins</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ cd ~/cdk/plugins
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ <span style=color:#658b00>cd</span> ~/cdk/plugins
 
 $ vagrant plugin list
-landrush <span style=color:#f92672>(</span>0.15.3<span style=color:#f92672>)</span>
-vagrant-dnsmasq <span style=color:#f92672>(</span>0.1.1<span style=color:#f92672>)</span>
-vagrant-hostmanager <span style=color:#f92672>(</span>1.6.0<span style=color:#f92672>)</span>
-vagrant-registration <span style=color:#f92672>(</span>1.2.1<span style=color:#f92672>)</span>
+landrush (0.15.3)
+vagrant-dnsmasq (0.1.1)
+vagrant-hostmanager (1.6.0)
+vagrant-registration (1.2.1)
   - Version Constraint: 1.2.1
-vagrant-service-manager <span style=color:#f92672>(</span>1.0.1<span style=color:#f92672>)</span>
+vagrant-service-manager (1.0.1)
   - Version Constraint: 1.0.1
-vagrant-share <span style=color:#f92672>(</span>1.1.4, system<span style=color:#f92672>)</span>
-vagrant-sshfs <span style=color:#f92672>(</span>1.1.0<span style=color:#f92672>)</span>
+vagrant-share (1.1.4, system)
+vagrant-sshfs (1.1.0)
   - Version Constraint: 1.1.0
 
 $ ls *gem
 vagrant-registration-1.2.2.gem          vagrant-service-manager-1.1.0.gem       vagrant-sshfs-1.1.0.gem
 
 $ vagrant plugin install vagrant-registration-1.2.2.gem
-Installing the <span style=color:#e6db74>&#39;vagrant-registration-1.2.2.gem&#39;</span> plugin. This can take a few minutes...
-Installed the plugin <span style=color:#e6db74>&#39;vagrant-registration (1.2.2)&#39;</span>!
+Installing the <span style=color:#cd5555>&#39;vagrant-registration-1.2.2.gem&#39;</span> plugin. This can take a few minutes...
+Installed the plugin <span style=color:#cd5555>&#39;vagrant-registration (1.2.2)&#39;</span>!
 </code></pre></div><ul>
 <li>
 <p>Download the latest <a href=http://developers.redhat.com/products/cdk/get-started/>Red Hat Enterprise Linux 7.2 Vagrant box for VirtualBox</a></p>
@@ -240,7 +240,7 @@ Installed the plugin <span style=color:#e6db74>&#39;vagrant-registration (1.2.2)
 <p>Update the vagrant box <strong>This will replace your current environment, so modify if you with to keep the 2.0 environment around!</strong></p>
 </li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ vagrant box add --force --name cdkv2 rhel-cdk-kubernetes-7.2*.x86_64.vagrant-virtualbox.box
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ vagrant box add --force --name cdkv2 rhel-cdk-kubernetes-7.2*.x86_64.vagrant-virtualbox.box
 </code></pre></div><p>Now go back to <a href=#getting-started>Getting Started</a> and fire up your new CDK 2.1 VM.</p>
 <h1 id=more-info>More Info</h1>
 <p>Check out my <a href=http://guifreelife.com/blog/2016/06/16/Deploy-Hawkular-Metrics-in-CDK-2.0-OpenShift-3.1>post on deploying metrics to CDK</a>.</p>

@@ -111,136 +111,136 @@ October 30, 2018
 <p>OpenStack supports <a href=https://docs.openstack.org/install-guide/launch-instance-networks-provider.html>&ldquo;provider&rdquo; networks</a>, which are networks that pre-exist in your physical infrastructure and are &ldquo;provided&rdquo; to the cloud users rather than created by the user. Only an admin is permitted to create a provider network.</p>
 <p>A prequisite is the provider network must be plumbed to the external bridge on your controller and nova nodes.</p>
 <p>Here is an Ansible playbook to create a project, place a unshared provider network and subnet in that project. Afterwards we will grant access to the members of this project using the openstack client. It <a href=https://docs.ansible.com/ansible/latest/modules/list_of_cloud_modules.html#openstack>does not appear</a> that Ansible has a OpenStack network RBAC module at this time.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml>---
-<span style=color:#75715e># file: project-tools-build.yml</span>
-<span style=color:#75715e># playbook to create tools-build project and network</span>
-<span style=color:#75715e>#</span>
-<span style=color:#75715e># Run me as `admin` on overcloud.</span>
-<span style=color:#75715e># That means you may want to run like this:</span>
-<span style=color:#75715e>#   `ansible-playbook -e cloud=admin project-tools-build.yml`</span>
-
-- <span style=color:#f92672>hosts</span>: <span style=color:#ae81ff>localhost</span>
-  <span style=color:#f92672>connection</span>: <span style=color:#ae81ff>local</span>
-  <span style=color:#f92672>vars</span>:
-    <span style=color:#75715e># use python from virtualenv path</span>
-    <span style=color:#f92672>ansible_python_interpreter</span>: <span style=color:#ae81ff>python</span>
-    <span style=color:#f92672>cloud</span>: <span style=color:#ae81ff>admin</span>
-    <span style=color:#f92672>admin_cloud</span>: <span style=color:#ae81ff>admin</span>
-    <span style=color:#f92672>cloud_domain</span>: <span style=color:#ae81ff>Default</span>
-    
-    <span style=color:#f92672>projects</span>:
-      - <span style=color:#f92672>project</span>: <span style=color:#ae81ff>tools-build</span>
-        <span style=color:#f92672>users</span>:
-          - <span style=color:#f92672>username</span>: <span style=color:#ae81ff>tools-build-user</span>
-
-    <span style=color:#f92672>networks</span>:
-      <span style=color:#f92672>tools-build</span>:
-        <span style=color:#f92672>project</span>: <span style=color:#ae81ff>tools-build</span>
-        <span style=color:#f92672>network_name</span>: <span style=color:#ae81ff>tools-build</span>
-        <span style=color:#f92672>subnet_name</span>: <span style=color:#ae81ff>tools-build-subnet</span>
-        <span style=color:#f92672>external</span>: <span style=color:#66d9ef>True</span>
-        <span style=color:#f92672>shared</span>: <span style=color:#66d9ef>False</span>
-        <span style=color:#f92672>provider_physical_network</span>: <span style=color:#ae81ff>datacentre</span>
-        <span style=color:#f92672>provider_network_type</span>: <span style=color:#ae81ff>vlan</span>
-        <span style=color:#f92672>provider_segmentation_id</span>: <span style=color:#ae81ff>2</span>
-        <span style=color:#f92672>cidr</span>: <span style=color:#ae81ff>192.0.2.0</span><span style=color:#ae81ff>/24</span>
-        <span style=color:#f92672>gateway_ip</span>: <span style=color:#ae81ff>192.0.2.254</span>
-        <span style=color:#f92672>allocation_pool_start</span>: <span style=color:#ae81ff>192.0.2.20</span>
-        <span style=color:#f92672>allocation_pool_end</span>: <span style=color:#ae81ff>192.0.2.250</span>
-        <span style=color:#f92672>dns_nameservers</span>:
-          - <span style=color:#ae81ff>192.0.1.1</span>
-          - <span style=color:#ae81ff>192.0.1.2</span>
-
-  <span style=color:#f92672>tasks</span>:
-    - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>Create projects</span>
-      <span style=color:#f92672>os_project</span>:
-        <span style=color:#f92672>cloud</span>: <span style=color:#e6db74>&#34;{{cloud}}&#34;</span>
-        <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;{{item.project}}&#34;</span>
-        <span style=color:#f92672>domain_id</span>: <span style=color:#e6db74>&#34;{{ cloud_domain }}&#34;</span>
-        <span style=color:#f92672>description</span>: <span style=color:#e6db74>&#34;{{item.project}} Project&#34;</span>
-        <span style=color:#f92672>enabled</span>: <span style=color:#66d9ef>True</span>
-      <span style=color:#f92672>with_items</span>: <span style=color:#e6db74>&#34;{{ projects }}&#34;</span>
-
-    - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>Create users</span>
-      <span style=color:#f92672>os_user</span>:
-        <span style=color:#f92672>cloud</span>: <span style=color:#e6db74>&#34;{{ cloud }}&#34;</span>
-        <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;{{ item.1.username }}&#34;</span>
-        <span style=color:#f92672>password</span>: <span style=color:#e6db74>&#34;{{ item.1.password | default(&#39;secret&#39;) }}&#34;</span>
-        <span style=color:#f92672>email</span>: <span style=color:#e6db74>&#34;{{ item.1.username }}@example.com&#34;</span>
-        <span style=color:#f92672>domain</span>: <span style=color:#e6db74>&#34;{{ cloud_domain }}&#34;</span>
-        <span style=color:#f92672>default_project</span>: <span style=color:#e6db74>&#34;{{ item.0.project }}&#34;</span>
-        <span style=color:#f92672>enabled</span>: <span style=color:#66d9ef>True</span>
-      <span style=color:#f92672>with_subelements</span>:
-        - <span style=color:#e6db74>&#34;{{ projects }}&#34;</span>
-        - <span style=color:#ae81ff>users</span>
-
-    - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>Add users as members of projects</span>
-      <span style=color:#f92672>os_user_role</span>:
-        <span style=color:#f92672>cloud</span>: <span style=color:#e6db74>&#34;{{ cloud }}&#34;</span>
-        <span style=color:#f92672>user</span>: <span style=color:#e6db74>&#34;{{ item.1.username }}&#34;</span>
-        <span style=color:#f92672>role</span>: <span style=color:#ae81ff>_member_</span>
-        <span style=color:#f92672>project</span>: <span style=color:#e6db74>&#34;{{ item.0.project }}&#34;</span>
-      <span style=color:#f92672>with_subelements</span>:
-        - <span style=color:#e6db74>&#34;{{ projects }}&#34;</span>
-        - <span style=color:#ae81ff>users</span>
-
-    - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>Add admin user to projects</span>
-      <span style=color:#f92672>os_user_role</span>:
-        <span style=color:#f92672>cloud</span>: <span style=color:#e6db74>&#34;{{ cloud }}&#34;</span>
-        <span style=color:#f92672>user</span>: <span style=color:#e6db74>&#34;admin&#34;</span>
-        <span style=color:#f92672>role</span>: <span style=color:#ae81ff>_member_</span>
-        <span style=color:#f92672>project</span>: <span style=color:#e6db74>&#34;{{ item.project }}&#34;</span>
-      <span style=color:#f92672>with_items</span>:
-        - <span style=color:#e6db74>&#34;{{ projects }}&#34;</span>
-
-    - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>Create networks</span>
-      <span style=color:#f92672>os_network</span>:
-        <span style=color:#f92672>cloud</span>: <span style=color:#e6db74>&#34;{{admin_cloud}}&#34;</span>
-        <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;{{item.value.network_name}}&#34;</span>
-        <span style=color:#f92672>project</span>: <span style=color:#e6db74>&#34;{{ item.value.project | default(omit) }}&#34;</span>
-        <span style=color:#f92672>external</span>: <span style=color:#e6db74>&#34;{{ item.value.external | default(True) }}&#34;</span>
-        <span style=color:#f92672>provider_network_type</span>: <span style=color:#e6db74>&#34;{{ item.value.provider_network_type | default(omit) }}&#34;</span>
-        <span style=color:#f92672>provider_segmentation_id</span>: <span style=color:#e6db74>&#34;{{ item.value.provider_segmentation_id | default(omit) }}&#34;</span>
-        <span style=color:#f92672>provider_physical_network</span>: <span style=color:#e6db74>&#34;{{ item.value.provider_physical_network | default(omit) }}&#34;</span>
-        <span style=color:#f92672>shared</span>: <span style=color:#e6db74>&#34;{{ item.value.shared | default(False) }}&#34;</span>
-        <span style=color:#f92672>state</span>: <span style=color:#ae81ff>present</span>
-      <span style=color:#f92672>with_dict</span>: <span style=color:#e6db74>&#34;{{ networks }}&#34;</span>
-
-    - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>Create subnets</span>
-      <span style=color:#f92672>os_subnet</span>:
-        <span style=color:#f92672>cloud</span>: <span style=color:#e6db74>&#34;{{admin_cloud}}&#34;</span>
-        <span style=color:#f92672>state</span>: <span style=color:#ae81ff>present</span>
-        <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;{{ item.value.subnet_name }}&#34;</span>
-        <span style=color:#f92672>network_name</span>: <span style=color:#e6db74>&#34;{{ item.value.network_name }}&#34;</span>
-        <span style=color:#f92672>project</span>: <span style=color:#e6db74>&#34;{{ item.value.project | default(omit) }}&#34;</span>
-        <span style=color:#f92672>cidr</span>: <span style=color:#e6db74>&#34;{{ item.value.cidr }}&#34;</span>
-        <span style=color:#f92672>gateway_ip</span>: <span style=color:#e6db74>&#34;{{ item.value.gateway_ip | default(omit) }}&#34;</span>
-        <span style=color:#f92672>allocation_pool_start</span>: <span style=color:#e6db74>&#34;{{ item.value.allocation_pool_start | default(omit) }}&#34;</span>
-        <span style=color:#f92672>allocation_pool_end</span>:  <span style=color:#e6db74>&#34;{{ item.value.allocation_pool_end | default(omit) }}&#34;</span>
-        <span style=color:#f92672>dns_nameservers</span>: <span style=color:#e6db74>&#34;{{ item.value.dns_nameservers | default(dns_nameservers) | join(&#39;,&#39;) }}&#34;</span>
-      <span style=color:#f92672>with_dict</span>: <span style=color:#e6db74>&#34;{{ networks }}&#34;</span>
-</code></pre></div><p>At this point you will have a provider network called <code>tools-build</code> located in the tools-build project, but members of that tenant will not have rights to access it, because we set <code>shared: False</code>.</p>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#008b45;text-decoration:underline>---</span><span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#228b22># file: project-tools-build.yml</span><span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#228b22># playbook to create tools-build project and network</span><span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#228b22>#</span><span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#228b22># Run me as `admin` on overcloud.</span><span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#228b22># That means you may want to run like this:</span><span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#228b22>#   `ansible-playbook -e cloud=admin project-tools-build.yml`</span><span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb></span>- <span style=color:#8b008b;font-weight:700>hosts</span>:<span style=color:#bbb> </span>localhost<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>connection</span>:<span style=color:#bbb> </span>local<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>vars</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#228b22># use python from virtualenv path</span><span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>ansible_python_interpreter</span>:<span style=color:#bbb> </span>python<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>cloud</span>:<span style=color:#bbb> </span>admin<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>admin_cloud</span>:<span style=color:#bbb> </span>admin<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>cloud_domain</span>:<span style=color:#bbb> </span>Default<span style=color:#bbb>
+</span><span style=color:#bbb>    
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>projects</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>      </span>- <span style=color:#8b008b;font-weight:700>project</span>:<span style=color:#bbb> </span>tools-build<span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>users</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>          </span>- <span style=color:#8b008b;font-weight:700>username</span>:<span style=color:#bbb> </span>tools-build-user<span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>networks</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>tools-build</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>project</span>:<span style=color:#bbb> </span>tools-build<span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>network_name</span>:<span style=color:#bbb> </span>tools-build<span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>subnet_name</span>:<span style=color:#bbb> </span>tools-build-subnet<span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>external</span>:<span style=color:#bbb> </span><span style=color:#8b008b;font-weight:700>True</span><span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>shared</span>:<span style=color:#bbb> </span><span style=color:#8b008b;font-weight:700>False</span><span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>provider_physical_network</span>:<span style=color:#bbb> </span>datacentre<span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>provider_network_type</span>:<span style=color:#bbb> </span>vlan<span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>provider_segmentation_id</span>:<span style=color:#bbb> </span><span style=color:#b452cd>2</span><span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>cidr</span>:<span style=color:#bbb> </span><span style=color:#b452cd>192.0.2.0</span>/24<span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>gateway_ip</span>:<span style=color:#bbb> </span><span style=color:#b452cd>192.0.2.254</span><span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>allocation_pool_start</span>:<span style=color:#bbb> </span><span style=color:#b452cd>192.0.2.20</span><span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>allocation_pool_end</span>:<span style=color:#bbb> </span><span style=color:#b452cd>192.0.2.250</span><span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>dns_nameservers</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>          </span>- <span style=color:#b452cd>192.0.1.1</span><span style=color:#bbb>
+</span><span style=color:#bbb>          </span>- <span style=color:#b452cd>192.0.1.2</span><span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>tasks</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>    </span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>Create projects<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>os_project</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>cloud</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;{{cloud}}&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;{{item.project}}&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>domain_id</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;{{ cloud_domain }}&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>description</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;{{item.project}} Project&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>enabled</span>:<span style=color:#bbb> </span><span style=color:#8b008b;font-weight:700>True</span><span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>with_items</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;{{ projects }}&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb>    </span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>Create users<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>os_user</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>cloud</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;{{ cloud }}&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;{{ item.1.username }}&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>password</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;{{ item.1.password | default(&#39;secret&#39;) }}&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>email</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;{{ item.1.username }}@example.com&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>domain</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;{{ cloud_domain }}&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>default_project</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;{{ item.0.project }}&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>enabled</span>:<span style=color:#bbb> </span><span style=color:#8b008b;font-weight:700>True</span><span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>with_subelements</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>        </span>- <span style=color:#cd5555>&#34;{{ projects }}&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>        </span>- users<span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb>    </span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>Add users as members of projects<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>os_user_role</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>cloud</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;{{ cloud }}&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>user</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;{{ item.1.username }}&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>role</span>:<span style=color:#bbb> </span>_member_<span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>project</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;{{ item.0.project }}&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>with_subelements</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>        </span>- <span style=color:#cd5555>&#34;{{ projects }}&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>        </span>- users<span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb>    </span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>Add admin user to projects<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>os_user_role</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>cloud</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;{{ cloud }}&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>user</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;admin&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>role</span>:<span style=color:#bbb> </span>_member_<span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>project</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;{{ item.project }}&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>with_items</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>        </span>- <span style=color:#cd5555>&#34;{{ projects }}&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb>    </span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>Create networks<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>os_network</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>cloud</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;{{admin_cloud}}&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;{{item.value.network_name}}&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>project</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;{{ item.value.project | default(omit) }}&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>external</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;{{ item.value.external | default(True) }}&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>provider_network_type</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;{{ item.value.provider_network_type | default(omit) }}&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>provider_segmentation_id</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;{{ item.value.provider_segmentation_id | default(omit) }}&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>provider_physical_network</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;{{ item.value.provider_physical_network | default(omit) }}&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>shared</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;{{ item.value.shared | default(False) }}&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>state</span>:<span style=color:#bbb> </span>present<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>with_dict</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;{{ networks }}&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb>    </span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>Create subnets<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>os_subnet</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>cloud</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;{{admin_cloud}}&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>state</span>:<span style=color:#bbb> </span>present<span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;{{ item.value.subnet_name }}&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>network_name</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;{{ item.value.network_name }}&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>project</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;{{ item.value.project | default(omit) }}&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>cidr</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;{{ item.value.cidr }}&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>gateway_ip</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;{{ item.value.gateway_ip | default(omit) }}&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>allocation_pool_start</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;{{ item.value.allocation_pool_start | default(omit) }}&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>allocation_pool_end</span>:<span style=color:#bbb>  </span><span style=color:#cd5555>&#34;{{ item.value.allocation_pool_end | default(omit) }}&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>dns_nameservers</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;{{ item.value.dns_nameservers | default(dns_nameservers) | join(&#39;,&#39;) }}&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>with_dict</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;{{ networks }}&#34;</span><span style=color:#bbb>
+</span></code></pre></div><p>At this point you will have a provider network called <code>tools-build</code> located in the tools-build project, but members of that tenant will not have rights to access it, because we set <code>shared: False</code>.</p>
 <p><a href=https://docs.openstack.org/ocata/networking-guide/config-rbac.html>Neutron RBAC</a> will enable us to selectively exclusively share this network with the <code>tools-build</code> tenant.</p>
 <p>Perform the following as admin on the overcloud:</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#75715e># get the ID for tools-build project</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#228b22># get the ID for tools-build project</span>
 $ openstack project show tools-build -f value -c id
 05d445c63e104f5bafafe21a8bc2a28a
 
-<span style=color:#75715e># get the ID for tools-build network</span>
+<span style=color:#228b22># get the ID for tools-build network</span>
 $ openstack network show tools-build -f value -c id
 3474ccc2-4c77-4c65-a6fb-87364ec7f135
 
-<span style=color:#75715e># create an RBAC rule allowing access</span>
-$ openstack network rbac create --target-project 05d445c63e104f5bafafe21a8bc2a28a <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>  --action access_as_shared <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>  --type network 3474ccc2-4c77-4c65-a6fb-87364ec7f135
+<span style=color:#228b22># create an RBAC rule allowing access</span>
+$ openstack network rbac create --target-project 05d445c63e104f5bafafe21a8bc2a28a <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>  --action access_as_shared <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>  --type network 3474ccc2-4c77-4c65-a6fb-87364ec7f135
 </code></pre></div><p>Keep in mind the network will now say <code>shared</code> is <em>True</em> from the tools-build project, but <em>False</em> from other projects. Examine the RBAC rules on the network to see how.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#75715e># find RBAC rules for tools-build network</span>
-$ openstack network rbac list | grep <span style=color:#66d9ef>$(</span>openstack network show tools-build -f value -c id<span style=color:#66d9ef>)</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#228b22># find RBAC rules for tools-build network</span>
+$ openstack network rbac list | grep <span style=color:#8b008b;font-weight:700>$(</span>openstack network show tools-build -f value -c id<span style=color:#8b008b;font-weight:700>)</span>
 | 206121dc-e7e7-4d95-a03a-40d171fce0b8 | network     | 3474ccc2-4c77-4c65-a6fb-87364ec7f135 |
 | 6a73157a-d532-43b0-aabf-8cf2f2f40e97 | network     | 3474ccc2-4c77-4c65-a6fb-87364ec7f135 |
 
-<span style=color:#75715e># show first rule</span>
+<span style=color:#228b22># show first rule</span>
 $ openstack network rbac show 206121dc-e7e7-4d95-a03a-40d171fce0b8
 +-------------------+--------------------------------------+
 | Field             | Value                                |
@@ -254,7 +254,7 @@ $ openstack network rbac show 206121dc-e7e7-4d95-a03a-40d171fce0b8
 | target_project_id | 05d445c63e104f5bafafe21a8bc2a28a     |
 +-------------------+--------------------------------------+
 
-<span style=color:#75715e># show second rule</span>
+<span style=color:#228b22># show second rule</span>
 $ openstack network rbac show 6a73157a-d532-43b0-aabf-8cf2f2f40e97
 +-------------------+--------------------------------------+
 | Field             | Value                                |
@@ -268,13 +268,13 @@ $ openstack network rbac show 6a73157a-d532-43b0-aabf-8cf2f2f40e97
 | target_project_id | *                                    |
 +-------------------+--------------------------------------+
 </code></pre></div><p>At this point you should be able to create an instance attached to this network.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>export OS_CLOUD<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;tools-build&#34;</span>
-openstack server create <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>  --flavor m1.small <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>  --image rhel-server-7.5-x86_64-kvm.raw <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>  --key-name $USER <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>  --nic net-id<span style=color:#f92672>=</span><span style=color:#66d9ef>$(</span>openstack network show tools-build -c id -f value<span style=color:#66d9ef>)</span> <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>  tools-build-instance
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#658b00>export</span> <span style=color:#00688b>OS_CLOUD</span>=<span style=color:#cd5555>&#34;tools-build&#34;</span>
+openstack server create <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>  --flavor m1.small <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>  --image rhel-server-7.5-x86_64-kvm.raw <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>  --key-name <span style=color:#00688b>$USER</span> <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>  --nic net-id=<span style=color:#8b008b;font-weight:700>$(</span>openstack network show tools-build -c id -f value<span style=color:#8b008b;font-weight:700>)</span> <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>  tools-build-instance
 </code></pre></div><p><strong>See Also</strong></p>
 <ul>
 <li>SuperUser <a href=http://superuser.openstack.org/articles/tenant-networks-vs-provider-networks-in-the-private-cloud-context/>Tenant networks vs. provider networks in the private cloud context</a></li>

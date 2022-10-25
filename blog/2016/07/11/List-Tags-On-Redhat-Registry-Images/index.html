@@ -109,54 +109,54 @@ July 11, 2016
 <div id=post-content>
 <p>Ever gone to <a href=https://access.redhat.com/search/#/container-images>RedHat&rsquo;s container registry</a> to search for an image and been left wondering what versions exist? Ever been frustrated by the inconsistent tag format? Is there a <em>v</em> or is there not a <em>v</em>? Me too.</p>
 <p>Docker Hub has progressed to <a href=https://docs.docker.com/registry/spec/api/>v2</a>, while the RedHat registry is still <a href=https://docs.docker.com/v1.6/reference/api/registry_api/>v1</a> at the moment. As long as you use the right syntax, you can use curl to query the registry API and <a href=https://docs.docker.com/v1.6/reference/api/registry_api/#list-repository-tags>list the tags</a> like this:</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#75715e># v1 registry</span>
-$ curl -s https://registry.access.redhat.com/v1/repositories/openshift3/<span style=color:#e6db74>${</span>image<span style=color:#e6db74>}</span>/tags | jq .
-<span style=color:#75715e># v2 registry</span>
-$ curl -sL https://registry.access.redhat.com/v2/openshift3/<span style=color:#e6db74>${</span>image<span style=color:#e6db74>}</span>/tags/list
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#228b22># v1 registry</span>
+$ curl -s https://registry.access.redhat.com/v1/repositories/openshift3/<span style=color:#cd5555>${</span><span style=color:#00688b>image</span><span style=color:#cd5555>}</span>/tags | jq .
+<span style=color:#228b22># v2 registry</span>
+$ curl -sL https://registry.access.redhat.com/v2/openshift3/<span style=color:#cd5555>${</span><span style=color:#00688b>image</span><span style=color:#cd5555>}</span>/tags/list
 </code></pre></div><p><strong>Example:</strong></p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ curl -s https://registry.access.redhat.com/v1/repositories/openshift3/logging-kibana/tags | jq .
-</code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-json data-lang=json>{
-  <span style=color:#f92672>&#34;3.1.0&#34;</span>: <span style=color:#e6db74>&#34;2c5acfd9c89c5b122e41b7ca13c6847aa9183bd41076ac9a3836a28da5b82bb4&#34;</span>,
-  <span style=color:#f92672>&#34;3.1.0-1&#34;</span>: <span style=color:#e6db74>&#34;10b5df01eb1793076b746f27c5b439bde2d73bdf988d805fac450255c22d904b&#34;</span>,
-  <span style=color:#f92672>&#34;3.1.0-4&#34;</span>: <span style=color:#e6db74>&#34;2c5acfd9c89c5b122e41b7ca13c6847aa9183bd41076ac9a3836a28da5b82bb4&#34;</span>,
-  <span style=color:#f92672>&#34;3.1.1&#34;</span>: <span style=color:#e6db74>&#34;d15c32b3f8e985bea5e2401989b33413f7e30627bd1c9e108c7a6a5e0b0b0fc4&#34;</span>,
-  <span style=color:#f92672>&#34;3.1.1-5&#34;</span>: <span style=color:#e6db74>&#34;1d7701631584635d9f07e62f2ba0dd6fea0a2eb2ece02010b2630b2e9aaf9af7&#34;</span>,
-  <span style=color:#f92672>&#34;3.1.1-6&#34;</span>: <span style=color:#e6db74>&#34;5a922f7be584559218fa5e70e9ee159650b31ef0ac68d9e8b3a9ca7d45ef491c&#34;</span>,
-  <span style=color:#f92672>&#34;3.1.1-7&#34;</span>: <span style=color:#e6db74>&#34;3ce38d90561782969f98f387ba96b0e8411ee58a76878fcbd194ed64f54150a9&#34;</span>,
-  <span style=color:#f92672>&#34;3.1.1-8&#34;</span>: <span style=color:#e6db74>&#34;d15c32b3f8e985bea5e2401989b33413f7e30627bd1c9e108c7a6a5e0b0b0fc4&#34;</span>,
-  <span style=color:#f92672>&#34;3.2.0&#34;</span>: <span style=color:#e6db74>&#34;38480621ccf59391f18db56caa7a83ad5ab262d648548ee60b6d993936366ea8&#34;</span>,
-  <span style=color:#f92672>&#34;3.2.0-3&#34;</span>: <span style=color:#e6db74>&#34;51ec0188aa11dc11c6f24a4bf69d8b95a8a996209d3bd17fa40bdb65e20f8b89&#34;</span>,
-  <span style=color:#f92672>&#34;3.2.0-4&#34;</span>: <span style=color:#e6db74>&#34;38480621ccf59391f18db56caa7a83ad5ab262d648548ee60b6d993936366ea8&#34;</span>,
-  <span style=color:#f92672>&#34;3.2.1&#34;</span>: <span style=color:#e6db74>&#34;7ac03c5eb56e15575c86d57ced2387c844d17469f4fda7c7928a660b77bf3aef&#34;</span>,
-  <span style=color:#f92672>&#34;3.2.1-3&#34;</span>: <span style=color:#e6db74>&#34;7ac03c5eb56e15575c86d57ced2387c844d17469f4fda7c7928a660b77bf3aef&#34;</span>,
-  <span style=color:#f92672>&#34;latest&#34;</span>: <span style=color:#e6db74>&#34;7ac03c5eb56e15575c86d57ced2387c844d17469f4fda7c7928a660b77bf3aef&#34;</span>,
-  <span style=color:#f92672>&#34;v3.1&#34;</span>: <span style=color:#e6db74>&#34;d15c32b3f8e985bea5e2401989b33413f7e30627bd1c9e108c7a6a5e0b0b0fc4&#34;</span>,
-  <span style=color:#f92672>&#34;v3.2&#34;</span>: <span style=color:#e6db74>&#34;7ac03c5eb56e15575c86d57ced2387c844d17469f4fda7c7928a660b77bf3aef&#34;</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ curl -s https://registry.access.redhat.com/v1/repositories/openshift3/logging-kibana/tags | jq .
+</code></pre></div><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-json data-lang=json>{
+  <span style=color:#8b008b;font-weight:700>&#34;3.1.0&#34;</span>: <span style=color:#cd5555>&#34;2c5acfd9c89c5b122e41b7ca13c6847aa9183bd41076ac9a3836a28da5b82bb4&#34;</span>,
+  <span style=color:#8b008b;font-weight:700>&#34;3.1.0-1&#34;</span>: <span style=color:#cd5555>&#34;10b5df01eb1793076b746f27c5b439bde2d73bdf988d805fac450255c22d904b&#34;</span>,
+  <span style=color:#8b008b;font-weight:700>&#34;3.1.0-4&#34;</span>: <span style=color:#cd5555>&#34;2c5acfd9c89c5b122e41b7ca13c6847aa9183bd41076ac9a3836a28da5b82bb4&#34;</span>,
+  <span style=color:#8b008b;font-weight:700>&#34;3.1.1&#34;</span>: <span style=color:#cd5555>&#34;d15c32b3f8e985bea5e2401989b33413f7e30627bd1c9e108c7a6a5e0b0b0fc4&#34;</span>,
+  <span style=color:#8b008b;font-weight:700>&#34;3.1.1-5&#34;</span>: <span style=color:#cd5555>&#34;1d7701631584635d9f07e62f2ba0dd6fea0a2eb2ece02010b2630b2e9aaf9af7&#34;</span>,
+  <span style=color:#8b008b;font-weight:700>&#34;3.1.1-6&#34;</span>: <span style=color:#cd5555>&#34;5a922f7be584559218fa5e70e9ee159650b31ef0ac68d9e8b3a9ca7d45ef491c&#34;</span>,
+  <span style=color:#8b008b;font-weight:700>&#34;3.1.1-7&#34;</span>: <span style=color:#cd5555>&#34;3ce38d90561782969f98f387ba96b0e8411ee58a76878fcbd194ed64f54150a9&#34;</span>,
+  <span style=color:#8b008b;font-weight:700>&#34;3.1.1-8&#34;</span>: <span style=color:#cd5555>&#34;d15c32b3f8e985bea5e2401989b33413f7e30627bd1c9e108c7a6a5e0b0b0fc4&#34;</span>,
+  <span style=color:#8b008b;font-weight:700>&#34;3.2.0&#34;</span>: <span style=color:#cd5555>&#34;38480621ccf59391f18db56caa7a83ad5ab262d648548ee60b6d993936366ea8&#34;</span>,
+  <span style=color:#8b008b;font-weight:700>&#34;3.2.0-3&#34;</span>: <span style=color:#cd5555>&#34;51ec0188aa11dc11c6f24a4bf69d8b95a8a996209d3bd17fa40bdb65e20f8b89&#34;</span>,
+  <span style=color:#8b008b;font-weight:700>&#34;3.2.0-4&#34;</span>: <span style=color:#cd5555>&#34;38480621ccf59391f18db56caa7a83ad5ab262d648548ee60b6d993936366ea8&#34;</span>,
+  <span style=color:#8b008b;font-weight:700>&#34;3.2.1&#34;</span>: <span style=color:#cd5555>&#34;7ac03c5eb56e15575c86d57ced2387c844d17469f4fda7c7928a660b77bf3aef&#34;</span>,
+  <span style=color:#8b008b;font-weight:700>&#34;3.2.1-3&#34;</span>: <span style=color:#cd5555>&#34;7ac03c5eb56e15575c86d57ced2387c844d17469f4fda7c7928a660b77bf3aef&#34;</span>,
+  <span style=color:#8b008b;font-weight:700>&#34;latest&#34;</span>: <span style=color:#cd5555>&#34;7ac03c5eb56e15575c86d57ced2387c844d17469f4fda7c7928a660b77bf3aef&#34;</span>,
+  <span style=color:#8b008b;font-weight:700>&#34;v3.1&#34;</span>: <span style=color:#cd5555>&#34;d15c32b3f8e985bea5e2401989b33413f7e30627bd1c9e108c7a6a5e0b0b0fc4&#34;</span>,
+  <span style=color:#8b008b;font-weight:700>&#34;v3.2&#34;</span>: <span style=color:#cd5555>&#34;7ac03c5eb56e15575c86d57ced2387c844d17469f4fda7c7928a660b77bf3aef&#34;</span>
 }
 </code></pre></div><p>Note that Docker images are content addressable, so the tags <code>3.2.1-3</code>, <code>3.2.1</code>, <code>v3.2</code>, and <code>latest</code> above all point to the same image <em>7ac03c5eb56e15575c86d57ced2387c844d17469f4fda7c7928a660b77bf3aef</em>.</p>
 <h1 id=update-september-2016>Update September 2016</h1>
 <p>I just happened to be working on <a href=https://access.redhat.com/errata/RHSA-2016:1836>RHSA-2016:1836</a> Kibana security advisory which recommends updating to <code>openshift3/logging-kibana:3.2.1-5</code> image.</p>
 <p>Take a look at the tags as of 2016-09-18. Notice that <code>latest</code> is still <em>7ac03c5eb56e15575c86d57ced2387c844d17469f4fda7c7928a660b77bf3aef</em> like it was back in July, but <code>3.2.1</code> and <code>v3.2</code> have moved to point to <code>3.2.1-5</code> <em>982e831f5fba03abca20e1f8fbbc8d31ddf8747c5ee8170ddfcba93018e5730d</em>. I would expect <code>latest</code> to match <code>3.2.1</code> right now.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ curl -s https://registry.access.redhat.com/v1/repositories/openshift3/logging-kibana/tags | jq .
-</code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-json data-lang=json>{
-  <span style=color:#f92672>&#34;3.1.0&#34;</span>: <span style=color:#e6db74>&#34;2c5acfd9c89c5b122e41b7ca13c6847aa9183bd41076ac9a3836a28da5b82bb4&#34;</span>,
-  <span style=color:#f92672>&#34;3.1.0-1&#34;</span>: <span style=color:#e6db74>&#34;10b5df01eb1793076b746f27c5b439bde2d73bdf988d805fac450255c22d904b&#34;</span>,
-  <span style=color:#f92672>&#34;3.1.0-4&#34;</span>: <span style=color:#e6db74>&#34;2c5acfd9c89c5b122e41b7ca13c6847aa9183bd41076ac9a3836a28da5b82bb4&#34;</span>,
-  <span style=color:#f92672>&#34;3.1.1&#34;</span>: <span style=color:#e6db74>&#34;83a4455f3d606c41824d834df224e0579f074d9dec75a6fcc148dac35da13b1b&#34;</span>,
-  <span style=color:#f92672>&#34;3.1.1-10&#34;</span>: <span style=color:#e6db74>&#34;83a4455f3d606c41824d834df224e0579f074d9dec75a6fcc148dac35da13b1b&#34;</span>,
-  <span style=color:#f92672>&#34;3.1.1-5&#34;</span>: <span style=color:#e6db74>&#34;1d7701631584635d9f07e62f2ba0dd6fea0a2eb2ece02010b2630b2e9aaf9af7&#34;</span>,
-  <span style=color:#f92672>&#34;3.1.1-6&#34;</span>: <span style=color:#e6db74>&#34;5a922f7be584559218fa5e70e9ee159650b31ef0ac68d9e8b3a9ca7d45ef491c&#34;</span>,
-  <span style=color:#f92672>&#34;3.1.1-7&#34;</span>: <span style=color:#e6db74>&#34;3ce38d90561782969f98f387ba96b0e8411ee58a76878fcbd194ed64f54150a9&#34;</span>,
-  <span style=color:#f92672>&#34;3.1.1-8&#34;</span>: <span style=color:#e6db74>&#34;d15c32b3f8e985bea5e2401989b33413f7e30627bd1c9e108c7a6a5e0b0b0fc4&#34;</span>,
-  <span style=color:#f92672>&#34;3.2.0&#34;</span>: <span style=color:#e6db74>&#34;38480621ccf59391f18db56caa7a83ad5ab262d648548ee60b6d993936366ea8&#34;</span>,
-  <span style=color:#f92672>&#34;3.2.0-3&#34;</span>: <span style=color:#e6db74>&#34;51ec0188aa11dc11c6f24a4bf69d8b95a8a996209d3bd17fa40bdb65e20f8b89&#34;</span>,
-  <span style=color:#f92672>&#34;3.2.0-4&#34;</span>: <span style=color:#e6db74>&#34;38480621ccf59391f18db56caa7a83ad5ab262d648548ee60b6d993936366ea8&#34;</span>,
-  <span style=color:#f92672>&#34;3.2.1&#34;</span>: <span style=color:#e6db74>&#34;982e831f5fba03abca20e1f8fbbc8d31ddf8747c5ee8170ddfcba93018e5730d&#34;</span>,
-  <span style=color:#f92672>&#34;3.2.1-3&#34;</span>: <span style=color:#e6db74>&#34;7ac03c5eb56e15575c86d57ced2387c844d17469f4fda7c7928a660b77bf3aef&#34;</span>,
-  <span style=color:#f92672>&#34;3.2.1-5&#34;</span>: <span style=color:#e6db74>&#34;982e831f5fba03abca20e1f8fbbc8d31ddf8747c5ee8170ddfcba93018e5730d&#34;</span>,
-  <span style=color:#f92672>&#34;latest&#34;</span>: <span style=color:#e6db74>&#34;7ac03c5eb56e15575c86d57ced2387c844d17469f4fda7c7928a660b77bf3aef&#34;</span>,
-  <span style=color:#f92672>&#34;v3.1&#34;</span>: <span style=color:#e6db74>&#34;83a4455f3d606c41824d834df224e0579f074d9dec75a6fcc148dac35da13b1b&#34;</span>,
-  <span style=color:#f92672>&#34;v3.2&#34;</span>: <span style=color:#e6db74>&#34;982e831f5fba03abca20e1f8fbbc8d31ddf8747c5ee8170ddfcba93018e5730d&#34;</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ curl -s https://registry.access.redhat.com/v1/repositories/openshift3/logging-kibana/tags | jq .
+</code></pre></div><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-json data-lang=json>{
+  <span style=color:#8b008b;font-weight:700>&#34;3.1.0&#34;</span>: <span style=color:#cd5555>&#34;2c5acfd9c89c5b122e41b7ca13c6847aa9183bd41076ac9a3836a28da5b82bb4&#34;</span>,
+  <span style=color:#8b008b;font-weight:700>&#34;3.1.0-1&#34;</span>: <span style=color:#cd5555>&#34;10b5df01eb1793076b746f27c5b439bde2d73bdf988d805fac450255c22d904b&#34;</span>,
+  <span style=color:#8b008b;font-weight:700>&#34;3.1.0-4&#34;</span>: <span style=color:#cd5555>&#34;2c5acfd9c89c5b122e41b7ca13c6847aa9183bd41076ac9a3836a28da5b82bb4&#34;</span>,
+  <span style=color:#8b008b;font-weight:700>&#34;3.1.1&#34;</span>: <span style=color:#cd5555>&#34;83a4455f3d606c41824d834df224e0579f074d9dec75a6fcc148dac35da13b1b&#34;</span>,
+  <span style=color:#8b008b;font-weight:700>&#34;3.1.1-10&#34;</span>: <span style=color:#cd5555>&#34;83a4455f3d606c41824d834df224e0579f074d9dec75a6fcc148dac35da13b1b&#34;</span>,
+  <span style=color:#8b008b;font-weight:700>&#34;3.1.1-5&#34;</span>: <span style=color:#cd5555>&#34;1d7701631584635d9f07e62f2ba0dd6fea0a2eb2ece02010b2630b2e9aaf9af7&#34;</span>,
+  <span style=color:#8b008b;font-weight:700>&#34;3.1.1-6&#34;</span>: <span style=color:#cd5555>&#34;5a922f7be584559218fa5e70e9ee159650b31ef0ac68d9e8b3a9ca7d45ef491c&#34;</span>,
+  <span style=color:#8b008b;font-weight:700>&#34;3.1.1-7&#34;</span>: <span style=color:#cd5555>&#34;3ce38d90561782969f98f387ba96b0e8411ee58a76878fcbd194ed64f54150a9&#34;</span>,
+  <span style=color:#8b008b;font-weight:700>&#34;3.1.1-8&#34;</span>: <span style=color:#cd5555>&#34;d15c32b3f8e985bea5e2401989b33413f7e30627bd1c9e108c7a6a5e0b0b0fc4&#34;</span>,
+  <span style=color:#8b008b;font-weight:700>&#34;3.2.0&#34;</span>: <span style=color:#cd5555>&#34;38480621ccf59391f18db56caa7a83ad5ab262d648548ee60b6d993936366ea8&#34;</span>,
+  <span style=color:#8b008b;font-weight:700>&#34;3.2.0-3&#34;</span>: <span style=color:#cd5555>&#34;51ec0188aa11dc11c6f24a4bf69d8b95a8a996209d3bd17fa40bdb65e20f8b89&#34;</span>,
+  <span style=color:#8b008b;font-weight:700>&#34;3.2.0-4&#34;</span>: <span style=color:#cd5555>&#34;38480621ccf59391f18db56caa7a83ad5ab262d648548ee60b6d993936366ea8&#34;</span>,
+  <span style=color:#8b008b;font-weight:700>&#34;3.2.1&#34;</span>: <span style=color:#cd5555>&#34;982e831f5fba03abca20e1f8fbbc8d31ddf8747c5ee8170ddfcba93018e5730d&#34;</span>,
+  <span style=color:#8b008b;font-weight:700>&#34;3.2.1-3&#34;</span>: <span style=color:#cd5555>&#34;7ac03c5eb56e15575c86d57ced2387c844d17469f4fda7c7928a660b77bf3aef&#34;</span>,
+  <span style=color:#8b008b;font-weight:700>&#34;3.2.1-5&#34;</span>: <span style=color:#cd5555>&#34;982e831f5fba03abca20e1f8fbbc8d31ddf8747c5ee8170ddfcba93018e5730d&#34;</span>,
+  <span style=color:#8b008b;font-weight:700>&#34;latest&#34;</span>: <span style=color:#cd5555>&#34;7ac03c5eb56e15575c86d57ced2387c844d17469f4fda7c7928a660b77bf3aef&#34;</span>,
+  <span style=color:#8b008b;font-weight:700>&#34;v3.1&#34;</span>: <span style=color:#cd5555>&#34;83a4455f3d606c41824d834df224e0579f074d9dec75a6fcc148dac35da13b1b&#34;</span>,
+  <span style=color:#8b008b;font-weight:700>&#34;v3.2&#34;</span>: <span style=color:#cd5555>&#34;982e831f5fba03abca20e1f8fbbc8d31ddf8747c5ee8170ddfcba93018e5730d&#34;</span>
 }
 </code></pre></div><p>It seems like Red Hat is still coming to terms with release management in this new image based world. There isn&rsquo;t even information in the eratta on how to update to new images, instead one is referred to the info on <a href=https://access.redhat.com/articles/11258>how to apply RPM updates</a>. Inconsistent formatting of tags have caused <a href="https://bugzilla.redhat.com/show_bug.cgi?id=1339754">other problems</a> for updates. Better them than me, though.</p>
 </div>

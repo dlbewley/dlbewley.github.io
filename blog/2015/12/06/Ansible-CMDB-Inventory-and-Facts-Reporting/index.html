@@ -98,7 +98,7 @@ December 6, 2015
 <p>You just deployed a complex multi-host app using Ansible. Wouldn&rsquo;t it be helpful to see a overview of the deployment including hardware details?</p>
 <p>I just found <a href=https://github.com/fboender/ansible-cmdb>ansible-cmdb</a> which combines info from the Ansible inventory and discovered facts to create a detailed HTML report akin to a Configuration Management Database.</p>
 <p>To use it in your playbook dir, just create a directory to hold facts discovered by the <a href=http://docs.ansible.com/ansible/setup_module.html>setup module</a> then generate the report.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>mkdir cmdb
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>mkdir cmdb
 ansible all -i hosts -m setup --tree cmdb/
 ansible-cmdb -i hosts cmdb/ &gt; cmdb.html
 </code></pre></div><p>Now go take a look at <code>cmdb.html</code>. Here is an example report.</p>

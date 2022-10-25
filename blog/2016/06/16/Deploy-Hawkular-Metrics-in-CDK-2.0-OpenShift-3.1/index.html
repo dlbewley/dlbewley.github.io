@@ -114,11 +114,11 @@ June 16, 2016
 <p>Refer to <a href=https://docs.openshift.com/enterprise/3.2/install_config/cluster_metrics.html>the docs</a> for deploying metrics in OSE.</p>
 <p><a href=/images/openshift-cdk-metrics-0.png><img src=/images/thumb/openshift-cdk-metrics-0.png alt="OpenShift Metrics"></a></p>
 <p>Login to the vagrant CDK VM before continuing</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ cd ~/cdk/components/rhel/rhel-ose/
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ <span style=color:#658b00>cd</span> ~/cdk/components/rhel/rhel-ose/
 $ vagrant ssh
 
 $ oc login
-Authentication required <span style=color:#66d9ef>for</span> https://127.0.0.1:8443 <span style=color:#f92672>(</span>openshift<span style=color:#f92672>)</span>
+Authentication required <span style=color:#8b008b;font-weight:700>for</span> https://127.0.0.1:8443 (openshift)
 Username: admin
 Password: admin
 Login successful.
@@ -127,43 +127,43 @@ $ oc project openshift-infra
 
 $ oc get sa
 NAME                        SECRETS   AGE
-build-controller            <span style=color:#ae81ff>2</span>         10m
-builder                     <span style=color:#ae81ff>2</span>         10m
-daemonset-controller        <span style=color:#ae81ff>2</span>         10m
-default                     <span style=color:#ae81ff>2</span>         10m
-deployer                    <span style=color:#ae81ff>2</span>         10m
-deployment-controller       <span style=color:#ae81ff>2</span>         10m
-gc-controller               <span style=color:#ae81ff>2</span>         10m
-hpa-controller              <span style=color:#ae81ff>2</span>         10m
-job-controller              <span style=color:#ae81ff>2</span>         10m
-namespace-controller        <span style=color:#ae81ff>2</span>         10m
-pv-binder-controller        <span style=color:#ae81ff>2</span>         10m
-pv-provisioner-controller   <span style=color:#ae81ff>2</span>         10m
-pv-recycler-controller      <span style=color:#ae81ff>2</span>         10m
-replication-controller      <span style=color:#ae81ff>2</span>         10m
+build-controller            <span style=color:#b452cd>2</span>         10m
+builder                     <span style=color:#b452cd>2</span>         10m
+daemonset-controller        <span style=color:#b452cd>2</span>         10m
+default                     <span style=color:#b452cd>2</span>         10m
+deployer                    <span style=color:#b452cd>2</span>         10m
+deployment-controller       <span style=color:#b452cd>2</span>         10m
+gc-controller               <span style=color:#b452cd>2</span>         10m
+hpa-controller              <span style=color:#b452cd>2</span>         10m
+job-controller              <span style=color:#b452cd>2</span>         10m
+namespace-controller        <span style=color:#b452cd>2</span>         10m
+pv-binder-controller        <span style=color:#b452cd>2</span>         10m
+pv-provisioner-controller   <span style=color:#b452cd>2</span>         10m
+pv-recycler-controller      <span style=color:#b452cd>2</span>         10m
+replication-controller      <span style=color:#b452cd>2</span>         10m
 
-$ oc create -f - <span style=color:#e6db74>&lt;&lt;API
-</span><span style=color:#e6db74>apiVersion: v1
-</span><span style=color:#e6db74>kind: ServiceAccount
-</span><span style=color:#e6db74>metadata:
-</span><span style=color:#e6db74>  name: metrics-deployer
-</span><span style=color:#e6db74>  secrets:
-</span><span style=color:#e6db74>  - name: metrics-deployer
-</span><span style=color:#e6db74>API</span>
+$ oc create -f - <span style=color:#cd5555>&lt;&lt;API
+</span><span style=color:#cd5555>apiVersion: v1
+</span><span style=color:#cd5555>kind: ServiceAccount
+</span><span style=color:#cd5555>metadata:
+</span><span style=color:#cd5555>  name: metrics-deployer
+</span><span style=color:#cd5555>  secrets:
+</span><span style=color:#cd5555>  - name: metrics-deployer
+</span><span style=color:#cd5555>API</span>
 
-$ oc secrets new metrics-deployer nothing<span style=color:#f92672>=</span>/dev/null
+$ oc secrets new metrics-deployer <span style=color:#00688b>nothing</span>=/dev/null
 
 $ oadm policy add-role-to-user         edit           system:serviceaccount:openshift-infra:metrics-deployer
 $ oadm policy add-cluster-role-to-user cluster-reader system:serviceaccount:openshift-infra:heapster
 </code></pre></div><p>From your OSE server grab <code>/usr/share/openshift/examples/infrastructure-templates/enterprise/metrics-deployer.yaml</code> or from <a href=https://raw.githubusercontent.com/openshift/openshift-ansible/master/roles/openshift_examples/files/examples/v1.2/infrastructure-templates/enterprise/metrics-deployer.yaml>here</a></p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ curl -O https://raw.githubusercontent.com/openshift/openshift-ansible/master/roles/openshift_examples/files/examples/v1.2/infrastructure-templates/enterprise/metrics-deployer.yaml
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ curl -O https://raw.githubusercontent.com/openshift/openshift-ansible/master/roles/openshift_examples/files/examples/v1.2/infrastructure-templates/enterprise/metrics-deployer.yaml
 
-$ oc process -f metrics-deployer.yaml <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>             -v HAWKULAR_METRICS_HOSTNAME<span style=color:#f92672>=</span>metrics.10.1.2.2.xip.io <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>             -v USE_PERSISTENT_STORAGE<span style=color:#f92672>=</span>false <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>             | oc create -f -
+$ oc process -f metrics-deployer.yaml <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>             -v <span style=color:#00688b>HAWKULAR_METRICS_HOSTNAME</span>=metrics.10.1.2.2.xip.io <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>             -v <span style=color:#00688b>USE_PERSISTENT_STORAGE</span>=<span style=color:#658b00>false</span> <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>             | oc create -f -
 
-<span style=color:#75715e># be patient while the images are pulled and pods are started. this can take a long time.</span>
+<span style=color:#228b22># be patient while the images are pulled and pods are started. this can take a long time.</span>
 $ oc get events --watch
 </code></pre></div><p>You are probably doing to see <a href=#cassandra-errors>cassandra errors</a>, but continue to the next step to <a href=#update-openshift-master-config>tell the master</a> where to find the metrics.</p>
 <h2 id=cassandra-errors>Cassandra Errors</h2>
@@ -251,26 +251,26 @@ Cassandra not in the up and normal state. Current state is
 /opt/apache-cassandra/bin/cassandra-docker-ready.sh: line 28: [: =: unary operator expected
 </code></pre><p>There is a problem with the readiness check of the cassandra pod. Using <a href=https://github.com/openshift/origin-metrics/commit/cf2c6d0088426e285178a9e3057156e9a90dc56f#diff-c13869165b2db409fcc3d8d14f188a32>this commit</a> make a change to the running pod. Basically, on line 28, change <code>$STATUS</code> to <code>${STATUS}</code>.</p>
 <p>Now, even though there is the error catting a non-existant file, the script will not error out:</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>oc rsh hawkular-cassandra-1-5kmz4
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>oc rsh hawkular-cassandra-1-5kmz4
 sh-4.2$ /opt/apache-cassandra/bin/cassandra-docker-ready.sh
 cat: /etc/ld.so.conf.d/*.conf: No such file or directory
 Cassandra is in the up and normal state. It is now ready
 </code></pre></div><h1 id=update-openshift-master-config>Update OpenShift Master Config</h1>
 <p>Openshift its self is running in a container called <code>openshift</code>. The config dir is mounted from the CDK VM at <code>/var/lib/openshift/openshift.local.config/master</code></p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>sudo vi /var/lib/openshift/openshift.local.config/master/master-config.yaml
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>sudo vi /var/lib/openshift/openshift.local.config/master/master-config.yaml
 
-<span style=color:#75715e># Add this:</span>
+<span style=color:#228b22># Add this:</span>
 assetConfig:
   masterPublicURL: https://10.1.2.2:8443
-  metricsPublicURL: <span style=color:#e6db74>&#34;https://metrics.10.1.2.2.xip.io/hawkular/metrics&#34;</span>
+  metricsPublicURL: <span style=color:#cd5555>&#34;https://metrics.10.1.2.2.xip.io/hawkular/metrics&#34;</span>
 </code></pre></div><p>Login to the openshift container and HUP it. <em>There is probably a better way to do this. In CDK 2.1 this killed OpenShift. Instead do a <code>sudo systemctl restart openshift</code> from the VM</em></p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#75715e># from host</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#228b22># from host</span>
 vagrant ssh
-<span style=color:#75715e># from VM</span>
-docker exec -ti openshift bash
+<span style=color:#228b22># from VM</span>
+docker <span style=color:#658b00>exec</span> -ti openshift bash
 ps -ef | grep openshift
-kill -HUP &lt;pid of openshift container&gt;
-exit
+<span style=color:#658b00>kill</span> -HUP &lt;pid of openshift container&gt;
+<span style=color:#658b00>exit</span>
 </code></pre></div><h1 id=finish-up>Finish Up</h1>
 <p>Visit <a href=https://metrics.10.1.2.2.xip.io/hawkular/metrics>https://metrics.10.1.2.2.xip.io/hawkular/metrics</a> to confirm it is running, and accept the SSL certificate.</p>
 <p>Again, be patient. There are several docker pulls going on which take quite some time.</p>

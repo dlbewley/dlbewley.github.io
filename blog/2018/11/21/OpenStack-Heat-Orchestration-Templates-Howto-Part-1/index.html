@@ -109,65 +109,65 @@ November 21, 2018
 <div id=post-content>
 <p>OpenStack enables automated creation of resources such as networks, routers, and servers using <a href=http://docs.openstack.org/developer/heat/template_guide/hot_spec.html>Heat</a> Orchestration Templates. If you are new to OpenStack and are using a <a href=https://docs.openstack.org/tripleo-docs/latest/>TripleO</a> based distribution you may have seen them up close and personal without knowing it. What follows is a very basic exploration of Heat.</p>
 <p>Heat templates are written in YAML format, and you can quickly see from the documentation that a basic template will likely have 4 sections:</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#75715e># templates will use features as of this release of OpenStack</span>
-<span style=color:#f92672>heat_template_version</span>: <span style=color:#ae81ff>queens</span>
-  <span style=color:#ae81ff>...</span>
-<span style=color:#75715e># variables to inform the creation of resources to follow </span>
-<span style=color:#f92672>parameters</span>:
-  <span style=color:#ae81ff>...</span>
-<span style=color:#75715e># the things the template will be creating</span>
-<span style=color:#f92672>resources</span>:
-  <span style=color:#ae81ff>...</span>
-<span style=color:#75715e># information about the things that were created</span>
-<span style=color:#f92672>outputs</span>:
-  <span style=color:#ae81ff>...</span>
-</code></pre></div><p>The <a href=https://docs.openstack.org/heat/latest/template_guide/hot_spec.html#heat-template-version>heat_template_version</a> specifies the features expected to be supported by the template to follow. You may see dated versions, but since Newton the release name is supported. I would use that if the template is not going to be used on a cloud older than that.</p>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#228b22># templates will use features as of this release of OpenStack</span><span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>heat_template_version</span>:<span style=color:#bbb> </span>queens<span style=color:#bbb>
+</span><span style=color:#bbb>  </span>...<span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#228b22># variables to inform the creation of resources to follow </span><span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>parameters</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>  </span>...<span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#228b22># the things the template will be creating</span><span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>resources</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>  </span>...<span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#228b22># information about the things that were created</span><span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>outputs</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>  </span>...<span style=color:#bbb>
+</span></code></pre></div><p>The <a href=https://docs.openstack.org/heat/latest/template_guide/hot_spec.html#heat-template-version>heat_template_version</a> specifies the features expected to be supported by the template to follow. You may see dated versions, but since Newton the release name is supported. I would use that if the template is not going to be used on a cloud older than that.</p>
 <p>The <a href=https://docs.openstack.org/heat/latest/template_guide/hot_spec.html#parameters-section>parameters</a> section identifies any variables that will be used later in the template. This is where a place holder for a server name, or the flavor to use would be defined. Parameters can have a default value and miscellaneous constraints applied for validation.</p>
 <p>Objects like a server instance are known as <a href=https://docs.openstack.org/heat/latest/template_guide/hot_spec.html#resources-section>resources</a>. Anything that the template will create or instantiate will be listed in the <code>resources</code> section and will be informed by the <code>parameters</code> section.</p>
 <p>Once a template has been &ldquo;launched&rdquo; or fed to OpenStack it will create what is called a <code>stack</code> of all the resources requested. There are likely some obvious questions you want to ask about a stack like: <em>&ldquo;What is the name of the server I just created?"</em> or <em>&ldquo;What is the IP of my server?"</em>. The <code>outputs</code> section makes it easy to expose that information.</p>
 <h1 id=simple-example-template>Simple Example Template</h1>
 <p>Here is a template that will create a server and attach it to a network, but it assumes that a network exists. In my case I already have a network named <code>provider192</code>.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#75715e># file: example-1.yaml</span>
-<span style=color:#75715e># i never plan to run on OpenStack &lt; Queens</span>
-<span style=color:#f92672>heat_template_version</span>: <span style=color:#ae81ff>queens</span>
-
-<span style=color:#f92672>description</span>: <span style=color:#ae81ff>Create a server instance</span>
-
-<span style=color:#f92672>parameters</span>:
-  <span style=color:#75715e># define a variable named &#34;image&#34; to use later</span>
-  <span style=color:#f92672>image</span>:
-    <span style=color:#f92672>description</span>: <span style=color:#ae81ff>Name of image from Glance to create an instance from.</span>
-    <span style=color:#f92672>type</span>: <span style=color:#ae81ff>string</span>
-    <span style=color:#75715e># Do you have an image named this already?</span>
-    <span style=color:#f92672>default</span>: <span style=color:#ae81ff>cirros-0.4.0.raw</span>
-  <span style=color:#f92672>flavor</span>:
-    <span style=color:#f92672>description</span>: <span style=color:#ae81ff>Instance flavor to build.</span>
-    <span style=color:#f92672>type</span>: <span style=color:#ae81ff>string</span>
-    <span style=color:#75715e># Do you have a flavor named this already?</span>
-    <span style=color:#f92672>default</span>: <span style=color:#ae81ff>m1.small</span>
-    <span style=color:#f92672>constraints</span>:
-      <span style=color:#75715e># only accept valid flavors for this parameter</span>
-      - <span style=color:#f92672>custom_constraint</span>: <span style=color:#ae81ff>nova.flavor</span>
-
-<span style=color:#f92672>resources</span>:
-  <span style=color:#75715e># create a resource named &#34;my_instance&#34;</span>
-  <span style=color:#f92672>my_instance</span>:
-    <span style=color:#75715e># the my_instance resource is a server</span>
-    <span style=color:#f92672>type</span>: <span style=color:#ae81ff>OS::Nova::Server</span>
-    <span style=color:#f92672>properties</span>:
-      <span style=color:#75715e># use the image parameter / variable defined above</span>
-      <span style=color:#f92672>image</span>: { <span style=color:#f92672>get_param</span>: <span style=color:#ae81ff>image }</span>
-      <span style=color:#f92672>flavor</span>: { <span style=color:#f92672>get_param</span>: <span style=color:#ae81ff>flavor }</span>
-
-<span style=color:#f92672>outputs</span>:
-  <span style=color:#f92672>name</span>:
-    <span style=color:#f92672>description</span>: <span style=color:#ae81ff>The name of the server created in this stack.</span>
-    <span style=color:#f92672>value</span>: { <span style=color:#f92672>get_attr</span>: [ <span style=color:#ae81ff>my_instance, name ] }</span>
-</code></pre></div><h2 id=create-example-1-stack-with-defaults>Create Example-1 Stack with Defaults</h2>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#228b22># file: example-1.yaml</span><span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#228b22># i never plan to run on OpenStack &lt; Queens</span><span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>heat_template_version</span>:<span style=color:#bbb> </span>queens<span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>description</span>:<span style=color:#bbb> </span>Create a server instance<span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>parameters</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#228b22># define a variable named &#34;image&#34; to use later</span><span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>image</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>description</span>:<span style=color:#bbb> </span>Name of image from Glance to create an instance from.<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>type</span>:<span style=color:#bbb> </span>string<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#228b22># Do you have an image named this already?</span><span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>default</span>:<span style=color:#bbb> </span>cirros-0.4.0.raw<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>flavor</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>description</span>:<span style=color:#bbb> </span>Instance flavor to build.<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>type</span>:<span style=color:#bbb> </span>string<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#228b22># Do you have a flavor named this already?</span><span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>default</span>:<span style=color:#bbb> </span>m1.small<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>constraints</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#228b22># only accept valid flavors for this parameter</span><span style=color:#bbb>
+</span><span style=color:#bbb>      </span>- <span style=color:#8b008b;font-weight:700>custom_constraint</span>:<span style=color:#bbb> </span>nova.flavor<span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>resources</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#228b22># create a resource named &#34;my_instance&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>my_instance</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#228b22># the my_instance resource is a server</span><span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>type</span>:<span style=color:#bbb> </span>OS::Nova::Server<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>properties</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#228b22># use the image parameter / variable defined above</span><span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>image</span>:<span style=color:#bbb> </span>{<span style=color:#bbb> </span><span style=color:#8b008b;font-weight:700>get_param</span>:<span style=color:#bbb> </span>image }<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>flavor</span>:<span style=color:#bbb> </span>{<span style=color:#bbb> </span><span style=color:#8b008b;font-weight:700>get_param</span>:<span style=color:#bbb> </span>flavor }<span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>outputs</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>description</span>:<span style=color:#bbb> </span>The name of the server created in this stack.<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>value</span>:<span style=color:#bbb> </span>{<span style=color:#bbb> </span><span style=color:#8b008b;font-weight:700>get_attr</span>:<span style=color:#bbb> </span>[<span style=color:#bbb> </span>my_instance, name ] }<span style=color:#bbb>
+</span></code></pre></div><h2 id=create-example-1-stack-with-defaults>Create Example-1 Stack with Defaults</h2>
 <p>Save that to a file called <code>example-1.yaml</code>. Edit the default flavor and image values to match what exists in your cloud.</p>
 <p>Now create a stack from the template. The command looks like this:</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ openstack stack create -t &lt;template_filename.yaml&gt; &lt;resultant_stack_name&gt;
-</code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ openstack stack create -t example-1.yaml example-1
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ openstack stack create -t &lt;template_filename.yaml&gt; &lt;resultant_stack_name&gt;
+</code></pre></div><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ openstack stack create -t example-1.yaml example-1
 +---------------------+--------------------------------------+
 | Field               | Value                                |
 +---------------------+--------------------------------------+
@@ -180,7 +180,7 @@ November 21, 2018
 | stack_status_reason | Stack CREATE started                 |
 +---------------------+--------------------------------------+
 </code></pre></div><p>Wait a minute or two, and then list the stack and see what outputs it can show us.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ openstack stack list
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ openstack stack list
 +--------------------------------------+------------+-----------------+----------------------+--------------+
 | ID                                   | Stack Name | Stack Status    | Creation Time        | Updated Time |
 +--------------------------------------+------------+-----------------+----------------------+--------------+
@@ -194,7 +194,7 @@ $ openstack stack output list example-1
 | name       | The name of the server created in this stack. |
 +------------+-----------------------------------------------+
 </code></pre></div><p>That looks familiar, what does it contain?</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ openstack stack output show example-1 name
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ openstack stack output show example-1 name
 +--------------+-----------------------------------------------+
 | Field        | Value                                         |
 +--------------+-----------------------------------------------+
@@ -203,10 +203,10 @@ $ openstack stack output list example-1
 | output_value | example-1-my_instance-omfgcgk3w7nd            |
 +--------------+-----------------------------------------------+
 </code></pre></div><p>There is the name of the server we just created! How about something more to the point for use in a script.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ openstack stack output show example-1 name -f value -c output_value
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ openstack stack output show example-1 name -f value -c output_value
 example-1-my_instance-omfgcgk3w7nd 
 </code></pre></div><p>Take a look at the whole stack.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ openstack stack show example-1
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ openstack stack show example-1
 +-----------------------+-------------------------------------------------------------------------------------------------------------------------------------+
 | Field                 | Value                                                                                                                               |
 +-----------------------+-------------------------------------------------------------------------------------------------------------------------------------+
@@ -234,14 +234,14 @@ example-1-my_instance-omfgcgk3w7nd
 | disable_rollback      | True                                                                                                                                |
 | deletion_time         | None                                                                                                                                |
 | stack_user_project_id | 4b22b80f4a1843f7a90b13e54375b4d5                                                                                                    |
-| capabilities          | <span style=color:#f92672>[]</span>                                                                                                                                  |
-| notification_topics   | <span style=color:#f92672>[]</span>                                                                                                                                  |
+| capabilities          | []                                                                                                                                  |
+| notification_topics   | []                                                                                                                                  |
 | tags                  | None                                                                                                                                |
 | timeout_mins          | None                                                                                                                                |
 | stack_owner           | None                                                                                                                                |
 +-----------------------+-------------------------------------------------------------------------------------------------------------------------------------+
 </code></pre></div><p>And now at the server it created. Notice that it attached to a network I had already created, named <em>provider192</em>.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ openstack server show example-1-my_instance-omfgcgk3w7nd
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ openstack server show example-1-my_instance-omfgcgk3w7nd
 +-----------------------------+----------------------------------------------------------+
 | Field                       | Value                                                    |
 +-----------------------------+----------------------------------------------------------+
@@ -254,47 +254,47 @@ example-1-my_instance-omfgcgk3w7nd
 | OS-SRV-USG:terminated_at    | None                                                     |
 | accessIPv4                  |                                                          |
 | accessIPv6                  |                                                          |
-| addresses                   | provider192<span style=color:#f92672>=</span>192.0.2.14                                   |
+| addresses                   | <span style=color:#00688b>provider192</span>=192.0.2.14                                   |
 | config_drive                |                                                          |
 | created                     | 2018-11-22T00:21:22Z                                     |
-| flavor                      | m1.small <span style=color:#f92672>(</span>af20508a-5986-4bf3-9e9f-33ca598e1563<span style=color:#f92672>)</span>          |
+| flavor                      | m1.small (af20508a-5986-4bf3-9e9f-33ca598e1563)          |
 | hostId                      | f1e7461e138a94335e579cb81cd95933fc3879b263a3109281d203ba |
 | id                          | ce6e7e7a-f091-4fe8-bde0-b0ae3d3664d7                     |
-| image                       | cirros-0.4.0.raw <span style=color:#f92672>(</span>a034ee47-4642-4d21-9b08-11774808a822<span style=color:#f92672>)</span>  |
+| image                       | cirros-0.4.0.raw (a034ee47-4642-4d21-9b08-11774808a822)  |
 | key_name                    | None                                                     |
 | name                        | example-1-my_instance-omfgcgk3w7nd                       |
-| progress                    | <span style=color:#ae81ff>0</span>                                                        |
+| progress                    | <span style=color:#b452cd>0</span>                                                        |
 | project_id                  | 1686c505946841259bfda1f1c206456d                         |
 | properties                  |                                                          |
-| security_groups             | name<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;default&#39;</span>                                           |
+| security_groups             | <span style=color:#00688b>name</span>=<span style=color:#cd5555>&#39;default&#39;</span>                                           |
 | status                      | ACTIVE                                                   |
 | updated                     | 2018-11-22T00:21:31Z                                     |
 | user_id                     | e2041d2848be40f6b6fb86709b260ae1                         |
 | volumes_attached            |                                                          |
 +-----------------------------+----------------------------------------------------------+
 </code></pre></div><p>Throw away this stack. This will delete the stack and any resources it created, such as the <code>example-1-my_instance-omfgcgk3w7nd</code> server.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ openstack stack delete example-1 --yes
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ openstack stack delete example-1 --yes
 </code></pre></div><h2 id=create-example-1-stack-with-supplied-parameters>Create Example-1 Stack with Supplied Parameters</h2>
 <p>Let&rsquo;s see how to pass in parameter values and demonstrate the effect of the <a href=https://docs.openstack.org/heat/latest/template_guide/hot_spec.html#custom-constraint>custom constraint</a> we placed on the flavor parameter.</p>
 <p>We know there is a parameter named <code>flavor</code> we can provide a value to override the default value when we create a stack from our template.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#75715e># flawed example</span>
-$ openstack stack create -t example-1.yaml --parameter flavor<span style=color:#f92672>=</span>nonexistant example-fail
-ERROR: Parameter <span style=color:#e6db74>&#39;flavor&#39;</span> is invalid: Error validating value <span style=color:#e6db74>&#39;nonexistant&#39;</span>: No Flavor matching <span style=color:#f92672>{</span><span style=color:#e6db74>&#39;name&#39;</span>: u<span style=color:#e6db74>&#39;nonexistant&#39;</span><span style=color:#f92672>}</span>. <span style=color:#f92672>(</span>HTTP 404<span style=color:#f92672>)</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#228b22># flawed example</span>
+$ openstack stack create -t example-1.yaml --parameter <span style=color:#00688b>flavor</span>=nonexistant example-fail
+ERROR: Parameter <span style=color:#cd5555>&#39;flavor&#39;</span> is invalid: Error validating value <span style=color:#cd5555>&#39;nonexistant&#39;</span>: No Flavor matching {<span style=color:#cd5555>&#39;name&#39;</span>: u<span style=color:#cd5555>&#39;nonexistant&#39;</span>}. (HTTP 404)
 </code></pre></div><p>Since the flavor was not found, our stack was not created. In truth, without that custom constraint a similar error would have been produced.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#75715e># flawed example with custom constraint removed</span>
-$ openstack stack create -t example-1.yaml --parameter flavor<span style=color:#f92672>=</span>nonexistant example-fail
-ERROR: Property error: : resources.my_instance.properties.flavor: : Error validating value <span style=color:#e6db74>&#39;nonexistant&#39;</span>: No Flavor matching <span style=color:#f92672>{</span><span style=color:#e6db74>&#39;name&#39;</span>: u<span style=color:#e6db74>&#39;nonexistant&#39;</span><span style=color:#f92672>}</span>. <span style=color:#f92672>(</span>HTTP 404<span style=color:#f92672>)</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#228b22># flawed example with custom constraint removed</span>
+$ openstack stack create -t example-1.yaml --parameter <span style=color:#00688b>flavor</span>=nonexistant example-fail
+ERROR: Property error: : resources.my_instance.properties.flavor: : Error validating value <span style=color:#cd5555>&#39;nonexistant&#39;</span>: No Flavor matching {<span style=color:#cd5555>&#39;name&#39;</span>: u<span style=color:#cd5555>&#39;nonexistant&#39;</span>}. (HTTP 404)
 </code></pre></div><p>Of course if you pass the name of a flavor that exists in your cloud there will be no error.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#75715e># example with custom constraint removed</span>
-$ openstack stack create -t example-1.yaml --parameter flavor<span style=color:#f92672>=</span>m1.large example-1
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#228b22># example with custom constraint removed</span>
+$ openstack stack create -t example-1.yaml --parameter <span style=color:#00688b>flavor</span>=m1.large example-1
 </code></pre></div><h2 id=create-example-1-stack-with-environment-file>Create Example-1 Stack with Environment File</h2>
 <p>Instead of passing the parameters on the command line you can also use what is called an environment file. An environment file should include a <code>parameter_defaults</code> section containing the parameters it will define and the values to supply. For example, this will provide a new value for the <code>flavor</code> parameter when coupled with our <code>example-1.yaml</code> template.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#75715e># file: environment-1.yaml</span>
-
-<span style=color:#f92672>parameter_defaults</span>:
-  <span style=color:#f92672>flavor</span>: <span style=color:#ae81ff>m1.medium</span>
-</code></pre></div><p>Make sure the stack is gone and then recreate it with the above environment file.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ openstack stack delete example-1 --yes
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#228b22># file: environment-1.yaml</span><span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>parameter_defaults</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>flavor</span>:<span style=color:#bbb> </span>m1.medium<span style=color:#bbb>
+</span></code></pre></div><p>Make sure the stack is gone and then recreate it with the above environment file.</p>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ openstack stack delete example-1 --yes
 $ openstack stack create -t example-1.yaml -e environment-1.yaml example-1
 +---------------------+--------------------------------------+
 | Field               | Value                                |
@@ -308,7 +308,7 @@ $ openstack stack create -t example-1.yaml -e environment-1.yaml example-1
 | stack_status_reason | Stack CREATE started                 |
 +---------------------+--------------------------------------+
 </code></pre></div><p>See what resources the stack created.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ openstack stack resource list example-1
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ openstack stack resource list example-1
 +---------------+--------------------------------------+------------------+-----------------+----------------------+
 | resource_name | physical_resource_id                 | resource_type    | resource_status | updated_time         |
 +---------------+--------------------------------------+------------------+-----------------+----------------------+
@@ -316,11 +316,11 @@ $ openstack stack create -t example-1.yaml -e environment-1.yaml example-1
 +---------------+--------------------------------------+------------------+-----------------+----------------------+
 </code></pre></div><p>Remember <code>my_instance</code> is the name of the Heat resource not the Nova server, but the physical_resource_id is the UUID of the server.</p>
 <p>What flavor is that server instance? Instead of the default <code>m1.small</code>, it should be <code>m1.medium</code> per our environment file.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ openstack server show 90794a87-7db8-4220-a1c9-6f2e4b68429b -c flavor -c name
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ openstack server show 90794a87-7db8-4220-a1c9-6f2e4b68429b -c flavor -c name
 +--------+--------------------------------------------------+
 | Field  | Value                                            |
 +--------+--------------------------------------------------+
-| flavor | m1.medium <span style=color:#f92672>(</span>fa4efbb9-6f43-4a29-aa1a-fa1069681ad6<span style=color:#f92672>)</span> |
+| flavor | m1.medium (fa4efbb9-6f43-4a29-aa1a-fa1069681ad6) |
 | name   | example-1-my_instance-c3pg4dyb5l6n               |
 +--------+--------------------------------------------------+
 </code></pre></div><p><strong>Bingo!</strong></p>

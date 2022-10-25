@@ -109,60 +109,60 @@ February 1, 2015
 <p>Zimbra is a email / collaboration suite that is typically deployed in a cluster or clusters of dedicated servers which fill roles like LDAP master, LDAP replica, Proxy, MTA, Mailstore, etc.</p>
 <p>The LDAP servers are used by all the other servers to store configuration and provisioning data. Servers in the cluster understand where to find the LDAP master (read/write) and LDAP replicas (read only) though values defined in <code>/opt/zimbra/conf/localconfig.xml</code>.</p>
 <p>There are 2 values relevant to LDAP server lists and they have values like this:</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>ldap_master_url <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;ldap://zimbra-ldap-master-01&#34;</span>
-ldap_url        <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;ldap://zimbra-ldap-01 ldap://zimbra-ldap-02 ldap://zimbra-ldap-master-01&#34;</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#00688b>ldap_master_url</span> = <span style=color:#cd5555>&#34;ldap://zimbra-ldap-master-01&#34;</span>
+<span style=color:#00688b>ldap_url</span>        = <span style=color:#cd5555>&#34;ldap://zimbra-ldap-01 ldap://zimbra-ldap-02 ldap://zimbra-ldap-master-01&#34;</span>
 </code></pre></div><p>That should be easy enough to construct based on group memberships, right? Unfortunately there is a bit of complexity lurking here. LDAP replica servers should always list themselves first in the <code>ldap_url</code>, and the <code>ldap_url</code> should end with an LDAP master. LDAP master servers should always list themselves first in <code>ldap_master_url</code>.</p>
 <p>This is what I came up with.</p>
 <p>The result is 2 fact variables for each host: <code>zimbra_ldap_url</code> and <code>zimbra_ldap_master_url</code>. Those facts can later be applied with the <code>zmlocalconfig</code> command. (I wrote a Ansible module to do that as well. Maybe I will be able to post that at some point.)</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml>---
-<span style=color:#75715e># file: roles/zimbra/tasks/zimbra-define-ldap-urls.yml</span>
-<span style=color:#75715e># Just set facts: zimbra_ldap_master_url, zimbra_ldap_url</span>
-
-<span style=color:#75715e># ldap_master_url and ldap_url are used by all zimbra servers,</span>
-<span style=color:#75715e># but zimbra LDAP servers need to always be first in their own list</span>
-
-<span style=color:#75715e>#------------------------</span>
-<span style=color:#75715e># LDAP Master URL</span>
-<span style=color:#75715e># If I am an LDAP master, I should be first value. Everything else shuffled.</span>
-
-- <span style=color:#f92672>name</span>: <span style=color:#ae81ff>Shuffled list of LDAP masters other than me</span>
-  <span style=color:#f92672>set_fact</span>: 
-    <span style=color:#f92672>ldap_master_sans_me</span>: <span style=color:#e6db74>&#34;{{ groups[&#39;zimbra-ldap-master&#39;] | difference(ansible_fqdn) | shuffle }}&#34;</span>
-
-- <span style=color:#f92672>name</span>: <span style=color:#ae81ff>Define LDAP Master URL for Masters</span>
-  <span style=color:#f92672>set_fact</span>:
-    <span style=color:#f92672>zimbra_ldap_master_url</span>: <span style=color:#e6db74>&#39;ldap://{{ [ ansible_fqdn ] | union(ldap_master_sans_me) | join(&#34; ldap://&#34;) }}&#39;</span>
-  <span style=color:#f92672>when</span>: <span style=color:#e6db74>&#39;&#34;zimbra-ldap-master&#34; in group_names&#39;</span>
-
-- <span style=color:#f92672>name</span>: <span style=color:#ae81ff>Define LDAP Master URL for Non-masters</span>
-  <span style=color:#f92672>set_fact</span>:
-    <span style=color:#f92672>zimbra_ldap_master_url</span>: <span style=color:#e6db74>&#39;ldap://{{ ldap_master_sans_me | join(&#34; ldap://&#34;) }}&#39;</span>
-  <span style=color:#f92672>when</span>: <span style=color:#e6db74>&#39;&#34;zimbra-ldap-master&#34; not in group_names&#39;</span>
-
-
-<span style=color:#75715e>#------------------------</span>
-<span style=color:#75715e># LDAP URL</span>
-<span style=color:#75715e># If I am an LDAP server, I should be first value. Everything else shuffled, and masters should come last.</span>
-
-- <span style=color:#f92672>name</span>: <span style=color:#ae81ff>Shuffled list of LDAP replicas other than me</span>
-  <span style=color:#f92672>set_fact</span>: 
-    <span style=color:#f92672>ldap_replica_sans_me</span>: <span style=color:#e6db74>&#34;{{ groups[&#39;zimbra-ldap-replica&#39;] | difference(ansible_fqdn) | shuffle }}&#34;</span>
-
-- <span style=color:#f92672>name</span>: <span style=color:#ae81ff>Define LDAP URL for LDAP replicas</span>
-  <span style=color:#f92672>set_fact</span>:
-    <span style=color:#f92672>zimbra_ldap_url</span>: <span style=color:#e6db74>&#39;ldap://{{ [ ansible_fqdn ] | union(ldap_replica_sans_me) | join(&#34; ldap://&#34;) }} {{ zimbra_ldap_master_url }}&#39;</span>
-  <span style=color:#f92672>when</span>: <span style=color:#e6db74>&#39;&#34;zimbra-ldap-replica&#34; in group_names&#39;</span>
-
-- <span style=color:#f92672>name</span>: <span style=color:#ae81ff>Define LDAP URL for LDAP masters</span>
-  <span style=color:#f92672>set_fact</span>:
-    <span style=color:#f92672>zimbra_ldap_url</span>: <span style=color:#e6db74>&#39;ldap://{{ [ ansible_fqdn ] | union(ldap_replica_sans_me) | union(ldap_master_sans_me) | join(&#34; ldap://&#34;) }}&#39;</span>
-  <span style=color:#f92672>when</span>: <span style=color:#e6db74>&#39;&#34;zimbra-ldap-master&#34; in group_names&#39;</span>
-
-- <span style=color:#f92672>name</span>: <span style=color:#ae81ff>Define LDAP URL for non-LDAP servers</span>
-  <span style=color:#f92672>set_fact</span>:
-    <span style=color:#f92672>zimbra_ldap_url</span>: <span style=color:#e6db74>&#39;ldap://{{ ldap_replica_sans_me | join(&#34; ldap://&#34;) }} {{ zimbra_ldap_master_url }}&#39;</span>
-  <span style=color:#f92672>when</span>: <span style=color:#e6db74>&#39;&#34;zimbra-ldap&#34; not in group_names&#39;</span>
-</code></pre></div>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#008b45;text-decoration:underline>---</span><span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#228b22># file: roles/zimbra/tasks/zimbra-define-ldap-urls.yml</span><span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#228b22># Just set facts: zimbra_ldap_master_url, zimbra_ldap_url</span><span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#228b22># ldap_master_url and ldap_url are used by all zimbra servers,</span><span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#228b22># but zimbra LDAP servers need to always be first in their own list</span><span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#228b22>#------------------------</span><span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#228b22># LDAP Master URL</span><span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#228b22># If I am an LDAP master, I should be first value. Everything else shuffled.</span><span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb></span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>Shuffled list of LDAP masters other than me<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>set_fact</span>:<span style=color:#bbb> 
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>ldap_master_sans_me</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;{{ groups[&#39;zimbra-ldap-master&#39;] | difference(ansible_fqdn) | shuffle }}&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb></span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>Define LDAP Master URL for Masters<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>set_fact</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>zimbra_ldap_master_url</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#39;ldap://{{ [ ansible_fqdn ] | union(ldap_master_sans_me) | join(&#34; ldap://&#34;) }}&#39;</span><span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>when</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#39;&#34;zimbra-ldap-master&#34; in group_names&#39;</span><span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb></span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>Define LDAP Master URL for Non-masters<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>set_fact</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>zimbra_ldap_master_url</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#39;ldap://{{ ldap_master_sans_me | join(&#34; ldap://&#34;) }}&#39;</span><span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>when</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#39;&#34;zimbra-ldap-master&#34; not in group_names&#39;</span><span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#228b22>#------------------------</span><span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#228b22># LDAP URL</span><span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#228b22># If I am an LDAP server, I should be first value. Everything else shuffled, and masters should come last.</span><span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb></span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>Shuffled list of LDAP replicas other than me<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>set_fact</span>:<span style=color:#bbb> 
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>ldap_replica_sans_me</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;{{ groups[&#39;zimbra-ldap-replica&#39;] | difference(ansible_fqdn) | shuffle }}&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb></span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>Define LDAP URL for LDAP replicas<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>set_fact</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>zimbra_ldap_url</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#39;ldap://{{ [ ansible_fqdn ] | union(ldap_replica_sans_me) | join(&#34; ldap://&#34;) }} {{ zimbra_ldap_master_url }}&#39;</span><span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>when</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#39;&#34;zimbra-ldap-replica&#34; in group_names&#39;</span><span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb></span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>Define LDAP URL for LDAP masters<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>set_fact</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>zimbra_ldap_url</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#39;ldap://{{ [ ansible_fqdn ] | union(ldap_replica_sans_me) | union(ldap_master_sans_me) | join(&#34; ldap://&#34;) }}&#39;</span><span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>when</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#39;&#34;zimbra-ldap-master&#34; in group_names&#39;</span><span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb></span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>Define LDAP URL for non-LDAP servers<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>set_fact</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>zimbra_ldap_url</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#39;ldap://{{ ldap_replica_sans_me | join(&#34; ldap://&#34;) }} {{ zimbra_ldap_master_url }}&#39;</span><span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>when</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#39;&#34;zimbra-ldap&#34; not in group_names&#39;</span><span style=color:#bbb>
+</span></code></pre></div>
 </div>
 <div id=comments>
 <div id=disqus_thread></div>

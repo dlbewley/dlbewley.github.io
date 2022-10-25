@@ -195,15 +195,15 @@ Backups will go to a NFS filer. I&rsquo;m not concerned about the filesystem con
 <p>I will be working on RHEL 6, and I&rsquo;m ignoring that fact that anything other than ext4 exists.</p>
 <h2 id=directory-index>Directory Index</h2>
 <p>The dir_index option speeds up directories with large numbers of files. It turns out this is on by default in <code>/etc/mke2fs.conf</code>. You can confirm by looking for <code>dir_index</code> in the filesystem features in the output of <code>tune2fs</code>. So, nothing to do here.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-text data-lang=text>Filesystem features:      has_journal ext_attr resize_inode dir_index filetype needs_recovery extent flex_bg sparse_super large_file huge_file uninit_bg dir_nlink extra_isize
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-text data-lang=text>Filesystem features:      has_journal ext_attr resize_inode dir_index filetype needs_recovery extent flex_bg sparse_super large_file huge_file uninit_bg dir_nlink extra_isize
 </code></pre></div><h2 id=bytes-per-inode>Bytes per Inode</h2>
 <p>Inodes store metadata about files. Every file consumes an inode and you can&rsquo;t add more inodes. Zimbra stores message blobs as individual files, as opposed to one file per mail folder (ala mbox). Therefore the inode usage can be very high. You may have tons of space free, but if you run out of inodes, pack it in. Use <code>df -i</code> to examine your inode usage.</p>
 <p>Zimbra suggests <code>-i 10240</code> mke2fs option. This says create 1 inode for every 10KB of space on the filesystem. This assumes that you expect to fill the filesystem up with 10KB files.</p>
 <p>How many inodes do I have on my test filesystem?</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-text data-lang=text>[root@zimbra-mbox-10 ~]# tune2fs -l /dev/mapper/VGzstore-LVstore | grep &#39;Inode count&#39;
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-text data-lang=text>[root@zimbra-mbox-10 ~]# tune2fs -l /dev/mapper/VGzstore-LVstore | grep &#39;Inode count&#39;
 Inode count:              67108864
 </code></pre></div><p>If I use the <code>-i 10240</code> option, how many inodes will I have then? You can find out with <code>mke2fs</code> in dry run mode. See line 4 below.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-text data-lang=text>[root@zimbra-mbox-10 ~]# umount /opt/zimbra/store
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-text data-lang=text>[root@zimbra-mbox-10 ~]# umount /opt/zimbra/store
 [root@zimbra-mbox-10 ~]# mke2fs -n -i 10240 /dev/mapper/VGzstore-LVstore | grep inodes
 mke2fs 1.41.12 (17-May-2010)
 107479040 inodes, 268435456 blocks
@@ -211,7 +211,7 @@ mke2fs 1.41.12 (17-May-2010)
 </code></pre></div><p>Wow! That is support for up to 107 million files.</p>
 <p>How big is your average message? It looks like in my case we are looking at about 190 million emails split across numerous servers, and an average message size of 106KB. So an inode per 10KB is pretty generous. I can probably increase that ratio, and lower the inode count.</p>
 <p>Doing the math, it looks like by default I&rsquo;m getting one inode per 16K. This is borne out in <code>/etc/mk2fs.conf</code>.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-text data-lang=text>[defaults]
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-text data-lang=text>[defaults]
         base_features = sparse_super,filetype,resize_inode,dir_index,ext_attr
         blocksize = 4096
         inode_size = 256
@@ -221,7 +221,7 @@ mke2fs 1.41.12 (17-May-2010)
 <p>Journal size reportedly can have a great impact on metadata operations. <a href="http://wiki.zimbra.com/index.php?title=Performance_Tuning_Guidelines_for_Large_Deployments">Zimbra suggests</a> an arbitrary 400M for journal size for filesystems.</p>
 <p>If I&rsquo;ve already created a filesystem, so how do I find out the size of the existing journal?</p>
 <p>Looks like <code>tune2fs -l</code> doesn&rsquo;t do the trick.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-text data-lang=text>[root@zimbra-mbox-10 ~]# tune2fs -l /dev/mapper/VGzstore-LVstore
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-text data-lang=text>[root@zimbra-mbox-10 ~]# tune2fs -l /dev/mapper/VGzstore-LVstore
 tune2fs 1.41.12 (17-May-2010)
 Filesystem volume name:   &lt;none&gt;
 Last mounted on:          &lt;not available&gt;
@@ -268,7 +268,7 @@ Default directory hash:   half_md4
 Directory Hash Seed:      2394798b-a767-4a9c-b92f-dabd75e5f1e4
 Journal backup:           inode blocks
 </code></pre></div><p>After a little googling, I found <a href=http://blog.dailystuff.nl/2012/07/getting-ext34-journal-size/>this page</a> that suggested <code>dumpe2fs</code>. It looks like the default size for this 1TB filesystem was 128M.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-text data-lang=text>[root@zimbra-mbox-10 ~]# dumpe2fs /dev/mapper/VGzstore-LVstore | grep ^Journal
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-text data-lang=text>[root@zimbra-mbox-10 ~]# dumpe2fs /dev/mapper/VGzstore-LVstore | grep ^Journal
 dumpe2fs 1.41.12 (17-May-2010)
 Journal inode:            8
 Journal backup:           inode blocks
@@ -282,51 +282,51 @@ Journal start:            0
 <p>I&rsquo;ll of course use the ansible <a href=http://docs.ansible.com/filesystem_module.html>filesystem module</a> and add a value of <code>-J size=256</code> in the <code>opts</code> parameter.</p>
 <h1 id=summary>Summary</h1>
 <p>So, in the end I&rsquo;ll be using Ansible <a href=http://docs.ansible.com/filesystem_module.html>filesystem</a> and <a href=http://docs.ansible.com/mount_module.html>mount</a> modules to setup filesytems whith a journal size of 256MB, and a reserve of 1%, and use noatime and dirsync mount options. I create a dictionary like this to do that.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#f92672>zimbra_storage</span>:
-  <span style=color:#f92672>nfs</span>:
-    <span style=color:#f92672>backup</span>:
-      <span style=color:#f92672>export</span>: <span style=color:#ae81ff>nfs-server:/zimbra/backup</span>
-      <span style=color:#f92672>path</span>: <span style=color:#ae81ff>/opt/zimbra/backup</span>
-  <span style=color:#f92672>devices</span>:
-    <span style=color:#f92672>opt_disk</span>:
-      <span style=color:#f92672>dev</span>: <span style=color:#ae81ff>/dev/sdb</span>
-      <span style=color:#f92672>size</span>: <span style=color:#ae81ff>500G</span>
-      <span style=color:#f92672>vg</span>: <span style=color:#ae81ff>VGzopt</span>
-      <span style=color:#f92672>volumes</span>:
-        <span style=color:#f92672>opt</span>:
-          <span style=color:#f92672>name</span>: <span style=color:#ae81ff>LVzimbra</span>
-          <span style=color:#f92672>path</span>: <span style=color:#ae81ff>/opt/zimbra</span>
-          <span style=color:#f92672>size</span>: <span style=color:#ae81ff>50G</span>
-          <span style=color:#f92672>fs_type</span>: <span style=color:#ae81ff>ext4</span>
-          <span style=color:#f92672>fs_opts</span>:
-          <span style=color:#f92672>mount_opts</span>: <span style=color:#e6db74>&#34;noatime,dirsync&#34;</span>
-        <span style=color:#f92672>index</span>:
-          <span style=color:#f92672>name</span>: <span style=color:#ae81ff>LVindex</span>
-          <span style=color:#f92672>path</span>: <span style=color:#ae81ff>/opt/zimbra/index</span>
-          <span style=color:#f92672>size</span>: <span style=color:#ae81ff>100G</span>
-          <span style=color:#f92672>fs_type</span>: <span style=color:#ae81ff>ext4</span>
-          <span style=color:#f92672>fs_opts</span>: <span style=color:#e6db74>&#34;-J size=256&#34;</span>
-          <span style=color:#f92672>mount_opts</span>: <span style=color:#e6db74>&#34;noatime,dirsync&#34;</span>
-        <span style=color:#f92672>redo</span>:
-          <span style=color:#f92672>name</span>: <span style=color:#ae81ff>LVredo</span>
-          <span style=color:#f92672>path</span>: <span style=color:#ae81ff>/opt/zimbra/redolog</span>
-          <span style=color:#f92672>size</span>: <span style=color:#ae81ff>200G</span>
-          <span style=color:#f92672>fs_type</span>: <span style=color:#ae81ff>ext4</span>
-          <span style=color:#f92672>fs_opts</span>:
-          <span style=color:#f92672>mount_opts</span>: <span style=color:#e6db74>&#34;noatime&#34;</span>
-    <span style=color:#f92672>store_disk</span>:
-      <span style=color:#f92672>dev</span>: <span style=color:#ae81ff>/dev/sdc</span>
-      <span style=color:#f92672>size</span>: <span style=color:#ae81ff>2T</span>
-      <span style=color:#f92672>vg</span>: <span style=color:#ae81ff>VGzstore</span>
-      <span style=color:#f92672>volumes</span>:
-        <span style=color:#f92672>store</span>:
-          <span style=color:#f92672>name</span>: <span style=color:#ae81ff>LVstore</span>
-          <span style=color:#f92672>path</span>: <span style=color:#ae81ff>/opt/zimbra/store</span>
-          <span style=color:#f92672>size</span>: <span style=color:#ae81ff>1T</span>
-          <span style=color:#f92672>fs_type</span>: <span style=color:#ae81ff>ext4</span>
-          <span style=color:#f92672>fs_opts</span>: <span style=color:#e6db74>&#34;-J size=256 -m 1&#34;</span>
-          <span style=color:#f92672>mount_opts</span>: <span style=color:#e6db74>&#34;noatime,dirsync&#34;</span>
-</code></pre></div>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#8b008b;font-weight:700>zimbra_storage</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>nfs</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>backup</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>export</span>:<span style=color:#bbb> </span>nfs-server:/zimbra/backup<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>path</span>:<span style=color:#bbb> </span>/opt/zimbra/backup<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>devices</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>opt_disk</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>dev</span>:<span style=color:#bbb> </span>/dev/sdb<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>size</span>:<span style=color:#bbb> </span>500G<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>vg</span>:<span style=color:#bbb> </span>VGzopt<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>volumes</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>opt</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>LVzimbra<span style=color:#bbb>
+</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>path</span>:<span style=color:#bbb> </span>/opt/zimbra<span style=color:#bbb>
+</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>size</span>:<span style=color:#bbb> </span>50G<span style=color:#bbb>
+</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>fs_type</span>:<span style=color:#bbb> </span>ext4<span style=color:#bbb>
+</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>fs_opts</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>mount_opts</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;noatime,dirsync&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>index</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>LVindex<span style=color:#bbb>
+</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>path</span>:<span style=color:#bbb> </span>/opt/zimbra/index<span style=color:#bbb>
+</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>size</span>:<span style=color:#bbb> </span>100G<span style=color:#bbb>
+</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>fs_type</span>:<span style=color:#bbb> </span>ext4<span style=color:#bbb>
+</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>fs_opts</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;-J size=256&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>mount_opts</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;noatime,dirsync&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>redo</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>LVredo<span style=color:#bbb>
+</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>path</span>:<span style=color:#bbb> </span>/opt/zimbra/redolog<span style=color:#bbb>
+</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>size</span>:<span style=color:#bbb> </span>200G<span style=color:#bbb>
+</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>fs_type</span>:<span style=color:#bbb> </span>ext4<span style=color:#bbb>
+</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>fs_opts</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>mount_opts</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;noatime&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>store_disk</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>dev</span>:<span style=color:#bbb> </span>/dev/sdc<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>size</span>:<span style=color:#bbb> </span>2T<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>vg</span>:<span style=color:#bbb> </span>VGzstore<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>volumes</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>store</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>LVstore<span style=color:#bbb>
+</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>path</span>:<span style=color:#bbb> </span>/opt/zimbra/store<span style=color:#bbb>
+</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>size</span>:<span style=color:#bbb> </span>1T<span style=color:#bbb>
+</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>fs_type</span>:<span style=color:#bbb> </span>ext4<span style=color:#bbb>
+</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>fs_opts</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;-J size=256 -m 1&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>mount_opts</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;noatime,dirsync&#34;</span><span style=color:#bbb>
+</span></code></pre></div>
 </div>
 <div id=comments>
 <div id=disqus_thread></div>

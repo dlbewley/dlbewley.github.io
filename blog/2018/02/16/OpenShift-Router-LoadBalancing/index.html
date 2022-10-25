@@ -115,7 +115,7 @@ Did you know that even <em>if</em> you somehow manage to perfectly balance traff
 <p>Here is an environment with 3 infrastructure nodes and and 3 primary or applications nodes in the 192.0.2.0/24 address space. The application domain is <code>os.example.com</code>.</p>
 <p>The 3 infrastucture nodes participate in the HA routing by running ipfailover pods that implement keepalived to keep IPs 192.0.2.101-103 alive. Along side those ipfailover pods an haproxy pod binds to each IP.</p>
 <p>The DNS response for lookups in <code>*.os.example.com</code> will look like this. The order of the addresses in the response should be varied by the DNS server.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ dig +short foo.os.example.com
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ dig +short foo.os.example.com
 192.0.2.103
 192.0.2.101
 192.0.2.102
@@ -189,17 +189,17 @@ How? Adress resolution protocol. Since the router is on the same layer 2 segment
 Over time, or after some event like a network split or node reboots the ARP table could wind up thwarting your efforts to balance the traffic.</p>
 <p><strong>Network Router</strong></p>
 <p>Let&rsquo;s check the ARP table on the router to see where traffic will be sent at the link layer.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>core<span style=color:#f92672>(</span>s1<span style=color:#f92672>)</span><span style=color:#75715e># sh ip arp 192.0.2.101</span>
-Address         Age <span style=color:#f92672>(</span>min<span style=color:#f92672>)</span>  Hardware Addr   Interface
-192.0.2.101          <span style=color:#ae81ff>0</span>  001a.4a48.BE4B  Vlan176, Port-Channel391
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>core(s1)<span style=color:#228b22># sh ip arp 192.0.2.101</span>
+Address         Age (min)  Hardware Addr   Interface
+192.0.2.101          <span style=color:#b452cd>0</span>  001a.4a48.BE4B  Vlan176, Port-Channel391
 
-core<span style=color:#f92672>(</span>s1<span style=color:#f92672>)</span><span style=color:#75715e># sh ip arp 192.0.2.102</span>
-Address         Age <span style=color:#f92672>(</span>min<span style=color:#f92672>)</span>  Hardware Addr   Interface
-192.0.2.102          <span style=color:#ae81ff>0</span>  001a.4a48.BE4C  Vlan176, Port-Channel391
+core(s1)<span style=color:#228b22># sh ip arp 192.0.2.102</span>
+Address         Age (min)  Hardware Addr   Interface
+192.0.2.102          <span style=color:#b452cd>0</span>  001a.4a48.BE4C  Vlan176, Port-Channel391
 
-core<span style=color:#f92672>(</span>s1<span style=color:#f92672>)</span><span style=color:#75715e># sh ip arp 192.0.2.103</span>
-Address         Age <span style=color:#f92672>(</span>min<span style=color:#f92672>)</span>  Hardware Addr   Interface
-192.0.2.103          <span style=color:#ae81ff>0</span>  001a.4a48.BE4C  Vlan176, Port-Channel391
+core(s1)<span style=color:#228b22># sh ip arp 192.0.2.103</span>
+Address         Age (min)  Hardware Addr   Interface
+192.0.2.103          <span style=color:#b452cd>0</span>  001a.4a48.BE4C  Vlan176, Port-Channel391
 </code></pre></div><p>You can see that IP address 192.0.2.101 is known to the router by MAC (Hardware) address <code>001a.4a48.BE4B</code> which is <code>eth0</code> on Node 1.</p>
 <p>However, both addresses 192.0.2.102 and 192.0.2.103 are known to the router by the same MAC address <code>001a.4a48.BE4C</code> with is <code>eth0</code> on Node 3.</p>
 <p><strong>Router Summary</strong></p>
@@ -232,9 +232,9 @@ Address         Age <span style=color:#f92672>(</span>min<span style=color:#f926
 <p>This means that any time the network router is sending traffic to those 3 IPs it will always send it nodes 1 and 3. Node 2 will never get any traffic for those VIPs. Things could likely be worse. You might have all 3 IPs associated with the same IP address. Go look now!</p>
 <h1 id=the-fix>The Fix</h1>
 <p>So how do you fix that? GARP. A gratuitous ARP from the node can inform the router, <em>&ldquo;Hey! I am MAC X:X and I answer to IP Y.Y. Remember that!"</em> and the router will do as it is told and update it&rsquo;s ARP table.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>ssh root@ose-prod-node-01 arping -c <span style=color:#ae81ff>4</span> -A -I eth0 192.0.2.101
-ssh root@ose-prod-node-02 arping -c <span style=color:#ae81ff>4</span> -A -I eth0 192.0.2.102
-ssh root@ose-prod-node-03 arping -c <span style=color:#ae81ff>4</span> -A -I eth0 192.0.2.103
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>ssh root@ose-prod-node-01 arping -c <span style=color:#b452cd>4</span> -A -I eth0 192.0.2.101
+ssh root@ose-prod-node-02 arping -c <span style=color:#b452cd>4</span> -A -I eth0 192.0.2.102
+ssh root@ose-prod-node-03 arping -c <span style=color:#b452cd>4</span> -A -I eth0 192.0.2.103
 </code></pre></div><p><a href=/images/openshift-routing-garp-after.png><img src=/images/openshift-routing-garp-after.png alt="Bandwidth to Infra Nodes After GARP"></a></p>
 <p><strong>The Caveat</strong></p>
 <p>Of course if one of the nodes were to reboot it&rsquo;s MAC address would become unreachable, it would fall out of the router ARP table, the router would send an ARP request and another MAC address would fill in and do double duty. Things will stay like that indefinitely.</p>

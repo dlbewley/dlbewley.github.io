@@ -141,20 +141,20 @@ You may find <a href=http://guifreelife.com/blog/2019/02/08/Etcd-Shortcut-With-P
 <p><input disabled type=checkbox> <strong>Confirm your cluster health on the first etcd server.</strong></p>
 </li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#75715e>#!/bin/bash
-</span><span style=color:#75715e></span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#1e889b>#!/bin/bash
+</span><span style=color:#1e889b></span>
 . /etc/etcd/etcd.conf
 
-ENV<span style=color:#f92672>=</span><span style=color:#e6db74>${</span>OPENSHIFT_ENV<span style=color:#66d9ef>:-</span>test<span style=color:#e6db74>}</span>
-ENDPOINTS<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;https://ose-</span><span style=color:#e6db74>${</span>ENV<span style=color:#e6db74>}</span><span style=color:#e6db74>-etcd-01.example.com:2379,https://ose-</span><span style=color:#e6db74>${</span>ENV<span style=color:#e6db74>}</span><span style=color:#e6db74>-etcd-02.example.com:2379,https://ose-</span><span style=color:#e6db74>${</span>ENV<span style=color:#e6db74>}</span><span style=color:#e6db74>-etcd-03.example.com:2379&#34;</span>
+<span style=color:#00688b>ENV</span>=<span style=color:#cd5555>${</span><span style=color:#00688b>OPENSHIFT_ENV</span><span style=color:#8b008b;font-weight:700>:-</span><span style=color:#00688b>test</span><span style=color:#cd5555>}</span>
+<span style=color:#00688b>ENDPOINTS</span>=<span style=color:#cd5555>&#34;https://ose-</span><span style=color:#cd5555>${</span><span style=color:#00688b>ENV</span><span style=color:#cd5555>}</span><span style=color:#cd5555>-etcd-01.example.com:2379,https://ose-</span><span style=color:#cd5555>${</span><span style=color:#00688b>ENV</span><span style=color:#cd5555>}</span><span style=color:#cd5555>-etcd-02.example.com:2379,https://ose-</span><span style=color:#cd5555>${</span><span style=color:#00688b>ENV</span><span style=color:#cd5555>}</span><span style=color:#cd5555>-etcd-03.example.com:2379&#34;</span>
 
-ETCDCTL_API<span style=color:#f92672>=</span><span style=color:#ae81ff>3</span> etcdctl <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    --cert <span style=color:#e6db74>${</span>ETCD_PEER_CERT_FILE<span style=color:#e6db74>}</span> <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    --key <span style=color:#e6db74>${</span>ETCD_PEER_KEY_FILE<span style=color:#e6db74>}</span> <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    --cacert <span style=color:#e6db74>${</span>ETCD_PEER_TRUSTED_CA_FILE<span style=color:#66d9ef>:-</span>$ETCD_PEER_CA_FILE<span style=color:#e6db74>}</span> <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    --endpoints <span style=color:#e6db74>&#34;</span>$ENDPOINTS<span style=color:#e6db74>&#34;</span> <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    endpoint health
-</code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-plain data-lang=plain>[root@ose-test-etcd-01 bin]# ./etcd-health
+<span style=color:#00688b>ETCDCTL_API</span>=<span style=color:#b452cd>3</span> etcdctl <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    --cert <span style=color:#cd5555>${</span><span style=color:#00688b>ETCD_PEER_CERT_FILE</span><span style=color:#cd5555>}</span> <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    --key <span style=color:#cd5555>${</span><span style=color:#00688b>ETCD_PEER_KEY_FILE</span><span style=color:#cd5555>}</span> <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    --cacert <span style=color:#cd5555>${</span><span style=color:#00688b>ETCD_PEER_TRUSTED_CA_FILE</span><span style=color:#8b008b;font-weight:700>:-</span><span style=color:#00688b>$ETCD_PEER_CA_FILE</span><span style=color:#cd5555>}</span> <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    --endpoints <span style=color:#cd5555>&#34;</span><span style=color:#00688b>$ENDPOINTS</span><span style=color:#cd5555>&#34;</span> <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    endpoint health
+</code></pre></div><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-plain data-lang=plain>[root@ose-test-etcd-01 bin]# ./etcd-health
 https://ose-test-etcd-01.example.com:2379 is healthy: successfully committed proposal: took = 2.41743ms
 https://ose-test-etcd-03.example.com:2379 is healthy: successfully committed proposal: took = 2.363286ms
 https://ose-test-etcd-02.example.com:2379 is healthy: successfully committed proposal: took = 2.213456ms
@@ -169,58 +169,58 @@ https://ose-test-etcd-02.example.com:2379 is healthy: successfully committed pro
 <li><a href="https://bugzilla.redhat.com/show_bug.cgi?id=1579304">BZ 1579304</a></li>
 <li><a href="https://bugzilla.redhat.com/show_bug.cgi?id=1656397">BZ 1656397</a></li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#75715e>#!/bin/bash
-</span><span style=color:#75715e></span><span style=color:#75715e># https://docs.openshift.com/container-platform/latest/admin_guide/backup_restore.html</span>
-<span style=color:#75715e># https://access.redhat.com/solutions/1981013#comment-1257931</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#1e889b>#!/bin/bash
+</span><span style=color:#1e889b></span><span style=color:#228b22># https://docs.openshift.com/container-platform/latest/admin_guide/backup_restore.html</span>
+<span style=color:#228b22># https://access.redhat.com/solutions/1981013#comment-1257931</span>
 
 . /etc/etcd/etcd.conf
 
-ETCD3<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;etcdctl --cert </span><span style=color:#e6db74>${</span>ETCD_PEER_CERT_FILE<span style=color:#e6db74>}</span><span style=color:#e6db74> \
-</span><span style=color:#e6db74>  --key </span><span style=color:#e6db74>${</span>ETCD_PEER_KEY_FILE<span style=color:#e6db74>}</span><span style=color:#e6db74> \
-</span><span style=color:#e6db74>  --cacert </span><span style=color:#e6db74>${</span>ETCD_PEER_TRUSTED_CA_FILE<span style=color:#66d9ef>:-</span>$ETCD_PEER_CA_FILE<span style=color:#e6db74>}</span><span style=color:#e6db74> \
-</span><span style=color:#e6db74>  --endpoints </span><span style=color:#e6db74>${</span>ETCD_ADVERTISE_CLIENT_URLS<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span>
+<span style=color:#00688b>ETCD3</span>=<span style=color:#cd5555>&#34;etcdctl --cert </span><span style=color:#cd5555>${</span><span style=color:#00688b>ETCD_PEER_CERT_FILE</span><span style=color:#cd5555>}</span><span style=color:#cd5555> \
+</span><span style=color:#cd5555>  --key </span><span style=color:#cd5555>${</span><span style=color:#00688b>ETCD_PEER_KEY_FILE</span><span style=color:#cd5555>}</span><span style=color:#cd5555> \
+</span><span style=color:#cd5555>  --cacert </span><span style=color:#cd5555>${</span><span style=color:#00688b>ETCD_PEER_TRUSTED_CA_FILE</span><span style=color:#8b008b;font-weight:700>:-</span><span style=color:#00688b>$ETCD_PEER_CA_FILE</span><span style=color:#cd5555>}</span><span style=color:#cd5555> \
+</span><span style=color:#cd5555>  --endpoints </span><span style=color:#cd5555>${</span><span style=color:#00688b>ETCD_ADVERTISE_CLIENT_URLS</span><span style=color:#cd5555>}</span><span style=color:#cd5555>&#34;</span>
 
-BACKUP_DIR<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;/var/backup/etcd/</span><span style=color:#66d9ef>$(</span>date +%Y%m%d%H%M<span style=color:#66d9ef>)</span><span style=color:#e6db74>&#34;</span>
-mkdir -p <span style=color:#e6db74>${</span>BACKUP_DIR<span style=color:#e6db74>}</span>/snap
-cp -rp /etc/etcd <span style=color:#e6db74>&#34;</span><span style=color:#e6db74>${</span>BACKUP_DIR<span style=color:#e6db74>}</span><span style=color:#e6db74>/&#34;</span>
-cp -p $0 <span style=color:#e6db74>&#34;</span><span style=color:#e6db74>${</span>BACKUP_DIR<span style=color:#e6db74>}</span><span style=color:#e6db74>/&#34;</span>
+<span style=color:#00688b>BACKUP_DIR</span>=<span style=color:#cd5555>&#34;/var/backup/etcd/</span><span style=color:#8b008b;font-weight:700>$(</span>date +%Y%m%d%H%M<span style=color:#8b008b;font-weight:700>)</span><span style=color:#cd5555>&#34;</span>
+mkdir -p <span style=color:#cd5555>${</span><span style=color:#00688b>BACKUP_DIR</span><span style=color:#cd5555>}</span>/snap
+cp -rp /etc/etcd <span style=color:#cd5555>&#34;</span><span style=color:#cd5555>${</span><span style=color:#00688b>BACKUP_DIR</span><span style=color:#cd5555>}</span><span style=color:#cd5555>/&#34;</span>
+cp -p <span style=color:#00688b>$0</span> <span style=color:#cd5555>&#34;</span><span style=color:#cd5555>${</span><span style=color:#00688b>BACKUP_DIR</span><span style=color:#cd5555>}</span><span style=color:#cd5555>/&#34;</span>
 
-ETCDCTL_API<span style=color:#f92672>=</span><span style=color:#ae81ff>3</span> $ETCD3 <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>        snapshot save <span style=color:#e6db74>${</span>BACKUP_DIR<span style=color:#e6db74>}</span>/snap/db
+<span style=color:#00688b>ETCDCTL_API</span>=<span style=color:#b452cd>3</span> <span style=color:#00688b>$ETCD3</span> <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>        snapshot save <span style=color:#cd5555>${</span><span style=color:#00688b>BACKUP_DIR</span><span style=color:#cd5555>}</span>/snap/db
 
-<span style=color:#75715e># Restore:</span>
-<span style=color:#75715e># . ${BACKUP_DIR}/etcd/etcd.conf</span>
-<span style=color:#75715e># ETCDCTL_API=3 $ETCD3 \</span>
-<span style=color:#75715e>#    --name $ETCD_NAME \</span>
-<span style=color:#75715e>#    --initial-cluster $ETCD_INITIAL_CLUSTER \</span>
-<span style=color:#75715e>#    --initial-cluster-token $ETCD_INITIAL_CLUSTER_TOKEN \</span>
-<span style=color:#75715e>#    --initial-advertise-peer-urls $ETCD_INITIAL_ADVERTISE_PEER_URLS \</span>
-<span style=color:#75715e>#    snapshot restore ${BACKUP_DIR}/snap/db</span>
+<span style=color:#228b22># Restore:</span>
+<span style=color:#228b22># . ${BACKUP_DIR}/etcd/etcd.conf</span>
+<span style=color:#228b22># ETCDCTL_API=3 $ETCD3 \</span>
+<span style=color:#228b22>#    --name $ETCD_NAME \</span>
+<span style=color:#228b22>#    --initial-cluster $ETCD_INITIAL_CLUSTER \</span>
+<span style=color:#228b22>#    --initial-cluster-token $ETCD_INITIAL_CLUSTER_TOKEN \</span>
+<span style=color:#228b22>#    --initial-advertise-peer-urls $ETCD_INITIAL_ADVERTISE_PEER_URLS \</span>
+<span style=color:#228b22>#    snapshot restore ${BACKUP_DIR}/snap/db</span>
 </code></pre></div><ul>
 <li><input disabled type=checkbox> <strong>Run the <a href=https://github.com/openshift/openshift-ansible/blob/release-3.9/playbooks/openshift-etcd/scaleup.yml>etcd scaleup playbook</a></strong></li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#75715e>#!/bin/bash
-</span><span style=color:#75715e></span><span style=color:#75715e># https://docs.openshift.com/container-platform/3.9/admin_guide/assembly_replace-etcd-member.html</span>
-PLAYBOOK<span style=color:#f92672>=</span>/usr/share/ansible/openshift-ansible/playbooks/openshift-etcd/scaleup.yml
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#1e889b>#!/bin/bash
+</span><span style=color:#1e889b></span><span style=color:#228b22># https://docs.openshift.com/container-platform/3.9/admin_guide/assembly_replace-etcd-member.html</span>
+<span style=color:#00688b>PLAYBOOK</span>=/usr/share/ansible/openshift-ansible/playbooks/openshift-etcd/scaleup.yml
 
-ansible-playbook -vvv <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>        -i hosts <span style=color:#e6db74>&#34;</span>$PLAYBOOK<span style=color:#e6db74>&#34;</span> <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>        | tee <span style=color:#66d9ef>$(</span>date +%Y%m%d-%H%M<span style=color:#66d9ef>)</span>-etcd-scaleup.log
+ansible-playbook -vvv <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>        -i hosts <span style=color:#cd5555>&#34;</span><span style=color:#00688b>$PLAYBOOK</span><span style=color:#cd5555>&#34;</span> <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>        | tee <span style=color:#8b008b;font-weight:700>$(</span>date +%Y%m%d-%H%M<span style=color:#8b008b;font-weight:700>)</span>-etcd-scaleup.log
 </code></pre></div><blockquote>
 <p>In my case I found etcd had been accidentally started by hand with a default config file which listened on localhost. The config file was <a href=https://github.com/openshift/openshift-ansible/blob/release-3.9/roles/etcd/tasks/main.yml#L119>modified by the etcd role</a> and the restart etcd handler was notified, but it was skipped. This caused the <a href=https://github.com/openshift/openshift-ansible/blob/release-3.9/playbooks/openshift-etcd/private/scaleup.yml#L51>etcd cluster status check task</a> to timeout, and subsequent steps in the playbook to fail.</p>
 <p>After restarting etcd at 18:43 the cluster reports as healthy, and I re-ran the playbook successfully.</p>
 </blockquote>
 <p>After the playbook has been run successfuly it can be seen that the master node has been added as an etcd endpoint in <code>/etc/origin/master/master-config.yaml</code> on every master node.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#f92672>etcdClientInfo</span>:
-  <span style=color:#f92672>ca</span>: <span style=color:#ae81ff>master.etcd-ca.crt</span>
-  <span style=color:#f92672>certFile</span>: <span style=color:#ae81ff>master.etcd-client.crt</span>
-  <span style=color:#f92672>keyFile</span>: <span style=color:#ae81ff>master.etcd-client.key</span>
-  <span style=color:#f92672>urls</span>:
-  - <span style=color:#ae81ff>https://ose-test-etcd-01.example.com:2379</span>
-  - <span style=color:#ae81ff>https://ose-test-etcd-02.example.com:2379</span>
-  - <span style=color:#ae81ff>https://ose-test-etcd-03.example.com:2379</span>
-  - <span style=color:#ae81ff>https://ose-test-master-01.example.com:2379</span>
-</code></pre></div><ul>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#8b008b;font-weight:700>etcdClientInfo</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>ca</span>:<span style=color:#bbb> </span>master.etcd-ca.crt<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>certFile</span>:<span style=color:#bbb> </span>master.etcd-client.crt<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>keyFile</span>:<span style=color:#bbb> </span>master.etcd-client.key<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>urls</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>  </span>- https://ose-test-etcd-01.example.com:2379<span style=color:#bbb>
+</span><span style=color:#bbb>  </span>- https://ose-test-etcd-02.example.com:2379<span style=color:#bbb>
+</span><span style=color:#bbb>  </span>- https://ose-test-etcd-03.example.com:2379<span style=color:#bbb>
+</span><span style=color:#bbb>  </span>- https://ose-test-master-01.example.com:2379<span style=color:#bbb>
+</span></code></pre></div><ul>
 <li>
 <p><input disabled type=checkbox> <strong>This master is done. Move this first master from the <code>new_etcd</code> to the <code>etcd</code> ansible group.</strong> <em>Leave it in any other groups it is already a member of of course.</em></p>
 </li>
@@ -232,44 +232,44 @@ ansible-playbook -vvv <span style=color:#ae81ff>\
 </li>
 </ul>
 <p>I considered the <a href=https://github.com/openshift/openshift-ansible/blob/release-3.9/roles/lib_utils/library/modify_yaml.py><code>modify_yaml</code></a> but after noticing it inserted some <code>nulls</code> and converted some doule quotes to single quotes, I was happy to find the <a href=https://github.com/openshift/openshift-ansible/blob/release-3.9/roles/lib_utils/library/yedit.py><code>yedit</code></a> module.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml>---
-<span style=color:#75715e># playbook to replace currently configured master etcd URLs with</span>
-<span style=color:#75715e># the hosts found in ansible etcd group</span>
-- <span style=color:#f92672>hosts</span>: <span style=color:#ae81ff>masters</span>
-
-  <span style=color:#f92672>vars</span>:
-    <span style=color:#f92672>openshift_master_fire_handlers</span>: <span style=color:#66d9ef>true</span>
-
-  <span style=color:#f92672>roles</span>:
-    <span style=color:#75715e># https://github.com/openshift/openshift-ansible/tree/release-3.9/roles/lib_utils/library</span>
-    - <span style=color:#ae81ff>lib_utils</span>
-    - <span style=color:#ae81ff>openshift_facts</span>
-
-  <span style=color:#f92672>tasks</span>:
-
-    - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>Gather Cluster facts</span>
-      <span style=color:#f92672>openshift_facts</span>:
-        <span style=color:#f92672>role</span>: <span style=color:#ae81ff>common</span>
-
-    - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>Derive etcd url list</span>
-      <span style=color:#f92672>set_fact</span>:
-        <span style=color:#f92672>openshift_master_etcd_urls</span>: <span style=color:#e6db74>&#34;{{ groups[&#39;etcd&#39;] | lib_utils_oo_etcd_host_urls(l_use_ssl, openshift_master_etcd_port) }}&#34;</span>
-      <span style=color:#f92672>vars</span>:
-        <span style=color:#f92672>l_use_ssl</span>: <span style=color:#e6db74>&#34;{{ openshift_master_etcd_use_ssl | default(True) | bool}}&#34;</span>
-        <span style=color:#f92672>openshift_master_etcd_port</span>: <span style=color:#e6db74>&#34;{{ etcd_client_port | default(&#39;2379&#39;) }}&#34;</span>
-
-    - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>Configure ectcd url list</span>
-      <span style=color:#f92672>yedit</span>:
-        <span style=color:#f92672>src</span>: <span style=color:#e6db74>&#34;{{ openshift.common.config_base }}/master/master-config.yaml&#34;</span>
-        <span style=color:#f92672>key</span>: <span style=color:#ae81ff>etcdClientInfo.urls</span>
-        <span style=color:#f92672>value</span>: <span style=color:#e6db74>&#34;{{ openshift_master_etcd_urls }}&#34;</span>
-        <span style=color:#f92672>backup</span>: <span style=color:#66d9ef>yes</span>
-      <span style=color:#f92672>notify</span>: <span style=color:#ae81ff>restart master api</span>
-
-  <span style=color:#f92672>handlers</span>:
-    <span style=color:#75715e># https://github.com/openshift/openshift-ansible/blob/release-3.9/roles/openshift_master/handlers/main.yml</span>
-    - <span style=color:#f92672>import_tasks</span>: <span style=color:#ae81ff>/usr/share/ansible/openshift-ansible/roles/openshift_master/handlers/main.yml</span>
-</code></pre></div><ul>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#008b45;text-decoration:underline>---</span><span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#228b22># playbook to replace currently configured master etcd URLs with</span><span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#228b22># the hosts found in ansible etcd group</span><span style=color:#bbb>
+</span><span style=color:#bbb></span>- <span style=color:#8b008b;font-weight:700>hosts</span>:<span style=color:#bbb> </span>masters<span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>vars</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>openshift_master_fire_handlers</span>:<span style=color:#bbb> </span><span style=color:#8b008b;font-weight:700>true</span><span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>roles</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#228b22># https://github.com/openshift/openshift-ansible/tree/release-3.9/roles/lib_utils/library</span><span style=color:#bbb>
+</span><span style=color:#bbb>    </span>- lib_utils<span style=color:#bbb>
+</span><span style=color:#bbb>    </span>- openshift_facts<span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>tasks</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb>    </span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>Gather Cluster facts<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>openshift_facts</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>role</span>:<span style=color:#bbb> </span>common<span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb>    </span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>Derive etcd url list<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>set_fact</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>openshift_master_etcd_urls</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;{{ groups[&#39;etcd&#39;] | lib_utils_oo_etcd_host_urls(l_use_ssl, openshift_master_etcd_port) }}&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>vars</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>l_use_ssl</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;{{ openshift_master_etcd_use_ssl | default(True) | bool}}&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>openshift_master_etcd_port</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;{{ etcd_client_port | default(&#39;2379&#39;) }}&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb>    </span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>Configure ectcd url list<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>yedit</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>src</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;{{ openshift.common.config_base }}/master/master-config.yaml&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>key</span>:<span style=color:#bbb> </span>etcdClientInfo.urls<span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>value</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;{{ openshift_master_etcd_urls }}&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>backup</span>:<span style=color:#bbb> </span><span style=color:#8b008b;font-weight:700>yes</span><span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>notify</span>:<span style=color:#bbb> </span>restart master api<span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>handlers</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#228b22># https://github.com/openshift/openshift-ansible/blob/release-3.9/roles/openshift_master/handlers/main.yml</span><span style=color:#bbb>
+</span><span style=color:#bbb>    </span>- <span style=color:#8b008b;font-weight:700>import_tasks</span>:<span style=color:#bbb> </span>/usr/share/ansible/openshift-ansible/roles/openshift_master/handlers/main.yml<span style=color:#bbb>
+</span></code></pre></div><ul>
 <li>
 <p><input disabled type=checkbox> <strong>Verify OpenShift operation</strong></p>
 </li>

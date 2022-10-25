@@ -170,83 +170,83 @@ Don&rsquo;t worry. We&rsquo;ll get there.</p>
 <p><strong>How do we tell OpenShift to use this template?</strong></p>
 <p><a href=https://docs.openshift.com/container-platform/4.10/rest_api/machine_apis/machineset-machine-openshift-io-v1beta1.html title="MachineSet API">MachineSets</a> define how many machines to provision as worker nodes and exactly how to build them.</p>
 <p>Based on the existing worker machineset, create a new one that is CNV specific. This machineset will use the newly created template.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=color:#75715e># copy existing worker machineset</span>
-INFRA_ID<span style=color:#f92672>=</span><span style=color:#66d9ef>$(</span>oc get infrastructure/cluster -o jsonpath<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;{.status.infrastructureName}&#39;</span><span style=color:#66d9ef>)</span>
-echo $INFRA_ID
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=color:#228b22># copy existing worker machineset</span>
+<span style=color:#00688b>INFRA_ID</span>=<span style=color:#8b008b;font-weight:700>$(</span>oc get infrastructure/cluster -o <span style=color:#00688b>jsonpath</span>=<span style=color:#cd5555>&#39;{.status.infrastructureName}&#39;</span><span style=color:#8b008b;font-weight:700>)</span>
+<span style=color:#658b00>echo</span> <span style=color:#00688b>$INFRA_ID</span>
 hub-7vxwj
-oc get machineset/<span style=color:#e6db74>${</span>INFRA_ID<span style=color:#e6db74>}</span>-worker -n openshift-machine-api -o yaml &gt; <span style=color:#e6db74>${</span>INFRA_ID<span style=color:#e6db74>}</span>-cnv.yaml
-<span style=color:#75715e># modify to look like the example below and create it</span>
-vi <span style=color:#e6db74>${</span>INFRA_ID<span style=color:#e6db74>}</span>-cnv.yaml
-oc create -f <span style=color:#e6db74>${</span>INFRA_ID<span style=color:#e6db74>}</span>-cnv.yaml -n openshift-machine-api
+oc get machineset/<span style=color:#cd5555>${</span><span style=color:#00688b>INFRA_ID</span><span style=color:#cd5555>}</span>-worker -n openshift-machine-api -o yaml &gt; <span style=color:#cd5555>${</span><span style=color:#00688b>INFRA_ID</span><span style=color:#cd5555>}</span>-cnv.yaml
+<span style=color:#228b22># modify to look like the example below and create it</span>
+vi <span style=color:#cd5555>${</span><span style=color:#00688b>INFRA_ID</span><span style=color:#cd5555>}</span>-cnv.yaml
+oc create -f <span style=color:#cd5555>${</span><span style=color:#00688b>INFRA_ID</span><span style=color:#cd5555>}</span>-cnv.yaml -n openshift-machine-api
 </code></pre></div><blockquote>
 <p>📓 <strong><code>MachineSet</code> For Workers With Virtualization</strong></p>
 <p>Notice that line 42 refers to the <code>Trunk</code> port group and line 46 refers to the virtual machine template <code>hub-7vxwj-rhcos-cnv</code> created above.</p>
 </blockquote>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 1</span><span style=color:#f92672>apiVersion</span>: <span style=color:#ae81ff>machine.openshift.io/v1beta1</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 2</span><span style=color:#f92672>kind</span>: <span style=color:#ae81ff>MachineSet</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 3</span><span style=color:#f92672>metadata</span>:
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 4</span>  <span style=color:#f92672>annotations</span>:
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 5</span>    <span style=color:#f92672>machine.openshift.io/memoryMb</span>: <span style=color:#e6db74>&#34;16384&#34;</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 6</span>    <span style=color:#f92672>machine.openshift.io/vCPU</span>: <span style=color:#e6db74>&#34;6&#34;</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 7</span>  <span style=color:#f92672>labels</span>:
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 8</span>    <span style=color:#f92672>machine.openshift.io/cluster-api-cluster</span>: <span style=color:#ae81ff>hub-7vxwj</span>
-<span style=display:block;width:100%;background-color:#3c3d38><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 9</span>  <span style=color:#f92672>name</span>: <span style=color:#ae81ff>hub-7vxwj-cnv</span>
-</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">10</span>  <span style=color:#f92672>namespace</span>: <span style=color:#ae81ff>openshift-machine-api</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">11</span>  <span style=color:#f92672>resourceVersion</span>: <span style=color:#e6db74>&#34;162348847&#34;</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">12</span><span style=color:#f92672>spec</span>:
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">13</span>  <span style=color:#f92672>replicas</span>: <span style=color:#ae81ff>1</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">14</span>  <span style=color:#f92672>selector</span>:
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">15</span>    <span style=color:#f92672>matchLabels</span>:
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">16</span>      <span style=color:#f92672>machine.openshift.io/cluster-api-cluster</span>: <span style=color:#ae81ff>hub-7vxwj</span>
-<span style=display:block;width:100%;background-color:#3c3d38><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">17</span>      <span style=color:#f92672>machine.openshift.io/cluster-api-machineset</span>: <span style=color:#ae81ff>hub-7vxwj-cnv</span>
-</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">18</span>  <span style=color:#f92672>template</span>:
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">19</span>    <span style=color:#f92672>metadata</span>:
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">20</span>      <span style=color:#f92672>labels</span>:
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">21</span>        <span style=color:#f92672>machine.openshift.io/cluster-api-cluster</span>: <span style=color:#ae81ff>hub-7vxwj</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">22</span>        <span style=color:#f92672>machine.openshift.io/cluster-api-machine-role</span>: <span style=color:#ae81ff>worker</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">23</span>        <span style=color:#f92672>machine.openshift.io/cluster-api-machine-type</span>: <span style=color:#ae81ff>worker</span>
-<span style=display:block;width:100%;background-color:#3c3d38><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">24</span>        <span style=color:#f92672>machine.openshift.io/cluster-api-machineset</span>: <span style=color:#ae81ff>hub-7vxwj-cnv</span>
-</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">25</span>    <span style=color:#f92672>spec</span>:
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">26</span>      <span style=color:#f92672>metadata</span>:
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">27</span>        <span style=color:#f92672>labels</span>:
-<span style=display:block;width:100%;background-color:#3c3d38><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">28</span>          <span style=color:#f92672>machine.openshift.io/cluster-api-machineset</span>: <span style=color:#ae81ff>hub-7vxwj-cnv</span>
-</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">29</span>      <span style=color:#f92672>providerSpec</span>:
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">30</span>        <span style=color:#f92672>value</span>:
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">31</span>          <span style=color:#f92672>apiVersion</span>: <span style=color:#ae81ff>vsphereprovider.openshift.io/v1beta1</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">32</span>          <span style=color:#f92672>credentialsSecret</span>:
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">33</span>            <span style=color:#f92672>name</span>: <span style=color:#ae81ff>vsphere-cloud-credentials</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">34</span>          <span style=color:#f92672>diskGiB</span>: <span style=color:#ae81ff>90</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">35</span>          <span style=color:#f92672>kind</span>: <span style=color:#ae81ff>VSphereMachineProviderSpec</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">36</span>          <span style=color:#f92672>memoryMiB</span>: <span style=color:#ae81ff>16384</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">37</span>          <span style=color:#f92672>metadata</span>:
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">38</span>            <span style=color:#f92672>creationTimestamp</span>: <span style=color:#66d9ef>null</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">39</span>          <span style=color:#f92672>network</span>:
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">40</span>            <span style=color:#f92672>devices</span>:
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">41</span>            - <span style=color:#f92672>networkName</span>: <span style=color:#ae81ff>lab-192-168-4-0-b24</span>
-<span style=display:block;width:100%;background-color:#3c3d38><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">42</span>            - <span style=color:#f92672>networkName</span>: <span style=color:#ae81ff>Trunk</span>
-</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">43</span>          <span style=color:#f92672>numCPUs</span>: <span style=color:#ae81ff>6</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">44</span>          <span style=color:#f92672>numCoresPerSocket</span>: <span style=color:#ae81ff>1</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">45</span>          <span style=color:#f92672>snapshot</span>: <span style=color:#e6db74>&#34;&#34;</span>
-<span style=display:block;width:100%;background-color:#3c3d38><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">46</span>          <span style=color:#f92672>template</span>: <span style=color:#ae81ff>hub-7vxwj-rhcos-cnv</span>
-</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">47</span>          <span style=color:#f92672>userDataSecret</span>:
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">48</span>            <span style=color:#f92672>name</span>: <span style=color:#ae81ff>worker-user-data</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">49</span>          <span style=color:#f92672>workspace</span>:
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">50</span>            <span style=color:#f92672>datacenter</span>: <span style=color:#ae81ff>Garden</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">51</span>            <span style=color:#f92672>datastore</span>: <span style=color:#ae81ff>VMData-HD</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">52</span>            <span style=color:#f92672>folder</span>: <span style=color:#ae81ff>/Garden/vm/hub-7vxwj</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">53</span>            <span style=color:#f92672>resourcePool</span>: <span style=color:#ae81ff>/Garden/host/Goat/Resources</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">54</span>            <span style=color:#f92672>server</span>: <span style=color:#ae81ff>vcenter.lab.bewley.net</span>
-</code></pre></div><h1 id=configuring-openshift-virtualization-networking>Configuring OpenShift Virtualization Networking</h1>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 1</span><span style=color:#8b008b;font-weight:700>apiVersion</span>:<span style=color:#bbb> </span>machine.openshift.io/v1beta1<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 2</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>kind</span>:<span style=color:#bbb> </span>MachineSet<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 3</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>metadata</span>:<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 4</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>annotations</span>:<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 5</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>machine.openshift.io/memoryMb</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;16384&#34;</span><span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 6</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>machine.openshift.io/vCPU</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;6&#34;</span><span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 7</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>labels</span>:<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 8</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>machine.openshift.io/cluster-api-cluster</span>:<span style=color:#bbb> </span>hub-7vxwj<span style=color:#bbb>
+</span><span style=display:block;width:100%;background-color:#d6d6c6><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 9</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>hub-7vxwj-cnv<span style=color:#bbb>
+</span></span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">10</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>namespace</span>:<span style=color:#bbb> </span>openshift-machine-api<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">11</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>resourceVersion</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;162348847&#34;</span><span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">12</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>spec</span>:<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">13</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>replicas</span>:<span style=color:#bbb> </span><span style=color:#b452cd>1</span><span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">14</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>selector</span>:<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">15</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>matchLabels</span>:<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">16</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>machine.openshift.io/cluster-api-cluster</span>:<span style=color:#bbb> </span>hub-7vxwj<span style=color:#bbb>
+</span><span style=display:block;width:100%;background-color:#d6d6c6><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">17</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>machine.openshift.io/cluster-api-machineset</span>:<span style=color:#bbb> </span>hub-7vxwj-cnv<span style=color:#bbb>
+</span></span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">18</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>template</span>:<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">19</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>metadata</span>:<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">20</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>labels</span>:<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">21</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>machine.openshift.io/cluster-api-cluster</span>:<span style=color:#bbb> </span>hub-7vxwj<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">22</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>machine.openshift.io/cluster-api-machine-role</span>:<span style=color:#bbb> </span>worker<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">23</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>machine.openshift.io/cluster-api-machine-type</span>:<span style=color:#bbb> </span>worker<span style=color:#bbb>
+</span><span style=display:block;width:100%;background-color:#d6d6c6><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">24</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>machine.openshift.io/cluster-api-machineset</span>:<span style=color:#bbb> </span>hub-7vxwj-cnv<span style=color:#bbb>
+</span></span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">25</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>spec</span>:<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">26</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>metadata</span>:<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">27</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>labels</span>:<span style=color:#bbb>
+</span><span style=display:block;width:100%;background-color:#d6d6c6><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">28</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>machine.openshift.io/cluster-api-machineset</span>:<span style=color:#bbb> </span>hub-7vxwj-cnv<span style=color:#bbb>
+</span></span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">29</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>providerSpec</span>:<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">30</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>value</span>:<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">31</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>apiVersion</span>:<span style=color:#bbb> </span>vsphereprovider.openshift.io/v1beta1<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">32</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>credentialsSecret</span>:<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">33</span><span style=color:#bbb>            </span><span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>vsphere-cloud-credentials<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">34</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>diskGiB</span>:<span style=color:#bbb> </span><span style=color:#b452cd>90</span><span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">35</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>kind</span>:<span style=color:#bbb> </span>VSphereMachineProviderSpec<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">36</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>memoryMiB</span>:<span style=color:#bbb> </span><span style=color:#b452cd>16384</span><span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">37</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>metadata</span>:<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">38</span><span style=color:#bbb>            </span><span style=color:#8b008b;font-weight:700>creationTimestamp</span>:<span style=color:#bbb> </span><span style=color:#8b008b;font-weight:700>null</span><span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">39</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>network</span>:<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">40</span><span style=color:#bbb>            </span><span style=color:#8b008b;font-weight:700>devices</span>:<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">41</span><span style=color:#bbb>            </span>- <span style=color:#8b008b;font-weight:700>networkName</span>:<span style=color:#bbb> </span>lab-192-168-4-0-b24<span style=color:#bbb>
+</span><span style=display:block;width:100%;background-color:#d6d6c6><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">42</span><span style=color:#bbb>            </span>- <span style=color:#8b008b;font-weight:700>networkName</span>:<span style=color:#bbb> </span>Trunk<span style=color:#bbb>
+</span></span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">43</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>numCPUs</span>:<span style=color:#bbb> </span><span style=color:#b452cd>6</span><span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">44</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>numCoresPerSocket</span>:<span style=color:#bbb> </span><span style=color:#b452cd>1</span><span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">45</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>snapshot</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;&#34;</span><span style=color:#bbb>
+</span><span style=display:block;width:100%;background-color:#d6d6c6><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">46</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>template</span>:<span style=color:#bbb> </span>hub-7vxwj-rhcos-cnv<span style=color:#bbb>
+</span></span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">47</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>userDataSecret</span>:<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">48</span><span style=color:#bbb>            </span><span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>worker-user-data<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">49</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>workspace</span>:<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">50</span><span style=color:#bbb>            </span><span style=color:#8b008b;font-weight:700>datacenter</span>:<span style=color:#bbb> </span>Garden<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">51</span><span style=color:#bbb>            </span><span style=color:#8b008b;font-weight:700>datastore</span>:<span style=color:#bbb> </span>VMData-HD<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">52</span><span style=color:#bbb>            </span><span style=color:#8b008b;font-weight:700>folder</span>:<span style=color:#bbb> </span>/Garden/vm/hub-7vxwj<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">53</span><span style=color:#bbb>            </span><span style=color:#8b008b;font-weight:700>resourcePool</span>:<span style=color:#bbb> </span>/Garden/host/Goat/Resources<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">54</span><span style=color:#bbb>            </span><span style=color:#8b008b;font-weight:700>server</span>:<span style=color:#bbb> </span>vcenter.lab.bewley.net<span style=color:#bbb>
+</span></code></pre></div><h1 id=configuring-openshift-virtualization-networking>Configuring OpenShift Virtualization Networking</h1>
 <p><strong>Install OpenShift Virtualization</strong> using the web UI or GitOps and <a href=https://github.com/redhat-cop/gitops-catalog/tree/main/virtualization-operator>this repo</a>.</p>
 <p>Once installed and a <code>Hyperconverged</code> resource has been created, the <em>nmstate.io</em> API group will become available.</p>
 <blockquote>
 <p>📓 <strong><a href=https://nmstate.io/ title="NMState A Declarative API for Host Network Management">nmstate.io</a> API Group Resources</strong> for node network configuration</p>
 </blockquote>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>$ oc api-resources --api-group nmstate.io
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>$ oc api-resources --api-group nmstate.io
 NAME                                 SHORTNAMES   APIVERSION           NAMESPACED   KIND
-nodenetworkconfigurationenactments   nnce         nmstate.io/v1beta1   false        NodeNetworkConfigurationEnactment
-nodenetworkconfigurationpolicies     nncp         nmstate.io/v1beta1   false        NodeNetworkConfigurationPolicy
-nodenetworkstates                    nns          nmstate.io/v1beta1   false        NodeNetworkState
+nodenetworkconfigurationenactments   nnce         nmstate.io/v1beta1   <span style=color:#658b00>false</span>        NodeNetworkConfigurationEnactment
+nodenetworkconfigurationpolicies     nncp         nmstate.io/v1beta1   <span style=color:#658b00>false</span>        NodeNetworkConfigurationPolicy
+nodenetworkstates                    nns          nmstate.io/v1beta1   <span style=color:#658b00>false</span>        NodeNetworkState
 </code></pre></div><h2 id=creating-a-node-network-configuration-policy>Creating a Node Network Configuration Policy</h2>
 <p>If we want to use all the VLANs we are trunking to a node, we need to tell OpenShift how to configure NIC for all those networks.
 Using resources from the <a href=https://nmstate.io/ title="NMState A Declarative API for Host Network Management">NMState API</a> we can configure the networking in the node operating system.</p>
@@ -261,135 +261,135 @@ Using resources from the <a href=https://nmstate.io/ title="NMState A Declarativ
 <p>📓 <strong><code>NodeNetworkConfigurationPolicy</code> For Workers With Virtualization</strong></p>
 <p>Notice on line 7 we are checking for a label that is common to the nodes with virtualization support. This will ensure our NNCP is applied only to the appropriate nodes.</p>
 </blockquote>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">  1</span><span style=color:#f92672>apiVersion</span>: <span style=color:#ae81ff>nmstate.io/v1beta1</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">  2</span><span style=color:#f92672>kind</span>: <span style=color:#ae81ff>NodeNetworkConfigurationPolicy</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">  3</span><span style=color:#f92672>metadata</span>:
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">  4</span>  <span style=color:#f92672>name</span>: <span style=color:#ae81ff>ens224-policy</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">  5</span><span style=color:#f92672>spec</span>:
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">  6</span>  <span style=color:#f92672>nodeSelector</span>:
-<span style=display:block;width:100%;background-color:#3c3d38><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">  7</span>    <span style=color:#f92672>machine.openshift.io/cluster-api-machineset</span>: <span style=color:#ae81ff>hub-7vxwj-cnv</span>
-</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">  8</span>  <span style=color:#f92672>desiredState</span>:
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">  9</span>    <span style=color:#f92672>interfaces</span>:
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 10</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 11</span>      <span style=color:#75715e># defined only to facilitate disabling DHCP</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 12</span>      - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>ens224</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 13</span>        <span style=color:#f92672>type</span>: <span style=color:#ae81ff>ethernet</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 14</span>        <span style=color:#f92672>state</span>: <span style=color:#ae81ff>up</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 15</span>        <span style=color:#f92672>ipv4</span>:
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 16</span>          <span style=color:#f92672>enabled</span>: <span style=color:#66d9ef>false</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 17</span>        <span style=color:#f92672>ipv6</span>:
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 18</span>          <span style=color:#f92672>enabled</span>: <span style=color:#66d9ef>false</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 19</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 20</span>      <span style=color:#75715e># trans proxy</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 21</span>      - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>ens224.1925</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 22</span>        <span style=color:#f92672>type</span>: <span style=color:#ae81ff>vlan</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 23</span>        <span style=color:#f92672>state</span>: <span style=color:#ae81ff>up</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 24</span>        <span style=color:#f92672>vlan</span>:
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 25</span>          <span style=color:#f92672>base-iface</span>: <span style=color:#ae81ff>ens224</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 26</span>          <span style=color:#f92672>id</span>: <span style=color:#ae81ff>1925</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 27</span>        <span style=color:#f92672>ipv4</span>:
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 28</span>          <span style=color:#f92672>enabled</span>: <span style=color:#66d9ef>false</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 29</span>        <span style=color:#f92672>ipv6</span>:
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 30</span>          <span style=color:#f92672>enabled</span>: <span style=color:#66d9ef>false</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 31</span>      - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>br-1925</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 32</span>        <span style=color:#f92672>type</span>: <span style=color:#ae81ff>linux-bridge</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 33</span>        <span style=color:#f92672>state</span>: <span style=color:#ae81ff>up</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 34</span>        <span style=color:#f92672>ipv4</span>:
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 35</span>          <span style=color:#f92672>enabled</span>: <span style=color:#66d9ef>false</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 36</span>        <span style=color:#f92672>ipv6</span>:
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 37</span>          <span style=color:#f92672>enabled</span>: <span style=color:#66d9ef>false</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 38</span>        <span style=color:#f92672>bridge</span>:
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 39</span>          <span style=color:#f92672>options</span>:
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 40</span>            <span style=color:#f92672>stp</span>:
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 41</span>              <span style=color:#f92672>enabled</span>: <span style=color:#66d9ef>false</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 42</span>          <span style=color:#f92672>port</span>:
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 43</span>          - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>ens224.1925</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 44</span>            <span style=color:#f92672>vlan</span>: {}
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 45</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 46</span>      <span style=color:#75715e># disco</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 47</span>      - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>ens224.1926</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 48</span>        <span style=color:#f92672>type</span>: <span style=color:#ae81ff>vlan</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 49</span>        <span style=color:#f92672>state</span>: <span style=color:#ae81ff>up</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 50</span>        <span style=color:#f92672>vlan</span>:
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 51</span>          <span style=color:#f92672>base-iface</span>: <span style=color:#ae81ff>ens224</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 52</span>          <span style=color:#f92672>id</span>: <span style=color:#ae81ff>1926</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 53</span>        <span style=color:#f92672>ipv4</span>:
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 54</span>          <span style=color:#f92672>enabled</span>: <span style=color:#66d9ef>false</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 55</span>        <span style=color:#f92672>ipv6</span>:
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 56</span>          <span style=color:#f92672>enabled</span>: <span style=color:#66d9ef>false</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 57</span>      - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>br-1926</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 58</span>        <span style=color:#f92672>type</span>: <span style=color:#ae81ff>linux-bridge</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 59</span>        <span style=color:#f92672>state</span>: <span style=color:#ae81ff>up</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 60</span>        <span style=color:#f92672>ipv4</span>:
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 61</span>          <span style=color:#f92672>enabled</span>: <span style=color:#66d9ef>false</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 62</span>        <span style=color:#f92672>ipv6</span>:
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 63</span>          <span style=color:#f92672>enabled</span>: <span style=color:#66d9ef>false</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 64</span>        <span style=color:#f92672>bridge</span>:
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 65</span>          <span style=color:#f92672>options</span>:
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 66</span>            <span style=color:#f92672>stp</span>:
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 67</span>              <span style=color:#f92672>enabled</span>: <span style=color:#66d9ef>false</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 68</span>          <span style=color:#f92672>port</span>:
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 69</span>          - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>ens224.1926</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 70</span>            <span style=color:#f92672>vlan</span>: {}
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 71</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 72</span>      <span style=color:#75715e># metal</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 73</span>      - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>ens224.1927</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 74</span>        <span style=color:#f92672>type</span>: <span style=color:#ae81ff>vlan</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 75</span>        <span style=color:#f92672>state</span>: <span style=color:#ae81ff>up</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 76</span>        <span style=color:#f92672>vlan</span>:
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 77</span>          <span style=color:#f92672>base-iface</span>: <span style=color:#ae81ff>ens224</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 78</span>          <span style=color:#f92672>id</span>: <span style=color:#ae81ff>1927</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 79</span>        <span style=color:#f92672>ipv4</span>:
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 80</span>          <span style=color:#f92672>enabled</span>: <span style=color:#66d9ef>false</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 81</span>        <span style=color:#f92672>ipv6</span>:
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 82</span>          <span style=color:#f92672>enabled</span>: <span style=color:#66d9ef>false</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 83</span>      - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>br-1927</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 84</span>        <span style=color:#f92672>type</span>: <span style=color:#ae81ff>linux-bridge</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 85</span>        <span style=color:#f92672>state</span>: <span style=color:#ae81ff>up</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 86</span>        <span style=color:#f92672>ipv4</span>:
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 87</span>          <span style=color:#f92672>enabled</span>: <span style=color:#66d9ef>false</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 88</span>        <span style=color:#f92672>ipv6</span>:
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 89</span>          <span style=color:#f92672>enabled</span>: <span style=color:#66d9ef>false</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 90</span>        <span style=color:#f92672>bridge</span>:
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 91</span>          <span style=color:#f92672>options</span>:
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 92</span>            <span style=color:#f92672>stp</span>:
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 93</span>              <span style=color:#f92672>enabled</span>: <span style=color:#66d9ef>false</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 94</span>          <span style=color:#f92672>port</span>:
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 95</span>          - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>ens224.1927</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 96</span>            <span style=color:#f92672>vlan</span>: {}
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 97</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 98</span>      <span style=color:#75715e># provisioning</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 99</span>      - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>ens224.1928</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">100</span>        <span style=color:#f92672>type</span>: <span style=color:#ae81ff>vlan</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">101</span>        <span style=color:#f92672>state</span>: <span style=color:#ae81ff>up</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">102</span>        <span style=color:#f92672>vlan</span>:
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">103</span>          <span style=color:#f92672>base-iface</span>: <span style=color:#ae81ff>ens224</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">104</span>          <span style=color:#f92672>id</span>: <span style=color:#ae81ff>1928</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">105</span>        <span style=color:#f92672>ipv4</span>:
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">106</span>          <span style=color:#f92672>enabled</span>: <span style=color:#66d9ef>false</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">107</span>        <span style=color:#f92672>ipv6</span>:
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">108</span>          <span style=color:#f92672>enabled</span>: <span style=color:#66d9ef>false</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">109</span>      - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>br-1928</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">110</span>        <span style=color:#f92672>type</span>: <span style=color:#ae81ff>linux-bridge</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">111</span>        <span style=color:#f92672>state</span>: <span style=color:#ae81ff>up</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">112</span>        <span style=color:#f92672>ipv4</span>:
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">113</span>          <span style=color:#f92672>enabled</span>: <span style=color:#66d9ef>false</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">114</span>        <span style=color:#f92672>ipv6</span>:
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">115</span>          <span style=color:#f92672>enabled</span>: <span style=color:#66d9ef>false</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">116</span>        <span style=color:#f92672>bridge</span>:
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">117</span>          <span style=color:#f92672>options</span>:
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">118</span>            <span style=color:#f92672>stp</span>:
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">119</span>              <span style=color:#f92672>enabled</span>: <span style=color:#66d9ef>false</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">120</span>          <span style=color:#f92672>port</span>:
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">121</span>          - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>ens224.1928</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">122</span>            <span style=color:#f92672>vlan</span>: {}
-</code></pre></div><blockquote>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">  1</span><span style=color:#8b008b;font-weight:700>apiVersion</span>:<span style=color:#bbb> </span>nmstate.io/v1beta1<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">  2</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>kind</span>:<span style=color:#bbb> </span>NodeNetworkConfigurationPolicy<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">  3</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>metadata</span>:<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">  4</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>ens224-policy<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">  5</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>spec</span>:<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">  6</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>nodeSelector</span>:<span style=color:#bbb>
+</span><span style=display:block;width:100%;background-color:#d6d6c6><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">  7</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>machine.openshift.io/cluster-api-machineset</span>:<span style=color:#bbb> </span>hub-7vxwj-cnv<span style=color:#bbb>
+</span></span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">  8</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>desiredState</span>:<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">  9</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>interfaces</span>:<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 10</span><span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 11</span><span style=color:#bbb>      </span><span style=color:#228b22># defined only to facilitate disabling DHCP</span><span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 12</span><span style=color:#bbb>      </span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>ens224<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 13</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>type</span>:<span style=color:#bbb> </span>ethernet<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 14</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>state</span>:<span style=color:#bbb> </span>up<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 15</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>ipv4</span>:<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 16</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>enabled</span>:<span style=color:#bbb> </span><span style=color:#8b008b;font-weight:700>false</span><span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 17</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>ipv6</span>:<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 18</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>enabled</span>:<span style=color:#bbb> </span><span style=color:#8b008b;font-weight:700>false</span><span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 19</span><span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 20</span><span style=color:#bbb>      </span><span style=color:#228b22># trans proxy</span><span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 21</span><span style=color:#bbb>      </span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>ens224.1925<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 22</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>type</span>:<span style=color:#bbb> </span>vlan<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 23</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>state</span>:<span style=color:#bbb> </span>up<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 24</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>vlan</span>:<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 25</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>base-iface</span>:<span style=color:#bbb> </span>ens224<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 26</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>id</span>:<span style=color:#bbb> </span><span style=color:#b452cd>1925</span><span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 27</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>ipv4</span>:<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 28</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>enabled</span>:<span style=color:#bbb> </span><span style=color:#8b008b;font-weight:700>false</span><span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 29</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>ipv6</span>:<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 30</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>enabled</span>:<span style=color:#bbb> </span><span style=color:#8b008b;font-weight:700>false</span><span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 31</span><span style=color:#bbb>      </span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>br-1925<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 32</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>type</span>:<span style=color:#bbb> </span>linux-bridge<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 33</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>state</span>:<span style=color:#bbb> </span>up<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 34</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>ipv4</span>:<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 35</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>enabled</span>:<span style=color:#bbb> </span><span style=color:#8b008b;font-weight:700>false</span><span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 36</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>ipv6</span>:<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 37</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>enabled</span>:<span style=color:#bbb> </span><span style=color:#8b008b;font-weight:700>false</span><span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 38</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>bridge</span>:<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 39</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>options</span>:<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 40</span><span style=color:#bbb>            </span><span style=color:#8b008b;font-weight:700>stp</span>:<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 41</span><span style=color:#bbb>              </span><span style=color:#8b008b;font-weight:700>enabled</span>:<span style=color:#bbb> </span><span style=color:#8b008b;font-weight:700>false</span><span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 42</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>port</span>:<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 43</span><span style=color:#bbb>          </span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>ens224.1925<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 44</span><span style=color:#bbb>            </span><span style=color:#8b008b;font-weight:700>vlan</span>:<span style=color:#bbb> </span>{}<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 45</span><span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 46</span><span style=color:#bbb>      </span><span style=color:#228b22># disco</span><span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 47</span><span style=color:#bbb>      </span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>ens224.1926<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 48</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>type</span>:<span style=color:#bbb> </span>vlan<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 49</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>state</span>:<span style=color:#bbb> </span>up<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 50</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>vlan</span>:<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 51</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>base-iface</span>:<span style=color:#bbb> </span>ens224<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 52</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>id</span>:<span style=color:#bbb> </span><span style=color:#b452cd>1926</span><span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 53</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>ipv4</span>:<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 54</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>enabled</span>:<span style=color:#bbb> </span><span style=color:#8b008b;font-weight:700>false</span><span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 55</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>ipv6</span>:<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 56</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>enabled</span>:<span style=color:#bbb> </span><span style=color:#8b008b;font-weight:700>false</span><span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 57</span><span style=color:#bbb>      </span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>br-1926<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 58</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>type</span>:<span style=color:#bbb> </span>linux-bridge<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 59</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>state</span>:<span style=color:#bbb> </span>up<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 60</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>ipv4</span>:<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 61</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>enabled</span>:<span style=color:#bbb> </span><span style=color:#8b008b;font-weight:700>false</span><span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 62</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>ipv6</span>:<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 63</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>enabled</span>:<span style=color:#bbb> </span><span style=color:#8b008b;font-weight:700>false</span><span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 64</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>bridge</span>:<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 65</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>options</span>:<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 66</span><span style=color:#bbb>            </span><span style=color:#8b008b;font-weight:700>stp</span>:<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 67</span><span style=color:#bbb>              </span><span style=color:#8b008b;font-weight:700>enabled</span>:<span style=color:#bbb> </span><span style=color:#8b008b;font-weight:700>false</span><span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 68</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>port</span>:<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 69</span><span style=color:#bbb>          </span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>ens224.1926<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 70</span><span style=color:#bbb>            </span><span style=color:#8b008b;font-weight:700>vlan</span>:<span style=color:#bbb> </span>{}<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 71</span><span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 72</span><span style=color:#bbb>      </span><span style=color:#228b22># metal</span><span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 73</span><span style=color:#bbb>      </span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>ens224.1927<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 74</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>type</span>:<span style=color:#bbb> </span>vlan<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 75</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>state</span>:<span style=color:#bbb> </span>up<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 76</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>vlan</span>:<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 77</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>base-iface</span>:<span style=color:#bbb> </span>ens224<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 78</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>id</span>:<span style=color:#bbb> </span><span style=color:#b452cd>1927</span><span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 79</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>ipv4</span>:<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 80</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>enabled</span>:<span style=color:#bbb> </span><span style=color:#8b008b;font-weight:700>false</span><span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 81</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>ipv6</span>:<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 82</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>enabled</span>:<span style=color:#bbb> </span><span style=color:#8b008b;font-weight:700>false</span><span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 83</span><span style=color:#bbb>      </span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>br-1927<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 84</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>type</span>:<span style=color:#bbb> </span>linux-bridge<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 85</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>state</span>:<span style=color:#bbb> </span>up<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 86</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>ipv4</span>:<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 87</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>enabled</span>:<span style=color:#bbb> </span><span style=color:#8b008b;font-weight:700>false</span><span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 88</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>ipv6</span>:<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 89</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>enabled</span>:<span style=color:#bbb> </span><span style=color:#8b008b;font-weight:700>false</span><span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 90</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>bridge</span>:<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 91</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>options</span>:<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 92</span><span style=color:#bbb>            </span><span style=color:#8b008b;font-weight:700>stp</span>:<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 93</span><span style=color:#bbb>              </span><span style=color:#8b008b;font-weight:700>enabled</span>:<span style=color:#bbb> </span><span style=color:#8b008b;font-weight:700>false</span><span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 94</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>port</span>:<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 95</span><span style=color:#bbb>          </span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>ens224.1927<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 96</span><span style=color:#bbb>            </span><span style=color:#8b008b;font-weight:700>vlan</span>:<span style=color:#bbb> </span>{}<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 97</span><span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 98</span><span style=color:#bbb>      </span><span style=color:#228b22># provisioning</span><span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 99</span><span style=color:#bbb>      </span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>ens224.1928<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">100</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>type</span>:<span style=color:#bbb> </span>vlan<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">101</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>state</span>:<span style=color:#bbb> </span>up<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">102</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>vlan</span>:<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">103</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>base-iface</span>:<span style=color:#bbb> </span>ens224<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">104</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>id</span>:<span style=color:#bbb> </span><span style=color:#b452cd>1928</span><span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">105</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>ipv4</span>:<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">106</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>enabled</span>:<span style=color:#bbb> </span><span style=color:#8b008b;font-weight:700>false</span><span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">107</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>ipv6</span>:<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">108</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>enabled</span>:<span style=color:#bbb> </span><span style=color:#8b008b;font-weight:700>false</span><span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">109</span><span style=color:#bbb>      </span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>br-1928<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">110</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>type</span>:<span style=color:#bbb> </span>linux-bridge<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">111</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>state</span>:<span style=color:#bbb> </span>up<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">112</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>ipv4</span>:<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">113</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>enabled</span>:<span style=color:#bbb> </span><span style=color:#8b008b;font-weight:700>false</span><span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">114</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>ipv6</span>:<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">115</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>enabled</span>:<span style=color:#bbb> </span><span style=color:#8b008b;font-weight:700>false</span><span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">116</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>bridge</span>:<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">117</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>options</span>:<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">118</span><span style=color:#bbb>            </span><span style=color:#8b008b;font-weight:700>stp</span>:<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">119</span><span style=color:#bbb>              </span><span style=color:#8b008b;font-weight:700>enabled</span>:<span style=color:#bbb> </span><span style=color:#8b008b;font-weight:700>false</span><span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">120</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>port</span>:<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">121</span><span style=color:#bbb>          </span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>ens224.1928<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">122</span><span style=color:#bbb>            </span><span style=color:#8b008b;font-weight:700>vlan</span>:<span style=color:#bbb> </span>{}<span style=color:#bbb>
+</span></code></pre></div><blockquote>
 <p>⚠️ <strong>Ambiguous Kubevirt Labels</strong></p>
 <p>Ideally, we could rely on a label like <em>kubevirt.io/scheduleable: &ldquo;true&rdquo;</em>, but in my experience that label is not unique to hosts having virtualization extensions. I have opened a bug to find out more. <a href="https://bugzilla.redhat.com/show_bug.cgi?id=2081133">https://bugzilla.redhat.com/show_bug.cgi?id=2081133</a></p>
 </blockquote>
 <h2 id=confirming-node-networking-configuration-changes>Confirming Node Networking Configuration Changes</h2>
 <p>After creation of the NodeNetworkConfigurationPolicy, a <code>NodeNetworkConfigurationEnablement</code> will be created for each node that satisfies the node selector in the policy. (<em>machine.openshift.io/cluster-api-machineset: hub-7vxwj-cnv</em>)</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>$ oc get nodes -l machine.openshift.io/cluster-api-machineset<span style=color:#f92672>=</span>hub-7vxwj-cnv
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>$ oc get nodes -l machine.openshift.io/cluster-api-machineset=hub-7vxwj-cnv
 NAME                  STATUS   ROLES    AGE    VERSION
 hub-7vxwj-cnv-drhkz   Ready    worker   162m   v1.23.5+9ce5071
 
@@ -414,9 +414,9 @@ hub-7vxwj-cnv-drhkz.ens224-policy   Available
 <h2 id=configuring-openshift-namespace-networking-for-vms>Configuring OpenShift Namespace Networking for VMs</h2>
 <p>For developers to attach CNV virtual machines to the networks plumbed above, we need to create points of attachment in the namespaces they are privileged to.</p>
 <p>The <code>NetworkAttachmentDefinition</code> resource provides virtual machines a logical reference to the network interfaces we created previously.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>$ oc api-resources --api-group k8s.cni.cncf.io
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>$ oc api-resources --api-group k8s.cni.cncf.io
 NAME                             SHORTNAMES       APIVERSION           NAMESPACED   KIND
-network-attachment-definitions   net-attach-def   k8s.cni.cncf.io/v1   true         NetworkAttachmentDefinition
+network-attachment-definitions   net-attach-def   k8s.cni.cncf.io/v1   <span style=color:#658b00>true</span>         NetworkAttachmentDefinition
 
 $ oc explain network-attachment-definition
 KIND:     NetworkAttachmentDefinition
@@ -424,40 +424,40 @@ VERSION:  k8s.cni.cncf.io/v1
 
 DESCRIPTION:
      NetworkAttachmentDefinition is a CRD schema specified by the Network
-     Plumbing Working Group to express the intent <span style=color:#66d9ef>for</span> attaching pods to one or
+     Plumbing Working Group to express the intent <span style=color:#8b008b;font-weight:700>for</span> attaching pods to one or
      more logical or physical networks. More information available at:
      https://github.com/k8snetworkplumbingwg/multi-net-spec
 </code></pre></div><blockquote>
 <p>📓 <strong><code>NetworkAttachmentDefinition</code></strong> Enabling access to <em>provisioning</em> bridge.</p>
 <p>Enables VMs in a namespace to attach to a network using CNI.</p>
 </blockquote>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 1</span><span style=color:#f92672>apiVersion</span>: <span style=color:#ae81ff>k8s.cni.cncf.io/v1</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 2</span><span style=color:#f92672>kind</span>: <span style=color:#ae81ff>NetworkAttachmentDefinition</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 3</span><span style=color:#f92672>metadata</span>:
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 4</span>  <span style=color:#f92672>annotations</span>:
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 5</span>    <span style=color:#f92672>description</span>: <span style=color:#ae81ff>Provisioning Bridge V1928</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 6</span>    <span style=color:#f92672>k8s.v1.cni.cncf.io/resourceName</span>: <span style=color:#ae81ff>bridge.network.kubevirt.io/br-1928</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 7</span>  <span style=color:#f92672>name</span>: <span style=color:#ae81ff>vlan-1928</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 8</span>  <span style=color:#f92672>namespace</span>: <span style=color:#ae81ff>provisioning</span>
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 9</span><span style=color:#f92672>spec</span>:
-<span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">10</span>  <span style=color:#f92672>config</span>: |-<span style=color:#e6db74>
-</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">11</span><span style=color:#e6db74>    {
-</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">12</span><span style=color:#e6db74>      &#34;name&#34;: &#34;vlan-1928&#34;,
-</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">13</span><span style=color:#e6db74>      &#34;cniVersion&#34;: &#34;0.3.1&#34;,
-</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">14</span><span style=color:#e6db74>      &#34;plugins&#34;: [
-</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">15</span><span style=color:#e6db74>        {
-</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">16</span><span style=color:#e6db74>          &#34;type&#34;: &#34;cnv-bridge&#34;,
-</span><span style=display:block;width:100%;background-color:#3c3d38><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">17</span><span style=color:#e6db74>          &#34;bridge&#34;:&#34;br-1928&#34;,
-</span></span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">18</span><span style=color:#e6db74>          &#34;vlan&#34;:1928,
-</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">19</span><span style=color:#e6db74>          &#34;ipam&#34;:{}
-</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">20</span><span style=color:#e6db74>        },
-</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">21</span><span style=color:#e6db74>        {
-</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">22</span><span style=color:#e6db74>          &#34;type&#34;: &#34;cnv-tuning&#34;
-</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">23</span><span style=color:#e6db74>        }
-</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">24</span><span style=color:#e6db74>      ]
-</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">25</span><span style=color:#e6db74>    }</span>    
-</code></pre></div><p>Let&rsquo;s create an attachment to the provisioning network on bridge br-1928.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>$ oc new-project provisioning
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 1</span><span style=color:#8b008b;font-weight:700>apiVersion</span>:<span style=color:#bbb> </span>k8s.cni.cncf.io/v1<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 2</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>kind</span>:<span style=color:#bbb> </span>NetworkAttachmentDefinition<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 3</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>metadata</span>:<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 4</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>annotations</span>:<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 5</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>description</span>:<span style=color:#bbb> </span>Provisioning Bridge V1928<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 6</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>k8s.v1.cni.cncf.io/resourceName</span>:<span style=color:#bbb> </span>bridge.network.kubevirt.io/br-1928<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 7</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>vlan-1928<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 8</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>namespace</span>:<span style=color:#bbb> </span>provisioning<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 9</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>spec</span>:<span style=color:#bbb>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">10</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>config</span>:<span style=color:#bbb> </span>|-<span style=color:#cd5555>
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">11</span><span style=color:#cd5555>    {
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">12</span><span style=color:#cd5555>      &#34;name&#34;: &#34;vlan-1928&#34;,
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">13</span><span style=color:#cd5555>      &#34;cniVersion&#34;: &#34;0.3.1&#34;,
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">14</span><span style=color:#cd5555>      &#34;plugins&#34;: [
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">15</span><span style=color:#cd5555>        {
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">16</span><span style=color:#cd5555>          &#34;type&#34;: &#34;cnv-bridge&#34;,
+</span><span style=display:block;width:100%;background-color:#d6d6c6><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">17</span><span style=color:#cd5555>          &#34;bridge&#34;:&#34;br-1928&#34;,
+</span></span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">18</span><span style=color:#cd5555>          &#34;vlan&#34;:1928,
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">19</span><span style=color:#cd5555>          &#34;ipam&#34;:{}
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">20</span><span style=color:#cd5555>        },
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">21</span><span style=color:#cd5555>        {
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">22</span><span style=color:#cd5555>          &#34;type&#34;: &#34;cnv-tuning&#34;
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">23</span><span style=color:#cd5555>        }
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">24</span><span style=color:#cd5555>      ]
+</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">25</span><span style=color:#cd5555>    }</span><span style=color:#bbb>    
+</span></code></pre></div><p>Let&rsquo;s create an attachment to the provisioning network on bridge br-1928.</p>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>$ oc new-project provisioning
 $ oc create -f net-attach-def.yaml -n provisioning
 
 $ oc get net-attach-def -n provisioning

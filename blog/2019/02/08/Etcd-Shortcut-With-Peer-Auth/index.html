@@ -107,34 +107,34 @@ February 8, 2019
 </p>
 <div id=post-content>
 <p>Getting all the arguments to <code>etcdctl</code> right can be a bit of a pain. Here are a couple of aliases which take advantage of the values in the <code>etcd.conf</code> file.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>alias etcd2<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;. /etc/etcd/etcd.conf &amp;&amp; \
-</span><span style=color:#e6db74>    ETCDCTL_API=2 etcdctl \
-</span><span style=color:#e6db74>    --cert-file ${ETCD_PEER_CERT_FILE} \
-</span><span style=color:#e6db74>    --key-file ${ETCD_PEER_KEY_FILE} \
-</span><span style=color:#e6db74>    --ca-file ${ETCD_PEER_TRUSTED_CA_FILE:-$ETCD_PEER_CA_FILE} \
-</span><span style=color:#e6db74>    --endpoints &#34;${ETCD_ADVERTISE_CLIENT_URLS}&#34;&#39;</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#658b00>alias</span> <span style=color:#00688b>etcd2</span>=<span style=color:#cd5555>&#39;. /etc/etcd/etcd.conf &amp;&amp; \
+</span><span style=color:#cd5555>    ETCDCTL_API=2 etcdctl \
+</span><span style=color:#cd5555>    --cert-file ${ETCD_PEER_CERT_FILE} \
+</span><span style=color:#cd5555>    --key-file ${ETCD_PEER_KEY_FILE} \
+</span><span style=color:#cd5555>    --ca-file ${ETCD_PEER_TRUSTED_CA_FILE:-$ETCD_PEER_CA_FILE} \
+</span><span style=color:#cd5555>    --endpoints &#34;${ETCD_ADVERTISE_CLIENT_URLS}&#34;&#39;</span>
 
-alias etcd3<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;. /etc/etcd/etcd.conf &amp;&amp; \
-</span><span style=color:#e6db74>    ETCDCTL_API=3 etcdctl \
-</span><span style=color:#e6db74>    --cert ${ETCD_PEER_CERT_FILE} \
-</span><span style=color:#e6db74>    --key ${ETCD_PEER_KEY_FILE} \
-</span><span style=color:#e6db74>    --cacert ${ETCD_PEER_TRUSTED_CA_FILE:-$ETCD_PEER_CA_FILE} \
-</span><span style=color:#e6db74>    --endpoints &#34;${ETCD_ADVERTISE_CLIENT_URLS}&#34;&#39;</span>
+<span style=color:#658b00>alias</span> <span style=color:#00688b>etcd3</span>=<span style=color:#cd5555>&#39;. /etc/etcd/etcd.conf &amp;&amp; \
+</span><span style=color:#cd5555>    ETCDCTL_API=3 etcdctl \
+</span><span style=color:#cd5555>    --cert ${ETCD_PEER_CERT_FILE} \
+</span><span style=color:#cd5555>    --key ${ETCD_PEER_KEY_FILE} \
+</span><span style=color:#cd5555>    --cacert ${ETCD_PEER_TRUSTED_CA_FILE:-$ETCD_PEER_CA_FILE} \
+</span><span style=color:#cd5555>    --endpoints &#34;${ETCD_ADVERTISE_CLIENT_URLS}&#34;&#39;</span>
 </code></pre></div><p>If you are using OpenShift, you may also find that you already have some bash functions <a href=https://github.com/openshift/openshift-ansible/blob/master/roles/etcd/tasks/drop_etcdctl.yml>enabled by the etcd role</a> in <code>/etc/profile.d/etcdctl.sh</code>. They will look different depending on your version. Below is from 3.9.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#75715e>#!/bin/bash
-</span><span style=color:#75715e></span><span style=color:#75715e># Sets up handy aliases for etcd, need etcdctl2 and etcdctl3 because</span>
-<span style=color:#75715e># command flags are different between the two. Should work on stand</span>
-<span style=color:#75715e># alone etcd hosts and master + etcd hosts too because we use the peer keys.</span>
-etcdctl2<span style=color:#f92672>()</span> <span style=color:#f92672>{</span>
- /usr/bin/etcdctl --cert-file /etc/etcd/peer.crt --key-file /etc/etcd/peer.key --ca-file /etc/etcd/ca.crt -C https://<span style=color:#e6db74>`</span>hostname<span style=color:#e6db74>`</span>:2379 <span style=color:#e6db74>${</span>@<span style=color:#e6db74>}</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#1e889b>#!/bin/bash
+</span><span style=color:#1e889b></span><span style=color:#228b22># Sets up handy aliases for etcd, need etcdctl2 and etcdctl3 because</span>
+<span style=color:#228b22># command flags are different between the two. Should work on stand</span>
+<span style=color:#228b22># alone etcd hosts and master + etcd hosts too because we use the peer keys.</span>
+etcdctl2() {
+ /usr/bin/etcdctl --cert-file /etc/etcd/peer.crt --key-file /etc/etcd/peer.key --ca-file /etc/etcd/ca.crt -C https://<span style=color:#cd5555>`</span>hostname<span style=color:#cd5555>`</span>:2379 <span style=color:#cd5555>${</span>@<span style=color:#cd5555>}</span>
 
-<span style=color:#f92672>}</span>
+}
 
-etcdctl3<span style=color:#f92672>()</span> <span style=color:#f92672>{</span>
- ETCDCTL_API<span style=color:#f92672>=</span><span style=color:#ae81ff>3</span> /usr/bin/etcdctl --cert /etc/etcd/peer.crt --key /etc/etcd/peer.key --cacert /etc/etcd/ca.crt --endpoints https://<span style=color:#e6db74>`</span>hostname<span style=color:#e6db74>`</span>:2379 <span style=color:#e6db74>${</span>@<span style=color:#e6db74>}</span>
-<span style=color:#f92672>}</span>
+etcdctl3() {
+ <span style=color:#00688b>ETCDCTL_API</span>=<span style=color:#b452cd>3</span> /usr/bin/etcdctl --cert /etc/etcd/peer.crt --key /etc/etcd/peer.key --cacert /etc/etcd/ca.crt --endpoints https://<span style=color:#cd5555>`</span>hostname<span style=color:#cd5555>`</span>:2379 <span style=color:#cd5555>${</span>@<span style=color:#cd5555>}</span>
+}
 </code></pre></div><p><strong>Example:</strong></p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#f92672>[</span>root@ose-test-etcd-01 bin<span style=color:#f92672>]</span><span style=color:#75715e># etcd3 member list -w table</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>[root@ose-test-etcd-01 bin]<span style=color:#228b22># etcd3 member list -w table</span>
 +------------------+---------+--------------------------------+--------------------------+--------------------------+
 |        ID        | STATUS  |             NAME               |         PEER ADDRS       |        CLIENT ADDRS      |
 +------------------+---------+--------------------------------+--------------------------+--------------------------+
@@ -142,7 +142,7 @@ etcdctl3<span style=color:#f92672>()</span> <span style=color:#f92672>{</span>
 | 669fc09764815697 | started |   ose-test-etcd-03.example.com | https://192.0.2.243:2380 | https://192.0.2.243:2379 |
 | dd1f136e71579ace | started |   ose-test-etcd-01.example.com | https://192.0.2.241:2380 | https://192.0.2.241:2379 |
 +------------------+---------+--------------------------------+--------------------------+--------------------------+
-</code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#f92672>[</span>root@ose-test-etcd-01 bin<span style=color:#f92672>]</span><span style=color:#75715e># etcd2 cluster-health</span>
+</code></pre></div><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>[root@ose-test-etcd-01 bin]<span style=color:#228b22># etcd2 cluster-health</span>
 member 3cc657644e2e1080 is healthy: got healthy result from https://192.0.2.242:2379
 member 669fc09764815697 is healthy: got healthy result from https://192.0.2.243:2379
 member dd1f136e71579ace is healthy: got healthy result from https://192.0.2.241:2379

@@ -264,42 +264,42 @@ March 1, 2016
 </table>
 <p><strong>Hosts Inventory File</strong></p>
 <p>And here is the inventory file based on <a href=https://github.com/openshift/openshift-ansible/blob/master/inventory/byo/>the examples</a>.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ini data-lang=ini><span style=color:#66d9ef>[OSEv3:children]</span>
-<span style=color:#a6e22e>masters</span>
-<span style=color:#a6e22e>nodes</span>
-<span style=color:#a6e22e>etcd</span>
-<span style=color:#a6e22e>lb</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ini data-lang=ini><span style=color:#8b008b;font-weight:700>[OSEv3:children]</span>
+<span style=color:#658b00>masters</span>
+<span style=color:#658b00>nodes</span>
+<span style=color:#658b00>etcd</span>
+<span style=color:#658b00>lb</span>
 
-<span style=color:#66d9ef>[OSEv3:vars]</span>
-<span style=color:#a6e22e>ansible_ssh_user</span><span style=color:#f92672>=</span><span style=color:#e6db74>root</span>
-<span style=color:#a6e22e>debug_level</span><span style=color:#f92672>=</span><span style=color:#e6db74>2</span>
-<span style=color:#a6e22e>deployment_type</span><span style=color:#f92672>=</span><span style=color:#e6db74>openshift-enterprise</span>
-<span style=color:#a6e22e>use_cluster_metrics</span><span style=color:#f92672>=</span><span style=color:#e6db74>true</span>
-<span style=color:#a6e22e>openshift_master_metrics_public_url</span><span style=color:#f92672>=</span><span style=color:#e6db74>https://metrics.os.example.com/hawkular/metrics</span>
-<span style=color:#a6e22e>openshift_master_identity_providers</span><span style=color:#f92672>=</span><span style=color:#e6db74>[{&#39;name&#39;: &#39;my_ldap_provider&#39;, &#39;challenge&#39;: &#39;true&#39;, &#39;login&#39;: &#39;true&#39;, &#39;kind&#39;: &#39;LDAPPasswordIdentityProvider&#39;, &#39;attributes&#39;: {&#39;id&#39;: [&#39;dn&#39;], &#39;email&#39;: [&#39;mail&#39;], &#39;name&#39;: [&#39;cn&#39;], &#39;preferredUsername&#39;: [&#39;uid&#39;]}, &#39;bindDN&#39;: &#39;&#39;, &#39;bindPassword&#39;: &#39;&#39;, &#39;ca&#39;: &#39;&#39;, &#39;insecure&#39;: &#39;true&#39;, &#39;url&#39;: &#39;ldap://ldap.example.com:389/ou=people,o=example.com?uid&#39;}]</span>
-<span style=color:#a6e22e>use_fluentd</span><span style=color:#f92672>=</span><span style=color:#e6db74>true</span>
-<span style=color:#a6e22e>openshift_master_cluster_method</span><span style=color:#f92672>=</span><span style=color:#e6db74>native</span>
-<span style=color:#a6e22e>openshift_master_cluster_hostname</span><span style=color:#f92672>=</span><span style=color:#e6db74>master.os.example.com</span>
-<span style=color:#a6e22e>openshift_master_cluster_public_hostname</span><span style=color:#f92672>=</span><span style=color:#e6db74>master.os.example.com</span>
-<span style=color:#a6e22e>osm_default_subdomain</span><span style=color:#f92672>=</span><span style=color:#e6db74>os.example.com</span>
-<span style=color:#a6e22e>osm_default_node_selector</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#39;region=primary&#39;</span>
-<span style=color:#a6e22e>openshift_router_selector</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#39;region=infra&#39;</span>
-<span style=color:#a6e22e>openshift_registry_selector</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#39;region=infra&#39;</span>
+<span style=color:#8b008b;font-weight:700>[OSEv3:vars]</span>
+<span style=color:#658b00>ansible_ssh_user</span>=<span style=color:#cd5555>root</span>
+<span style=color:#658b00>debug_level</span>=<span style=color:#cd5555>2</span>
+<span style=color:#658b00>deployment_type</span>=<span style=color:#cd5555>openshift-enterprise</span>
+<span style=color:#658b00>use_cluster_metrics</span>=<span style=color:#cd5555>true</span>
+<span style=color:#658b00>openshift_master_metrics_public_url</span>=<span style=color:#cd5555>https://metrics.os.example.com/hawkular/metrics</span>
+<span style=color:#658b00>openshift_master_identity_providers</span>=<span style=color:#cd5555>[{&#39;name&#39;: &#39;my_ldap_provider&#39;, &#39;challenge&#39;: &#39;true&#39;, &#39;login&#39;: &#39;true&#39;, &#39;kind&#39;: &#39;LDAPPasswordIdentityProvider&#39;, &#39;attributes&#39;: {&#39;id&#39;: [&#39;dn&#39;], &#39;email&#39;: [&#39;mail&#39;], &#39;name&#39;: [&#39;cn&#39;], &#39;preferredUsername&#39;: [&#39;uid&#39;]}, &#39;bindDN&#39;: &#39;&#39;, &#39;bindPassword&#39;: &#39;&#39;, &#39;ca&#39;: &#39;&#39;, &#39;insecure&#39;: &#39;true&#39;, &#39;url&#39;: &#39;ldap://ldap.example.com:389/ou=people,o=example.com?uid&#39;}]</span>
+<span style=color:#658b00>use_fluentd</span>=<span style=color:#cd5555>true</span>
+<span style=color:#658b00>openshift_master_cluster_method</span>=<span style=color:#cd5555>native</span>
+<span style=color:#658b00>openshift_master_cluster_hostname</span>=<span style=color:#cd5555>master.os.example.com</span>
+<span style=color:#658b00>openshift_master_cluster_public_hostname</span>=<span style=color:#cd5555>master.os.example.com</span>
+<span style=color:#658b00>osm_default_subdomain</span>=<span style=color:#cd5555>os.example.com</span>
+<span style=color:#658b00>osm_default_node_selector</span>=<span style=color:#cd5555>&#39;region=primary&#39;</span>
+<span style=color:#658b00>openshift_router_selector</span>=<span style=color:#cd5555>&#39;region=infra&#39;</span>
+<span style=color:#658b00>openshift_registry_selector</span>=<span style=color:#cd5555>&#39;region=infra&#39;</span>
 
-<span style=color:#66d9ef>[masters]</span>
-<span style=color:#a6e22e>ose-ha-master-[01:03].example.com</span>
+<span style=color:#8b008b;font-weight:700>[masters]</span>
+<span style=color:#658b00>ose-ha-master-[01:03].example.com</span>
 
-<span style=color:#66d9ef>[etcd]</span>
-<span style=color:#a6e22e>ose-ha-etcd-[01:03].example.com</span>
+<span style=color:#8b008b;font-weight:700>[etcd]</span>
+<span style=color:#658b00>ose-ha-etcd-[01:03].example.com</span>
 
-<span style=color:#66d9ef>[lb]</span>
-<span style=color:#a6e22e>ose-ha-lb-01.example.com</span>
-<span style=color:#a6e22e>ose-ha-lb-02.example.com</span>
+<span style=color:#8b008b;font-weight:700>[lb]</span>
+<span style=color:#658b00>ose-ha-lb-01.example.com</span>
+<span style=color:#658b00>ose-ha-lb-02.example.com</span>
 
-<span style=color:#66d9ef>[nodes]</span>
-<span style=color:#a6e22e>ose-ha-master-[01:03].example.com openshift_node_labels</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;{&#39;region&#39;: &#39;infra&#39;, &#39;zone&#39;: &#39;rhev&#39;}&#34; openshift_schedulable=False</span>
-<span style=color:#a6e22e>ose-ha-node-[01:02].example.com   openshift_node_labels</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;{&#39;region&#39;: &#39;infra&#39;, &#39;zone&#39;: &#39;metal&#39;}&#34;</span>
-<span style=color:#a6e22e>ose-ha-node-[03:05].example.com   openshift_node_labels</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;{&#39;region&#39;: &#39;primary&#39;, &#39;zone&#39;: &#39;rhev&#39;}&#34;</span>
+<span style=color:#8b008b;font-weight:700>[nodes]</span>
+<span style=color:#658b00>ose-ha-master-[01:03].example.com openshift_node_labels</span>=<span style=color:#cd5555>&#34;{&#39;region&#39;: &#39;infra&#39;, &#39;zone&#39;: &#39;rhev&#39;}&#34; openshift_schedulable=False</span>
+<span style=color:#658b00>ose-ha-node-[01:02].example.com   openshift_node_labels</span>=<span style=color:#cd5555>&#34;{&#39;region&#39;: &#39;infra&#39;, &#39;zone&#39;: &#39;metal&#39;}&#34;</span>
+<span style=color:#658b00>ose-ha-node-[03:05].example.com   openshift_node_labels</span>=<span style=color:#cd5555>&#34;{&#39;region&#39;: &#39;primary&#39;, &#39;zone&#39;: &#39;rhev&#39;}&#34;</span>
 </code></pre></div><h2 id=perform-the-install>Perform the Install</h2>
 <p>Run <a href=/blog/2015/12/12/Playbook-to-Prepare-for-OpenShift-Enterprise-3.1-Install>my prep playbook</a> and then run the <a href=https://github.com/openshift/openshift-ansible/blob/master/playbooks/byo/config.yml>byo playbook</a> to perform the actual install.</p>
 <h1 id=configuration>Configuration</h1>
@@ -307,9 +307,9 @@ March 1, 2016
 <p>Access to applications like <code>app-namespace.os.example.com</code> starts with a wildcard DNS A record in your domain, <code>*.os.example.com</code> pointing to a router pod. The router pod should be assigned to an infrastructure node since the container will be using the host port to attach ha-proxy to.</p>
 <p>The DNS records should point to the <code>router</code> pods which are using the infrastructure node host ports. That means the DNS record should point to the IP of the infrastructure node(s). But what if that node fails? Don&rsquo;t worry about that just yet.</p>
 <p>Using nsupdate and a key which is allowed to manipulate our <code>os.example.com</code> zone, let&rsquo;s insert a <code>*</code> wildcard, and point the name <code>ose-master</code> at the IP of the first load balancer node (for now).</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>nsupdate -v -k os.example.com.key
-    update add *.os.example.com      <span style=color:#ae81ff>300</span> A 192.0.2.1
-    update add master.os.example.com <span style=color:#ae81ff>300</span> A 192.0.2.41
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>nsupdate -v -k os.example.com.key
+    update add *.os.example.com      <span style=color:#b452cd>300</span> A 192.0.2.1
+    update add master.os.example.com <span style=color:#b452cd>300</span> A 192.0.2.41
     send
     quit
 </code></pre></div><h2 id=ha-routing>HA Routing</h2>
@@ -320,13 +320,13 @@ That can be fixed with a <a href=https://docs.openshift.com/enterprise/3.1/admin
 <p>Create a HA router set for the application pods in the <code>primary</code> region. The routers will run on the schedulable nodes in the <code>infra</code> region.</p>
 <p>OpenShift&rsquo;s ipfailover internally uses <a href=http://www.keepalived.org/>keepalived</a>, so ensure that multicast is enabled on the labeled nodes, specifically the <a href=https://en.wikipedia.org/wiki/Virtual_Router_Redundancy_Protocol>VRRP</a> multicast IP address 224.0.0.18.</p>
 <p>Label the nodes <em>ha-router=primary</em> so they can be selected for the service</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>oc label nodes ose-ha-node-0<span style=color:#f92672>{</span>1,2<span style=color:#f92672>}</span> <span style=color:#e6db74>&#34;ha-router=primary&#34;</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>oc label nodes ose-ha-node-0{1,2} <span style=color:#cd5555>&#34;ha-router=primary&#34;</span>
 
-<span style=color:#75715e># confirm the change</span>
-oc get nodes --selector<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;ha-router=primary&#39;</span>
+<span style=color:#228b22># confirm the change</span>
+oc get nodes --selector=<span style=color:#cd5555>&#39;ha-router=primary&#39;</span>
 NAME                         LABELS                                                                                       STATUS    AGE
-ose-ha-node-01.example.com   ha-router<span style=color:#f92672>=</span>primary,kubernetes.io/hostname<span style=color:#f92672>=</span>ose-ha-node-01.example.com,region<span style=color:#f92672>=</span>infra,zone<span style=color:#f92672>=</span>rhev   Ready     3d
-ose-ha-node-02.example.com   ha-router<span style=color:#f92672>=</span>primary,kubernetes.io/hostname<span style=color:#f92672>=</span>ose-ha-node-02.example.com,region<span style=color:#f92672>=</span>infra,zone<span style=color:#f92672>=</span>rhev   Ready     3d
+ose-ha-node-01.example.com   ha-router=primary,kubernetes.io/hostname=ose-ha-node-01.example.com,region=infra,zone=rhev   Ready     3d
+ose-ha-node-02.example.com   ha-router=primary,kubernetes.io/hostname=ose-ha-node-02.example.com,region=infra,zone=rhev   Ready     3d
 </code></pre></div><p><strong>Infrastructure Nodes</strong></p>
 <table>
 <thead>
@@ -350,35 +350,35 @@ ose-ha-node-02.example.com   ha-router<span style=color:#f92672>=</span>primary,
 </tbody>
 </table>
 <p>Use <em>router</em> service account (or optionally create <em>ipfailover</em> account) to create the router. Check that it exists.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>oc get scc privileged -o json | jq .users
-<span style=color:#f92672>[</span>
-  <span style=color:#e6db74>&#34;system:serviceaccount:default:registry&#34;</span>,
-  <span style=color:#e6db74>&#34;system:serviceaccount:default:router&#34;</span>,
-  <span style=color:#e6db74>&#34;system:serviceaccount:openshift-infra:build-controller&#34;</span>
-<span style=color:#f92672>]</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>oc get scc privileged -o json | jq .users
+[
+  <span style=color:#cd5555>&#34;system:serviceaccount:default:registry&#34;</span>,
+  <span style=color:#cd5555>&#34;system:serviceaccount:default:router&#34;</span>,
+  <span style=color:#cd5555>&#34;system:serviceaccount:openshift-infra:build-controller&#34;</span>
+]
 </code></pre></div><p>Since we have 2 Infrastructure (<code>region=infra</code>) nodes which are labeled <code>ha-router=primary</code> let&rsquo;s start 2 replicas of a router called <code>ha-router-primary</code>.</p>
 <p>Go get a legit wildcard cert for <code>*.os.example.com</code> instead of <a href=https://docs.openshift.com/enterprise/latest/install_config/install/deploy_router.html#using-wildcard-certificates>generating one</a>, and concatenate the cert, key, and intermediate certs into a pem file.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>cat <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>  wildcard.os.example.com.crt <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>  wildcard.os.example.com.key <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>  gd_bundle-g2-g1.crt <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>  &gt; router_wildcard.os.example.com.pem
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>cat <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>  wildcard.os.example.com.crt <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>  wildcard.os.example.com.key <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>  gd_bundle-g2-g1.crt <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>  &gt; router_wildcard.os.example.com.pem
 </code></pre></div><p><a href=https://docs.openshift.com/enterprise/latest/install_config/install/deploy_router.html>Deploy the router</a> with the wildcard cert as the default certificate.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>oadm router ha-router-primary <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    --replicas<span style=color:#f92672>=</span><span style=color:#ae81ff>2</span> <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    --selector<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;ha-router=primary&#34;</span> <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    --selector<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;region=infra&#34;</span> <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    --labels<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;ha-router=primary&#34;</span> <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    --credentials<span style=color:#f92672>=</span>/etc/origin/master/openshift-router.kubeconfig <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    --default-cert<span style=color:#f92672>=</span>router_wildcard.os.example.com.pem <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    --service-account<span style=color:#f92672>=</span>router
-password <span style=color:#66d9ef>for</span> stats user admin has been set to cixBqxbXyz
-DeploymentConfig <span style=color:#e6db74>&#34;ha-router-primary&#34;</span> created
-Service <span style=color:#e6db74>&#34;ha-router-primary&#34;</span> created
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>oadm router ha-router-primary <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    --replicas=<span style=color:#b452cd>2</span> <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    --selector=<span style=color:#cd5555>&#34;ha-router=primary&#34;</span> <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    --selector=<span style=color:#cd5555>&#34;region=infra&#34;</span> <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    --labels=<span style=color:#cd5555>&#34;ha-router=primary&#34;</span> <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    --credentials=/etc/origin/master/openshift-router.kubeconfig <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    --default-cert=router_wildcard.os.example.com.pem <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    --service-account=router
+password <span style=color:#8b008b;font-weight:700>for</span> stats user admin has been <span style=color:#658b00>set</span> to cixBqxbXyz
+DeploymentConfig <span style=color:#cd5555>&#34;ha-router-primary&#34;</span> created
+Service <span style=color:#cd5555>&#34;ha-router-primary&#34;</span> created
 </code></pre></div><p>Edit the deployment config for the HA router and add the default cert within <code>spec.containers.env.name[DEFAULT_CERTIFICATE]</code></p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>oc edit dc ha-router-primary
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>oc edit dc ha-router-primary
 </code></pre></div><p>From the initial install, there will be a pre-existing router (<em>router-1</em>) holding the host ports (80,443) which precludes starting the ha router instances. Scale that old router down to 0 pods:</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>oc scale --replicas<span style=color:#f92672>=</span><span style=color:#ae81ff>0</span> rc router-1
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>oc scale --replicas=<span style=color:#b452cd>0</span> rc router-1
 </code></pre></div><p>Pick 2 IP addresses which will float between the 2 infra nodes and create a IP failover service.</p>
 <p><strong>IP Failover Nodes</strong></p>
 <table>
@@ -398,25 +398,25 @@ Service <span style=color:#e6db74>&#34;ha-router-primary&#34;</span> created
 </tbody>
 </table>
 <p>Create a IP failover configuration named <code>ipf-ha-router-primary</code> having N replicas equal to number nodes labeled <code>ha-router=primary</code></p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>oadm ipfailover ipf-ha-router-primary <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    --replicas<span style=color:#f92672>=</span><span style=color:#ae81ff>2</span> <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    --watch-port<span style=color:#f92672>=</span><span style=color:#ae81ff>80</span> <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    --selector<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;ha-router=primary&#34;</span> <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    --virtual-ips<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;192.0.2.101-102&#34;</span> <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    --credentials<span style=color:#f92672>=</span>/etc/origin/master/openshift-router.kubeconfig <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    --service-account<span style=color:#f92672>=</span>router <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    --create
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>oadm ipfailover ipf-ha-router-primary <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    --replicas=<span style=color:#b452cd>2</span> <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    --watch-port=<span style=color:#b452cd>80</span> <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    --selector=<span style=color:#cd5555>&#34;ha-router=primary&#34;</span> <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    --virtual-ips=<span style=color:#cd5555>&#34;192.0.2.101-102&#34;</span> <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    --credentials=/etc/origin/master/openshift-router.kubeconfig <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    --service-account=router <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    --create
 </code></pre></div><h3 id=keepalived-readiness-probe>Keepalived Readiness Probe</h3>
 <p>As of OSE 3.2 the <code>oc status -v</code> command will warn you that there is no readiness probe defined for this <code>ipf-ha-router-primary</code> deployment config. I tried to resolve that warning with this probe, but deployment failed with a <em>connection refused</em> to port 1985 on the node host IP.</p>
 <pre tabindex=0><code>oc set probe dc/ipf-ha-router-primary --readiness --open-tcp=1985
 </code></pre><h1 id=openshift-ha-dns-configuration>OpenShift HA DNS Configuration</h1>
 <p>Wildcard DNS records point users to the OpenShift routers providing ingress to application services.</p>
 <p>Update the DNS wildcard records to reflect the floating IPs instead of the infra nodes' primary IPs.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>nsupdate -v -k os.example.com.key
-    update delete *.os.example.com <span style=color:#ae81ff>300</span> A 192.0.2.1
-    update add    *.os.example.com <span style=color:#ae81ff>300</span> A 192.0.2.101
-    update delete *.os.example.com <span style=color:#ae81ff>300</span> A 192.0.2.2
-    update add    *.os.example.com <span style=color:#ae81ff>300</span> A 192.0.2.102
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>nsupdate -v -k os.example.com.key
+    update delete *.os.example.com <span style=color:#b452cd>300</span> A 192.0.2.1
+    update add    *.os.example.com <span style=color:#b452cd>300</span> A 192.0.2.101
+    update delete *.os.example.com <span style=color:#b452cd>300</span> A 192.0.2.2
+    update add    *.os.example.com <span style=color:#b452cd>300</span> A 192.0.2.102
     send
     quit
 </code></pre></div><h2 id=ha-master>HA Master</h2>

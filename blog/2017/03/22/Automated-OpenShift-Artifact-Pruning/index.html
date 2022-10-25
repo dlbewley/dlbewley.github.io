@@ -110,148 +110,148 @@ March 22, 2017
 <p>This <a href=https://github.com/openshift/origin/pull/12623>was fixed</a> as of OCP 3.4.1, but it caused me to get more pro-active in the <a href=https://docs.openshift.org/latest/admin_guide/pruning_resources.html>pruning of artifacts</a> within OpenShift.</p>
 <p>I threw together a script and a playbook to deploy it. YMMV</p>
 <p>Playbook to setup the first master to prune artifacts on a schedule. This will also create a <code>serviceaccount</code> in the <code>default</code> project with appropriate permissions to support image pruning.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml>---
-<span style=color:#75715e># file: prune-cron.yml</span>
-<span style=color:#75715e># run this on only the first master, as root</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#008b45;text-decoration:underline>---</span><span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#228b22># file: prune-cron.yml</span><span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#228b22># run this on only the first master, as root</span><span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb></span>- <span style=color:#8b008b;font-weight:700>hosts</span>:<span style=color:#bbb> </span>masters[0]<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>vars</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>default</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>cron_weekday</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;1-5&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>cron_hour</span>:<span style=color:#bbb> </span><span style=color:#b452cd>6</span><span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>cron_minute</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;{{ 15 | random}}&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>prune_script</span>:<span style=color:#bbb> </span>prune-artifacts<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>prune_serviceaccount</span>:<span style=color:#bbb> </span>prunebot<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>prune_artifacts</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>builds</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>keep_complete</span>:<span style=color:#bbb> </span><span style=color:#b452cd>5</span><span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>keep_failed</span>:<span style=color:#bbb> </span><span style=color:#b452cd>5</span><span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>keep_younger</span>:<span style=color:#bbb> </span>60m<span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>cron_hour</span>:<span style=color:#bbb> </span><span style=color:#b452cd>8</span><span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>deployments</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>keep_complete</span>:<span style=color:#bbb> </span><span style=color:#b452cd>5</span><span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>keep_failed</span>:<span style=color:#bbb> </span><span style=color:#b452cd>5</span><span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>keep_younger</span>:<span style=color:#bbb> </span>60m<span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>cron_hour</span>:<span style=color:#bbb> </span><span style=color:#b452cd>7</span><span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>images</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>keep_younger</span>:<span style=color:#bbb> </span>60m<span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>keep_tag_revisions</span>:<span style=color:#bbb> </span><span style=color:#b452cd>5</span><span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>cron_weekday</span>:<span style=color:#bbb> </span><span style=color:#b452cd>1</span><span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>tasks</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>    </span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>check for service account<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>command</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;oc get sa {{ prune_serviceaccount }} -n default -o name&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>register</span>:<span style=color:#bbb> </span>serviceaccount<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>ignore_errors</span>:<span style=color:#bbb> </span><span style=color:#8b008b;font-weight:700>true</span><span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>tags</span>:<span style=color:#bbb> </span>sa<span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb>    </span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>create service account<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>command</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;oc create sa {{ prune_serviceaccount }} -n default&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>when</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;&#39;{{ prune_serviceaccount }}&#39; not in &#39;{{ serviceaccount.stdout }}&#39;&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>tags</span>:<span style=color:#bbb> </span>sa<span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb>    </span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>grant perms to service account<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>command</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;oc adm policy add-cluster-role-to-user system:image-pruner system:serviceaccount:default:{{ prune_serviceaccount }}&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>when</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;&#39;{{ prune_serviceaccount }}&#39; not in &#39;{{ serviceaccount.stdout }}&#39;&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>tags</span>:<span style=color:#bbb> </span>sa<span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb>    </span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>install prune artifacts script<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>copy</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>src</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;bin/{{ prune_script }}&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>dest</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;/usr/local/bin/{{ prune_script }}&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>owner</span>:<span style=color:#bbb> </span>root<span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>group</span>:<span style=color:#bbb> </span>root<span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>mode</span>:<span style=color:#bbb> </span><span style=color:#b452cd>0755</span><span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>run_once</span>:<span style=color:#bbb> </span><span style=color:#8b008b;font-weight:700>true</span><span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>tags</span>:<span style=color:#bbb> </span>script<span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb>    </span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>create prune crons per artifact type<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>cron</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;prune old {{ item.key }} artifacts&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>job</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;/usr/local/bin/{{ prune_script }} --artifact &#39;{{ item.key }}&#39; --keep-complete &#39;{{item.value.keep_complete | default(5)}}&#39;  --keep-failed &#39;{{item.value.keep_failed | default(5)}}&#39;  --keep-younger &#39;{{item.value.keep_younger | default(&#39;60m&#39;)}}&#39; --keep-tag-revisions &#39;{{item.value.keep_tag_revisions | default(5)}}&#39;&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>user</span>:<span style=color:#bbb> </span>root<span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>cron_file</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;prune-{{ item.key }}&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>minute</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;{{item.value.cron_minute | default(default.cron_minute)}}&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>hour</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;{{item.value.cron_hour | default(default.cron_hour)}}&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>weekday</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;{{item.value.cron_weekday | default(default.cron_weekday)}}&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>state</span>:<span style=color:#bbb> </span>present<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>with_dict</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;{{ prune_artifacts }}&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>run_once</span>:<span style=color:#bbb> </span><span style=color:#8b008b;font-weight:700>true</span><span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>tags</span>:<span style=color:#bbb> </span>cron<span style=color:#bbb>
+</span></code></pre></div><p>Wrapper to call the <code>oc prune</code> command</p>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#1e889b>#!/bin/bash
+</span><span style=color:#1e889b></span><span style=color:#228b22># prune-artifacts</span>
+<span style=color:#228b22># https://docs.openshift.org/latest/admin_guide/pruning_resources.html</span>
+<span style=color:#228b22># https://docs.openshift.com/container-platform/3.4/admin_guide/pruning_resources.html</span>
 
-- <span style=color:#f92672>hosts</span>: <span style=color:#ae81ff>masters[0]</span>
-  <span style=color:#f92672>vars</span>:
-    <span style=color:#f92672>default</span>:
-      <span style=color:#f92672>cron_weekday</span>: <span style=color:#e6db74>&#34;1-5&#34;</span>
-      <span style=color:#f92672>cron_hour</span>: <span style=color:#ae81ff>6</span>
-      <span style=color:#f92672>cron_minute</span>: <span style=color:#e6db74>&#34;{{ 15 | random}}&#34;</span>
-    <span style=color:#f92672>prune_script</span>: <span style=color:#ae81ff>prune-artifacts</span>
-    <span style=color:#f92672>prune_serviceaccount</span>: <span style=color:#ae81ff>prunebot</span>
-    <span style=color:#f92672>prune_artifacts</span>:
-      <span style=color:#f92672>builds</span>:
-        <span style=color:#f92672>keep_complete</span>: <span style=color:#ae81ff>5</span>
-        <span style=color:#f92672>keep_failed</span>: <span style=color:#ae81ff>5</span>
-        <span style=color:#f92672>keep_younger</span>: <span style=color:#ae81ff>60m</span>
-        <span style=color:#f92672>cron_hour</span>: <span style=color:#ae81ff>8</span>
-      <span style=color:#f92672>deployments</span>:
-        <span style=color:#f92672>keep_complete</span>: <span style=color:#ae81ff>5</span>
-        <span style=color:#f92672>keep_failed</span>: <span style=color:#ae81ff>5</span>
-        <span style=color:#f92672>keep_younger</span>: <span style=color:#ae81ff>60m</span>
-        <span style=color:#f92672>cron_hour</span>: <span style=color:#ae81ff>7</span>
-      <span style=color:#f92672>images</span>:
-        <span style=color:#f92672>keep_younger</span>: <span style=color:#ae81ff>60m</span>
-        <span style=color:#f92672>keep_tag_revisions</span>: <span style=color:#ae81ff>5</span>
-        <span style=color:#f92672>cron_weekday</span>: <span style=color:#ae81ff>1</span>
+<span style=color:#00688b>KEEP_COMPLETE</span>=<span style=color:#b452cd>5</span>
+<span style=color:#00688b>KEEP_FAILED</span>=<span style=color:#b452cd>5</span>
+<span style=color:#00688b>KEEP_YOUNGER</span>=<span style=color:#cd5555>&#34;60m&#34;</span>
+<span style=color:#00688b>KEEP_TAG_REVISIONS</span>=<span style=color:#b452cd>3</span>
+<span style=color:#00688b>PRUNE_SERVICEACCOUNT</span>=<span style=color:#cd5555>&#34;prunebot&#34;</span>
 
-  <span style=color:#f92672>tasks</span>:
-    - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>check for service account</span>
-      <span style=color:#f92672>command</span>: <span style=color:#e6db74>&#34;oc get sa {{ prune_serviceaccount }} -n default -o name&#34;</span>
-      <span style=color:#f92672>register</span>: <span style=color:#ae81ff>serviceaccount</span>
-      <span style=color:#f92672>ignore_errors</span>: <span style=color:#66d9ef>true</span>
-      <span style=color:#f92672>tags</span>: <span style=color:#ae81ff>sa</span>
+<span style=color:#00688b>USAGE</span>=<span style=color:#cd5555>&#34;</span><span style=color:#00688b>$0</span><span style=color:#cd5555> --artifact &lt;builds,deployments,images&gt; --keep_complete &lt;num&gt; --keep_failed &lt;num&gt; --keep_younger &lt;time&gt; --keep-tag-revisions &lt;num&gt;&#34;</span>
 
-    - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>create service account</span>
-      <span style=color:#f92672>command</span>: <span style=color:#e6db74>&#34;oc create sa {{ prune_serviceaccount }} -n default&#34;</span>
-      <span style=color:#f92672>when</span>: <span style=color:#e6db74>&#34;&#39;{{ prune_serviceaccount }}&#39; not in &#39;{{ serviceaccount.stdout }}&#39;&#34;</span>
-      <span style=color:#f92672>tags</span>: <span style=color:#ae81ff>sa</span>
+<span style=color:#8b008b;font-weight:700>while</span> [[ <span style=color:#00688b>$#</span> -gt <span style=color:#b452cd>1</span> ]]; <span style=color:#8b008b;font-weight:700>do</span>
+  <span style=color:#00688b>key</span>=<span style=color:#cd5555>&#34;</span><span style=color:#00688b>$1</span><span style=color:#cd5555>&#34;</span>
 
-    - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>grant perms to service account</span>
-      <span style=color:#f92672>command</span>: <span style=color:#e6db74>&#34;oc adm policy add-cluster-role-to-user system:image-pruner system:serviceaccount:default:{{ prune_serviceaccount }}&#34;</span>
-      <span style=color:#f92672>when</span>: <span style=color:#e6db74>&#34;&#39;{{ prune_serviceaccount }}&#39; not in &#39;{{ serviceaccount.stdout }}&#39;&#34;</span>
-      <span style=color:#f92672>tags</span>: <span style=color:#ae81ff>sa</span>
-
-    - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>install prune artifacts script</span>
-      <span style=color:#f92672>copy</span>:
-        <span style=color:#f92672>src</span>: <span style=color:#e6db74>&#34;bin/{{ prune_script }}&#34;</span>
-        <span style=color:#f92672>dest</span>: <span style=color:#e6db74>&#34;/usr/local/bin/{{ prune_script }}&#34;</span>
-        <span style=color:#f92672>owner</span>: <span style=color:#ae81ff>root</span>
-        <span style=color:#f92672>group</span>: <span style=color:#ae81ff>root</span>
-        <span style=color:#f92672>mode</span>: <span style=color:#ae81ff>0755</span>
-      <span style=color:#f92672>run_once</span>: <span style=color:#66d9ef>true</span>
-      <span style=color:#f92672>tags</span>: <span style=color:#ae81ff>script</span>
-
-    - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>create prune crons per artifact type</span>
-      <span style=color:#f92672>cron</span>:
-        <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;prune old {{ item.key }} artifacts&#34;</span>
-        <span style=color:#f92672>job</span>: <span style=color:#e6db74>&#34;/usr/local/bin/{{ prune_script }} --artifact &#39;{{ item.key }}&#39; --keep-complete &#39;{{item.value.keep_complete | default(5)}}&#39;  --keep-failed &#39;{{item.value.keep_failed | default(5)}}&#39;  --keep-younger &#39;{{item.value.keep_younger | default(&#39;60m&#39;)}}&#39; --keep-tag-revisions &#39;{{item.value.keep_tag_revisions | default(5)}}&#39;&#34;</span>
-        <span style=color:#f92672>user</span>: <span style=color:#ae81ff>root</span>
-        <span style=color:#f92672>cron_file</span>: <span style=color:#e6db74>&#34;prune-{{ item.key }}&#34;</span>
-        <span style=color:#f92672>minute</span>: <span style=color:#e6db74>&#34;{{item.value.cron_minute | default(default.cron_minute)}}&#34;</span>
-        <span style=color:#f92672>hour</span>: <span style=color:#e6db74>&#34;{{item.value.cron_hour | default(default.cron_hour)}}&#34;</span>
-        <span style=color:#f92672>weekday</span>: <span style=color:#e6db74>&#34;{{item.value.cron_weekday | default(default.cron_weekday)}}&#34;</span>
-        <span style=color:#f92672>state</span>: <span style=color:#ae81ff>present</span>
-      <span style=color:#f92672>with_dict</span>: <span style=color:#e6db74>&#34;{{ prune_artifacts }}&#34;</span>
-      <span style=color:#f92672>run_once</span>: <span style=color:#66d9ef>true</span>
-      <span style=color:#f92672>tags</span>: <span style=color:#ae81ff>cron</span>
-</code></pre></div><p>Wrapper to call the <code>oc prune</code> command</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#75715e>#!/bin/bash
-</span><span style=color:#75715e></span><span style=color:#75715e># prune-artifacts</span>
-<span style=color:#75715e># https://docs.openshift.org/latest/admin_guide/pruning_resources.html</span>
-<span style=color:#75715e># https://docs.openshift.com/container-platform/3.4/admin_guide/pruning_resources.html</span>
-
-KEEP_COMPLETE<span style=color:#f92672>=</span><span style=color:#ae81ff>5</span>
-KEEP_FAILED<span style=color:#f92672>=</span><span style=color:#ae81ff>5</span>
-KEEP_YOUNGER<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;60m&#34;</span>
-KEEP_TAG_REVISIONS<span style=color:#f92672>=</span><span style=color:#ae81ff>3</span>
-PRUNE_SERVICEACCOUNT<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;prunebot&#34;</span>
-
-USAGE<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;</span>$0<span style=color:#e6db74> --artifact &lt;builds,deployments,images&gt; --keep_complete &lt;num&gt; --keep_failed &lt;num&gt; --keep_younger &lt;time&gt; --keep-tag-revisions &lt;num&gt;&#34;</span>
-
-<span style=color:#66d9ef>while</span> <span style=color:#f92672>[[</span> $# -gt <span style=color:#ae81ff>1</span> <span style=color:#f92672>]]</span>; <span style=color:#66d9ef>do</span>
-  key<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;</span>$1<span style=color:#e6db74>&#34;</span>
-
-  <span style=color:#66d9ef>case</span> $key in
-      --artifact<span style=color:#f92672>)</span>
-        ARTIFACT<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;</span>$2<span style=color:#e6db74>&#34;</span>
-        shift
+  <span style=color:#8b008b;font-weight:700>case</span> <span style=color:#00688b>$key</span> in
+      --artifact)
+        <span style=color:#00688b>ARTIFACT</span>=<span style=color:#cd5555>&#34;</span><span style=color:#00688b>$2</span><span style=color:#cd5555>&#34;</span>
+        <span style=color:#658b00>shift</span>
       ;;
-      --keep-complete<span style=color:#f92672>)</span>
-        KEEP_COMPLETE<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;</span>$2<span style=color:#e6db74>&#34;</span>
-        shift
+      --keep-complete)
+        <span style=color:#00688b>KEEP_COMPLETE</span>=<span style=color:#cd5555>&#34;</span><span style=color:#00688b>$2</span><span style=color:#cd5555>&#34;</span>
+        <span style=color:#658b00>shift</span>
       ;;
-      --keep-failed<span style=color:#f92672>)</span>
-        KEEP_FAILED<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;</span>$2<span style=color:#e6db74>&#34;</span>
-        shift
+      --keep-failed)
+        <span style=color:#00688b>KEEP_FAILED</span>=<span style=color:#cd5555>&#34;</span><span style=color:#00688b>$2</span><span style=color:#cd5555>&#34;</span>
+        <span style=color:#658b00>shift</span>
       ;;
-      --keep-younger<span style=color:#f92672>)</span>
-        KEEP_YOUNGER<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;</span>$2<span style=color:#e6db74>&#34;</span>
-        shift
+      --keep-younger)
+        <span style=color:#00688b>KEEP_YOUNGER</span>=<span style=color:#cd5555>&#34;</span><span style=color:#00688b>$2</span><span style=color:#cd5555>&#34;</span>
+        <span style=color:#658b00>shift</span>
       ;;
-      --keep-tag-revisions<span style=color:#f92672>)</span>
-        KEEP_TAG_REVISIONS<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;</span>$2<span style=color:#e6db74>&#34;</span>
-        shift
+      --keep-tag-revisions)
+        <span style=color:#00688b>KEEP_TAG_REVISIONS</span>=<span style=color:#cd5555>&#34;</span><span style=color:#00688b>$2</span><span style=color:#cd5555>&#34;</span>
+        <span style=color:#658b00>shift</span>
       ;;
-  <span style=color:#66d9ef>esac</span>
-  shift
-<span style=color:#66d9ef>done</span>
+  <span style=color:#8b008b;font-weight:700>esac</span>
+  <span style=color:#658b00>shift</span>
+<span style=color:#8b008b;font-weight:700>done</span>
 
-LOGGER<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;logger -t prune-</span>$ARTIFACT<span style=color:#e6db74>&#34;</span>
+<span style=color:#00688b>LOGGER</span>=<span style=color:#cd5555>&#34;logger -t prune-</span><span style=color:#00688b>$ARTIFACT</span><span style=color:#cd5555>&#34;</span>
 
-<span style=color:#66d9ef>if</span> <span style=color:#f92672>[</span> -z <span style=color:#e6db74>&#34;</span>$ARTIFACT<span style=color:#e6db74>&#34;</span> <span style=color:#f92672>]</span>; <span style=color:#66d9ef>then</span>
-  echo <span style=color:#e6db74>&#34;</span>$USAGE<span style=color:#e6db74>&#34;</span>
-  $LOGGER <span style=color:#e6db74>&#34;</span>$USAGE<span style=color:#e6db74>&#34;</span>
-  exit <span style=color:#ae81ff>1</span>
-<span style=color:#66d9ef>fi</span>
+<span style=color:#8b008b;font-weight:700>if</span> [ -z <span style=color:#cd5555>&#34;</span><span style=color:#00688b>$ARTIFACT</span><span style=color:#cd5555>&#34;</span> ]; <span style=color:#8b008b;font-weight:700>then</span>
+  <span style=color:#658b00>echo</span> <span style=color:#cd5555>&#34;</span><span style=color:#00688b>$USAGE</span><span style=color:#cd5555>&#34;</span>
+  <span style=color:#00688b>$LOGGER</span> <span style=color:#cd5555>&#34;</span><span style=color:#00688b>$USAGE</span><span style=color:#cd5555>&#34;</span>
+  <span style=color:#658b00>exit</span> <span style=color:#b452cd>1</span>
+<span style=color:#8b008b;font-weight:700>fi</span>
 
-<span style=color:#66d9ef>if</span> <span style=color:#f92672>[</span> <span style=color:#e6db74>&#34;</span>$ARTIFACT<span style=color:#e6db74>&#34;</span> <span style=color:#f92672>==</span> <span style=color:#e6db74>&#34;images&#34;</span> <span style=color:#f92672>]</span>; <span style=color:#66d9ef>then</span>
-  $LOGGER <span style=color:#e6db74>&#34;pruning </span>$ARTIFACT<span style=color:#e6db74> over </span>$KEEP_YOUNGER<span style=color:#e6db74>, keep at least </span>$KEEP_TAG_REVISIONS<span style=color:#e6db74> tag revisions as user </span>$PRUNE_SERVICEACCOUNT<span style=color:#e6db74>&#34;</span>
-  $LOGGER <span style=color:#e6db74>&#34;oc --token=&lt;token&gt; adm prune </span>$ARTIFACT<span style=color:#e6db74> --keep-tag-revisions=</span>$KEEP_TAG_REVISIONS<span style=color:#e6db74>  --keep-younger-than=</span>$KEEP_YOUNGER<span style=color:#e6db74> --confirm&#34;</span>
-  oc --token<span style=color:#f92672>=</span><span style=color:#66d9ef>$(</span>oc serviceaccounts get-token <span style=color:#e6db74>&#34;</span>$PRUNE_SERVICEACCOUNT<span style=color:#e6db74>&#34;</span><span style=color:#66d9ef>)</span> adm prune <span style=color:#e6db74>&#34;</span>$ARTIFACT<span style=color:#e6db74>&#34;</span> <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    --keep-tag-revisions<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;</span>$KEEP_TAG_REVISIONS<span style=color:#e6db74>&#34;</span>  --keep-younger-than<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;</span>$KEEP_YOUNGER<span style=color:#e6db74>&#34;</span> --confirm | $LOGGER
+<span style=color:#8b008b;font-weight:700>if</span> [ <span style=color:#cd5555>&#34;</span><span style=color:#00688b>$ARTIFACT</span><span style=color:#cd5555>&#34;</span> == <span style=color:#cd5555>&#34;images&#34;</span> ]; <span style=color:#8b008b;font-weight:700>then</span>
+  <span style=color:#00688b>$LOGGER</span> <span style=color:#cd5555>&#34;pruning </span><span style=color:#00688b>$ARTIFACT</span><span style=color:#cd5555> over </span><span style=color:#00688b>$KEEP_YOUNGER</span><span style=color:#cd5555>, keep at least </span><span style=color:#00688b>$KEEP_TAG_REVISIONS</span><span style=color:#cd5555> tag revisions as user </span><span style=color:#00688b>$PRUNE_SERVICEACCOUNT</span><span style=color:#cd5555>&#34;</span>
+  <span style=color:#00688b>$LOGGER</span> <span style=color:#cd5555>&#34;oc --token=&lt;token&gt; adm prune </span><span style=color:#00688b>$ARTIFACT</span><span style=color:#cd5555> --keep-tag-revisions=</span><span style=color:#00688b>$KEEP_TAG_REVISIONS</span><span style=color:#cd5555>  --keep-younger-than=</span><span style=color:#00688b>$KEEP_YOUNGER</span><span style=color:#cd5555> --confirm&#34;</span>
+  oc --token=<span style=color:#8b008b;font-weight:700>$(</span>oc serviceaccounts get-token <span style=color:#cd5555>&#34;</span><span style=color:#00688b>$PRUNE_SERVICEACCOUNT</span><span style=color:#cd5555>&#34;</span><span style=color:#8b008b;font-weight:700>)</span> adm prune <span style=color:#cd5555>&#34;</span><span style=color:#00688b>$ARTIFACT</span><span style=color:#cd5555>&#34;</span> <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    --keep-tag-revisions=<span style=color:#cd5555>&#34;</span><span style=color:#00688b>$KEEP_TAG_REVISIONS</span><span style=color:#cd5555>&#34;</span>  --keep-younger-than=<span style=color:#cd5555>&#34;</span><span style=color:#00688b>$KEEP_YOUNGER</span><span style=color:#cd5555>&#34;</span> --confirm | <span style=color:#00688b>$LOGGER</span>
 
-<span style=color:#66d9ef>else</span>
-  $LOGGER <span style=color:#e6db74>&#34;pruning </span>$ARTIFACT<span style=color:#e6db74> over </span>$KEEP_YOUNGER<span style=color:#e6db74>, keep at least </span>$KEEP_COMPLETE<span style=color:#e6db74> and </span>$KEEP_FAILED<span style=color:#e6db74> failed&#34;</span>
+<span style=color:#8b008b;font-weight:700>else</span>
+  <span style=color:#00688b>$LOGGER</span> <span style=color:#cd5555>&#34;pruning </span><span style=color:#00688b>$ARTIFACT</span><span style=color:#cd5555> over </span><span style=color:#00688b>$KEEP_YOUNGER</span><span style=color:#cd5555>, keep at least </span><span style=color:#00688b>$KEEP_COMPLETE</span><span style=color:#cd5555> and </span><span style=color:#00688b>$KEEP_FAILED</span><span style=color:#cd5555> failed&#34;</span>
 
-  artifact_count<span style=color:#f92672>=</span><span style=color:#66d9ef>$(</span>oc adm prune $ARTIFACT <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    --orphans --keep-complete<span style=color:#f92672>=</span>$KEEP_COMPLETE --keep-failed<span style=color:#f92672>=</span>$KEEP_FAILED --keep-younger-than<span style=color:#f92672>=</span>$KEEP_YOUNGER 2&gt;/dev/null | wc -l<span style=color:#66d9ef>)</span>
-  <span style=color:#66d9ef>if</span> <span style=color:#f92672>[</span> $? -eq <span style=color:#ae81ff>0</span> <span style=color:#f92672>]</span>; <span style=color:#66d9ef>then</span>
-    $LOGGER <span style=color:#e6db74>&#34;count </span>$artifact_count<span style=color:#e6db74> </span>$ARTIFACT<span style=color:#e6db74> to delete&#34;</span>
-    <span style=color:#66d9ef>if</span> <span style=color:#f92672>[</span> <span style=color:#e6db74>&#34;</span>$artifact_count<span style=color:#e6db74>&#34;</span> -gt <span style=color:#e6db74>&#34;0&#34;</span> <span style=color:#f92672>]</span>; <span style=color:#66d9ef>then</span>
-      $LOGGER <span style=color:#e6db74>&#34;oc adm prune </span>$ARTIFACT<span style=color:#e6db74> &#34;</span> <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>        <span style=color:#e6db74>&#34;--orphans --keep-complete=</span>$KEEP_COMPLETE<span style=color:#e6db74> --keep-failed=</span>$KEEP_FAILED<span style=color:#e6db74> --keep-younger-than=</span>$KEEP_YOUNGER<span style=color:#e6db74> --confirm&#34;</span>
-      oc adm prune <span style=color:#e6db74>&#34;</span>$ARTIFACT<span style=color:#e6db74>&#34;</span> <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>        --orphans --keep-complete<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;</span>$KEEP_COMPLETE<span style=color:#e6db74>&#34;</span> --keep-failed<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;</span>$KEEP_FAILED<span style=color:#e6db74>&#34;</span> --keep-younger-than<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;</span>$KEEP_YOUNGER<span style=color:#e6db74>&#34;</span> --confirm
-    <span style=color:#66d9ef>fi</span>
-  <span style=color:#66d9ef>else</span>
-    $LOGGER <span style=color:#e6db74>&#34;failed to count existing </span>$ARTIFACT<span style=color:#e6db74>&#34;</span>
-    exit <span style=color:#ae81ff>1</span>
-  <span style=color:#66d9ef>fi</span>
-<span style=color:#66d9ef>fi</span>
+  <span style=color:#00688b>artifact_count</span>=<span style=color:#8b008b;font-weight:700>$(</span>oc adm prune <span style=color:#00688b>$ARTIFACT</span> <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    --orphans --keep-complete=<span style=color:#00688b>$KEEP_COMPLETE</span> --keep-failed=<span style=color:#00688b>$KEEP_FAILED</span> --keep-younger-than=<span style=color:#00688b>$KEEP_YOUNGER</span> 2&gt;/dev/null | wc -l<span style=color:#8b008b;font-weight:700>)</span>
+  <span style=color:#8b008b;font-weight:700>if</span> [ <span style=color:#00688b>$?</span> -eq <span style=color:#b452cd>0</span> ]; <span style=color:#8b008b;font-weight:700>then</span>
+    <span style=color:#00688b>$LOGGER</span> <span style=color:#cd5555>&#34;count </span><span style=color:#00688b>$artifact_count</span><span style=color:#cd5555> </span><span style=color:#00688b>$ARTIFACT</span><span style=color:#cd5555> to delete&#34;</span>
+    <span style=color:#8b008b;font-weight:700>if</span> [ <span style=color:#cd5555>&#34;</span><span style=color:#00688b>$artifact_count</span><span style=color:#cd5555>&#34;</span> -gt <span style=color:#cd5555>&#34;0&#34;</span> ]; <span style=color:#8b008b;font-weight:700>then</span>
+      <span style=color:#00688b>$LOGGER</span> <span style=color:#cd5555>&#34;oc adm prune </span><span style=color:#00688b>$ARTIFACT</span><span style=color:#cd5555> &#34;</span> <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>        <span style=color:#cd5555>&#34;--orphans --keep-complete=</span><span style=color:#00688b>$KEEP_COMPLETE</span><span style=color:#cd5555> --keep-failed=</span><span style=color:#00688b>$KEEP_FAILED</span><span style=color:#cd5555> --keep-younger-than=</span><span style=color:#00688b>$KEEP_YOUNGER</span><span style=color:#cd5555> --confirm&#34;</span>
+      oc adm prune <span style=color:#cd5555>&#34;</span><span style=color:#00688b>$ARTIFACT</span><span style=color:#cd5555>&#34;</span> <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>        --orphans --keep-complete=<span style=color:#cd5555>&#34;</span><span style=color:#00688b>$KEEP_COMPLETE</span><span style=color:#cd5555>&#34;</span> --keep-failed=<span style=color:#cd5555>&#34;</span><span style=color:#00688b>$KEEP_FAILED</span><span style=color:#cd5555>&#34;</span> --keep-younger-than=<span style=color:#cd5555>&#34;</span><span style=color:#00688b>$KEEP_YOUNGER</span><span style=color:#cd5555>&#34;</span> --confirm
+    <span style=color:#8b008b;font-weight:700>fi</span>
+  <span style=color:#8b008b;font-weight:700>else</span>
+    <span style=color:#00688b>$LOGGER</span> <span style=color:#cd5555>&#34;failed to count existing </span><span style=color:#00688b>$ARTIFACT</span><span style=color:#cd5555>&#34;</span>
+    <span style=color:#658b00>exit</span> <span style=color:#b452cd>1</span>
+  <span style=color:#8b008b;font-weight:700>fi</span>
+<span style=color:#8b008b;font-weight:700>fi</span>
 </code></pre></div>
 </div>
 <div id=comments>

@@ -107,9 +107,9 @@ August 18, 2021
 <div id=post-content>
 <p>Sometimes you want to put files in git that you really shouldn&rsquo;t be putting in git.</p>
 <p>Files like aws credentials or an htpasswd file.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#75715e>#.env.aws</span>
-aws_access_key_id<span style=color:#f92672>=</span>EXAMPLE
-aws_secret_access_key<span style=color:#f92672>=</span>EXAMPLE
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#228b22>#.env.aws</span>
+<span style=color:#00688b>aws_access_key_id</span>=EXAMPLE
+<span style=color:#00688b>aws_secret_access_key</span>=EXAMPLE
 </code></pre></div><p>Why? Maybe you want to make it obvious what secrets need to be provided with your code and to illustrate how they should be formatted. So maybe you put them in a directory like <code>secrets/</code> with example values in them. Then you commit those examples.</p>
 <p>OK, so now how to make sure you don&rsquo;t accidentally update the values with real secrets and publish them to github?</p>
 <p>I know! Put them in <code>.gitignore</code>! Oh wait. That doesn&rsquo;t actually work. Once the file is tracked, it is tracked.</p>

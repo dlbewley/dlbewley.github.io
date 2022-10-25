@@ -209,22 +209,22 @@ To do a HA setup, I think I need a</li>
 <ul>
 <li><input checked disabled type=checkbox> From the OpenStack Director host, RHEL image in glance from <code>rhel-guest-image-7</code> rpm. (Convert to RAW is using Ceph RBD CoW)</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ sudo yum -y install rhel-guest-image-7 <span style=color:#75715e># or download newer from https://access.redhat.com</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ sudo yum -y install rhel-guest-image-7 <span style=color:#228b22># or download newer from https://access.redhat.com</span>
 $ cp -p /usr/share/rhel-guest-image-7/rhel-guest-image-7*.qcow2 /tmp/
-$ virt-customize <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    -a /tmp/rhel-guest-image-7*.qcow2 <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    --root-password password:&lt;default_root_password&gt;
-$ qemu-img convert <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    -f qcow2 <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    -O raw <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    /tmp/rhel-guest-image-7*.qcow2 <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    /tmp/rhel7.raw
-$ openstack image create <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    rhel7 <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    --container-format bare <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    --disk-format raw <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    --file /tmp/rhel7.raw <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    --public
+$ virt-customize <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    -a /tmp/rhel-guest-image-7*.qcow2 <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    --root-password password:&lt;default_root_password&gt;
+$ qemu-img convert <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    -f qcow2 <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    -O raw <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    /tmp/rhel-guest-image-7*.qcow2 <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    /tmp/rhel7.raw
+$ openstack image create <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    rhel7 <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    --container-format bare <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    --disk-format raw <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    --file /tmp/rhel7.raw <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    --public
 </code></pre></div><ul>
 <li>
 <p>deploy 8 virtual machines on network</p>
@@ -244,50 +244,50 @@ $ openstack image create <span style=color:#ae81ff>\
 <ul>
 <li><input checked disabled type=checkbox> Increase keystone token expiration to 7200s to ensure OpenShift Ansible can complete. See <a href=https://access.redhat.com/documentation/en-us/reference_architectures/2017/html-single/deploying_red_hat_openshift_container_platform_3.4_on_red_hat_openstack_platform_10/#appendix-c>appendix</a> and <a href=https://access.redhat.com/solutions/1527533>solution 1527533</a></li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#75715e>#  ansible playbook to extend keystone token expiration</span>
-- <span style=color:#f92672>hosts</span>: <span style=color:#ae81ff>controller</span>
-  <span style=color:#f92672>become</span>: <span style=color:#66d9ef>true</span>
-  <span style=color:#f92672>become_user</span>: <span style=color:#ae81ff>root</span>
-
-  <span style=color:#f92672>tasks</span>:
-  - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>who am i</span>
-    <span style=color:#f92672>debug</span>:
-      <span style=color:#f92672>msg</span>: <span style=color:#e6db74>&#34;{{ansible_fqdn}}&#34;</span>
-
-  - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>configure keystone token expiration</span>
-    <span style=color:#f92672>lineinfile</span>:
-      <span style=color:#f92672>dest</span>: <span style=color:#ae81ff>/etc/keystone/keystone.conf</span>
-      <span style=color:#f92672>regexp</span>: <span style=color:#e6db74>&#39;^expiration = .*&#39;</span>
-      <span style=color:#f92672>line</span>: <span style=color:#e6db74>&#39;expiration = 7200&#39;</span>
-      <span style=color:#f92672>backup</span>: <span style=color:#66d9ef>yes</span>
-    <span style=color:#f92672>notify</span>: <span style=color:#ae81ff>restart keystone</span>
-
-  <span style=color:#f92672>handlers</span>:
-  - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>restart keystone</span>
-    <span style=color:#f92672>service</span>:
-      <span style=color:#f92672>name</span>: <span style=color:#ae81ff>httpd</span>
-      <span style=color:#f92672>state</span>: <span style=color:#ae81ff>restarted</span>
-</code></pre></div><ul>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#228b22>#  ansible playbook to extend keystone token expiration</span><span style=color:#bbb>
+</span><span style=color:#bbb></span>- <span style=color:#8b008b;font-weight:700>hosts</span>:<span style=color:#bbb> </span>controller<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>become</span>:<span style=color:#bbb> </span><span style=color:#8b008b;font-weight:700>true</span><span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>become_user</span>:<span style=color:#bbb> </span>root<span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>tasks</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>  </span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>who am i<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>debug</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>msg</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;{{ansible_fqdn}}&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb>  </span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>configure keystone token expiration<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>lineinfile</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>dest</span>:<span style=color:#bbb> </span>/etc/keystone/keystone.conf<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>regexp</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#39;^expiration = .*&#39;</span><span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>line</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#39;expiration = 7200&#39;</span><span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>backup</span>:<span style=color:#bbb> </span><span style=color:#8b008b;font-weight:700>yes</span><span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>notify</span>:<span style=color:#bbb> </span>restart keystone<span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>handlers</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>  </span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>restart keystone<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>service</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>httpd<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>state</span>:<span style=color:#bbb> </span>restarted<span style=color:#bbb>
+</span></code></pre></div><ul>
 <li><input checked disabled type=checkbox> OpenStack tenant to run in: eg. <code>ocp3</code></li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ openstack project create ocp3 --enable
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ openstack project create ocp3 --enable
 $ openstack user create ocp3 --email dlbewley@example.com --project ocp3 --enable --password &lt;password&gt;
-<span style=color:#75715e># create ocp3rc with credentials</span>
+<span style=color:#228b22># create ocp3rc with credentials</span>
 </code></pre></div><ul>
 <li><input checked disabled type=checkbox> <a href=https://docs.openstack.org/python-openstackclient/latest/cli/command-objects/quota.html>Increase Quota</a> to meet <a href=https://access.redhat.com/documentation/en-us/reference_architectures/2017/html/deploying_red_hat_openshift_container_platform_3.4_on_red_hat_openstack_platform_10/deploying_using_heat#project_quotas>recommendations</a></li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ openstack quota show ocp3
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ openstack quota show ocp3
 ...
-$ openstack quota set ocp3 <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>              --cores <span style=color:#ae81ff>60</span> <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>              --gigabytes <span style=color:#ae81ff>2000</span> <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>              --instances <span style=color:#ae81ff>20</span> <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>              --ram <span style=color:#66d9ef>$((</span> <span style=color:#ae81ff>450</span> <span style=color:#f92672>*</span> <span style=color:#ae81ff>1024</span> <span style=color:#66d9ef>))</span> <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>              --volumes <span style=color:#ae81ff>30</span>
+$ openstack quota <span style=color:#658b00>set</span> ocp3 <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>              --cores <span style=color:#b452cd>60</span> <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>              --gigabytes <span style=color:#b452cd>2000</span> <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>              --instances <span style=color:#b452cd>20</span> <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>              --ram <span style=color:#8b008b;font-weight:700>$((</span> <span style=color:#b452cd>450</span> * <span style=color:#b452cd>1024</span> <span style=color:#8b008b;font-weight:700>))</span> <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>              --volumes <span style=color:#b452cd>30</span>
 </code></pre></div><ul>
 <li><input checked disabled type=checkbox> An SSH keypair pre-loaded in nova</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#75715e># save the private key for later</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#228b22># save the private key for later</span>
 $ openstack keypair create ocp3 &gt; ~/.ssh/ocp3.key
 $ openstack keypair show ocp3 --public-key &gt; ~/.ssh/ocp3.pub
 </code></pre></div><ul>
@@ -313,41 +313,41 @@ An existing LDAP or Active Directory service for user identification and authent
 </ul>
 <h2 id=deploy-a-dyanmic-dns-server>Deploy a Dyanmic DNS Server</h2>
 <p>During testing <a href=https://access.redhat.com/documentation/en-us/reference_architectures/2017/html/deploying_red_hat_openshift_container_platform_3.4_on_red_hat_openstack_platform_10/appendix-b>create a DNS server</a> in the project which we can be updated using <code>nsupdate</code>.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>git clone https://github.com/openshift/openshift-ansible-contrib
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>git clone https://github.com/openshift/openshift-ansible-contrib
 </code></pre></div><ul>
 <li><input disabled type=checkbox> Create a <code>dns-vars.yaml</code> for feeding to <a href=https://github.com/openshift/openshift-ansible-contrib/blob/master/reference-architecture/osp-dns/deploy-dns.yaml>deploy-dns.yaml</a> playbook</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml>---
-<span style=color:#f92672>domain_name</span>: <span style=color:#ae81ff>ocp3.example.com</span>
-<span style=color:#f92672>contact</span>: <span style=color:#ae81ff>admin@ocp3.example.com</span>
-<span style=color:#75715e># real DNS servers from environment</span>
-<span style=color:#f92672>dns_forwarders</span>: [<span style=color:#ae81ff>10.</span><span style=color:#ae81ff>x.x.41, 10.x.x.2]</span>
-<span style=color:#f92672>update_key</span>: <span style=color:#e6db74>&#34;NOT A REAL KEY&#34;</span>
-<span style=color:#f92672>slave_count</span>: <span style=color:#ae81ff>2</span>
-
-<span style=color:#f92672>stack_name</span>: <span style=color:#ae81ff>dns-service</span>
-<span style=color:#f92672>external_network</span>: <span style=color:#ae81ff>public</span>
-
-<span style=color:#f92672>image</span>: <span style=color:#ae81ff>rhel7</span>
-<span style=color:#f92672>flavor</span>: <span style=color:#ae81ff>m1.small</span>
-<span style=color:#f92672>ssh_user</span>: <span style=color:#ae81ff>cloud-user</span>
-<span style=color:#f92672>ssh_key_name</span>: <span style=color:#ae81ff>ocp3</span>
-
-<span style=color:#75715e># NOTE: For Red Hat Enterprise Linux:</span>
-<span style=color:#75715e># rhn_username: &#34;rhnusername&#34;</span>
-<span style=color:#75715e># rhn_password: &#34;NOT A REAL PASSWORD&#34;</span>
-<span style=color:#75715e># rhn_pool: &#34;pool id string&#34;</span>
-<span style=color:#75715e># Either RHN or Sat6</span>
-<span style=color:#f92672>sat6_hostname</span>: <span style=color:#e6db74>&#34;&#34;</span>
-<span style=color:#f92672>sat6_organization</span>: <span style=color:#e6db74>&#34;&#34;</span>
-<span style=color:#f92672>sat6_activationkey</span>: <span style=color:#e6db74>&#34;&#34;</span>
-</code></pre></div><ul>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#008b45;text-decoration:underline>---</span><span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>domain_name</span>:<span style=color:#bbb> </span>ocp3.example.com<span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>contact</span>:<span style=color:#bbb> </span>admin@ocp3.example.com<span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#228b22># real DNS servers from environment</span><span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>dns_forwarders</span>:<span style=color:#bbb> </span>[<span style=color:#b452cd>10.</span>x.x.41, 10.x.x.2]<span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>update_key</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;NOT A REAL KEY&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>slave_count</span>:<span style=color:#bbb> </span><span style=color:#b452cd>2</span><span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>stack_name</span>:<span style=color:#bbb> </span>dns-service<span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>external_network</span>:<span style=color:#bbb> </span>public<span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>image</span>:<span style=color:#bbb> </span>rhel7<span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>flavor</span>:<span style=color:#bbb> </span>m1.small<span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>ssh_user</span>:<span style=color:#bbb> </span>cloud-user<span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>ssh_key_name</span>:<span style=color:#bbb> </span>ocp3<span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#228b22># NOTE: For Red Hat Enterprise Linux:</span><span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#228b22># rhn_username: &#34;rhnusername&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#228b22># rhn_password: &#34;NOT A REAL PASSWORD&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#228b22># rhn_pool: &#34;pool id string&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#228b22># Either RHN or Sat6</span><span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>sat6_hostname</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>sat6_organization</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>sat6_activationkey</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;&#34;</span><span style=color:#bbb>
+</span></code></pre></div><ul>
 <li><input disabled type=checkbox> Run <code>deploy-dns.sh</code> like this</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#75715e>#!/bin/bash
-</span><span style=color:#75715e></span>export ANSIBLE_HOST_KEY_CHECKING<span style=color:#f92672>=</span>False
-ansible-playbook --private-key ocp3.key -e @dns-vars.yaml -vv<span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>        openshift-ansible-contrib/reference-architecture/osp-dns/deploy-dns.yaml | tee dns-deploy.log
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#1e889b>#!/bin/bash
+</span><span style=color:#1e889b></span><span style=color:#658b00>export</span> <span style=color:#00688b>ANSIBLE_HOST_KEY_CHECKING</span>=False
+ansible-playbook --private-key ocp3.key -e @dns-vars.yaml -vv<span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>        openshift-ansible-contrib/reference-architecture/osp-dns/deploy-dns.yaml | tee dns-deploy.log
 </code></pre></div><p>My network deployed, but I hit an error caused by the <a href=https://docs.openstack.org/nova/latest/user/filter-scheduler.html>Nova scheduler</a> configuration while deploying the instances, so I <a href=https://github.com/openshift/openshift-ansible-contrib/issues/699>opened an issue</a></p>
 <pre tabindex=0><code>17-08-27 02:21:14Z [dns-service.hosts]: CREATE_FAILED  ResourceInError: resources.hosts.resources.slaves.resources.slaves.resources[1].resources.host: Went to status ERROR due to \&quot;Message: ServerGroup policy is not supported: ServerGroupAntiAffinityFilter not configured, Code: 400\&quot;&quot;, &quot;2017-08-27 02:21:14Z [dns-service]: CREATE_FAILED  Resource CREATE failed: ResourceInError: resources.hosts.resources.slaves.resources.slaves.resources[1].resources.host: Went to status ERROR due to \&quot;Message: ServerGroup policy is not supported: ServerGroupAntiAffinityFilter not configured, Code: 400\&quot;&quot;]}
 </code></pre><pre tabindex=0><code>[stack@director ~]$ openstack server group list
@@ -361,9 +361,9 @@ ansible-playbook --private-key ocp3.key -e @dns-vars.yaml -vv<span style=color:#
 <ul>
 <li>Make the heat templates available. If the <code>openshift-heat-templates</code> RPM is not reachable, clone the repo and</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>sudo yum -y install python-heatclient openshift-heat-templates <span style=color:#75715e># missing in OSP 11</span>
-<span style=color:#75715e># or</span>
-cd ~stack/templates
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>sudo yum -y install python-heatclient openshift-heat-templates <span style=color:#228b22># missing in OSP 11</span>
+<span style=color:#228b22># or</span>
+<span style=color:#658b00>cd</span> ~stack/templates
 git clone https://github.com/redhat-openstack/openshift-on-openstack
 </code></pre></div><ul>
 <li>Get or create a <code>openshift_parameters.yaml</code> heat template. Use <a href=https://github.com/redhat-openstack/openshift-on-openstack/blob/master/openshift.yaml>this one</a> or copy from example in README.adoc or copy <a href=https://access.redhat.com/documentation/en-us/reference_architectures/2017/html/deploying_red_hat_openshift_container_platform_3.4_on_red_hat_openstack_platform_10/deploying_using_heat#heat_stack_configuration>from the ref arch</a></li>

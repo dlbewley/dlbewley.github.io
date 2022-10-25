@@ -169,76 +169,76 @@ Keyspace: hawkular_metrics
                 Space used (live): 318081
 </code></pre><h2 id=cassandra-heap-size>Cassandra Heap Size</h2>
 <p>Today I noticed my metrics were malfunctioning and I observed that cassandra is out of heap space:</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc logs hawkular-cassandra-1-eo3w8 | grep <span style=color:#e6db74>&#39;heap space&#39;</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc logs hawkular-cassandra-1-eo3w8 | grep <span style=color:#cd5555>&#39;heap space&#39;</span>
 ...
 java.lang.OutOfMemoryError: Java heap space
 </code></pre></div><p><strong>How big is the cassandra heap space?</strong></p>
 <p>First off, how does the cassandra container start? It uses <a href=https://github.com/openshift/origin-metrics/blob/master/cassandra/cassandra-docker.sh>cassandra-docker.sh</a>.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc get rc hawkular-cassandra-1 -o json | jq .spec.template.spec.containers<span style=color:#f92672>[]</span>.command
-</code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-json data-lang=json>[
-  <span style=color:#e6db74>&#34;/opt/apache-cassandra/bin/cassandra-docker.sh&#34;</span>,
-  <span style=color:#e6db74>&#34;--cluster_name=hawkular-metrics&#34;</span>,
-  <span style=color:#e6db74>&#34;--data_volume=/cassandra_data&#34;</span>,
-  <span style=color:#e6db74>&#34;--internode_encryption=all&#34;</span>,
-  <span style=color:#e6db74>&#34;--require_node_auth=true&#34;</span>,
-  <span style=color:#e6db74>&#34;--enable_client_encryption=true&#34;</span>,
-  <span style=color:#e6db74>&#34;--require_client_auth=true&#34;</span>,
-  <span style=color:#e6db74>&#34;--keystore_file=/secret/cassandra.keystore&#34;</span>,
-  <span style=color:#e6db74>&#34;--keystore_password_file=/secret/cassandra.keystore.password&#34;</span>,
-  <span style=color:#e6db74>&#34;--truststore_file=/secret/cassandra.truststore&#34;</span>,
-  <span style=color:#e6db74>&#34;--truststore_password_file=/secret/cassandra.truststore.password&#34;</span>,
-  <span style=color:#e6db74>&#34;--cassandra_pem_file=/secret/cassandra.pem&#34;</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc get rc hawkular-cassandra-1 -o json | jq .spec.template.spec.containers[].command
+</code></pre></div><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-json data-lang=json>[
+  <span style=color:#cd5555>&#34;/opt/apache-cassandra/bin/cassandra-docker.sh&#34;</span>,
+  <span style=color:#cd5555>&#34;--cluster_name=hawkular-metrics&#34;</span>,
+  <span style=color:#cd5555>&#34;--data_volume=/cassandra_data&#34;</span>,
+  <span style=color:#cd5555>&#34;--internode_encryption=all&#34;</span>,
+  <span style=color:#cd5555>&#34;--require_node_auth=true&#34;</span>,
+  <span style=color:#cd5555>&#34;--enable_client_encryption=true&#34;</span>,
+  <span style=color:#cd5555>&#34;--require_client_auth=true&#34;</span>,
+  <span style=color:#cd5555>&#34;--keystore_file=/secret/cassandra.keystore&#34;</span>,
+  <span style=color:#cd5555>&#34;--keystore_password_file=/secret/cassandra.keystore.password&#34;</span>,
+  <span style=color:#cd5555>&#34;--truststore_file=/secret/cassandra.truststore&#34;</span>,
+  <span style=color:#cd5555>&#34;--truststore_password_file=/secret/cassandra.truststore.password&#34;</span>,
+  <span style=color:#cd5555>&#34;--cassandra_pem_file=/secret/cassandra.pem&#34;</span>
 ]
 </code></pre></div><p>I am using v3.3.0 of the image:</p>
 <pre tabindex=0><code>$ oc get rc hawkular-cassandra-1 -o json | jq .spec.template.spec.containers[].image
 &quot;registry.access.redhat.com/openshift3/metrics-cassandra:3.3.0&quot;
 </code></pre><p>Looking at the startup <code>/opt/apache-cassandra/bin/cassandra-docker.sh</code> script in the pod there is this:</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#66d9ef>if</span> <span style=color:#f92672>[</span> -z <span style=color:#e6db74>&#34;</span><span style=color:#e6db74>${</span>MAX_HEAP_SIZE<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span> <span style=color:#f92672>]</span>; <span style=color:#66d9ef>then</span>
-  <span style=color:#66d9ef>if</span> <span style=color:#f92672>[</span> -z <span style=color:#e6db74>&#34;</span><span style=color:#e6db74>${</span>MEMORY_LIMIT<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span> <span style=color:#f92672>]</span>; <span style=color:#66d9ef>then</span>
-    MEMORY_LIMIT<span style=color:#f92672>=</span><span style=color:#e6db74>`</span>cat /sys/fs/cgroup/memory/memory.limit_in_bytes<span style=color:#e6db74>`</span>
-    echo <span style=color:#e6db74>&#34;The MEMORY_LIMIT envar was not set. Reading value from /sys/fs/cgroup/memory/memory.limit_in_bytes.&#34;</span>
-  <span style=color:#66d9ef>fi</span>
-  echo <span style=color:#e6db74>&#34;The MAX_HEAP_SIZE envar is not set. Basing the MAX_HEAP_SIZE on the available memory limit for the pod (</span><span style=color:#e6db74>${</span>MEMORY_LIMIT<span style=color:#e6db74>}</span><span style=color:#e6db74>).&#34;</span>
-  BYTES_MEGABYTE<span style=color:#f92672>=</span><span style=color:#ae81ff>1048576</span>
-  BYTES_GIGABYTE<span style=color:#f92672>=</span><span style=color:#ae81ff>1073741824</span>
-  <span style=color:#75715e># Based on the Cassandra memory limit recommendations. See http://docs.datastax.com/en/cassandra/2.2/cassandra/operations/opsTuneJVM.html</span>
-  <span style=color:#66d9ef>if</span> <span style=color:#f92672>((</span> <span style=color:#e6db74>${</span>MEMORY_LIMIT<span style=color:#e6db74>}</span> &lt;<span style=color:#f92672>=</span> <span style=color:#f92672>(</span><span style=color:#ae81ff>2</span> * <span style=color:#e6db74>${</span>BYTES_GIGABYTE<span style=color:#e6db74>}</span><span style=color:#f92672>)</span> <span style=color:#f92672>))</span>; <span style=color:#66d9ef>then</span>
-    <span style=color:#75715e># If less than 2GB, set the heap to be 1/2 of available ram</span>
-    echo <span style=color:#e6db74>&#34;The memory limit is less than 2GB. Using 1/2 of available memory for the max_heap_size.&#34;</span>
-    export MAX_HEAP_SIZE<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;</span><span style=color:#66d9ef>$((</span><span style=color:#e6db74>${</span>MEMORY_LIMIT<span style=color:#e6db74>}</span> <span style=color:#f92672>/</span> <span style=color:#e6db74>${</span>BYTES_MEGABYTE<span style=color:#e6db74>}</span> <span style=color:#f92672>/</span> <span style=color:#ae81ff>2</span> <span style=color:#66d9ef>))</span><span style=color:#e6db74>M&#34;</span>
-  <span style=color:#66d9ef>elif</span> <span style=color:#f92672>((</span> <span style=color:#e6db74>${</span>MEMORY_LIMIT<span style=color:#e6db74>}</span> &lt;<span style=color:#f92672>=</span> <span style=color:#f92672>(</span><span style=color:#ae81ff>4</span> * <span style=color:#e6db74>${</span>BYTES_GIGABYTE<span style=color:#e6db74>}</span><span style=color:#f92672>)</span> <span style=color:#f92672>))</span>; <span style=color:#66d9ef>then</span>
-    echo <span style=color:#e6db74>&#34;The memory limit is between 2 and 4GB. Setting max_heap_size to 1GB.&#34;</span>
-    <span style=color:#75715e># If between 2 and 4GB, set the heap to 1GB</span>
-    export MAX_HEAP_SIZE<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;1024M&#34;</span>
-  <span style=color:#66d9ef>elif</span> <span style=color:#f92672>((</span> <span style=color:#e6db74>${</span>MEMORY_LIMIT<span style=color:#e6db74>}</span> &lt;<span style=color:#f92672>=</span> <span style=color:#f92672>(</span><span style=color:#ae81ff>32</span> * <span style=color:#e6db74>${</span>BYTES_GIGABYTE<span style=color:#e6db74>}</span><span style=color:#f92672>)</span> <span style=color:#f92672>))</span>; <span style=color:#66d9ef>then</span>
-    echo <span style=color:#e6db74>&#34;The memory limit is between 4 and 32GB. Using 1/4 of the available memory for the max_heap_size.&#34;</span>
-    <span style=color:#75715e># If between 4 and 32GB, use 1/4 of the available ram</span>
-    export MAX_HEAP_SIZE<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;</span><span style=color:#66d9ef>$((</span> <span style=color:#e6db74>${</span>MEMORY_LIMIT<span style=color:#e6db74>}</span> <span style=color:#f92672>/</span> <span style=color:#e6db74>${</span>BYTES_MEGABYTE<span style=color:#e6db74>}</span> <span style=color:#f92672>/</span> <span style=color:#ae81ff>4</span> <span style=color:#66d9ef>))</span><span style=color:#e6db74>M&#34;</span>
-  <span style=color:#66d9ef>else</span>
-    echo <span style=color:#e6db74>&#34;The memory limit is above 32GB. Using 8GB for the max_heap_size&#34;</span>
-    <span style=color:#75715e># If above 32GB, set the heap size to 8GB</span>
-    export MAX_HEAP_SIZE<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;8192M&#34;</span>
-  <span style=color:#66d9ef>fi</span>
-  echo <span style=color:#e6db74>&#34;The MAX_HEAP_SIZE has been set to </span><span style=color:#e6db74>${</span>MAX_HEAP_SIZE<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span>
-<span style=color:#66d9ef>else</span>
-  echo <span style=color:#e6db74>&#34;The MAX_HEAP_SIZE envar is set to </span><span style=color:#e6db74>${</span>MAX_HEAP_SIZE<span style=color:#e6db74>}</span><span style=color:#e6db74>. Using this value&#34;</span>
-<span style=color:#66d9ef>fi</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#8b008b;font-weight:700>if</span> [ -z <span style=color:#cd5555>&#34;</span><span style=color:#cd5555>${</span><span style=color:#00688b>MAX_HEAP_SIZE</span><span style=color:#cd5555>}</span><span style=color:#cd5555>&#34;</span> ]; <span style=color:#8b008b;font-weight:700>then</span>
+  <span style=color:#8b008b;font-weight:700>if</span> [ -z <span style=color:#cd5555>&#34;</span><span style=color:#cd5555>${</span><span style=color:#00688b>MEMORY_LIMIT</span><span style=color:#cd5555>}</span><span style=color:#cd5555>&#34;</span> ]; <span style=color:#8b008b;font-weight:700>then</span>
+    <span style=color:#00688b>MEMORY_LIMIT</span>=<span style=color:#cd5555>`</span>cat /sys/fs/cgroup/memory/memory.limit_in_bytes<span style=color:#cd5555>`</span>
+    <span style=color:#658b00>echo</span> <span style=color:#cd5555>&#34;The MEMORY_LIMIT envar was not set. Reading value from /sys/fs/cgroup/memory/memory.limit_in_bytes.&#34;</span>
+  <span style=color:#8b008b;font-weight:700>fi</span>
+  <span style=color:#658b00>echo</span> <span style=color:#cd5555>&#34;The MAX_HEAP_SIZE envar is not set. Basing the MAX_HEAP_SIZE on the available memory limit for the pod (</span><span style=color:#cd5555>${</span><span style=color:#00688b>MEMORY_LIMIT</span><span style=color:#cd5555>}</span><span style=color:#cd5555>).&#34;</span>
+  <span style=color:#00688b>BYTES_MEGABYTE</span>=<span style=color:#b452cd>1048576</span>
+  <span style=color:#00688b>BYTES_GIGABYTE</span>=<span style=color:#b452cd>1073741824</span>
+  <span style=color:#228b22># Based on the Cassandra memory limit recommendations. See http://docs.datastax.com/en/cassandra/2.2/cassandra/operations/opsTuneJVM.html</span>
+  <span style=color:#8b008b;font-weight:700>if</span> (( <span style=color:#cd5555>${</span><span style=color:#00688b>MEMORY_LIMIT</span><span style=color:#cd5555>}</span> &lt;= (<span style=color:#b452cd>2</span> * <span style=color:#cd5555>${</span><span style=color:#00688b>BYTES_GIGABYTE</span><span style=color:#cd5555>}</span>) )); <span style=color:#8b008b;font-weight:700>then</span>
+    <span style=color:#228b22># If less than 2GB, set the heap to be 1/2 of available ram</span>
+    <span style=color:#658b00>echo</span> <span style=color:#cd5555>&#34;The memory limit is less than 2GB. Using 1/2 of available memory for the max_heap_size.&#34;</span>
+    <span style=color:#658b00>export</span> <span style=color:#00688b>MAX_HEAP_SIZE</span>=<span style=color:#cd5555>&#34;</span><span style=color:#8b008b;font-weight:700>$((</span><span style=color:#cd5555>${</span><span style=color:#00688b>MEMORY_LIMIT</span><span style=color:#cd5555>}</span> / <span style=color:#cd5555>${</span><span style=color:#00688b>BYTES_MEGABYTE</span><span style=color:#cd5555>}</span> / <span style=color:#b452cd>2</span> <span style=color:#8b008b;font-weight:700>))</span><span style=color:#cd5555>M&#34;</span>
+  <span style=color:#8b008b;font-weight:700>elif</span> (( <span style=color:#cd5555>${</span><span style=color:#00688b>MEMORY_LIMIT</span><span style=color:#cd5555>}</span> &lt;= (<span style=color:#b452cd>4</span> * <span style=color:#cd5555>${</span><span style=color:#00688b>BYTES_GIGABYTE</span><span style=color:#cd5555>}</span>) )); <span style=color:#8b008b;font-weight:700>then</span>
+    <span style=color:#658b00>echo</span> <span style=color:#cd5555>&#34;The memory limit is between 2 and 4GB. Setting max_heap_size to 1GB.&#34;</span>
+    <span style=color:#228b22># If between 2 and 4GB, set the heap to 1GB</span>
+    <span style=color:#658b00>export</span> <span style=color:#00688b>MAX_HEAP_SIZE</span>=<span style=color:#cd5555>&#34;1024M&#34;</span>
+  <span style=color:#8b008b;font-weight:700>elif</span> (( <span style=color:#cd5555>${</span><span style=color:#00688b>MEMORY_LIMIT</span><span style=color:#cd5555>}</span> &lt;= (<span style=color:#b452cd>32</span> * <span style=color:#cd5555>${</span><span style=color:#00688b>BYTES_GIGABYTE</span><span style=color:#cd5555>}</span>) )); <span style=color:#8b008b;font-weight:700>then</span>
+    <span style=color:#658b00>echo</span> <span style=color:#cd5555>&#34;The memory limit is between 4 and 32GB. Using 1/4 of the available memory for the max_heap_size.&#34;</span>
+    <span style=color:#228b22># If between 4 and 32GB, use 1/4 of the available ram</span>
+    <span style=color:#658b00>export</span> <span style=color:#00688b>MAX_HEAP_SIZE</span>=<span style=color:#cd5555>&#34;</span><span style=color:#8b008b;font-weight:700>$((</span> <span style=color:#cd5555>${</span><span style=color:#00688b>MEMORY_LIMIT</span><span style=color:#cd5555>}</span> / <span style=color:#cd5555>${</span><span style=color:#00688b>BYTES_MEGABYTE</span><span style=color:#cd5555>}</span> / <span style=color:#b452cd>4</span> <span style=color:#8b008b;font-weight:700>))</span><span style=color:#cd5555>M&#34;</span>
+  <span style=color:#8b008b;font-weight:700>else</span>
+    <span style=color:#658b00>echo</span> <span style=color:#cd5555>&#34;The memory limit is above 32GB. Using 8GB for the max_heap_size&#34;</span>
+    <span style=color:#228b22># If above 32GB, set the heap size to 8GB</span>
+    <span style=color:#658b00>export</span> <span style=color:#00688b>MAX_HEAP_SIZE</span>=<span style=color:#cd5555>&#34;8192M&#34;</span>
+  <span style=color:#8b008b;font-weight:700>fi</span>
+  <span style=color:#658b00>echo</span> <span style=color:#cd5555>&#34;The MAX_HEAP_SIZE has been set to </span><span style=color:#cd5555>${</span><span style=color:#00688b>MAX_HEAP_SIZE</span><span style=color:#cd5555>}</span><span style=color:#cd5555>&#34;</span>
+<span style=color:#8b008b;font-weight:700>else</span>
+  <span style=color:#658b00>echo</span> <span style=color:#cd5555>&#34;The MAX_HEAP_SIZE envar is set to </span><span style=color:#cd5555>${</span><span style=color:#00688b>MAX_HEAP_SIZE</span><span style=color:#cd5555>}</span><span style=color:#cd5555>. Using this value&#34;</span>
+<span style=color:#8b008b;font-weight:700>fi</span>
 
-<span style=color:#66d9ef>if</span> <span style=color:#f92672>[</span> -z <span style=color:#e6db74>&#34;</span><span style=color:#e6db74>${</span>HEAP_NEWSIZE<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span> <span style=color:#f92672>]</span> <span style=color:#f92672>&amp;&amp;</span> <span style=color:#f92672>[</span> -z <span style=color:#e6db74>&#34;</span><span style=color:#e6db74>${</span>CPU_LIMIT<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span> <span style=color:#f92672>]</span>; <span style=color:#66d9ef>then</span>
-  echo <span style=color:#e6db74>&#34;The HEAP_NEWSIZE and CPU_LIMIT envars are not set. Defaulting the HEAP_NEWSIZE to 100M&#34;</span>
-  export HEAP_NEWSIZE<span style=color:#f92672>=</span>100M
-<span style=color:#66d9ef>elif</span> <span style=color:#f92672>[</span> -z <span style=color:#e6db74>&#34;</span><span style=color:#e6db74>${</span>HEAP_NEWSIZE<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span> <span style=color:#f92672>]</span>; <span style=color:#66d9ef>then</span>
-  export HEAP_NEWSIZE<span style=color:#f92672>=</span><span style=color:#66d9ef>$((</span>CPU_LIMIT/10<span style=color:#66d9ef>))</span>M
-  echo <span style=color:#e6db74>&#34;THE HEAP_NEWSIZE envar is not set. Setting to </span><span style=color:#e6db74>${</span>HEAP_NEWSIZE<span style=color:#e6db74>}</span><span style=color:#e6db74> based on the CPU_LIMIT of </span><span style=color:#e6db74>${</span>CPU_LIMIT<span style=color:#e6db74>}</span><span style=color:#e6db74>. [100M per CPU core]&#34;</span>
-<span style=color:#66d9ef>else</span>
-  echo <span style=color:#e6db74>&#34;The HEAP_NEWSIZE envar is set to </span><span style=color:#e6db74>${</span>HEAP_NEWSIZE<span style=color:#e6db74>}</span><span style=color:#e6db74>. Using this value&#34;</span>
-<span style=color:#66d9ef>fi</span>
+<span style=color:#8b008b;font-weight:700>if</span> [ -z <span style=color:#cd5555>&#34;</span><span style=color:#cd5555>${</span><span style=color:#00688b>HEAP_NEWSIZE</span><span style=color:#cd5555>}</span><span style=color:#cd5555>&#34;</span> ] &amp;&amp; [ -z <span style=color:#cd5555>&#34;</span><span style=color:#cd5555>${</span><span style=color:#00688b>CPU_LIMIT</span><span style=color:#cd5555>}</span><span style=color:#cd5555>&#34;</span> ]; <span style=color:#8b008b;font-weight:700>then</span>
+  <span style=color:#658b00>echo</span> <span style=color:#cd5555>&#34;The HEAP_NEWSIZE and CPU_LIMIT envars are not set. Defaulting the HEAP_NEWSIZE to 100M&#34;</span>
+  <span style=color:#658b00>export</span> <span style=color:#00688b>HEAP_NEWSIZE</span>=100M
+<span style=color:#8b008b;font-weight:700>elif</span> [ -z <span style=color:#cd5555>&#34;</span><span style=color:#cd5555>${</span><span style=color:#00688b>HEAP_NEWSIZE</span><span style=color:#cd5555>}</span><span style=color:#cd5555>&#34;</span> ]; <span style=color:#8b008b;font-weight:700>then</span>
+  <span style=color:#658b00>export</span> <span style=color:#00688b>HEAP_NEWSIZE</span>=<span style=color:#8b008b;font-weight:700>$((</span>CPU_LIMIT/10<span style=color:#8b008b;font-weight:700>))</span>M
+  <span style=color:#658b00>echo</span> <span style=color:#cd5555>&#34;THE HEAP_NEWSIZE envar is not set. Setting to </span><span style=color:#cd5555>${</span><span style=color:#00688b>HEAP_NEWSIZE</span><span style=color:#cd5555>}</span><span style=color:#cd5555> based on the CPU_LIMIT of </span><span style=color:#cd5555>${</span><span style=color:#00688b>CPU_LIMIT</span><span style=color:#cd5555>}</span><span style=color:#cd5555>. [100M per CPU core]&#34;</span>
+<span style=color:#8b008b;font-weight:700>else</span>
+  <span style=color:#658b00>echo</span> <span style=color:#cd5555>&#34;The HEAP_NEWSIZE envar is set to </span><span style=color:#cd5555>${</span><span style=color:#00688b>HEAP_NEWSIZE</span><span style=color:#cd5555>}</span><span style=color:#cd5555>. Using this value&#34;</span>
+<span style=color:#8b008b;font-weight:700>fi</span>
 </code></pre></div><p>So using <code>oc rsh</code> to examine the pod a little more.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc rsh hawkular-cassandra-1-eo3w8 env | grep MAX
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc rsh hawkular-cassandra-1-eo3w8 env | grep MAX
 $ oc rsh hawkular-cassandra-1-eo3w8 env | grep MEMORY
-MEMORY_LIMIT<span style=color:#f92672>=</span><span style=color:#ae81ff>202622070784</span>
+<span style=color:#00688b>MEMORY_LIMIT</span>=<span style=color:#b452cd>202622070784</span>
 $ oc rsh hawkular-cassandra-1-eo3w8 cat /sys/fs/cgroup/memory/memory.limit_in_bytes
-<span style=color:#ae81ff>9223372036854775807</span>
+<span style=color:#b452cd>9223372036854775807</span>
 </code></pre></div><p>At start up the container outputs the following.</p>
 <blockquote>
 <p>The MAX_HEAP_SIZE envar is not set. Basing the MAX_HEAP_SIZE on the available memory limit for the pod (202622070784).
@@ -247,8 +247,8 @@ The MAX_HEAP_SIZE has been set to 8192M
 THE HEAP_NEWSIZE envar is not set. Setting to 3200M based on the CPU_LIMIT of 32000. [100M per CPU core]</p>
 </blockquote>
 <p>All this tells me Cassandra&rsquo;s Java heap is being artificially limited to 8G (on my node which has 192G RAM), and to fix that I can set the <code>MAX_HEAP_SIZE</code> variable in the replication controller config.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc env rc hawkular-cassandra-1 MAX_HEAP_SIZE<span style=color:#f92672>=</span>12288M
-replicationcontroller <span style=color:#e6db74>&#34;hawkular-cassandra-1&#34;</span> updated
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc env rc hawkular-cassandra-1 <span style=color:#00688b>MAX_HEAP_SIZE</span>=12288M
+replicationcontroller <span style=color:#cd5555>&#34;hawkular-cassandra-1&#34;</span> updated
 $ oc delete pod hawkular-cassandra-1-eo3w8
 </code></pre></div><p>After deleting the running pod with the old environment, a new pod was scheduled with the updated environment, but to a smaller node</p>
 <blockquote>
@@ -257,15 +257,15 @@ THE HEAP_NEWSIZE envar is not set. Setting to 800M based on the CPU_LIMIT of 800
 </blockquote>
 <h2 id=cassandra-heap-new-size>Cassandra Heap New Size</h2>
 <p>What is this <code>$HEAP_NEWSIZE</code> parameter, and how is it determined? Back to <code>/opt/apache-cassandra/bin/cassandra-docker.sh</code>:</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#66d9ef>if</span> <span style=color:#f92672>[</span> -z <span style=color:#e6db74>&#34;</span><span style=color:#e6db74>${</span>HEAP_NEWSIZE<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span> <span style=color:#f92672>]</span> <span style=color:#f92672>&amp;&amp;</span> <span style=color:#f92672>[</span> -z <span style=color:#e6db74>&#34;</span><span style=color:#e6db74>${</span>CPU_LIMIT<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span> <span style=color:#f92672>]</span>; <span style=color:#66d9ef>then</span>
-  echo <span style=color:#e6db74>&#34;The HEAP_NEWSIZE and CPU_LIMIT envars are not set. Defaulting the HEAP_NEWSIZE to 100M&#34;</span>
-  export HEAP_NEWSIZE<span style=color:#f92672>=</span>100M
-<span style=color:#66d9ef>elif</span> <span style=color:#f92672>[</span> -z <span style=color:#e6db74>&#34;</span><span style=color:#e6db74>${</span>HEAP_NEWSIZE<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span> <span style=color:#f92672>]</span>; <span style=color:#66d9ef>then</span>
-  export HEAP_NEWSIZE<span style=color:#f92672>=</span><span style=color:#66d9ef>$((</span>CPU_LIMIT/10<span style=color:#66d9ef>))</span>M
-  echo <span style=color:#e6db74>&#34;THE HEAP_NEWSIZE envar is not set. Setting to </span><span style=color:#e6db74>${</span>HEAP_NEWSIZE<span style=color:#e6db74>}</span><span style=color:#e6db74> based on the CPU_LIMIT of </span><span style=color:#e6db74>${</span>CPU_LIMIT<span style=color:#e6db74>}</span><span style=color:#e6db74>. [100M per CPU core]&#34;</span>
-<span style=color:#66d9ef>else</span>
-  echo <span style=color:#e6db74>&#34;The HEAP_NEWSIZE envar is set to </span><span style=color:#e6db74>${</span>HEAP_NEWSIZE<span style=color:#e6db74>}</span><span style=color:#e6db74>. Using this value&#34;</span>
-<span style=color:#66d9ef>fi</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#8b008b;font-weight:700>if</span> [ -z <span style=color:#cd5555>&#34;</span><span style=color:#cd5555>${</span><span style=color:#00688b>HEAP_NEWSIZE</span><span style=color:#cd5555>}</span><span style=color:#cd5555>&#34;</span> ] &amp;&amp; [ -z <span style=color:#cd5555>&#34;</span><span style=color:#cd5555>${</span><span style=color:#00688b>CPU_LIMIT</span><span style=color:#cd5555>}</span><span style=color:#cd5555>&#34;</span> ]; <span style=color:#8b008b;font-weight:700>then</span>
+  <span style=color:#658b00>echo</span> <span style=color:#cd5555>&#34;The HEAP_NEWSIZE and CPU_LIMIT envars are not set. Defaulting the HEAP_NEWSIZE to 100M&#34;</span>
+  <span style=color:#658b00>export</span> <span style=color:#00688b>HEAP_NEWSIZE</span>=100M
+<span style=color:#8b008b;font-weight:700>elif</span> [ -z <span style=color:#cd5555>&#34;</span><span style=color:#cd5555>${</span><span style=color:#00688b>HEAP_NEWSIZE</span><span style=color:#cd5555>}</span><span style=color:#cd5555>&#34;</span> ]; <span style=color:#8b008b;font-weight:700>then</span>
+  <span style=color:#658b00>export</span> <span style=color:#00688b>HEAP_NEWSIZE</span>=<span style=color:#8b008b;font-weight:700>$((</span>CPU_LIMIT/10<span style=color:#8b008b;font-weight:700>))</span>M
+  <span style=color:#658b00>echo</span> <span style=color:#cd5555>&#34;THE HEAP_NEWSIZE envar is not set. Setting to </span><span style=color:#cd5555>${</span><span style=color:#00688b>HEAP_NEWSIZE</span><span style=color:#cd5555>}</span><span style=color:#cd5555> based on the CPU_LIMIT of </span><span style=color:#cd5555>${</span><span style=color:#00688b>CPU_LIMIT</span><span style=color:#cd5555>}</span><span style=color:#cd5555>. [100M per CPU core]&#34;</span>
+<span style=color:#8b008b;font-weight:700>else</span>
+  <span style=color:#658b00>echo</span> <span style=color:#cd5555>&#34;The HEAP_NEWSIZE envar is set to </span><span style=color:#cd5555>${</span><span style=color:#00688b>HEAP_NEWSIZE</span><span style=color:#cd5555>}</span><span style=color:#cd5555>. Using this value&#34;</span>
+<span style=color:#8b008b;font-weight:700>fi</span>
 </code></pre></div><p>So, unless a <code>$HEAP_NEWSIZE</code> is supplied a limit of 100MB per CPU core will be applied. However, <a href=https://issues.apache.org/jira/browse/CASSANDRA-8150>that is bad</a>?</p>
 <p>At these point we are getting deeper into JVM tuning than I care to be.</p>
 <h2 id=todo>ToDo</h2>

@@ -122,31 +122,31 @@ February 19, 2019
 <ul>
 <li><input disabled type=checkbox> <strong>Get endpoint status</strong></li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#75715e>#!/bin/bash
-</span><span style=color:#75715e></span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#1e889b>#!/bin/bash
+</span><span style=color:#1e889b></span>
 . /etc/etcd/etcd.conf
 . /root/playbook-openshift/openshift-env.sh
 
-ENV<span style=color:#f92672>=</span><span style=color:#e6db74>${</span>OPENSHIFT_ENV<span style=color:#66d9ef>:-</span>test<span style=color:#e6db74>}</span>
-FORMAT<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;table&#34;</span>
-<span style=color:#75715e>#ENDPOINTS=&#34;https://ose-${ENV}-etcd-01.example.com:2379,https://ose-${ENV}-etcd-02.example.com:2379,https://ose-${ENV}-etcd-03.example.com:2379&#34;</span>
+<span style=color:#00688b>ENV</span>=<span style=color:#cd5555>${</span><span style=color:#00688b>OPENSHIFT_ENV</span><span style=color:#8b008b;font-weight:700>:-</span><span style=color:#00688b>test</span><span style=color:#cd5555>}</span>
+<span style=color:#00688b>FORMAT</span>=<span style=color:#cd5555>&#34;table&#34;</span>
+<span style=color:#228b22>#ENDPOINTS=&#34;https://ose-${ENV}-etcd-01.example.com:2379,https://ose-${ENV}-etcd-02.example.com:2379,https://ose-${ENV}-etcd-03.example.com:2379&#34;</span>
 
-ALL_ENDPOINTS<span style=color:#f92672>=</span><span style=color:#e6db74>`</span>ETCDCTL_API<span style=color:#f92672>=</span><span style=color:#ae81ff>3</span> etcdctl <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>        --cert <span style=color:#e6db74>${</span>ETCD_PEER_CERT_FILE<span style=color:#e6db74>}</span> <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>        --key <span style=color:#e6db74>${</span>ETCD_PEER_KEY_FILE<span style=color:#e6db74>}</span> <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>        --cacert <span style=color:#e6db74>${</span>ETCD_PEER_TRUSTED_CA_FILE<span style=color:#66d9ef>:-</span>$ETCD_PEER_CA_FILE<span style=color:#e6db74>}</span> <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>        --endpoints <span style=color:#e6db74>&#34;</span>$ETCD_ADVERTISE_CLIENT_URLS<span style=color:#e6db74>&#34;</span> <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>        --write-out<span style=color:#f92672>=</span>fields <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>        member list | awk <span style=color:#e6db74>&#39;/ClientURL/{printf &#34;%s%s&#34;,sep,$3; sep=&#34;,&#34;}&#39;</span><span style=color:#e6db74>`</span>
+<span style=color:#00688b>ALL_ENDPOINTS</span>=<span style=color:#cd5555>`</span><span style=color:#00688b>ETCDCTL_API</span>=<span style=color:#b452cd>3</span> etcdctl <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>        --cert <span style=color:#cd5555>${</span><span style=color:#00688b>ETCD_PEER_CERT_FILE</span><span style=color:#cd5555>}</span> <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>        --key <span style=color:#cd5555>${</span><span style=color:#00688b>ETCD_PEER_KEY_FILE</span><span style=color:#cd5555>}</span> <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>        --cacert <span style=color:#cd5555>${</span><span style=color:#00688b>ETCD_PEER_TRUSTED_CA_FILE</span><span style=color:#8b008b;font-weight:700>:-</span><span style=color:#00688b>$ETCD_PEER_CA_FILE</span><span style=color:#cd5555>}</span> <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>        --endpoints <span style=color:#cd5555>&#34;</span><span style=color:#00688b>$ETCD_ADVERTISE_CLIENT_URLS</span><span style=color:#cd5555>&#34;</span> <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>        --write-out=fields <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>        member list | awk <span style=color:#cd5555>&#39;/ClientURL/{printf &#34;%s%s&#34;,sep,$3; sep=&#34;,&#34;}&#39;</span><span style=color:#cd5555>`</span>
 
-ETCDCTL_API<span style=color:#f92672>=</span><span style=color:#ae81ff>3</span> etcdctl <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    --cert <span style=color:#e6db74>${</span>ETCD_PEER_CERT_FILE<span style=color:#e6db74>}</span> <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    --key <span style=color:#e6db74>${</span>ETCD_PEER_KEY_FILE<span style=color:#e6db74>}</span> <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    --cacert <span style=color:#e6db74>${</span>ETCD_PEER_TRUSTED_CA_FILE<span style=color:#66d9ef>:-</span>$ETCD_PEER_CA_FILE<span style=color:#e6db74>}</span> <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    --endpoints <span style=color:#e6db74>&#34;</span>$ALL_ENDPOINTS<span style=color:#e6db74>&#34;</span> <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    --write-out <span style=color:#e6db74>&#34;</span>$FORMAT<span style=color:#e6db74>&#34;</span> <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    endpoint status
-</code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-plain data-lang=plain>[root@ose-test-etcd-01 bin]# ./etcd-status
+<span style=color:#00688b>ETCDCTL_API</span>=<span style=color:#b452cd>3</span> etcdctl <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    --cert <span style=color:#cd5555>${</span><span style=color:#00688b>ETCD_PEER_CERT_FILE</span><span style=color:#cd5555>}</span> <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    --key <span style=color:#cd5555>${</span><span style=color:#00688b>ETCD_PEER_KEY_FILE</span><span style=color:#cd5555>}</span> <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    --cacert <span style=color:#cd5555>${</span><span style=color:#00688b>ETCD_PEER_TRUSTED_CA_FILE</span><span style=color:#8b008b;font-weight:700>:-</span><span style=color:#00688b>$ETCD_PEER_CA_FILE</span><span style=color:#cd5555>}</span> <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    --endpoints <span style=color:#cd5555>&#34;</span><span style=color:#00688b>$ALL_ENDPOINTS</span><span style=color:#cd5555>&#34;</span> <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    --write-out <span style=color:#cd5555>&#34;</span><span style=color:#00688b>$FORMAT</span><span style=color:#cd5555>&#34;</span> <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    endpoint status
+</code></pre></div><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-plain data-lang=plain>[root@ose-test-etcd-01 bin]# ./etcd-status
 +--------------------------+------------------+---------+---------+-----------+-----------+------------+
 |          ENDPOINT        |        ID        | VERSION | DB SIZE | IS LEADER | RAFT TERM | RAFT INDEX |
 +--------------------------+------------------+---------+---------+-----------+-----------+------------+
@@ -159,62 +159,62 @@ ETCDCTL_API<span style=color:#f92672>=</span><span style=color:#ae81ff>3</span> 
 </code></pre></div><ul>
 <li><input disabled type=checkbox> <strong>Create etcd snapshot backup.</strong></li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#75715e># https://access.redhat.com/solutions/1981013#comment-1257931</span>
-BACKUP_DIR<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;/var/backup/etcd/</span><span style=color:#66d9ef>$(</span>date +%Y%m%d%H%M<span style=color:#66d9ef>)</span><span style=color:#e6db74>&#34;</span>
-mkdir -p <span style=color:#e6db74>${</span>BACKUP_DIR<span style=color:#e6db74>}</span>/snap
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#228b22># https://access.redhat.com/solutions/1981013#comment-1257931</span>
+<span style=color:#00688b>BACKUP_DIR</span>=<span style=color:#cd5555>&#34;/var/backup/etcd/</span><span style=color:#8b008b;font-weight:700>$(</span>date +%Y%m%d%H%M<span style=color:#8b008b;font-weight:700>)</span><span style=color:#cd5555>&#34;</span>
+mkdir -p <span style=color:#cd5555>${</span><span style=color:#00688b>BACKUP_DIR</span><span style=color:#cd5555>}</span>/snap
 
-ETCD3<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;etcdctl --cert </span><span style=color:#e6db74>${</span>ETCD_PEER_CERT_FILE<span style=color:#e6db74>}</span><span style=color:#e6db74> --key </span><span style=color:#e6db74>${</span>ETCD_PEER_KEY_FILE<span style=color:#e6db74>}</span><span style=color:#e6db74> \
-</span><span style=color:#e6db74>        --cacert </span><span style=color:#e6db74>${</span>ETCD_PEER_TRUSTED_CA_FILE<span style=color:#66d9ef>:-</span>$ETCD_PEER_CA_FILE<span style=color:#e6db74>}</span><span style=color:#e6db74> --endpoints </span><span style=color:#e6db74>${</span>ETCD_ADVERTISE_CLIENT_URLS<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span>
+<span style=color:#00688b>ETCD3</span>=<span style=color:#cd5555>&#34;etcdctl --cert </span><span style=color:#cd5555>${</span><span style=color:#00688b>ETCD_PEER_CERT_FILE</span><span style=color:#cd5555>}</span><span style=color:#cd5555> --key </span><span style=color:#cd5555>${</span><span style=color:#00688b>ETCD_PEER_KEY_FILE</span><span style=color:#cd5555>}</span><span style=color:#cd5555> \
+</span><span style=color:#cd5555>        --cacert </span><span style=color:#cd5555>${</span><span style=color:#00688b>ETCD_PEER_TRUSTED_CA_FILE</span><span style=color:#8b008b;font-weight:700>:-</span><span style=color:#00688b>$ETCD_PEER_CA_FILE</span><span style=color:#cd5555>}</span><span style=color:#cd5555> --endpoints </span><span style=color:#cd5555>${</span><span style=color:#00688b>ETCD_ADVERTISE_CLIENT_URLS</span><span style=color:#cd5555>}</span><span style=color:#cd5555>&#34;</span>
 
-ETCDCTL_API<span style=color:#f92672>=</span><span style=color:#ae81ff>3</span> $ETCD3 <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    snapshot save <span style=color:#e6db74>${</span>BACKUP_DIR<span style=color:#e6db74>}</span>/snap/db
+<span style=color:#00688b>ETCDCTL_API</span>=<span style=color:#b452cd>3</span> <span style=color:#00688b>$ETCD3</span> <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    snapshot save <span style=color:#cd5555>${</span><span style=color:#00688b>BACKUP_DIR</span><span style=color:#cd5555>}</span>/snap/db
 </code></pre></div><blockquote>
 <p>Snapshot saved at /var/backup/etcd/20190219/snap/db</p>
 </blockquote>
 <ul>
 <li><input disabled type=checkbox> <strong>Copy db for some reason. Just cuz</strong></li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#f92672>[</span>root@ose-test-etcd-01 bin<span style=color:#f92672>]</span><span style=color:#75715e># cp -p /var/lib/etcd/member/snap/db /tmp/db</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>[root@ose-test-etcd-01 bin]<span style=color:#228b22># cp -p /var/lib/etcd/member/snap/db /tmp/db</span>
 </code></pre></div><ul>
 <li><input disabled type=checkbox> <strong>Distribute saved snapshot <code>/var/backup/etcd/20190219/snap/db</code> to all etcd nodes</strong></li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml>- <span style=color:#f92672>hosts</span>: <span style=color:#ae81ff>etcd</span>
-  <span style=color:#f92672>vars</span>:
-    <span style=color:#f92672>etcd_backup</span>: <span style=color:#ae81ff>/var/backup/etcd/20190219/snap/db</span>
-    <span style=color:#f92672>etcd_backup_copy</span>: <span style=color:#ae81ff>20190219.</span><span style=color:#ae81ff>snap.db</span>
-
-  <span style=color:#f92672>tasks</span>:
-<span style=color:#75715e>#   - name: create snapshot backup</span>
-<span style=color:#75715e>#     script:</span>
-<span style=color:#75715e>#       name: bin/etcd-backup</span>
-<span style=color:#75715e>#     delegate_to: ose-test-etcd-01.example.com</span>
-
-  - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>download etcd backup from node 1</span>
-    <span style=color:#f92672>fetch</span>:
-      <span style=color:#f92672>src</span>: <span style=color:#e6db74>&#34;{{ etcd_backup }}&#34;</span>
-      <span style=color:#f92672>dest</span>: <span style=color:#e6db74>&#34;./tmp/{{ etcd_backup_copy }}&#34;</span>
-      <span style=color:#f92672>flat</span>: <span style=color:#66d9ef>true</span>
-    <span style=color:#f92672>delegate_to</span>: <span style=color:#ae81ff>ose-test-etcd-01.example.com</span>
-    <span style=color:#f92672>run_once</span>: <span style=color:#66d9ef>true</span>
-
-  - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>distribute etcd backup to all nodes</span>
-    <span style=color:#f92672>copy</span>:
-      <span style=color:#f92672>src</span>: <span style=color:#e6db74>&#34;./tmp/{{ etcd_backup_copy }}&#34;</span>
-      <span style=color:#f92672>dest</span>: <span style=color:#e6db74>&#34;/tmp/{{ etcd_backup_copy }}&#34;</span>
-</code></pre></div><ul>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml>- <span style=color:#8b008b;font-weight:700>hosts</span>:<span style=color:#bbb> </span>etcd<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>vars</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>etcd_backup</span>:<span style=color:#bbb> </span>/var/backup/etcd/20190219/snap/db<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>etcd_backup_copy</span>:<span style=color:#bbb> </span><span style=color:#b452cd>20190219.</span>snap.db<span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>tasks</span>:<span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#228b22>#   - name: create snapshot backup</span><span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#228b22>#     script:</span><span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#228b22>#       name: bin/etcd-backup</span><span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#228b22>#     delegate_to: ose-test-etcd-01.example.com</span><span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb>  </span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>download etcd backup from node 1<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>fetch</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>src</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;{{ etcd_backup }}&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>dest</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;./tmp/{{ etcd_backup_copy }}&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>flat</span>:<span style=color:#bbb> </span><span style=color:#8b008b;font-weight:700>true</span><span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>delegate_to</span>:<span style=color:#bbb> </span>ose-test-etcd-01.example.com<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>run_once</span>:<span style=color:#bbb> </span><span style=color:#8b008b;font-weight:700>true</span><span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb>  </span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>distribute etcd backup to all nodes<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>copy</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>src</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;./tmp/{{ etcd_backup_copy }}&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>dest</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;/tmp/{{ etcd_backup_copy }}&#34;</span><span style=color:#bbb>
+</span></code></pre></div><ul>
 <li><input disabled type=checkbox> <strong>Stop etcd on all nodes and rm old data</strong></li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>ansible etcd -m service -a <span style=color:#e6db74>&#39;name=etcd state=stopped&#39;</span>
-ansible etcd -m shell -a <span style=color:#e6db74>&#39;mv /var/lib/etcd{,.deleted}&#39;</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>ansible etcd -m service -a <span style=color:#cd5555>&#39;name=etcd state=stopped&#39;</span>
+ansible etcd -m shell -a <span style=color:#cd5555>&#39;mv /var/lib/etcd{,.deleted}&#39;</span>
 </code></pre></div><ul>
 <li><input disabled type=checkbox> <strong>Downgrade etcd to supported version</strong></li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>ansible etcd -m yum -a <span style=color:#e6db74>&#39;name=etcd-3.2.22 allow_downgrade=yes&#39;</span>
-ansible etcd -m file -a <span style=color:#e6db74>&#39;dest=/var/lib/etcd state=absent&#39;</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>ansible etcd -m yum -a <span style=color:#cd5555>&#39;name=etcd-3.2.22 allow_downgrade=yes&#39;</span>
+ansible etcd -m file -a <span style=color:#cd5555>&#39;dest=/var/lib/etcd state=absent&#39;</span>
 </code></pre></div><ul>
 <li><input disabled type=checkbox> <strong>Confirm the version</strong></li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-plain data-lang=plain>[root@ose-test-master-01 playbook-openshift]# ansible etcd -m command -a &#39;rpm -q etcd&#39; -o
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-plain data-lang=plain>[root@ose-test-master-01 playbook-openshift]# ansible etcd -m command -a &#39;rpm -q etcd&#39; -o
 ose-test-etcd-01.example.com | SUCCESS | rc=0 | (stdout) etcd-3.2.22-1.el7.x86_64
 ose-test-etcd-03.example.com | SUCCESS | rc=0 | (stdout) etcd-3.2.22-1.el7.x86_64
 ose-test-etcd-02.example.com | SUCCESS | rc=0 | (stdout) etcd-3.2.22-1.el7.x86_64
@@ -223,54 +223,54 @@ ose-test-master-01.example.com | SUCCESS | rc=0 | (stdout) etcd-3.2.22-1.el7.x86
 </code></pre></div><ul>
 <li><input disabled type=checkbox> <strong>Recover from snapshot on each node</strong></li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#75715e>#!/bin/bash -x
-</span><span style=color:#75715e></span>source /etc/etcd/etcd.conf
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#1e889b>#!/bin/bash -x
+</span><span style=color:#1e889b></span><span style=color:#658b00>source</span> /etc/etcd/etcd.conf
 
-<span style=color:#75715e># not all etcd nodes will have all members listed in etcd.conf if you used the scaleup playbook</span>
-ETCD_INITIAL_CLUSTER<span style=color:#f92672>=</span>ose-test-etcd-02.example.com<span style=color:#f92672>=</span>https://192.0.2.242:2380,ose-test-etcd-03.example.com<span style=color:#f92672>=</span>https://192.0.2.243:2380,ose-test-master-02.example.com<span style=color:#f92672>=</span>https://192.0.2.250:2380,ose-test-etcd-01.example.com<span style=color:#f92672>=</span>https://192.0.2.241:2380,ose-test-master-01.example.com<span style=color:#f92672>=</span>https://192.0.2.251:2380
+<span style=color:#228b22># not all etcd nodes will have all members listed in etcd.conf if you used the scaleup playbook</span>
+<span style=color:#00688b>ETCD_INITIAL_CLUSTER</span>=ose-test-etcd-02.example.com=https://192.0.2.242:2380,ose-test-etcd-03.example.com=https://192.0.2.243:2380,ose-test-master-02.example.com=https://192.0.2.250:2380,ose-test-etcd-01.example.com=https://192.0.2.241:2380,ose-test-master-01.example.com=https://192.0.2.251:2380
 
-ETCDCTL_API<span style=color:#f92672>=</span><span style=color:#ae81ff>3</span> etcdctl snapshot restore /tmp/20190219.snap.db <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    --name $ETCD_NAME <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    --initial-cluster $ETCD_INITIAL_CLUSTER <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    --initial-cluster-token $ETCD_INITIAL_CLUSTER_TOKEN <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    --initial-advertise-peer-urls $ETCD_INITIAL_ADVERTISE_PEER_URLS <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    --data-dir /var/lib/etcd
+<span style=color:#00688b>ETCDCTL_API</span>=<span style=color:#b452cd>3</span> etcdctl snapshot restore /tmp/20190219.snap.db <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    --name <span style=color:#00688b>$ETCD_NAME</span> <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    --initial-cluster <span style=color:#00688b>$ETCD_INITIAL_CLUSTER</span> <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    --initial-cluster-token <span style=color:#00688b>$ETCD_INITIAL_CLUSTER_TOKEN</span> <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    --initial-advertise-peer-urls <span style=color:#00688b>$ETCD_INITIAL_ADVERTISE_PEER_URLS</span> <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    --data-dir /var/lib/etcd
 </code></pre></div><blockquote>
 <p>eg: ose-test-etcd-01</p>
 </blockquote>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>  <span style=color:#f92672>[</span>root@ose-test-etcd-01 ~<span style=color:#f92672>]</span><span style=color:#75715e># ./restore-etcd.sh</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>  [root@ose-test-etcd-01 ~]<span style=color:#228b22># ./restore-etcd.sh</span>
   + . /etc/etcd/etcd.conf
-  ++ ETCD_NAME<span style=color:#f92672>=</span>ose-test-etcd-01.example.com
-  ++ ETCD_LISTEN_PEER_URLS<span style=color:#f92672>=</span>https://192.0.2.241:2380
-  ++ ETCD_DATA_DIR<span style=color:#f92672>=</span>/var/lib/etcd/
-  ++ ETCD_HEARTBEAT_INTERVAL<span style=color:#f92672>=</span><span style=color:#ae81ff>500</span>
-  ++ ETCD_ELECTION_TIMEOUT<span style=color:#f92672>=</span><span style=color:#ae81ff>2500</span>
-  ++ ETCD_LISTEN_CLIENT_URLS<span style=color:#f92672>=</span>https://192.0.2.241:2379
-  ++ ETCD_INITIAL_ADVERTISE_PEER_URLS<span style=color:#f92672>=</span>https://192.0.2.241:2380
-  ++ ETCD_INITIAL_CLUSTER<span style=color:#f92672>=</span>ose-test-etcd-01.example.com<span style=color:#f92672>=</span>https://192.0.2.241:2380,ose-test-etcd-02.example.com<span style=color:#f92672>=</span>https://192.0.2.242:2380,ose-test-etcd-03.example.com<span style=color:#f92672>=</span>https://192.0.2.243:$
-  <span style=color:#ae81ff>380</span>
-  ++ ETCD_INITIAL_CLUSTER_STATE<span style=color:#f92672>=</span>new
-  ++ ETCD_INITIAL_CLUSTER_TOKEN<span style=color:#f92672>=</span>etcd-cluster-1
-  ++ ETCD_ADVERTISE_CLIENT_URLS<span style=color:#f92672>=</span>https://192.0.2.241:2379
-  ++ ETCD_CA_FILE<span style=color:#f92672>=</span>/etc/etcd/ca.crt
-  ++ ETCD_CERT_FILE<span style=color:#f92672>=</span>/etc/etcd/server.crt
-  ++ ETCD_KEY_FILE<span style=color:#f92672>=</span>/etc/etcd/server.key
-  ++ ETCD_PEER_CA_FILE<span style=color:#f92672>=</span>/etc/etcd/ca.crt
-  ++ ETCD_PEER_CERT_FILE<span style=color:#f92672>=</span>/etc/etcd/peer.crt
-  ++ ETCD_PEER_KEY_FILE<span style=color:#f92672>=</span>/etc/etcd/peer.key
-  + ETCD_INITIAL_CLUSTER<span style=color:#f92672>=</span>ose-test-etcd-02.example.com<span style=color:#f92672>=</span>https://192.0.2.242:2380,ose-test-etcd-03.example.com<span style=color:#f92672>=</span>https://192.0.2.243:2380,ose-test-master-02.example.com<span style=color:#f92672>=</span>https://192.0.2.250$
-  2380,ose-test-etcd-01.example.com<span style=color:#f92672>=</span>https://192.0.2.241:2380,ose-test-master-01.example.com<span style=color:#f92672>=</span>https://192.0.2.251:2380
-  + SNAPSHOT<span style=color:#f92672>=</span>/tmp/20190219.snap.db/20190219.snap.db
-  + ETCDCTL_API<span style=color:#f92672>=</span><span style=color:#ae81ff>3</span>
-  + etcdctl snapshot restore /tmp/20190219.snap.db/20190219.snap.db --name ose-test-etcd-01.example.com --initial-cluster ose-test-etcd-02.example.com<span style=color:#f92672>=</span>https://192.0.2.242:2380,ose-
-  test-etcd-03.example.com<span style=color:#f92672>=</span>https://192.0.2.243:2380,ose-test-master-02.example.com<span style=color:#f92672>=</span>https://192.0.2.250:2380,ose-test-etcd-01.example.com<span style=color:#f92672>=</span>https://192.0.2.241:2380,ose-test-master-01.pix
-  ar.com<span style=color:#f92672>=</span>https://192.0.2.251:2380 --initial-cluster-token etcd-cluster-1 --initial-advertise-peer-urls https://192.0.2.241:2380 --data-dir /var/lib/etcd
-  2019-02-19 11:33:09.696902 I | mvcc: restore compact to <span style=color:#ae81ff>196581339</span>
-  2019-02-19 11:33:09.723669 I | etcdserver/membership: added member 3beb6ea7fc78a5f7 <span style=color:#f92672>[</span>https://192.0.2.251:2380<span style=color:#f92672>]</span> to cluster f09fa88ac65802b7
-  2019-02-19 11:33:09.723698 I | etcdserver/membership: added member c80ffa9b8823e61d <span style=color:#f92672>[</span>https://192.0.2.250:2380<span style=color:#f92672>]</span> to cluster f09fa88ac65802b7
-  2019-02-19 11:33:09.723709 I | etcdserver/membership: added member dd1f136e71579ace <span style=color:#f92672>[</span>https://192.0.2.241:2380<span style=color:#f92672>]</span> to cluster f09fa88ac65802b7
-  2019-02-19 11:33:09.723719 I | etcdserver/membership: added member f54da589b60c16be <span style=color:#f92672>[</span>https://192.0.2.243:2380<span style=color:#f92672>]</span> to cluster f09fa88ac65802b7
-  2019-02-19 11:33:09.723732 I | etcdserver/membership: added member f573d8d196b92c82 <span style=color:#f92672>[</span>https://192.0.2.242:2380<span style=color:#f92672>]</span> to cluster f09fa88ac65802b7
+  ++ <span style=color:#00688b>ETCD_NAME</span>=ose-test-etcd-01.example.com
+  ++ <span style=color:#00688b>ETCD_LISTEN_PEER_URLS</span>=https://192.0.2.241:2380
+  ++ <span style=color:#00688b>ETCD_DATA_DIR</span>=/var/lib/etcd/
+  ++ <span style=color:#00688b>ETCD_HEARTBEAT_INTERVAL</span>=<span style=color:#b452cd>500</span>
+  ++ <span style=color:#00688b>ETCD_ELECTION_TIMEOUT</span>=<span style=color:#b452cd>2500</span>
+  ++ <span style=color:#00688b>ETCD_LISTEN_CLIENT_URLS</span>=https://192.0.2.241:2379
+  ++ <span style=color:#00688b>ETCD_INITIAL_ADVERTISE_PEER_URLS</span>=https://192.0.2.241:2380
+  ++ <span style=color:#00688b>ETCD_INITIAL_CLUSTER</span>=ose-test-etcd-01.example.com=https://192.0.2.241:2380,ose-test-etcd-02.example.com=https://192.0.2.242:2380,ose-test-etcd-03.example.com=https://192.0.2.243:$
+  <span style=color:#b452cd>380</span>
+  ++ <span style=color:#00688b>ETCD_INITIAL_CLUSTER_STATE</span>=new
+  ++ <span style=color:#00688b>ETCD_INITIAL_CLUSTER_TOKEN</span>=etcd-cluster-1
+  ++ <span style=color:#00688b>ETCD_ADVERTISE_CLIENT_URLS</span>=https://192.0.2.241:2379
+  ++ <span style=color:#00688b>ETCD_CA_FILE</span>=/etc/etcd/ca.crt
+  ++ <span style=color:#00688b>ETCD_CERT_FILE</span>=/etc/etcd/server.crt
+  ++ <span style=color:#00688b>ETCD_KEY_FILE</span>=/etc/etcd/server.key
+  ++ <span style=color:#00688b>ETCD_PEER_CA_FILE</span>=/etc/etcd/ca.crt
+  ++ <span style=color:#00688b>ETCD_PEER_CERT_FILE</span>=/etc/etcd/peer.crt
+  ++ <span style=color:#00688b>ETCD_PEER_KEY_FILE</span>=/etc/etcd/peer.key
+  + <span style=color:#00688b>ETCD_INITIAL_CLUSTER</span>=ose-test-etcd-02.example.com=https://192.0.2.242:2380,ose-test-etcd-03.example.com=https://192.0.2.243:2380,ose-test-master-02.example.com=https://192.0.2.250$
+  2380,ose-test-etcd-01.example.com=https://192.0.2.241:2380,ose-test-master-01.example.com=https://192.0.2.251:2380
+  + <span style=color:#00688b>SNAPSHOT</span>=/tmp/20190219.snap.db/20190219.snap.db
+  + <span style=color:#00688b>ETCDCTL_API</span>=<span style=color:#b452cd>3</span>
+  + etcdctl snapshot restore /tmp/20190219.snap.db/20190219.snap.db --name ose-test-etcd-01.example.com --initial-cluster ose-test-etcd-02.example.com=https://192.0.2.242:2380,ose-
+  test-etcd-03.example.com=https://192.0.2.243:2380,ose-test-master-02.example.com=https://192.0.2.250:2380,ose-test-etcd-01.example.com=https://192.0.2.241:2380,ose-test-master-01.pix
+  ar.com=https://192.0.2.251:2380 --initial-cluster-token etcd-cluster-1 --initial-advertise-peer-urls https://192.0.2.241:2380 --data-dir /var/lib/etcd
+  2019-02-19 11:33:09.696902 I | mvcc: restore compact to <span style=color:#b452cd>196581339</span>
+  2019-02-19 11:33:09.723669 I | etcdserver/membership: added member 3beb6ea7fc78a5f7 [https://192.0.2.251:2380] to cluster f09fa88ac65802b7
+  2019-02-19 11:33:09.723698 I | etcdserver/membership: added member c80ffa9b8823e61d [https://192.0.2.250:2380] to cluster f09fa88ac65802b7
+  2019-02-19 11:33:09.723709 I | etcdserver/membership: added member dd1f136e71579ace [https://192.0.2.241:2380] to cluster f09fa88ac65802b7
+  2019-02-19 11:33:09.723719 I | etcdserver/membership: added member f54da589b60c16be [https://192.0.2.243:2380] to cluster f09fa88ac65802b7
+  2019-02-19 11:33:09.723732 I | etcdserver/membership: added member f573d8d196b92c82 [https://192.0.2.242:2380] to cluster f09fa88ac65802b7
 </code></pre></div><ul>
 <li>
 <p><input disabled type=checkbox> <strong>Repeat above restore on all etcd nodes</strong></p>
@@ -279,47 +279,47 @@ ETCDCTL_API<span style=color:#f92672>=</span><span style=color:#ae81ff>3</span> 
 <p><input disabled type=checkbox> <strong>Fix etcd permissions</strong></p>
 </li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>ansible etcd -m command -a <span style=color:#e6db74>&#39;chown etcd:etcd -R /var/lib/etcd&#39;</span>
-ansible etcd -m command -a <span style=color:#e6db74>&#39;restorecon -Rv /var/lib/etcd&#39;</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>ansible etcd -m <span style=color:#658b00>command</span> -a <span style=color:#cd5555>&#39;chown etcd:etcd -R /var/lib/etcd&#39;</span>
+ansible etcd -m <span style=color:#658b00>command</span> -a <span style=color:#cd5555>&#39;restorecon -Rv /var/lib/etcd&#39;</span>
 </code></pre></div><ul>
 <li><input disabled type=checkbox> <strong>Start etcd and check status.</strong></li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>ansible etcd -m service -a <span style=color:#e6db74>&#39;name=etcd state=started&#39;</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>ansible etcd -m service -a <span style=color:#cd5555>&#39;name=etcd state=started&#39;</span>
 </code></pre></div><blockquote>
 <p>eg:</p>
 </blockquote>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#f92672>[</span>root@ose-test-etcd-01 bin<span style=color:#f92672>]</span><span style=color:#75715e># ./etcd-status</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>[root@ose-test-etcd-01 bin]<span style=color:#228b22># ./etcd-status</span>
 +--------------------------+------------------+---------+---------+-----------+-----------+------------+
 |          ENDPOINT        |        ID        | VERSION | DB SIZE | IS LEADER | RAFT TERM | RAFT INDEX |
 +--------------------------+------------------+---------+---------+-----------+-----------+------------+
-| https://192.0.2.251:2379 | 3beb6ea7fc78a5f7 |  3.2.22 |   <span style=color:#ae81ff>61</span> MB |     false |        <span style=color:#ae81ff>15</span> |      <span style=color:#ae81ff>11113</span> |
-| https://192.0.2.250:2379 | c80ffa9b8823e61d |  3.2.22 |   <span style=color:#ae81ff>61</span> MB |     false |        <span style=color:#ae81ff>15</span> |      <span style=color:#ae81ff>11113</span> |
-| https://192.0.2.241:2379 | dd1f136e71579ace |  3.2.22 |   <span style=color:#ae81ff>61</span> MB |      true |        <span style=color:#ae81ff>15</span> |      <span style=color:#ae81ff>11113</span> |
-| https://192.0.2.243:2379 | f54da589b60c16be |  3.2.22 |   <span style=color:#ae81ff>61</span> MB |     false |        <span style=color:#ae81ff>15</span> |      <span style=color:#ae81ff>11113</span> |
-| https://192.0.2.242:2379 | f573d8d196b92c82 |  3.2.22 |   <span style=color:#ae81ff>61</span> MB |     false |        <span style=color:#ae81ff>15</span> |      <span style=color:#ae81ff>11113</span> |
+| https://192.0.2.251:2379 | 3beb6ea7fc78a5f7 |  3.2.22 |   <span style=color:#b452cd>61</span> MB |     <span style=color:#658b00>false</span> |        <span style=color:#b452cd>15</span> |      <span style=color:#b452cd>11113</span> |
+| https://192.0.2.250:2379 | c80ffa9b8823e61d |  3.2.22 |   <span style=color:#b452cd>61</span> MB |     <span style=color:#658b00>false</span> |        <span style=color:#b452cd>15</span> |      <span style=color:#b452cd>11113</span> |
+| https://192.0.2.241:2379 | dd1f136e71579ace |  3.2.22 |   <span style=color:#b452cd>61</span> MB |      <span style=color:#658b00>true</span> |        <span style=color:#b452cd>15</span> |      <span style=color:#b452cd>11113</span> |
+| https://192.0.2.243:2379 | f54da589b60c16be |  3.2.22 |   <span style=color:#b452cd>61</span> MB |     <span style=color:#658b00>false</span> |        <span style=color:#b452cd>15</span> |      <span style=color:#b452cd>11113</span> |
+| https://192.0.2.242:2379 | f573d8d196b92c82 |  3.2.22 |   <span style=color:#b452cd>61</span> MB |     <span style=color:#658b00>false</span> |        <span style=color:#b452cd>15</span> |      <span style=color:#b452cd>11113</span> |
 +--------------------------+------------------+---------+---------+-----------+-----------+------------+
 </code></pre></div><ul>
 <li><input disabled type=checkbox> <strong>Restart master api</strong></li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>ansible masters -m service -a <span style=color:#e6db74>&#39;name=atomic-openshift-master-api state=restarted&#39;</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>ansible masters -m service -a <span style=color:#cd5555>&#39;name=atomic-openshift-master-api state=restarted&#39;</span>
 </code></pre></div><ul>
 <li><input disabled type=checkbox> <strong>I messed up and had to start over, so here&rsquo;s a more compact summary of restore using the same snapshot.</strong></li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>ansible etcd -m service -a <span style=color:#e6db74>&#39;name=etcd state=stopped&#39;</span>
-ansible etcd -m file -a <span style=color:#e6db74>&#39;dest=/var/lib/etcd state=absent&#39;</span>
-ansible etcd -m copy -a <span style=color:#e6db74>&#39;src=bin/restore-etcd.sh dest=/root/restore-etcd.sh mode=0755&#39;</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>ansible etcd -m service -a <span style=color:#cd5555>&#39;name=etcd state=stopped&#39;</span>
+ansible etcd -m file -a <span style=color:#cd5555>&#39;dest=/var/lib/etcd state=absent&#39;</span>
+ansible etcd -m copy -a <span style=color:#cd5555>&#39;src=bin/restore-etcd.sh dest=/root/restore-etcd.sh mode=0755&#39;</span>
 
-<span style=color:#75715e># login to each node, starting with etcd01 where ETCD_INITIAL_CLUSTER_STATE=new and run restore</span>
+<span style=color:#228b22># login to each node, starting with etcd01 where ETCD_INITIAL_CLUSTER_STATE=new and run restore</span>
 /root/restore-etcd.sh
 
-<span style=color:#75715e># fix perms</span>
-ansible etcd -m command -a <span style=color:#e6db74>&#39;chown etcd:etcd -R /var/lib/etcd&#39;</span>
-ansible etcd -m command -a <span style=color:#e6db74>&#39;restorecon -Rv /var/lib/etcd&#39;</span>
-<span style=color:#75715e># start etcd</span>
-ansible etcd -m service -a <span style=color:#e6db74>&#39;name=etcd state=started&#39;</span>
-<span style=color:#75715e># check that the state from each node matches</span>
-ansible etcd -m script -a <span style=color:#e6db74>&#39;bin/etcd-status&#39;</span>
-ansible masters -m service -a <span style=color:#e6db74>&#39;name=atomic-openshift-master-api state=restarted&#39;</span>
+<span style=color:#228b22># fix perms</span>
+ansible etcd -m <span style=color:#658b00>command</span> -a <span style=color:#cd5555>&#39;chown etcd:etcd -R /var/lib/etcd&#39;</span>
+ansible etcd -m <span style=color:#658b00>command</span> -a <span style=color:#cd5555>&#39;restorecon -Rv /var/lib/etcd&#39;</span>
+<span style=color:#228b22># start etcd</span>
+ansible etcd -m service -a <span style=color:#cd5555>&#39;name=etcd state=started&#39;</span>
+<span style=color:#228b22># check that the state from each node matches</span>
+ansible etcd -m script -a <span style=color:#cd5555>&#39;bin/etcd-status&#39;</span>
+ansible masters -m service -a <span style=color:#cd5555>&#39;name=atomic-openshift-master-api state=restarted&#39;</span>
 </code></pre></div>
 </div>
 <div id=comments>

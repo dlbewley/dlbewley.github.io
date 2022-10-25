@@ -110,18 +110,18 @@ August 9, 2017
 <p><strong>Login to a member node</strong></p>
 <p>Get on a machine that has docker and participates in the cluster SDN or can somehow access that network. (eg. <code>172.30.0.0/16</code>)</p>
 <p><strong>Get the IP of the registry</strong></p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>oc get svc docker-registry -n default --template <span style=color:#e6db74>&#34;{{ .spec.clusterIP }}&#34;</span>
-SVC_REGISTRY<span style=color:#f92672>=</span><span style=color:#66d9ef>$(</span>oc get svc docker-registry -n default --template <span style=color:#e6db74>&#34;{{ .spec.clusterIP }}&#34;</span><span style=color:#66d9ef>)</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>oc get svc docker-registry -n default --template <span style=color:#cd5555>&#34;{{ .spec.clusterIP }}&#34;</span>
+<span style=color:#00688b>SVC_REGISTRY</span>=<span style=color:#8b008b;font-weight:700>$(</span>oc get svc docker-registry -n default --template <span style=color:#cd5555>&#34;{{ .spec.clusterIP }}&#34;</span><span style=color:#8b008b;font-weight:700>)</span>
 </code></pre></div><p><strong>Get a token for your session</strong></p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>oc whoami -t
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>oc whoami -t
 r4bjk9MrFcWz8SjR688zvbAbwnI1yoqNbtdhN1sMaeo
-TOKEN<span style=color:#f92672>=</span><span style=color:#66d9ef>$(</span>oc whoami -t<span style=color:#66d9ef>)</span>
+<span style=color:#00688b>TOKEN</span>=<span style=color:#8b008b;font-weight:700>$(</span>oc whoami -t<span style=color:#8b008b;font-weight:700>)</span>
 </code></pre></div><p><strong>Login to the docker registry</strong></p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>docker login -u <span style=color:#66d9ef>$(</span>oc whoami<span style=color:#66d9ef>)</span> -p $TOKEN  $SVC_REGISTRY:5000
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>docker login -u <span style=color:#8b008b;font-weight:700>$(</span>oc whoami<span style=color:#8b008b;font-weight:700>)</span> -p <span style=color:#00688b>$TOKEN</span>  <span style=color:#00688b>$SVC_REGISTRY</span>:5000
 </code></pre></div><p><strong>Commit the container and / or tag the image</strong></p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>docker commit &lt;container_id&gt; $SVC_REGISTRY:5000/project/image:tag
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>docker commit &lt;container_id&gt; <span style=color:#00688b>$SVC_REGISTRY</span>:5000/project/image:tag
 </code></pre></div><p><strong>Push the tagged image</strong></p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>docker push $SVC_REGISTRY:5000/project/image:tag
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>docker push <span style=color:#00688b>$SVC_REGISTRY</span>:5000/project/image:tag
 </code></pre></div><h2 id=see-also>See Also</h2>
 <ul>
 <li><a href=https://docs.openshift.com/container-platform/latest/dev_guide/managing_images.html>OpenShift Managing Images</a></li>

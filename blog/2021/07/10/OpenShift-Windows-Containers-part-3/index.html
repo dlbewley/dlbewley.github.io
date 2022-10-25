@@ -123,29 +123,29 @@ July 10, 2021
 <p>We will deploy a sample application called <a href=https://github.com/redhat-developer-demos/helm-repo/tree/main/stable/netcandystore title="NetCandy Store Helm Chart">NetCandy Store</a> using a Helm chart.</p>
 <p>As input we will have to provide a few parameters including the Windows node name and the ssh key used by our operator. Let&rsquo;s define some environmental variables for later reference.</p>
 <p>We will use the same <a href=http://guifreelife.com/blog/2021/06/03/OpenShift-Windows-Containers-part-2/#providing-an-ssh-private-key>ssh key we gave</a> to the Windows Machine Config Operator as it is already trusted by the node. We need this for the image pre-pull job described below.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ export WSSH_KEY<span style=color:#f92672>=</span><span style=color:#66d9ef>$(</span><span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>  oc get secret cloud-private-key -n openshift-windows-machine-config-operator <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>  -o jsonpath<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;{.data.private-key\.pem}&#39;</span><span style=color:#66d9ef>)</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ <span style=color:#658b00>export</span> <span style=color:#00688b>WSSH_KEY</span>=<span style=color:#8b008b;font-weight:700>$(</span><span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>  oc get secret cloud-private-key -n openshift-windows-machine-config-operator <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>  -o <span style=color:#00688b>jsonpath</span>=<span style=color:#cd5555>&#39;{.data.private-key\.pem}&#39;</span><span style=color:#8b008b;font-weight:700>)</span>
 </code></pre></div><p>We also need to find the name of the Windows node to provide that as a Helm value.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ export WIN_NODE<span style=color:#f92672>=</span><span style=color:#66d9ef>$(</span><span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>  oc get nodes -l kubernetes.io/os<span style=color:#f92672>=</span>windows <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>  -o jsonpath<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;{.items[0].metadata.name}&#39;</span><span style=color:#66d9ef>)</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ <span style=color:#658b00>export</span> <span style=color:#00688b>WIN_NODE</span>=<span style=color:#8b008b;font-weight:700>$(</span><span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>  oc get nodes -l kubernetes.io/os=windows <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>  -o <span style=color:#00688b>jsonpath</span>=<span style=color:#cd5555>&#39;{.items[0].metadata.name}&#39;</span><span style=color:#8b008b;font-weight:700>)</span>
 </code></pre></div><p>In this case the cluster is on Azure, and our Windows node administrator is called <code>capi</code> rather than the default <code>administrator</code>. Define another environmental variable for the ssh user.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ export WSSH_USER<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;capi&#39;</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ <span style=color:#658b00>export</span> <span style=color:#00688b>WSSH_USER</span>=<span style=color:#cd5555>&#39;capi&#39;</span>
 </code></pre></div><p>Those are all the values we need for the Helm chart.
 Let&rsquo;s create a namespace with a descriptive name to install to.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc new-project --display-name<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;Net Candy Store&#34;</span> netcandystore
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc new-project --display-name=<span style=color:#cd5555>&#34;Net Candy Store&#34;</span> netcandystore
 </code></pre></div><p>Next we will download the application <a href=http://people.redhat.com/chernand/netcandystore-1.0.1.tgz>http://people.redhat.com/chernand/netcandystore-1.0.1.tgz</a> to <code>$CLUSTER_DIR/day2</code>, and finally install it using the Helm chart inside the tarball.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ curl -o $CLUSTER_DIR/day2/netcandystore-1.0.1.tgz <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>  http://people.redhat.com/chernand/netcandystore-1.0.1.tgz
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ curl -o <span style=color:#00688b>$CLUSTER_DIR</span>/day2/netcandystore-1.0.1.tgz <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>  http://people.redhat.com/chernand/netcandystore-1.0.1.tgz
 
-$ helm install ncs <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>  --namespace netcandystore <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>  --timeout<span style=color:#f92672>=</span>1200s <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>  --set ssh.username<span style=color:#f92672>=</span><span style=color:#e6db74>${</span>WSSH_USER<span style=color:#66d9ef>:-</span>administrator<span style=color:#e6db74>}</span> <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>  --set ssh.hostkey<span style=color:#f92672>=</span><span style=color:#e6db74>${</span>WSSH_KEY<span style=color:#e6db74>}</span> <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>  --set ssh.hostname<span style=color:#f92672>=</span><span style=color:#e6db74>${</span>WIN_NODE<span style=color:#e6db74>}</span> <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>  $CLUSTER_DIR/day2/netcandystore-1.0.1.tgz
+$ helm install ncs <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>  --namespace netcandystore <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>  --timeout=1200s <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>  --set ssh.username=<span style=color:#cd5555>${</span><span style=color:#00688b>WSSH_USER</span><span style=color:#8b008b;font-weight:700>:-</span><span style=color:#00688b>administrator</span><span style=color:#cd5555>}</span> <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>  --set ssh.hostkey=<span style=color:#cd5555>${</span><span style=color:#00688b>WSSH_KEY</span><span style=color:#cd5555>}</span> <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>  --set ssh.hostname=<span style=color:#cd5555>${</span><span style=color:#00688b>WIN_NODE</span><span style=color:#cd5555>}</span> <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>  <span style=color:#00688b>$CLUSTER_DIR</span>/day2/netcandystore-1.0.1.tgz
 </code></pre></div><p>We can list the chart to see it has been installed in our <em>netcandystore</em> namespace.</p>
 <pre tabindex=0><code>$ helm ls --namespace netcandystore
 NAME    NAMESPACE       REVISION        UPDATED                                 STATUS          CHART                   APP VERSION
@@ -261,62 +261,62 @@ Events:
 </code></pre><h2 id=exploring-containers-running-on-a-windows-node>Exploring Containers Running on a Windows Node</h2>
 <p>In <a href=http://guifreelife.com/blog/2021/06/03/OpenShift-Windows-Containers-part-2/ title="Windows Containers Part 2">part 2 of this series</a> we used ssh to login to the Windows node. Let&rsquo;s do that again.</p>
 <p>Begin by finding the IP address of the Windows node.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc get nodes -l kubernetes.io/os<span style=color:#f92672>=</span>windows -o wide
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc get nodes -l kubernetes.io/os=windows -o wide
 NAME              STATUS   ROLES    AGE     VERSION                       INTERNAL-IP   EXTERNAL-IP   OS-IMAGE                         KERNEL-VERSION    CONTAINER-RUNTIME
-winworker-g7tsk   Ready    worker   5h18m   v1.20.0-1030+cac2421340a449   10.0.32.6     &lt;none&gt;        Windows Server <span style=color:#ae81ff>2019</span> Datacenter   10.0.17763.1935   docker://19.3.14
+winworker-g7tsk   Ready    worker   5h18m   v1.20.0-1030+cac2421340a449   10.0.32.6     &lt;none&gt;        Windows Server <span style=color:#b452cd>2019</span> Datacenter   10.0.17763.1935   docker://19.3.14
 </code></pre></div><p>Then after openning a remote shell to <a href=http://guifreelife.com/blog/2021/06/03/OpenShift-Windows-Containers-part-2/#deploying-a-bastion-pod-as-an-ssh-client>the bastion pod</a>, we can secure shell to the Windows node at <em>10.0.32.6</em>. This bastion pod includes a <code>/usr/local/bin/sshmd.sh</code> script to simplify the ssh command.</p>
 <blockquote>
 <p>📓 <strong>Azure Difference</strong></p>
 <p>Remember our Windows image on Azure uses <em>capi</em> rather than <em>administrator</em>, so provide that username when ssh&rsquo;ing into the node.</p>
 </blockquote>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc rsh -n openshift-windows-machine-config-operator deployment/winc-ssh
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc rsh -n openshift-windows-machine-config-operator deployment/winc-ssh
 
 sh-4.4$ sshcmd.sh 10.0.32.6 capi
-Could not create directory <span style=color:#e6db74>&#39;/.ssh&#39;</span>.
-Warning: Permanently added <span style=color:#e6db74>&#39;10.0.32.6&#39;</span> <span style=color:#f92672>(</span>ECDSA<span style=color:#f92672>)</span> to the list of known hosts.
+Could not create directory <span style=color:#cd5555>&#39;/.ssh&#39;</span>.
+Warning: Permanently added <span style=color:#cd5555>&#39;10.0.32.6&#39;</span> (ECDSA) to the list of known hosts.
 Windows PowerShell
-Copyright <span style=color:#f92672>(</span>C<span style=color:#f92672>)</span> Microsoft Corporation. All rights reserved.
+Copyright (C) Microsoft Corporation. All rights reserved.
 
-PS C:<span style=color:#ae81ff>\U</span>sers<span style=color:#ae81ff>\c</span>api&gt;
+PS C:<span style=color:#cd5555>\U</span>sers<span style=color:#cd5555>\c</span>api&gt;
 </code></pre></div><p>Now we can use the docker command to see what containers are running locally.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>PS C:<span style=color:#ae81ff>\U</span>sers<span style=color:#ae81ff>\c</span>api&gt; docker ps -a
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>PS C:<span style=color:#cd5555>\U</span>sers<span style=color:#cd5555>\c</span>api&gt; docker ps -a
 CONTAINER ID        IMAGE                                          COMMAND                   CREATED             STATUS              PORTS               NAMES
-3ae2156a70ed        quay.io/donschenck/netcandystore               <span style=color:#e6db74>&#34;C:\\ServiceMonitor.e…&#34;</span>   <span style=color:#ae81ff>2</span> hours ago         Up <span style=color:#ae81ff>2</span> hours                              k8s_netcandystore_netcandystore-5b989b4bdd-x4pt9_netcandystore_49c2f119-5ce8-4a75-aeee-5be53ac748c1_0
-3c5ee98c833c        mcr.microsoft.com/oss/kubernetes/pause:1.3.0   <span style=color:#e6db74>&#34;cmd /S /C pauseloop…&#34;</span>    <span style=color:#ae81ff>2</span> hours ago         Up <span style=color:#ae81ff>2</span> hours                              k8s_POD_netcandystore-5b989b4bdd-x4pt9_netcandystore_49c2f119-5ce8-4a75-aeee-5be53ac748c1_0
+3ae2156a70ed        quay.io/donschenck/netcandystore               <span style=color:#cd5555>&#34;C:\\ServiceMonitor.e…&#34;</span>   <span style=color:#b452cd>2</span> hours ago         Up <span style=color:#b452cd>2</span> hours                              k8s_netcandystore_netcandystore-5b989b4bdd-x4pt9_netcandystore_49c2f119-5ce8-4a75-aeee-5be53ac748c1_0
+3c5ee98c833c        mcr.microsoft.com/oss/kubernetes/pause:1.3.0   <span style=color:#cd5555>&#34;cmd /S /C pauseloop…&#34;</span>    <span style=color:#b452cd>2</span> hours ago         Up <span style=color:#b452cd>2</span> hours                              k8s_POD_netcandystore-5b989b4bdd-x4pt9_netcandystore_49c2f119-5ce8-4a75-aeee-5be53ac748c1_0
 </code></pre></div><p>By the way, I mentioned those images are large, but how big are they? Large. They are large.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>PS C:<span style=color:#ae81ff>\U</span>sers<span style=color:#ae81ff>\c</span>api&gt; docker images
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>PS C:<span style=color:#cd5555>\U</span>sers<span style=color:#cd5555>\c</span>api&gt; docker images
 REPOSITORY                               TAG              IMAGE ID          CREATED             SIZE
-mcr.microsoft.com/windows/servercore     ltsc2019         3a7f23e29bd7      <span style=color:#ae81ff>2</span> weeks ago         5.28GB
-mcr.microsoft.com/windows                <span style=color:#ae81ff>1809</span>             08b77c4924fc      <span style=color:#ae81ff>2</span> weeks ago         14.3GB
-mcr.microsoft.com/windows/nanoserver     <span style=color:#ae81ff>1809</span>             ad675c9cb2d5      <span style=color:#ae81ff>2</span> weeks ago         252MB
-quay.io/donschenck/netcandystore         2021mar8.1       7e8c294b169d      <span style=color:#ae81ff>2</span> months ago        8.09GB
-mcr.microsoft.com/oss/kubernetes/pause   1.3.0            e2b9b3d368da      <span style=color:#ae81ff>15</span> months ago       256MB
+mcr.microsoft.com/windows/servercore     ltsc2019         3a7f23e29bd7      <span style=color:#b452cd>2</span> weeks ago         5.28GB
+mcr.microsoft.com/windows                <span style=color:#b452cd>1809</span>             08b77c4924fc      <span style=color:#b452cd>2</span> weeks ago         14.3GB
+mcr.microsoft.com/windows/nanoserver     <span style=color:#b452cd>1809</span>             ad675c9cb2d5      <span style=color:#b452cd>2</span> weeks ago         252MB
+quay.io/donschenck/netcandystore         2021mar8.1       7e8c294b169d      <span style=color:#b452cd>2</span> months ago        8.09GB
+mcr.microsoft.com/oss/kubernetes/pause   1.3.0            e2b9b3d368da      <span style=color:#b452cd>15</span> months ago       256MB
 </code></pre></div><h2 id=exploring-the-openshift-developer-topology-view>Exploring the OpenShift Developer Topology View</h2>
 <p>Before we leave the CLI, let&rsquo;s take apply some metadata that will enable the developer view of the OpenShift console to provide some visual context.
 By applying <a href=https://kubernetes.io/docs/concepts/overview/working-with-objects/common-labels/ title="Kubernetes Recommended Labels">particular labels</a> and <a href=https://docs.openshift.com/container-platform/4.7/applications/application_life_cycle_management/odc-viewing-application-composition-using-topology-view.html#odc-labels-and-annotations-used-for-topology-view_viewing-application-composition-using-topology-view title="Topology Labels and Annotations">annotations</a> to our deployment resources we can enhance the visual representation of our application in the <a href=https://docs.openshift.com/container-platform/4.7/applications/application_life_cycle_management/odc-viewing-application-composition-using-topology-view.html title="OpenShift Application Topology View">topology view</a>.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#75715e># this pod is on windows</span>
-$ oc label deployment/netcandystore <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>  app.kubernetes.io/name<span style=color:#f92672>=</span>windows --overwrite
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#228b22># this pod is on windows</span>
+$ oc label deployment/netcandystore <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>  app.kubernetes.io/name=windows --overwrite
 
-<span style=color:#75715e># it connects to a microservice</span>
-$ oc annotate deployment/netcandystore <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>  app.openshift.io/connects-to<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;[{&#34;apiVersion&#34;:&#34;apps/v1&#34;,&#34;kind&#34;:&#34;Deployment&#34;,&#34;name&#34;:&#34;getcategories&#34;}]&#39;</span>
+<span style=color:#228b22># it connects to a microservice</span>
+$ oc annotate deployment/netcandystore <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>  app.openshift.io/connects-to=<span style=color:#cd5555>&#39;[{&#34;apiVersion&#34;:&#34;apps/v1&#34;,&#34;kind&#34;:&#34;Deployment&#34;,&#34;name&#34;:&#34;getcategories&#34;}]&#39;</span>
 
-<span style=color:#75715e># skipping this, but FYI</span>
-<span style=color:#75715e>#app.openshift.io/vcs-uri=&lt;github-url&gt;</span>
-<span style=color:#75715e>#app.kubernetes.io/part-of=&lt;appname&gt;</span>
+<span style=color:#228b22># skipping this, but FYI</span>
+<span style=color:#228b22>#app.openshift.io/vcs-uri=&lt;github-url&gt;</span>
+<span style=color:#228b22>#app.kubernetes.io/part-of=&lt;appname&gt;</span>
 
-<span style=color:#75715e># this pod is .Net core on linux</span>
-$ oc label deployment/getcategories <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>  app.kubernetes.io/name<span style=color:#f92672>=</span>dotnet --overwrite
+<span style=color:#228b22># this pod is .Net core on linux</span>
+$ oc label deployment/getcategories <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>  app.kubernetes.io/name=dotnet --overwrite
 
-<span style=color:#75715e># it connects to a database</span>
-$ oc annotate deployment/getcategories <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>  app.openshift.io/connects-to<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;[{&#34;apiVersion&#34;:&#34;apps.openshift.io/v1&#34;,&#34;kind&#34;:&#34;DeploymentConfig&#34;,&#34;name&#34;:&#34;mssql&#34;}]&#39;</span>
+<span style=color:#228b22># it connects to a database</span>
+$ oc annotate deployment/getcategories <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>  app.openshift.io/connects-to=<span style=color:#cd5555>&#39;[{&#34;apiVersion&#34;:&#34;apps.openshift.io/v1&#34;,&#34;kind&#34;:&#34;DeploymentConfig&#34;,&#34;name&#34;:&#34;mssql&#34;}]&#39;</span>
 
-<span style=color:#75715e># this database is MS SQL</span>
-$ oc label deploymentconfig/mssql <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>  app.kubernetes.io/name<span style=color:#f92672>=</span>mssql --overwrite
+<span style=color:#228b22># this database is MS SQL</span>
+$ oc label deploymentconfig/mssql <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>  app.kubernetes.io/name=mssql --overwrite
 </code></pre></div><p>Here is the effect of those labels within the Topology View of Deployed App</p>
 <figure><a href=/images/openshift-windows-app-topology-pretty.png><img src=/images/openshift-windows-app-topology-pretty.png width=100%></a>
 </figure>

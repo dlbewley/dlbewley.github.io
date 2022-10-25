@@ -128,91 +128,91 @@ January 29, 2017
 <ul>
 <li>Open firewall on infra nodes where router will run to allow new http and https port</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash> iptables -A OS_FIREWALL_ALLOW -m tcp -p tcp --dport <span style=color:#ae81ff>49999</span> -j ACCEPT
- iptables -A OS_FIREWALL_ALLOW -m tcp -p tcp --dport <span style=color:#ae81ff>50000</span> -j ACCEPT
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash> iptables -A OS_FIREWALL_ALLOW -m tcp -p tcp --dport <span style=color:#b452cd>49999</span> -j ACCEPT
+ iptables -A OS_FIREWALL_ALLOW -m tcp -p tcp --dport <span style=color:#b452cd>50000</span> -j ACCEPT
 </code></pre></div><ul>
 <li>This can also be done with Ansible and the <a href=https://github.com/openshift/openshift-ansible/tree/master/roles/os_firewall>os_firewall role</a> in your playbook. (<em>untested</em>)</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml>- <span style=color:#f92672>hosts</span>: <span style=color:#ae81ff>infra-nodes</span>
-
-  <span style=color:#f92672>vars</span>:
-    <span style=color:#f92672>os_firewall_use_firewalld</span>: <span style=color:#66d9ef>False</span>
-    <span style=color:#f92672>os_firewall_allow</span>:
-      - <span style=color:#f92672>service</span>: <span style=color:#ae81ff>teradici-http</span>
-        <span style=color:#f92672>port</span>: <span style=color:#ae81ff>49999</span><span style=color:#ae81ff>/tcp</span>
-      - <span style=color:#f92672>service</span>: <span style=color:#ae81ff>teradici-https</span>
-        <span style=color:#f92672>port</span>: <span style=color:#ae81ff>50000</span><span style=color:#ae81ff>/tcp</span>
-
-  <span style=color:#f92672>roles</span>:
-    - <span style=color:#ae81ff>os_firewall</span>
-</code></pre></div><h2 id=create-a-router>Create a router</h2>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml>- <span style=color:#8b008b;font-weight:700>hosts</span>:<span style=color:#bbb> </span>infra-nodes<span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>vars</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>os_firewall_use_firewalld</span>:<span style=color:#bbb> </span><span style=color:#8b008b;font-weight:700>False</span><span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>os_firewall_allow</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>      </span>- <span style=color:#8b008b;font-weight:700>service</span>:<span style=color:#bbb> </span>teradici-http<span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>port</span>:<span style=color:#bbb> </span><span style=color:#b452cd>49999</span>/tcp<span style=color:#bbb>
+</span><span style=color:#bbb>      </span>- <span style=color:#8b008b;font-weight:700>service</span>:<span style=color:#bbb> </span>teradici-https<span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>port</span>:<span style=color:#bbb> </span><span style=color:#b452cd>50000</span>/tcp<span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>roles</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>    </span>- os_firewall<span style=color:#bbb>
+</span></code></pre></div><h2 id=create-a-router>Create a router</h2>
 <ul>
 <li>Create a router called <em>ha-router-teradici</em> with <code>oa adm router</code> or <code>oadm router</code> on these ports and also make sure the stats port does not clash with existing router on port 1936</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#f92672>[</span>root@ose-test-master-01 ~<span style=color:#f92672>]</span><span style=color:#75715e># oc get nodes --show-labels</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>[root@ose-test-master-01 ~]<span style=color:#228b22># oc get nodes --show-labels</span>
 NAME                           STATUS    AGE       LABELS
-ose-test-master-01.example.com   Ready     180d      kubernetes.io/hostname<span style=color:#f92672>=</span>ose-test-master-01.example.com,region<span style=color:#f92672>=</span>master,zone<span style=color:#f92672>=</span>rhev
-ose-test-master-02.example.com   Ready     180d      kubernetes.io/hostname<span style=color:#f92672>=</span>ose-test-master-02.example.com,region<span style=color:#f92672>=</span>master,zone<span style=color:#f92672>=</span>rhev
-ose-test-node-01.example.com     Ready     180d      ha-router<span style=color:#f92672>=</span>primary,kubernetes.io/hostname<span style=color:#f92672>=</span>ose-test-node-01.example.com,region<span style=color:#f92672>=</span>infra,zone<span style=color:#f92672>=</span>rhev
-ose-test-node-02.example.com     Ready     180d      ha-router<span style=color:#f92672>=</span>primary,kubernetes.io/hostname<span style=color:#f92672>=</span>ose-test-node-02.example.com,region<span style=color:#f92672>=</span>infra,zone<span style=color:#f92672>=</span>rhev
-ose-test-node-03.example.com     Ready     180d      kubernetes.io/hostname<span style=color:#f92672>=</span>ose-test-node-03.example.com,region<span style=color:#f92672>=</span>primary,zone<span style=color:#f92672>=</span>rhev
-ose-test-node-04.example.com     Ready     180d      kubernetes.io/hostname<span style=color:#f92672>=</span>ose-test-node-04.example.com,region<span style=color:#f92672>=</span>primary,zone<span style=color:#f92672>=</span>rhev
+ose-test-master-01.example.com   Ready     180d      kubernetes.io/hostname=ose-test-master-01.example.com,region=master,zone=rhev
+ose-test-master-02.example.com   Ready     180d      kubernetes.io/hostname=ose-test-master-02.example.com,region=master,zone=rhev
+ose-test-node-01.example.com     Ready     180d      ha-router=primary,kubernetes.io/hostname=ose-test-node-01.example.com,region=infra,zone=rhev
+ose-test-node-02.example.com     Ready     180d      ha-router=primary,kubernetes.io/hostname=ose-test-node-02.example.com,region=infra,zone=rhev
+ose-test-node-03.example.com     Ready     180d      kubernetes.io/hostname=ose-test-node-03.example.com,region=primary,zone=rhev
+ose-test-node-04.example.com     Ready     180d      kubernetes.io/hostname=ose-test-node-04.example.com,region=primary,zone=rhev
 
-<span style=color:#f92672>[</span>root@ose-test-master-01 ~<span style=color:#f92672>]</span><span style=color:#75715e>#  oadm router ha-router-teradici \</span>
-    --ports<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;49999:49999,50000:50000&#39;</span> <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    --stats-port<span style=color:#f92672>=</span><span style=color:#ae81ff>51936</span> <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    --replicas<span style=color:#f92672>=</span><span style=color:#ae81ff>2</span> <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    --selector<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;ha-router=primary&#34;</span> <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    --selector<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;region=infra&#34;</span> <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    --labels<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;ha-router=teradici&#34;</span> <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    --default-cert<span style=color:#f92672>=</span>201602_router_wildcard.os.example.com.pem <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    --service-account<span style=color:#f92672>=</span>router
+[root@ose-test-master-01 ~]<span style=color:#228b22>#  oadm router ha-router-teradici \</span>
+    --ports=<span style=color:#cd5555>&#39;49999:49999,50000:50000&#39;</span> <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    --stats-port=<span style=color:#b452cd>51936</span> <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    --replicas=<span style=color:#b452cd>2</span> <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    --selector=<span style=color:#cd5555>&#34;ha-router=primary&#34;</span> <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    --selector=<span style=color:#cd5555>&#34;region=infra&#34;</span> <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    --labels=<span style=color:#cd5555>&#34;ha-router=teradici&#34;</span> <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    --default-cert=201602_router_wildcard.os.example.com.pem <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    --service-account=router
 </code></pre></div><p><em>GOOD</em>: I see that the ports are set properly in the haproxy.config and the service objects</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#f92672>[</span>root@ose-test-master-01 ~<span style=color:#f92672>]</span><span style=color:#75715e># oc get all -l ha-router=teradici</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>[root@ose-test-master-01 ~]<span style=color:#228b22># oc get all -l ha-router=teradici</span>
 NAME                            REVISION        DESIRED       CURRENT   TRIGGERED BY
-dc/ha-router-teradici           <span style=color:#ae81ff>1</span>               <span style=color:#ae81ff>2</span>             <span style=color:#ae81ff>2</span>         config
+dc/ha-router-teradici           <span style=color:#b452cd>1</span>               <span style=color:#b452cd>2</span>             <span style=color:#b452cd>2</span>         config
 NAME                            DESIRED         CURRENT       AGE
-rc/ha-router-teradici-1         <span style=color:#ae81ff>2</span>               <span style=color:#ae81ff>2</span>             15m
-NAME                            CLUSTER-IP      EXTERNAL-IP   PORT<span style=color:#f92672>(</span>S<span style=color:#f92672>)</span>                         AGE
+rc/ha-router-teradici-1         <span style=color:#b452cd>2</span>               <span style=color:#b452cd>2</span>             15m
+NAME                            CLUSTER-IP      EXTERNAL-IP   PORT(S)                         AGE
 svc/ha-router-teradici          172.30.207.88   &lt;none&gt;        49999/TCP,50000/TCP,51936/TCP   15m
 NAME                            READY           STATUS        RESTARTS                        AGE
-po/ha-router-teradici-1-3ctx5   1/1             Running       <span style=color:#ae81ff>0</span>                               14m
-po/ha-router-teradici-1-w8plh   1/1             Running       <span style=color:#ae81ff>0</span>                               14m
+po/ha-router-teradici-1-3ctx5   1/1             Running       <span style=color:#b452cd>0</span>                               14m
+po/ha-router-teradici-1-w8plh   1/1             Running       <span style=color:#b452cd>0</span>                               14m
 </code></pre></div><p><em>BAD</em>: However, the env in the DC is partially incorrect:</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#f92672>[</span>root@ose-test-master-01 ~<span style=color:#f92672>]</span><span style=color:#75715e># oc get dc ha-router-teradici -o json \</span>
-  | jq -c <span style=color:#e6db74>&#39;. | .spec.template.spec.containers[].env[] | select(.name | contains(&#34;PORT&#34;)) &#39;</span>
-<span style=color:#f92672>{</span><span style=color:#e6db74>&#34;name&#34;</span>:<span style=color:#e6db74>&#34;ROUTER_SERVICE_HTTPS_PORT&#34;</span>,<span style=color:#e6db74>&#34;value&#34;</span>:<span style=color:#e6db74>&#34;443&#34;</span><span style=color:#f92672>}</span>
-<span style=color:#f92672>{</span><span style=color:#e6db74>&#34;name&#34;</span>:<span style=color:#e6db74>&#34;ROUTER_SERVICE_HTTP_PORT&#34;</span>,<span style=color:#e6db74>&#34;value&#34;</span>:<span style=color:#e6db74>&#34;80&#34;</span><span style=color:#f92672>}</span>
-<span style=color:#f92672>{</span><span style=color:#e6db74>&#34;name&#34;</span>:<span style=color:#e6db74>&#34;STATS_PORT&#34;</span>,<span style=color:#e6db74>&#34;value&#34;</span>:<span style=color:#e6db74>&#34;51936&#34;</span><span style=color:#f92672>}</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>[root@ose-test-master-01 ~]<span style=color:#228b22># oc get dc ha-router-teradici -o json \</span>
+  | jq -c <span style=color:#cd5555>&#39;. | .spec.template.spec.containers[].env[] | select(.name | contains(&#34;PORT&#34;)) &#39;</span>
+{<span style=color:#cd5555>&#34;name&#34;</span>:<span style=color:#cd5555>&#34;ROUTER_SERVICE_HTTPS_PORT&#34;</span>,<span style=color:#cd5555>&#34;value&#34;</span>:<span style=color:#cd5555>&#34;443&#34;</span>}
+{<span style=color:#cd5555>&#34;name&#34;</span>:<span style=color:#cd5555>&#34;ROUTER_SERVICE_HTTP_PORT&#34;</span>,<span style=color:#cd5555>&#34;value&#34;</span>:<span style=color:#cd5555>&#34;80&#34;</span>}
+{<span style=color:#cd5555>&#34;name&#34;</span>:<span style=color:#cd5555>&#34;STATS_PORT&#34;</span>,<span style=color:#cd5555>&#34;value&#34;</span>:<span style=color:#cd5555>&#34;51936&#34;</span>}
 </code></pre></div><p>I think that should be considered a bug in the <code>oadm router command</code>.</p>
 <p>The haproxy template uses those values to bind ports like this:</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ docker run --rm --interactive<span style=color:#f92672>=</span>true --tty --entrypoint<span style=color:#f92672>=</span>cat <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>        registry.access.redhat.com/openshift3/ose-haproxy-router:v3.3.1.7 haproxy-config.template | grep -B1 <span style=color:#e6db74>&#39;bind &#39;</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ docker run --rm --interactive=<span style=color:#658b00>true</span> --tty --entrypoint=cat <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>        registry.access.redhat.com/openshift3/ose-haproxy-router:v3.3.1.7 haproxy-config.template | grep -B1 <span style=color:#cd5555>&#39;bind &#39;</span>
 frontend public
-  bind :<span style=color:#f92672>{{</span>env <span style=color:#e6db74>&#34;ROUTER_SERVICE_HTTP_PORT&#34;</span> <span style=color:#e6db74>&#34;80&#34;</span><span style=color:#f92672>}}</span>
+  <span style=color:#658b00>bind</span> :{{env <span style=color:#cd5555>&#34;ROUTER_SERVICE_HTTP_PORT&#34;</span> <span style=color:#cd5555>&#34;80&#34;</span>}}
 --
   frontend public_ssl
-  bind :<span style=color:#f92672>{{</span>env <span style=color:#e6db74>&#34;ROUTER_SERVICE_HTTPS_PORT&#34;</span> <span style=color:#e6db74>&#34;443&#34;</span><span style=color:#f92672>}}</span>
+  <span style=color:#658b00>bind</span> :{{env <span style=color:#cd5555>&#34;ROUTER_SERVICE_HTTPS_PORT&#34;</span> <span style=color:#cd5555>&#34;443&#34;</span>}}
 --
-    <span style=color:#75715e># terminate ssl on edge</span>
-  bind 127.0.0.1:<span style=color:#f92672>{{</span>env <span style=color:#e6db74>&#34;ROUTER_SERVICE_SNI_PORT&#34;</span> <span style=color:#e6db74>&#34;10444&#34;</span><span style=color:#f92672>}}</span> ssl no-sslv3 <span style=color:#f92672>{{</span> <span style=color:#66d9ef>if</span> <span style=color:#f92672>(</span>len .DefaultCertificate<span style=color:#f92672>)</span> gt <span style=color:#ae81ff>0</span> <span style=color:#f92672>}}</span>crt <span style=color:#f92672>{{</span>.DefaultCertificate<span style=color:#f92672>}}{{</span> <span style=color:#66d9ef>else</span> <span style=color:#f92672>}}</span>crt /var/lib/haproxy/conf/default_pub_keys.pem<span style=color:#f92672>{{</span> end <span style=color:#f92672>}}</span> crt <span style=color:#f92672>{{</span> $workingDir <span style=color:#f92672>}}</span>/certs accept-proxy
+    <span style=color:#228b22># terminate ssl on edge</span>
+  <span style=color:#658b00>bind</span> 127.0.0.1:{{env <span style=color:#cd5555>&#34;ROUTER_SERVICE_SNI_PORT&#34;</span> <span style=color:#cd5555>&#34;10444&#34;</span>}} ssl no-sslv3 {{ <span style=color:#8b008b;font-weight:700>if</span> (len .DefaultCertificate) gt <span style=color:#b452cd>0</span> }}crt {{.DefaultCertificate}}{{ <span style=color:#8b008b;font-weight:700>else</span> }}crt /var/lib/haproxy/conf/default_pub_keys.pem{{ end }} crt {{ <span style=color:#00688b>$workingDir</span> }}/certs accept-proxy
 --
-    <span style=color:#75715e># terminate ssl on edge</span>
-  bind 127.0.0.1:<span style=color:#f92672>{{</span>env <span style=color:#e6db74>&#34;ROUTER_SERVICE_NO_SNI_PORT&#34;</span> <span style=color:#e6db74>&#34;10443&#34;</span><span style=color:#f92672>}}</span> ssl no-sslv3 <span style=color:#f92672>{{</span> <span style=color:#66d9ef>if</span> <span style=color:#f92672>(</span>len .DefaultCertificate<span style=color:#f92672>)</span> gt <span style=color:#ae81ff>0</span> <span style=color:#f92672>}}</span>crt <span style=color:#f92672>{{</span>.DefaultCertificate<span style=color:#f92672>}}{{</span> <span style=color:#66d9ef>else</span> <span style=color:#f92672>}}</span>crt /var/lib/haproxy/conf/default_pub_keys.pem<span style=color:#f92672>{{</span> end <span style=color:#f92672>}}</span> accept-proxy
+    <span style=color:#228b22># terminate ssl on edge</span>
+  <span style=color:#658b00>bind</span> 127.0.0.1:{{env <span style=color:#cd5555>&#34;ROUTER_SERVICE_NO_SNI_PORT&#34;</span> <span style=color:#cd5555>&#34;10443&#34;</span>}} ssl no-sslv3 {{ <span style=color:#8b008b;font-weight:700>if</span> (len .DefaultCertificate) gt <span style=color:#b452cd>0</span> }}crt {{.DefaultCertificate}}{{ <span style=color:#8b008b;font-weight:700>else</span> }}crt /var/lib/haproxy/conf/default_pub_keys.pem{{ end }} accept-proxy
 </code></pre></div><h2 id=fix-the-router-deploymentconfig>Fix the router deploymentconfig</h2>
 <ul>
 <li>Fix port number environment variables in the new router deploymentconfig</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#f92672>[</span>root@ose-test-master-01 ~<span style=color:#f92672>]</span><span style=color:#75715e># oc set env dc/ha-router-teradici  ROUTER_SERVICE_HTTP_PORT=49999</span>
-<span style=color:#f92672>[</span>root@ose-test-master-01 ~<span style=color:#f92672>]</span><span style=color:#75715e># oc set env dc/ha-router-teradici  ROUTER_SERVICE_HTTPS_PORT=50000</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>[root@ose-test-master-01 ~]<span style=color:#228b22># oc set env dc/ha-router-teradici  ROUTER_SERVICE_HTTP_PORT=49999</span>
+[root@ose-test-master-01 ~]<span style=color:#228b22># oc set env dc/ha-router-teradici  ROUTER_SERVICE_HTTPS_PORT=50000</span>
 </code></pre></div><p><em>BAD</em>: Docker inspect still shows me the container is on port 80 and 443. That is because of the hardcoded <code>EXPOSE</code> directive in the Dockerfile. Based on the ENV this seems to be a non-issue.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#f92672>[</span>root@ose-test-node-01 ~<span style=color:#f92672>]</span><span style=color:#75715e># docker inspect --format=&#39;{{.Config.ExposedPorts}}&#39;  dd02066d4845</span>
-map<span style=color:#f92672>[</span>443/tcp:<span style=color:#f92672>{}</span> 53/tcp:<span style=color:#f92672>{}</span> 80/tcp:<span style=color:#f92672>{}</span> 8443/tcp:<span style=color:#f92672>{}]</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>[root@ose-test-node-01 ~]<span style=color:#228b22># docker inspect --format=&#39;{{.Config.ExposedPorts}}&#39;  dd02066d4845</span>
+map[443/tcp:{} 53/tcp:{} 80/tcp:{} 8443/tcp:{}]
 
-<span style=color:#f92672>[</span>root@ose-test-master-01 ~<span style=color:#f92672>]</span><span style=color:#75715e># docker run --rm --interactive=true --tty --entrypoint=grep \</span>
-  registry.access.redhat.com/openshift3/ose-haproxy-router:v3.3.1.7 <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>  EXPOSE /var/lib/haproxy/Dockerfile-openshift3-ose-haproxy-router-v3.3.1.7-0
-EXPOSE <span style=color:#ae81ff>80</span> <span style=color:#ae81ff>443</span>
+[root@ose-test-master-01 ~]<span style=color:#228b22># docker run --rm --interactive=true --tty --entrypoint=grep \</span>
+  registry.access.redhat.com/openshift3/ose-haproxy-router:v3.3.1.7 <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>  EXPOSE /var/lib/haproxy/Dockerfile-openshift3-ose-haproxy-router-v3.3.1.7-0
+EXPOSE <span style=color:#b452cd>80</span> <span style=color:#b452cd>443</span>
 </code></pre></div><h2 id=add-labels-for-sharding>Add labels for sharding</h2>
 <ul>
 <li>Add <code>ROUTE_LABLES</code> env var to the router deployment config for sharding</li>
@@ -227,10 +227,10 @@ EXPOSE <span style=color:#ae81ff>80</span> <span style=color:#ae81ff>443</span>
 <ul>
 <li>Watch it work</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#f92672>[</span>root@ose-test-master-01 ~<span style=color:#f92672>]</span><span style=color:#75715e># curl http://v3simplebottle-user1.test.os.example.com:49999</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>[root@ose-test-master-01 ~]<span style=color:#228b22># curl http://v3simplebottle-user1.test.os.example.com:49999</span>
 &lt;h1&gt; hello OpenShift ninjas&lt;/h1&gt;
 
-<span style=color:#f92672>[</span>root@ose-test-master-01 ~<span style=color:#f92672>]</span><span style=color:#75715e>#  curl -k https://v3simplebottle-user1.test.os.example.com:50000</span>
+[root@ose-test-master-01 ~]<span style=color:#228b22>#  curl -k https://v3simplebottle-user1.test.os.example.com:50000</span>
 &lt;h1&gt; hello OpenShift ninjas&lt;/h1&gt;
 </code></pre></div><h1 id=bugs--issues>Bugs / Issues</h1>
 <p>The following things <code>oadm router</code> does not do, and they feel like bugs:</p>

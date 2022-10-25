@@ -119,43 +119,43 @@ February 15, 2020
 <ul>
 <li><code>~/.config/openstack/clouds-public.yaml</code></li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#f92672>public-clouds</span>:
-  <span style=color:#f92672>overcloud</span>:
-    <span style=color:#f92672>cacert</span>: <span style=color:#e6db74>&#39;ca.crt.pem&#39;</span> <span style=color:#75715e># file path readable by installer</span>
-    <span style=color:#f92672>auth_type</span>: <span style=color:#ae81ff>password</span>
-    <span style=color:#f92672>identity_api_version</span>: <span style=color:#e6db74>&#39;3&#39;</span>
-    <span style=color:#f92672>auth</span>:
-      <span style=color:#f92672>auth_url</span>: <span style=color:#e6db74>&#39;https://openstack.example.com:13000/v3&#39;</span>
-    <span style=color:#f92672>interface</span>: <span style=color:#ae81ff>public</span>
-</code></pre></div><ul>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#8b008b;font-weight:700>public-clouds</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>overcloud</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>cacert</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#39;ca.crt.pem&#39;</span><span style=color:#bbb> </span><span style=color:#228b22># file path readable by installer</span><span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>auth_type</span>:<span style=color:#bbb> </span>password<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>identity_api_version</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#39;3&#39;</span><span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>auth</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>auth_url</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#39;https://openstack.example.com:13000/v3&#39;</span><span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>interface</span>:<span style=color:#bbb> </span>public<span style=color:#bbb>
+</span></code></pre></div><ul>
 <li><code>~/.config/openstack/clouds.yaml</code></li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#f92672>clouds</span>:
-  <span style=color:#f92672>shiftstack</span>:
-    <span style=color:#f92672>profile</span>: <span style=color:#ae81ff>overcloud</span>
-    <span style=color:#f92672>auth</span>:
-      <span style=color:#f92672>project_name</span>: <span style=color:#ae81ff>shiftstack</span>
-      <span style=color:#f92672>user_domain_name</span>: <span style=color:#ae81ff>Default</span>
-      <span style=color:#f92672>project_domain_name</span>: <span style=color:#ae81ff>Default</span>
-  <span style=color:#f92672>admin</span>:
-    <span style=color:#f92672>profile</span>: <span style=color:#ae81ff>overcloud</span>
-    <span style=color:#f92672>auth</span>:
-      <span style=color:#f92672>project_name</span>: <span style=color:#ae81ff>admin</span>
-      <span style=color:#f92672>user_domain_name</span>: <span style=color:#ae81ff>Default</span>
-      <span style=color:#f92672>project_domain_name</span>: <span style=color:#ae81ff>Default</span>
-</code></pre></div><ul>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#8b008b;font-weight:700>clouds</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>shiftstack</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>profile</span>:<span style=color:#bbb> </span>overcloud<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>auth</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>project_name</span>:<span style=color:#bbb> </span>shiftstack<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>user_domain_name</span>:<span style=color:#bbb> </span>Default<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>project_domain_name</span>:<span style=color:#bbb> </span>Default<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>admin</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>profile</span>:<span style=color:#bbb> </span>overcloud<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>auth</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>project_name</span>:<span style=color:#bbb> </span>admin<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>user_domain_name</span>:<span style=color:#bbb> </span>Default<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>project_domain_name</span>:<span style=color:#bbb> </span>Default<span style=color:#bbb>
+</span></code></pre></div><ul>
 <li><code>~/.config/openstack/secure.yaml</code></li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#f92672>clouds</span>:
-  <span style=color:#f92672>shiftstack</span>:
-    <span style=color:#f92672>auth</span>:
-      <span style=color:#f92672>username</span>: <span style=color:#e6db74>&#39;shiftstack&#39;</span>
-      <span style=color:#f92672>password</span>: <span style=color:#e6db74>&#39;password&#39;</span>
-  <span style=color:#f92672>admin</span>:
-    <span style=color:#f92672>auth</span>:
-      <span style=color:#f92672>username</span>: <span style=color:#e6db74>&#39;admin&#39;</span>
-      <span style=color:#f92672>password</span>: <span style=color:#e6db74>&#39;password&#39;</span>
-</code></pre></div><h2 id=project-creation>Project Creation</h2>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#8b008b;font-weight:700>clouds</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>shiftstack</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>auth</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>username</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#39;shiftstack&#39;</span><span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>password</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#39;password&#39;</span><span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>admin</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>auth</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>username</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#39;admin&#39;</span><span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>password</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#39;password&#39;</span><span style=color:#bbb>
+</span></code></pre></div><h2 id=project-creation>Project Creation</h2>
 <p>First create an OpenStack project and user. I use some Ansible for this that I have not posted yet.</p>
 <ul>
 <li>
@@ -165,12 +165,12 @@ February 15, 2020
 <p>Create user <em>shiftstack</em> with role <em>swiftoperator</em> and <a href=https://docs.ceph.com/docs/master/radosgw/swift/tempurl/>temp URL</a> ability</p>
 </li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ openstack --os-cloud<span style=color:#f92672>=</span>admin project create --description OpenShift --enable shiftstack
-$ openstack --os-cloud<span style=color:#f92672>=</span>admin user create --project shiftstack --enable --password password shiftstack
-$ openstack --os-cloud<span style=color:#f92672>=</span>admin role add --user shiftstack --project shiftstack swiftoperator
-$ openstack --os-cloud<span style=color:#f92672>=</span>shiftstack object store account set --property Temp-URL-Key<span style=color:#f92672>=</span>superkey
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ openstack --os-cloud=admin project create --description OpenShift --enable shiftstack
+$ openstack --os-cloud=admin user create --project shiftstack --enable --password password shiftstack
+$ openstack --os-cloud=admin role add --user shiftstack --project shiftstack swiftoperator
+$ openstack --os-cloud=shiftstack object store account <span style=color:#658b00>set</span> --property Temp-URL-Key=superkey
 
-$ openstack --os-cloud<span style=color:#f92672>=</span>admin role assignment list --project shiftstack --names
+$ openstack --os-cloud=admin role assignment list --project shiftstack --names
 +---------------+--------------------+-------------+--------------------+--------+-----------+
 | Role          | User               | Group       | Project            | Domain | Inherited |
 +---------------+--------------------+-------------+--------------------+--------+-----------+
@@ -189,18 +189,18 @@ $ openstack --os-cloud<span style=color:#f92672>=</span>admin role assignment li
 <p>Before starting the installation process we must establish 2 IP addresses which will be used to access the OpenShift cluster externally. These will <a href=https://github.com/openshift/installer/issues/2670>necessarily be</a> Neutron floating IPs.</p>
 <p>You might typically think of floating IPs as being assigned to a virtual machine instance, but these will be assigned to Neutron ports that exist even if there are no machines.</p>
 <p>Create 2 floating IPs and make note of them.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ openstack floating ip create --description <span style=color:#e6db74>&#34;API osp-nightly.os.example.com&#34;</span> floating 
-$ openstack floating ip create --description <span style=color:#e6db74>&#34;Ingress osp-nightly.os.example.com&#34;</span> floating 
-<span style=color:#75715e># here is what we got</span>
-$ export API_FIP<span style=color:#f92672>=</span>192.0.2.61
-$ export INGRESS_FIP<span style=color:#f92672>=</span>192.0.2.52
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ openstack floating ip create --description <span style=color:#cd5555>&#34;API osp-nightly.os.example.com&#34;</span> floating 
+$ openstack floating ip create --description <span style=color:#cd5555>&#34;Ingress osp-nightly.os.example.com&#34;</span> floating 
+<span style=color:#228b22># here is what we got</span>
+$ <span style=color:#658b00>export</span> <span style=color:#00688b>API_FIP</span>=192.0.2.61
+$ <span style=color:#658b00>export</span> <span style=color:#00688b>INGRESS_FIP</span>=192.0.2.52
 </code></pre></div><p>You could use your local <code>/etc/hosts</code> file for testing, but otherwise you will need to create some DNS records. I have already created a dynamic DNS zone called <code>os.example.com</code> and defined a key that nsupdate can use to inject the required A records.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ export CLUSTER_NAME<span style=color:#f92672>=</span>osp-nightly
-$ cat <span style=color:#e6db74>&lt;&lt;EOF | nsupdate -v -k Kos.example.com.key
-</span><span style=color:#e6db74>update add api.${CLUSTER_NAME}.os.example.com 300 A $API_FIP
-</span><span style=color:#e6db74>update add *.apps.${CLUSTER_NAME}.os.example.com 300 A $INGRESS_FIP
-</span><span style=color:#e6db74>send
-</span><span style=color:#e6db74>EOF</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ <span style=color:#658b00>export</span> <span style=color:#00688b>CLUSTER_NAME</span>=osp-nightly
+$ cat <span style=color:#cd5555>&lt;&lt;EOF | nsupdate -v -k Kos.example.com.key
+</span><span style=color:#cd5555>update add api.${CLUSTER_NAME}.os.example.com 300 A $API_FIP
+</span><span style=color:#cd5555>update add *.apps.${CLUSTER_NAME}.os.example.com 300 A $INGRESS_FIP
+</span><span style=color:#cd5555>send
+</span><span style=color:#cd5555>EOF</span>
 </code></pre></div><p>The API load balancer floating IP should also go into the install-config.yaml at <code>/openstack/lbFloatingIP</code>. There is more to be said on the <a href=#install-config>install config</a> later.</p>
 <p>The installer will create a private node network <em>10.0.0.0/24</em> and a router joining this network to the external network you identify as holding your floating IPs.</p>
 <h2 id=ports>Ports</h2>
@@ -215,7 +215,7 @@ $ cat <span style=color:#e6db74>&lt;&lt;EOF | nsupdate -v -k Kos.example.com.key
 <h1 id=install-config>Install Config</h1>
 <p>Now we have to gather all the configuration details necessary for the installation.</p>
 <p>First create an <code>install-config.yaml</code>. This will run you through an interactive dialog where you will pick your provider (openstack of course), your cloud or project, your ssh key, the external network that holds your floating IPs, and your flavor.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ openshift-insall create install-config --log-level<span style=color:#f92672>=</span>debug --dir<span style=color:#f92672>=</span>osp-nightly
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ openshift-insall create install-config --log-level=debug --dir=osp-nightly
 </code></pre></div><p>Now you must modify the file just created at <code>osp-nightly/install-config.yaml</code>.</p>
 <p>Even though OpenShift 4.3 was announced with OpenStack support, there have been a <a href="https://bugzilla.redhat.com/show_bug.cgi?id=1796822">lot of issues</a> that affect clouds using self-signed certificates for their OpenStack endpoint. It seems to me that would be the norm for an enterprise and therefore OpenStack was not fully supported. This is all good now, but must you make your CA cert available in two ways. One is within the install-config.</p>
 <p>Edit <code>install-config.yaml</code> and:</p>
@@ -230,7 +230,7 @@ $ cat <span style=color:#e6db74>&lt;&lt;EOF | nsupdate -v -k Kos.example.com.key
 <h2 id=bootstrap>Bootstrap</h2>
 <p>And finally, here is where I can show off my Apple Pencil lack of skills! And where we will run the installer.</p>
 <p>Kick off the cluster installation:</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>openshift-install create cluster --log-level<span style=color:#f92672>=</span>debug --dir<span style=color:#f92672>=</span>osp-nightly
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>openshift-install create cluster --log-level=debug --dir=osp-nightly
 </code></pre></div><p>The <a href=https://github.com/openshift/installer>openshift-install tool</a> leverages <a href=https://www.terraform.io/>Terraform</a> to produce Installer Provisioned Infrastructure. It will create a bootstrap node first.</p>
 <p><img src=/images/openshift-openstack-install-network-00.png alt="OpenShift OpenStack Networking"></p>
 <p>This node will be configured to run a tiny 1 node OpenShift cluster, which only exists as a mechanism to serve out the configurations required by the actual cluster being built shortly after. This may remind you of the TripleO Undercloud / Overcloud model.</p>
@@ -238,23 +238,23 @@ $ cat <span style=color:#e6db74>&lt;&lt;EOF | nsupdate -v -k Kos.example.com.key
 <p><img src=/images/openshift-openstack-install-network-01.png alt="OpenShift OpenStack Networking"></p>
 <p>Once the bootstrap node is running a small cluster it will be reachable via the API port on <em>10.0.0.5</em> and the floating IP <em>192.0.2.61</em>. The installer (Terraform) will then connect again to OpenStack and build 3 master nodes.</p>
 <p>The masters will obtain their configuration from the bootstrap node and execute the machine config operator which will connect to the OpenStack API to build worker nodes. This step would fail if your <code>cacert</code> is not obtained from your clouds.yaml.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ openstack console log show --lines <span style=color:#ae81ff>10</span> &lt;boostrap node&gt; <span style=color:#75715e># see TLS errors</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ openstack console log show --lines <span style=color:#b452cd>10</span> &lt;boostrap node&gt; <span style=color:#228b22># see TLS errors</span>
 </code></pre></div><p><img src=/images/openshift-openstack-install-network-02.png alt="OpenShift OpenStack Networking"></p>
 <p>The bootstrap node will ultimatly be deleted once the actual cluster is up leaving behind only the masters and worker nodes to participate in VRRP and handle traffic for the VIPs. This is unlike TripleO wich leaves uses the director machine to manage the overcloud.</p>
 <h1 id=ingress-floating-ip>Ingress Floating IP</h1>
 <p>Finally while the association of the API floating IP to the API port is automatically handled by the installer process, the ingress floating IP must be assocated by hand.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ export CLUSTER_ID<span style=color:#f92672>=</span><span style=color:#e6db74>`</span>jq -r .infraID osp-nightly/metadata.json<span style=color:#e6db74>`</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ <span style=color:#658b00>export</span> <span style=color:#00688b>CLUSTER_ID</span>=<span style=color:#cd5555>`</span>jq -r .infraID osp-nightly/metadata.json<span style=color:#cd5555>`</span>
 
-$ export API_FIP<span style=color:#f92672>=</span>192.0.2.61
-$ export API_PORT<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;</span><span style=color:#e6db74>${</span>CLUSTER_ID<span style=color:#e6db74>}</span><span style=color:#e6db74>-api-port&#34;</span>
+$ <span style=color:#658b00>export</span> <span style=color:#00688b>API_FIP</span>=192.0.2.61
+$ <span style=color:#658b00>export</span> <span style=color:#00688b>API_PORT</span>=<span style=color:#cd5555>&#34;</span><span style=color:#cd5555>${</span><span style=color:#00688b>CLUSTER_ID</span><span style=color:#cd5555>}</span><span style=color:#cd5555>-api-port&#34;</span>
 
-$ export INGRESS_FIP<span style=color:#f92672>=</span>192.0.2.52
-$ export INGRESS_PORT<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;</span><span style=color:#e6db74>${</span>CLUSTER_ID<span style=color:#e6db74>}</span><span style=color:#e6db74>-ingress-port&#34;</span>
+$ <span style=color:#658b00>export</span> <span style=color:#00688b>INGRESS_FIP</span>=192.0.2.52
+$ <span style=color:#658b00>export</span> <span style=color:#00688b>INGRESS_PORT</span>=<span style=color:#cd5555>&#34;</span><span style=color:#cd5555>${</span><span style=color:#00688b>CLUSTER_ID</span><span style=color:#cd5555>}</span><span style=color:#cd5555>-ingress-port&#34;</span>
 
-$ openstack --os-cloud<span style=color:#f92672>=</span>shiftstack floating ip set --port $INGRESS_PORT $INGRESS_FIP
+$ openstack --os-cloud=shiftstack floating ip <span style=color:#658b00>set</span> --port <span style=color:#00688b>$INGRESS_PORT</span> <span style=color:#00688b>$INGRESS_FIP</span>
 </code></pre></div><p>And here is a look at the final port and FIP assignments</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ openstack --os-cloud<span style=color:#f92672>=</span>shiftstack floating ip list <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    -c <span style=color:#e6db74>&#39;Floating IP Address&#39;</span> -c <span style=color:#e6db74>&#39;Fixed IP Address&#39;</span> -c <span style=color:#e6db74>&#39;Port&#39;</span> -c <span style=color:#e6db74>&#39;Floating Network&#39;</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ openstack --os-cloud=shiftstack floating ip list <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    -c <span style=color:#cd5555>&#39;Floating IP Address&#39;</span> -c <span style=color:#cd5555>&#39;Fixed IP Address&#39;</span> -c <span style=color:#cd5555>&#39;Port&#39;</span> -c <span style=color:#cd5555>&#39;Floating Network&#39;</span>
 +---------------------+------------------+-----------+--------------------------------------+
 | Floating IP Address | Fixed IP Address | Port      | Floating Network                     |
 +---------------------+------------------+-----------+--------------------------------------+
@@ -262,23 +262,23 @@ $ openstack --os-cloud<span style=color:#f92672>=</span>shiftstack floating ip s
 | 192.0.2.52          | 10.0.0.7         | 3718f842- | c95e1f09-fe50-4837-99d7-cf9b1c3195c1 |
 +---------------------+------------------+-----------+--------------------------------------+
 
-$ openstack --os-cloud<span style=color:#f92672>=</span>shiftstack port list <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    -c ID -c Name -c Status -c <span style=color:#e6db74>&#39;Fixed IP Addresses&#39;</span>
+$ openstack --os-cloud=shiftstack port list <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    -c ID -c Name -c Status -c <span style=color:#cd5555>&#39;Fixed IP Addresses&#39;</span>
 +-----------+---------------------------------+--------+-----------------------------------------------+
 | ID        | Name                            | Status | Fixed IP Addresses                            |
 +-----------+---------------------------------+--------+-----------------------------------------------+
-| 0b2caa8a- |                                 | ACTIVE | ip_address<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;10.0.0.11&#39;</span>, subnet_id<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;815d5df0-&#39;</span> |
-| 0f46db1c- | osp-nightly-bwgwq-api-port      | DOWN   | ip_address<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;10.0.0.5&#39;</span>, subnet_id<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;815d5df0-&#39;</span>  | &lt;--
-| 1ce57420- | osp-nightly-bwgwq-worker-bn9l8  | ACTIVE | ip_address<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;10.0.0.14&#39;</span>, subnet_id<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;815d5df0-&#39;</span> |
-| 30c790a3- | osp-nightly-bwgwq-master-port-0 | ACTIVE | ip_address<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;10.0.0.16&#39;</span>, subnet_id<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;815d5df0-&#39;</span> |
-| 3718f842- | osp-nightly-bwgwq-ingress-port  | DOWN   | ip_address<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;10.0.0.7&#39;</span>, subnet_id<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;815d5df0-&#39;</span>  | &lt;--
-| 5120e5fe- | osp-nightly-bwgwq-worker-7qksj  | ACTIVE | ip_address<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;10.0.0.18&#39;</span>, subnet_id<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;815d5df0-&#39;</span> |
-| 7e8b29a4- | osp-nightly-bwgwq-worker-5ptpq  | ACTIVE | ip_address<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;10.0.0.26&#39;</span>, subnet_id<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;815d5df0-&#39;</span> |
-| ab61d063- | osp-nightly-bwgwq-master-port-2 | ACTIVE | ip_address<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;10.0.0.23&#39;</span>, subnet_id<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;815d5df0-&#39;</span> |
-| b322ad7a- |                                 | ACTIVE | ip_address<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;10.0.0.12&#39;</span>, subnet_id<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;815d5df0-&#39;</span> |
-| bd3fa5ea- |                                 | ACTIVE | ip_address<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;10.0.0.10&#39;</span>, subnet_id<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;815d5df0-&#39;</span> |
-| d0b6eb02- | osp-nightly-bwgwq-master-port-1 | ACTIVE | ip_address<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;10.0.0.15&#39;</span>, subnet_id<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;815d5df0-&#39;</span> |
-| febae668- |                                 | ACTIVE | ip_address<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;10.0.0.1&#39;</span>, subnet_id<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;815d5df0-&#39;</span>  |
+| 0b2caa8a- |                                 | ACTIVE | <span style=color:#00688b>ip_address</span>=<span style=color:#cd5555>&#39;10.0.0.11&#39;</span>, <span style=color:#00688b>subnet_id</span>=<span style=color:#cd5555>&#39;815d5df0-&#39;</span> |
+| 0f46db1c- | osp-nightly-bwgwq-api-port      | DOWN   | <span style=color:#00688b>ip_address</span>=<span style=color:#cd5555>&#39;10.0.0.5&#39;</span>, <span style=color:#00688b>subnet_id</span>=<span style=color:#cd5555>&#39;815d5df0-&#39;</span>  | &lt;--
+| 1ce57420- | osp-nightly-bwgwq-worker-bn9l8  | ACTIVE | <span style=color:#00688b>ip_address</span>=<span style=color:#cd5555>&#39;10.0.0.14&#39;</span>, <span style=color:#00688b>subnet_id</span>=<span style=color:#cd5555>&#39;815d5df0-&#39;</span> |
+| 30c790a3- | osp-nightly-bwgwq-master-port-0 | ACTIVE | <span style=color:#00688b>ip_address</span>=<span style=color:#cd5555>&#39;10.0.0.16&#39;</span>, <span style=color:#00688b>subnet_id</span>=<span style=color:#cd5555>&#39;815d5df0-&#39;</span> |
+| 3718f842- | osp-nightly-bwgwq-ingress-port  | DOWN   | <span style=color:#00688b>ip_address</span>=<span style=color:#cd5555>&#39;10.0.0.7&#39;</span>, <span style=color:#00688b>subnet_id</span>=<span style=color:#cd5555>&#39;815d5df0-&#39;</span>  | &lt;--
+| 5120e5fe- | osp-nightly-bwgwq-worker-7qksj  | ACTIVE | <span style=color:#00688b>ip_address</span>=<span style=color:#cd5555>&#39;10.0.0.18&#39;</span>, <span style=color:#00688b>subnet_id</span>=<span style=color:#cd5555>&#39;815d5df0-&#39;</span> |
+| 7e8b29a4- | osp-nightly-bwgwq-worker-5ptpq  | ACTIVE | <span style=color:#00688b>ip_address</span>=<span style=color:#cd5555>&#39;10.0.0.26&#39;</span>, <span style=color:#00688b>subnet_id</span>=<span style=color:#cd5555>&#39;815d5df0-&#39;</span> |
+| ab61d063- | osp-nightly-bwgwq-master-port-2 | ACTIVE | <span style=color:#00688b>ip_address</span>=<span style=color:#cd5555>&#39;10.0.0.23&#39;</span>, <span style=color:#00688b>subnet_id</span>=<span style=color:#cd5555>&#39;815d5df0-&#39;</span> |
+| b322ad7a- |                                 | ACTIVE | <span style=color:#00688b>ip_address</span>=<span style=color:#cd5555>&#39;10.0.0.12&#39;</span>, <span style=color:#00688b>subnet_id</span>=<span style=color:#cd5555>&#39;815d5df0-&#39;</span> |
+| bd3fa5ea- |                                 | ACTIVE | <span style=color:#00688b>ip_address</span>=<span style=color:#cd5555>&#39;10.0.0.10&#39;</span>, <span style=color:#00688b>subnet_id</span>=<span style=color:#cd5555>&#39;815d5df0-&#39;</span> |
+| d0b6eb02- | osp-nightly-bwgwq-master-port-1 | ACTIVE | <span style=color:#00688b>ip_address</span>=<span style=color:#cd5555>&#39;10.0.0.15&#39;</span>, <span style=color:#00688b>subnet_id</span>=<span style=color:#cd5555>&#39;815d5df0-&#39;</span> |
+| febae668- |                                 | ACTIVE | <span style=color:#00688b>ip_address</span>=<span style=color:#cd5555>&#39;10.0.0.1&#39;</span>, <span style=color:#00688b>subnet_id</span>=<span style=color:#cd5555>&#39;815d5df0-&#39;</span>  |
 +-----------+---------------------------------+--------+-----------------------------------------------+
 </code></pre></div>
 </div>

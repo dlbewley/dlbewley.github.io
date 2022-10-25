@@ -141,21 +141,21 @@ If you don&rsquo;t have that yet, head over to the <a href=https://portal.azure.
 The <a href=https://docs.microsoft.com/en-us/cli/azure/>Azure CLI Docs</a> describe installing the CLI in any OS.
 We will setup <a href=https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-macos>Azure CLI on MacOS</a> using brew.</p>
 <p>While we&rsquo;re at it let&rsquo;s go ahead and create a Resource Group called <em>ocp</em> in the <em>westus</em> region, and set that as our default.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ brew install azure-cli
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ brew install azure-cli
 
 $ az login
 $ az group create -l westus -n ocp
-$ az configure --defaults group<span style=color:#f92672>=</span>ocp
+$ az configure --defaults <span style=color:#00688b>group</span>=ocp
 
 $ cat ~/.azure/config
-<span style=color:#f92672>[</span>cloud<span style=color:#f92672>]</span>
-name <span style=color:#f92672>=</span> AzureCloud
-<span style=color:#f92672>[</span>defaults<span style=color:#f92672>]</span>
-group <span style=color:#f92672>=</span> ocp
+[cloud]
+<span style=color:#00688b>name</span> = AzureCloud
+[defaults]
+<span style=color:#00688b>group</span> = ocp
 
 $ cat ~/.azure/clouds.config
-<span style=color:#f92672>[</span>AzureCloud<span style=color:#f92672>]</span>
-subscription <span style=color:#f92672>=</span> 12345678-9000-0000-0000-000000000000
+[AzureCloud]
+<span style=color:#00688b>subscription</span> = 12345678-9000-0000-0000-000000000000
 </code></pre></div><p>You may want to pause here and check out the <a href=https://docs.microsoft.com/en-us/cli/azure/get-started-with-azure-cli title="Get started with Azure CLI">getting started with the Azure CLI</a> documentation.</p>
 <h2 id=adjusting-azure-quotas-and-limits>Adjusting Azure Quotas and Limits</h2>
 <p>Most of the default quotas will <a href=https://docs.openshift.com/container-platform/4.7/installing/installing_azure/installing-azure-account.html title="Configuring an Azure account">meet the requirements</a>, but you will need to increase your vCPU quota to at least 40 in order to install OpenShift. I suggest a little headroom at 60.</p>
@@ -176,10 +176,10 @@ Follow the tutorial on <a href=https://docs.microsoft.com/en-us/azure/dns/dns-de
 </ul>
 </blockquote>
 <p>Replace your domain in the dig commands below to verify that resolution works from any host on the internet.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-plain data-lang=plain><span style=display:block;width:100%;background-color:#3c3d38>$ dig +short soa az.domain.com. @ns1-01.azure-dns.com
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-plain data-lang=plain><span style=display:block;width:100%;background-color:#d6d6c6>$ dig +short soa az.domain.com. @ns1-01.azure-dns.com
 </span>ns1-01.azure-dns.com. azuredns-hostmaster.microsoft.com. 1 3600 300 2419200 300
 
-<span style=display:block;width:100%;background-color:#3c3d38>$ dig +short ns az.domain.com.
+<span style=display:block;width:100%;background-color:#d6d6c6>$ dig +short ns az.domain.com.
 </span>ns3-01.azure-dns.org.
 ns4-01.azure-dns.info.
 ns2-01.azure-dns.net.
@@ -191,71 +191,71 @@ Because of this, our service principal must have both the <a href=https://docs.m
 <p>We cover all the necessary steps below, but this is also discussed <a href=https://github.com/openshift/installer/blob/master/docs/user/azure/credentials.md>in the installer repo</a>. I should note there are alternative modes supported by the cloud credential operator to differently accomodate security requirements, but they are not covered here.</p>
 <blockquote>
 <p>📓 <strong>Pro Tip:</strong> Credential requests can be examined with <a href=https://mikefarah.gitbook.io/yq/><code>yq</code></a></p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc adm release extract 4.7.8 --to<span style=color:#f92672>=</span>./ocp-4.7.8
-$ yq eval <span style=color:#e6db74>&#39;. | select(.spec.providerSpec.kind == &#34;AzureProviderSpec&#34;) \
-</span><span style=color:#e6db74>  | (.metadata.name,.spec.providerSpec)&#39;</span> ocp-4.7.8/*.yaml
-</code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#ae81ff>openshift-machine-api-azure</span>
-<span style=color:#f92672>apiVersion</span>: <span style=color:#ae81ff>cloudcredential.openshift.io/v1</span>
-<span style=color:#f92672>kind</span>: <span style=color:#ae81ff>AzureProviderSpec</span>
-<span style=color:#f92672>roleBindings</span>:
-  - <span style=color:#f92672>role</span>: <span style=color:#ae81ff>Contributor</span>
----
-<span style=color:#ae81ff>openshift-image-registry-azure</span>
----
-<span style=color:#f92672>apiVersion</span>: <span style=color:#ae81ff>cloudcredential.openshift.io/v1</span>
-<span style=color:#f92672>kind</span>: <span style=color:#ae81ff>AzureProviderSpec</span>
-<span style=color:#f92672>roleBindings</span>:
-  - <span style=color:#f92672>role</span>: <span style=color:#ae81ff>Contributor</span>
----
-<span style=color:#ae81ff>openshift-ingress-azure</span>
----
-<span style=color:#f92672>apiVersion</span>: <span style=color:#ae81ff>cloudcredential.openshift.io/v1</span>
-<span style=color:#f92672>kind</span>: <span style=color:#ae81ff>AzureProviderSpec</span>
-<span style=color:#f92672>roleBindings</span>:
-  - <span style=color:#f92672>role</span>: <span style=color:#ae81ff>Contributor</span>
-</code></pre></div></blockquote>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc adm release extract 4.7.8 --to=./ocp-4.7.8
+$ yq <span style=color:#658b00>eval</span> <span style=color:#cd5555>&#39;. | select(.spec.providerSpec.kind == &#34;AzureProviderSpec&#34;) \
+</span><span style=color:#cd5555>  | (.metadata.name,.spec.providerSpec)&#39;</span> ocp-4.7.8/*.yaml
+</code></pre></div><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml>openshift-machine-api-azure<span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>apiVersion</span>:<span style=color:#bbb> </span>cloudcredential.openshift.io/v1<span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>kind</span>:<span style=color:#bbb> </span>AzureProviderSpec<span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>roleBindings</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>  </span>- <span style=color:#8b008b;font-weight:700>role</span>:<span style=color:#bbb> </span>Contributor<span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#008b45;text-decoration:underline>---</span><span style=color:#bbb>
+</span><span style=color:#bbb></span>openshift-image-registry-azure<span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#008b45;text-decoration:underline>---</span><span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>apiVersion</span>:<span style=color:#bbb> </span>cloudcredential.openshift.io/v1<span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>kind</span>:<span style=color:#bbb> </span>AzureProviderSpec<span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>roleBindings</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>  </span>- <span style=color:#8b008b;font-weight:700>role</span>:<span style=color:#bbb> </span>Contributor<span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#008b45;text-decoration:underline>---</span><span style=color:#bbb>
+</span><span style=color:#bbb></span>openshift-ingress-azure<span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#008b45;text-decoration:underline>---</span><span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>apiVersion</span>:<span style=color:#bbb> </span>cloudcredential.openshift.io/v1<span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>kind</span>:<span style=color:#bbb> </span>AzureProviderSpec<span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>roleBindings</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>  </span>- <span style=color:#8b008b;font-weight:700>role</span>:<span style=color:#bbb> </span>Contributor<span style=color:#bbb>
+</span></code></pre></div></blockquote>
 <p>We will use environment variables and temporary files to collect the values needed in later steps. We will be working from a path held in <code>$CLUSTER_DIR</code> which looks like <a href=https://gitlab.com/dlbewley/openshift-practice/-/tree/master/clusters/az-win>this example</a>.</p>
 <p>You can read <a href=https://docs.openshift.com/container-platform/4.7/installing/installing_azure/installing-azure-account.html#installation-azure-service-principal_installing-azure-account>the OpenShift docs</a> for more context on the following procedure.</p>
 <ul>
 <li>Start by capturing the tenant <code>$az_tenant_id</code> and subscription <code>$az_id</code> IDs.</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ az login
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ az login
 $ az account list --refresh
-$ eval <span style=color:#66d9ef>$(</span>az account show | <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>  jq -r <span style=color:#e6db74>&#39;. | &#34;export az_tenant_id=&#34; + .tenantId + &#34;\nexport az_id=&#34; + .id&#39;</span><span style=color:#66d9ef>)</span>
+$ <span style=color:#658b00>eval</span> <span style=color:#8b008b;font-weight:700>$(</span>az account show | <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>  jq -r <span style=color:#cd5555>&#39;. | &#34;export az_tenant_id=&#34; + .tenantId + &#34;\nexport az_id=&#34; + .id&#39;</span><span style=color:#8b008b;font-weight:700>)</span>
 
-$ echo <span style=color:#e6db74>&#34;</span>$az_tenant_id<span style=color:#e6db74>\n</span>$az_id<span style=color:#e6db74>&#34;</span>
+$ <span style=color:#658b00>echo</span> <span style=color:#cd5555>&#34;</span><span style=color:#00688b>$az_tenant_id</span><span style=color:#cd5555>\n</span><span style=color:#00688b>$az_id</span><span style=color:#cd5555>&#34;</span>
 602ebb4e-9eea-4d29-8f4d-0000000000000
 07490058-1a4c-46a3-af1d-0000000000000
 </code></pre></div><ul>
 <li>Create a service principal and an application registration while capturing the application ID <code>$az_app_id</code> and password <code>$az_app_password</code> from the output.</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ az ad sp create-for-rbac --role Contributor --name ocp4win | tee day0/ocp4win-sp.json
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ az ad sp create-for-rbac --role Contributor --name ocp4win | tee day0/ocp4win-sp.json
 
-$ eval <span style=color:#66d9ef>$(</span>cat day0/ocp4win-sp.json | <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>  jq -r <span style=color:#e6db74>&#39;.|&#34;export az_app_id=&#34; + .appId + &#34;\nexport az_app_password=&#34; + .password&#39;</span><span style=color:#66d9ef>)</span>
+$ <span style=color:#658b00>eval</span> <span style=color:#8b008b;font-weight:700>$(</span>cat day0/ocp4win-sp.json | <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>  jq -r <span style=color:#cd5555>&#39;.|&#34;export az_app_id=&#34; + .appId + &#34;\nexport az_app_password=&#34; + .password&#39;</span><span style=color:#8b008b;font-weight:700>)</span>
 
-$ echo <span style=color:#e6db74>&#34;</span>$az_app_id<span style=color:#e6db74>\n</span>$az_app_password<span style=color:#e6db74>&#34;</span>
+$ <span style=color:#658b00>echo</span> <span style=color:#cd5555>&#34;</span><span style=color:#00688b>$az_app_id</span><span style=color:#cd5555>\n</span><span style=color:#00688b>$az_app_password</span><span style=color:#cd5555>&#34;</span>
 7833aa9e-7880-4070-9f75-0000000000000
 71MFrd_-RYdj-AJ1LgBD-lxS00000000000
 </code></pre></div><ul>
 <li>Now retrieve the object ID <code>$az_sp_object_id</code> from this application registration.</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ export az_sp_object_id<span style=color:#f92672>=</span><span style=color:#66d9ef>$(</span> <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>  az ad sp list --filter <span style=color:#e6db74>&#34;appId eq &#39;</span>$az_app_id<span style=color:#e6db74>&#39;&#34;</span> <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>  | jq <span style=color:#e6db74>&#39;.[0].objectId&#39;</span> -r<span style=color:#66d9ef>)</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ <span style=color:#658b00>export</span> <span style=color:#00688b>az_sp_object_id</span>=<span style=color:#8b008b;font-weight:700>$(</span> <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>  az ad sp list --filter <span style=color:#cd5555>&#34;appId eq &#39;</span><span style=color:#00688b>$az_app_id</span><span style=color:#cd5555>&#39;&#34;</span> <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>  | jq <span style=color:#cd5555>&#39;.[0].objectId&#39;</span> -r<span style=color:#8b008b;font-weight:700>)</span>
 
-$ echo $az_sp_object_id       
+$ <span style=color:#658b00>echo</span> <span style=color:#00688b>$az_sp_object_id</span>       
 6172e1c9-39c5-4dc9-8065-000000000000
 </code></pre></div><ul>
 <li>Pause to confirm all values have been captured.</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ env | grep ^az_
-az_app_id<span style=color:#f92672>=</span>7833aa9e-7880-4070-9f75-000000000000
-az_app_password<span style=color:#f92672>=</span>71MFrd_-RYdj-AJ1LgBD-lx00000000000
-az_id<span style=color:#f92672>=</span>07490058-1a4c-46a3-af1d-000000000000
-az_sp_object_id<span style=color:#f92672>=</span>6172e1c9-39c5-4dc9-8065-000000000000
-az_tenant_id<span style=color:#f92672>=</span>602ebb4e-9eea-4d29-8f4d-000000000000
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ env | grep ^az_
+<span style=color:#00688b>az_app_id</span>=7833aa9e-7880-4070-9f75-000000000000
+<span style=color:#00688b>az_app_password</span>=71MFrd_-RYdj-AJ1LgBD-lx00000000000
+<span style=color:#00688b>az_id</span>=07490058-1a4c-46a3-af1d-000000000000
+<span style=color:#00688b>az_sp_object_id</span>=6172e1c9-39c5-4dc9-8065-000000000000
+<span style=color:#00688b>az_tenant_id</span>=602ebb4e-9eea-4d29-8f4d-000000000000
 </code></pre></div><h2 id=assigning-permissions-to-the-service-principal>Assigning permissions to the Service Principal</h2>
 <p>OpenShift installer will also create a new resourcegroup to hold the cluster resources. As of OCP 4.7, the ability to prescribe the resource group is not yet available.</p>
 <blockquote>
@@ -266,13 +266,13 @@ az_tenant_id<span style=color:#f92672>=</span>602ebb4e-9eea-4d29-8f4d-0000000000
 <ul>
 <li>Assign <code>Users Access Administrator</code> role to service principal per <a href=https://docs.microsoft.com/en-us/azure/role-based-access-control/role-assignments-steps title="Steps to assign an Azure role">the Azure docs</a>. To avoid the error above, include a subscription scope.</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ az role assignment create --role <span style=color:#e6db74>&#34;User Access Administrator&#34;</span> <span style=color:#ae81ff>\
-</span><span style=display:block;width:100%;background-color:#3c3d38><span style=color:#ae81ff></span>    --subscription $az_id <span style=color:#ae81ff>\
-</span></span><span style=color:#ae81ff></span>    --assignee-object-id $az_sp_object_id <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    | tee day0/role-assignment.json
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ az role assignment create --role <span style=color:#cd5555>&#34;User Access Administrator&#34;</span> <span style=color:#cd5555>\
+</span><span style=display:block;width:100%;background-color:#d6d6c6><span style=color:#cd5555></span>    --subscription <span style=color:#00688b>$az_id</span> <span style=color:#cd5555>\
+</span></span><span style=color:#cd5555></span>    --assignee-object-id <span style=color:#00688b>$az_sp_object_id</span> <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    | tee day0/role-assignment.json
 
-$ az role assignment create --role <span style=color:#e6db74>&#34;Contributor&#34;</span> <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>    --assignee-object-id  $az_sp_object_id | tee day0/role-assignment-contibutor.json
+$ az role assignment create --role <span style=color:#cd5555>&#34;Contributor&#34;</span> <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>    --assignee-object-id  <span style=color:#00688b>$az_sp_object_id</span> | tee day0/role-assignment-contibutor.json
 </code></pre></div><p>If scope was not included, to repair the error above, expand the scope in the portal:</p>
 <ul>
 <li>Portal → Subscription → Select Subscription → Access Control IAM → Role Assignments Tab → Add
@@ -290,19 +290,19 @@ $ az role assignment create --role <span style=color:#e6db74>&#34;Contributor&#3
 <blockquote>
 <p>📓 The <a href=https://blogs.msdn.microsoft.com/aaddevsup/2018/06/06/guid-table-for-windows-azure-active-directory-permissions/ title="GUID Table for Windows Azure Active Directory Permissions">GUID values below</a> are literal and not placeholders.</p>
 </blockquote>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#75715e># request graph api permission</span>
-$ az ad app permission add <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>  --id $az_app_id <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>  --api 00000002-0000-0000-c000-000000000000 <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>  --api-permissions 824c81eb-e3f8-4ee6-8f6d-de7f50d565b7<span style=color:#f92672>=</span>Role
-WARNING: Invoking <span style=color:#e6db74>&#34;az ad app permission grant --id </span>$az_app_id<span style=color:#e6db74> --api 00000002-0000-0000-c000-000000000000&#34;</span> is needed to make the change effective
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#228b22># request graph api permission</span>
+$ az ad app permission add <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>  --id <span style=color:#00688b>$az_app_id</span> <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>  --api 00000002-0000-0000-c000-000000000000 <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>  --api-permissions 824c81eb-e3f8-4ee6-8f6d-de7f50d565b7=Role
+WARNING: Invoking <span style=color:#cd5555>&#34;az ad app permission grant --id </span><span style=color:#00688b>$az_app_id</span><span style=color:#cd5555> --api 00000002-0000-0000-c000-000000000000&#34;</span> is needed to make the change effective
 </code></pre></div><ul>
 <li>Now grant those added permissions as instructed by the output above.</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ az ad app permission grant <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>  --id $az_app_id <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>  --api 00000002-0000-0000-c000-000000000000 <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>  | tee day0/app-permission-grant.json
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ az ad app permission grant <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>  --id <span style=color:#00688b>$az_app_id</span> <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>  --api 00000002-0000-0000-c000-000000000000 <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>  | tee day0/app-permission-grant.json
 </code></pre></div><p>Finally, go to the Azure portal and make sure it is not waiting for Admin approval.</p>
 <ul>
 <li>Portal &ndash;> Azure Active Directory → App registrations → <em>&lt;display-name></em> → API permission
@@ -319,25 +319,25 @@ WARNING: Invoking <span style=color:#e6db74>&#34;az ad app permission grant --id
 <ul>
 <li><a href=https://cloud.redhat.com/openshift/install/pull-secret>Download your unique pull secret</a> and save it somewhere safe like <a href=https://keybase.io>Keybase</a>.</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ export PULL_SECRET<span style=color:#f92672>=</span><span style=color:#66d9ef>$(</span>cat /Volumes/Keybase/private/dlbewley/credz/redhat/pull-secret.json<span style=color:#66d9ef>)</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ <span style=color:#658b00>export</span> <span style=color:#00688b>PULL_SECRET</span>=<span style=color:#8b008b;font-weight:700>$(</span>cat /Volumes/Keybase/private/dlbewley/credz/redhat/pull-secret.json<span style=color:#8b008b;font-weight:700>)</span>
 </code></pre></div><ul>
 <li>Download the <code>oc</code> client and <code>openshift-install</code> installer from <a href=https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable-4.7/ title="OpenShift Stable 4.7 Mirror">the mirror</a> or using my <a href=https://github.com/dlbewley/homelab/blob/master/bin/getoc>getoc</a> script.</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ getoc
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ getoc
 </code></pre></div><blockquote>
 <p>📓 <strong>Enabling Execution on MacOSX</strong></p>
 <p>It may be necessary to <a href=https://support.apple.com/guide/mac-help/open-a-mac-app-from-an-unidentified-developer-mh40616/mac>flag the downloads as safe</a> for execution on MacOS.
 Ctrl-click in finder and open to bypass OSX signature check or use <code>spctl</code>.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ spctl --add --label <span style=color:#e6db74>&#34;OpenShift&#34;</span> openshift-install
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ spctl --add --label <span style=color:#cd5555>&#34;OpenShift&#34;</span> openshift-install
 </code></pre></div><p>The same may be done for the client.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ spctl --add --label <span style=color:#e6db74>&#34;OpenShift&#34;</span> oc
-$ spctl --add --label <span style=color:#e6db74>&#34;OpenShift&#34;</span> kubectl
-$ spctl --enable --label <span style=color:#e6db74>&#34;OpenShift&#34;</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ spctl --add --label <span style=color:#cd5555>&#34;OpenShift&#34;</span> oc
+$ spctl --add --label <span style=color:#cd5555>&#34;OpenShift&#34;</span> kubectl
+$ spctl --enable --label <span style=color:#cd5555>&#34;OpenShift&#34;</span>
 </code></pre></div></blockquote>
 <ul>
 <li>Confirm the versions downloaded. I use a script called <a href=https://github.com/dlbewley/homelab/blob/master/bin/ocver>ocver</a> to switch between versions.</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ ocver 4.7
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ ocver 4.7
 Linking clients to 4.7/macosx
 Linking installer to 4.7/macosx
 Linking noobaa to latest/macosx
@@ -352,7 +352,7 @@ built from commit fae650e24e7036b333b2b2d9dfb5a08a29cd07b1
 release image quay.io/openshift-release-dev/ocp-release@sha256:7456516a64edf63268522565cf00dc581f1d7ad22355ffab8157a9e106cf607f
 </code></pre></div><h2 id=generating-an-ssh-key>Generating an SSH key</h2>
 <p>We can generate an ssh key for installation debugging purposes, but we will use this same key for accessing the Windows node in <a href=http://guifreelife.com/blog/2021/06/03/OpenShift-Windows-Containers-part-2/ title="Windows Containers Part 2">part 2</a>, so do not add a passphrase to this key.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ ssh-keygen  -t ed25519 -C <span style=color:#e6db74>&#34;</span>$USER<span style=color:#e6db74>@az-win&#34;</span> -f ~/.ssh/az-win -N <span style=color:#e6db74>&#34;&#34;</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ ssh-keygen  -t ed25519 -C <span style=color:#cd5555>&#34;</span><span style=color:#00688b>$USER</span><span style=color:#cd5555>@az-win&#34;</span> -f ~/.ssh/az-win -N <span style=color:#cd5555>&#34;&#34;</span>
 $ ssh-add ~/.ssh/az-win
 </code></pre></div><h2 id=generating-an-install-configyaml>Generating an install-config.yaml</h2>
 <p>The OpenShift installation process uses an <code>install-config.yaml</code> file to understand <em>how</em> to build your cluster.
@@ -400,33 +400,33 @@ A JSON file will be created in <code>~/.azure/osServicePrincipal.json</code> fro
 <ul>
 <li>Create service principal json file from the values previously captured.</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#ae81ff>$ cat &lt;&lt;EOF &gt; ~/.azure/osServicePrincipal.json</span>
-{
-  <span style=color:#f92672>&#34;subscriptionId&#34;: </span><span style=color:#e6db74>&#34;$az_id&#34;</span>,
-  <span style=color:#f92672>&#34;clientId&#34;: </span><span style=color:#e6db74>&#34;$az_app_id&#34;</span>,
-  <span style=color:#f92672>&#34;clientSecret&#34;: </span><span style=color:#e6db74>&#34;$az_app_password&#34;</span>,
-  <span style=color:#f92672>&#34;tenantId&#34;: </span><span style=color:#e6db74>&#34;$az_tenant_id&#34;</span>
-}
-<span style=color:#ae81ff>EOF</span>
-</code></pre></div><p>❗ Be sure to remove <code>~/.azure/osServicePrincipal.json</code> before running <code>openshift-install</code> if you wish to use an alternate service principal.</p>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml>$ cat &lt;&lt;EOF &gt; ~/.azure/osServicePrincipal.json<span style=color:#bbb>
+</span><span style=color:#bbb></span>{<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>&#34;subscriptionId&#34;: </span><span style=color:#cd5555>&#34;$az_id&#34;</span>,<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>&#34;clientId&#34;: </span><span style=color:#cd5555>&#34;$az_app_id&#34;</span>,<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>&#34;clientSecret&#34;: </span><span style=color:#cd5555>&#34;$az_app_password&#34;</span>,<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>&#34;tenantId&#34;: </span><span style=color:#cd5555>&#34;$az_tenant_id&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb></span>}<span style=color:#bbb>
+</span><span style=color:#bbb></span>EOF<span style=color:#bbb>
+</span></code></pre></div><p>❗ Be sure to remove <code>~/.azure/osServicePrincipal.json</code> before running <code>openshift-install</code> if you wish to use an alternate service principal.</p>
 <ul>
 <li>Create an OpenShift <code>install-config.yaml</code></li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ export CLUSTER_NAME<span style=color:#f92672>=</span>win 
-$ export CLUSTER_DIR<span style=color:#f92672>=</span><span style=color:#66d9ef>$(</span>git rev-parse --show-toplevel<span style=color:#66d9ef>)</span>/clusters/az-<span style=color:#e6db74>${</span>CLUSTER_NAME<span style=color:#e6db74>}</span> 
-$ mkdir -p $CLUSTER_DIR/day<span style=color:#f92672>{</span>0,1,2<span style=color:#f92672>}</span>
-$ mv $CLUSTER_DIR/install-config.yaml<span style=color:#f92672>{</span>,.bak-<span style=color:#66d9ef>$(</span>date +%Y%m%d<span style=color:#66d9ef>)</span><span style=color:#f92672>}</span>
-$ openshift-install create install-config --dir<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;</span>$CLUSTER_DIR<span style=color:#e6db74>&#34;</span> 
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ <span style=color:#658b00>export</span> <span style=color:#00688b>CLUSTER_NAME</span>=win 
+$ <span style=color:#658b00>export</span> <span style=color:#00688b>CLUSTER_DIR</span>=<span style=color:#8b008b;font-weight:700>$(</span>git rev-parse --show-toplevel<span style=color:#8b008b;font-weight:700>)</span>/clusters/az-<span style=color:#cd5555>${</span><span style=color:#00688b>CLUSTER_NAME</span><span style=color:#cd5555>}</span> 
+$ mkdir -p <span style=color:#00688b>$CLUSTER_DIR</span>/day{0,1,2}
+$ mv <span style=color:#00688b>$CLUSTER_DIR</span>/install-config.yaml{,.bak-<span style=color:#8b008b;font-weight:700>$(</span>date +%Y%m%d<span style=color:#8b008b;font-weight:700>)</span>}
+$ openshift-install create install-config --dir=<span style=color:#cd5555>&#34;</span><span style=color:#00688b>$CLUSTER_DIR</span><span style=color:#cd5555>&#34;</span> 
 </code></pre></div>
 <ul>
 <li>Adjust the install config to use <code>OVNKubernetes</code> for the network type as in this <a href=https://gitlab.com/dlbewley/openshift-practice/-/blob/master/clusters/az-win/install-config-example.yaml>example install-config.yaml</a>.</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#75715e># modify the CNI type from OpenShiftSDN to OVNKubernetes</span>
-$ sed -i <span style=color:#e6db74>&#39;s/OpenShiftSDN/OVNKubernetes/g&#39;</span> $CLUSTER_DIR/install-config.yaml
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#228b22># modify the CNI type from OpenShiftSDN to OVNKubernetes</span>
+$ sed -i <span style=color:#cd5555>&#39;s/OpenShiftSDN/OVNKubernetes/g&#39;</span> <span style=color:#00688b>$CLUSTER_DIR</span>/install-config.yaml
 </code></pre></div><ul>
 <li>Confirm that <code>OVNKubernetes</code> is the network type</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ grep networkType $CLUSTER_DIR/install-config.yaml
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ grep networkType <span style=color:#00688b>$CLUSTER_DIR</span>/install-config.yaml
   networkType: OVNKubernetes
 </code></pre></div><blockquote>
 <p>📺 <strong>Watch Demo:</strong> Creating the <code>install-config.yaml</code>
@@ -440,48 +440,48 @@ $ sed -i <span style=color:#e6db74>&#39;s/OpenShiftSDN/OVNKubernetes/g&#39;</spa
 <ul>
 <li>Generate the installer manifests after backing up the install config</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ cp -p $CLUSTER_DIR/install-config.yaml<span style=color:#f92672>{</span>,.bak-<span style=color:#66d9ef>$(</span>date +%Y%m%d<span style=color:#66d9ef>)</span><span style=color:#f92672>}</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ cp -p <span style=color:#00688b>$CLUSTER_DIR</span>/install-config.yaml{,.bak-<span style=color:#8b008b;font-weight:700>$(</span>date +%Y%m%d<span style=color:#8b008b;font-weight:700>)</span>}
 
-$ openshift-install create manifests --dir<span style=color:#f92672>=</span>$CLUSTER_DIR
-INFO Credentials loaded from file <span style=color:#e6db74>&#34;/Users/dale/.azure/osServicePrincipal.json&#34;</span>
+$ openshift-install create manifests --dir=<span style=color:#00688b>$CLUSTER_DIR</span>
+INFO Credentials loaded from file <span style=color:#cd5555>&#34;/Users/dale/.azure/osServicePrincipal.json&#34;</span>
 INFO Consuming Install Config from target directory
 INFO Manifests created in: /Users/dale/src/redhat/openshift-practice/clusters/az-win/manifests and /Users/dale/src/redhat/openshift-practice/clusters/az-win/openshift
 </code></pre></div><ul>
 <li>Create <a href=https://gitlab.com/dlbewley/openshift-practice/-/blob/master/clusters/az-win/day1/cluster-network-03-config.yml>clusters/az-win/day1/cluster-network-03-config.yml</a> as below and copy it to the manifests directory.</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#ae81ff>$ cat &lt;&lt;EOF &gt; $CLUSTER_DIR/day1/cluster-network-03-config.yml</span>
-<span style=color:#f92672>apiVersion</span>: <span style=color:#ae81ff>operator.openshift.io/v1</span>
-<span style=color:#f92672>kind</span>: <span style=color:#ae81ff>Network</span>
-<span style=color:#f92672>metadata</span>:
-  <span style=color:#f92672>creationTimestamp</span>: <span style=color:#66d9ef>null</span>
-  <span style=color:#f92672>name</span>: <span style=color:#ae81ff>cluster</span>
-<span style=color:#f92672>spec</span>: 
-  <span style=color:#f92672>clusterNetwork</span>: 
-  - <span style=color:#f92672>cidr</span>: <span style=color:#ae81ff>10.128.0.0</span><span style=color:#ae81ff>/14</span>
-    <span style=color:#f92672>hostPrefix</span>: <span style=color:#ae81ff>23</span>
-  <span style=color:#f92672>externalIP</span>:
-    <span style=color:#f92672>policy</span>: {}
-  <span style=color:#f92672>serviceNetwork</span>:
-  - <span style=color:#ae81ff>172.30.0.0</span><span style=color:#ae81ff>/16</span>
-  <span style=color:#f92672>defaultNetwork</span>:
-    <span style=color:#f92672>type</span>: <span style=color:#ae81ff>OVNKubernetes </span>
-    <span style=color:#f92672>ovnKubernetesConfig</span>:
-      <span style=color:#f92672>hybridOverlayConfig</span>:
-        <span style=color:#f92672>hybridClusterNetwork</span>: 
-        - <span style=color:#f92672>cidr</span>: <span style=color:#ae81ff>10.132.0.0</span><span style=color:#ae81ff>/14</span>
-          <span style=color:#f92672>hostPrefix</span>: <span style=color:#ae81ff>23</span>
-        <span style=color:#75715e># next line VMware provider only. see https://docs.microsoft.com/en-us/virtualization/windowscontainers/kubernetes/common-problems\#pod-to-pod-connectivity-between-hosts-is-broken-on-my-kubernetes-cluster-running-on-vsphere</span>
-        <span style=color:#75715e>#hybridOverlayVXLANPort: 9898 </span>
-<span style=color:#f92672>status</span>: {}
-<span style=color:#ae81ff>EOF</span>
-
-<span style=color:#ae81ff>$ cp -p $CLUSTER_DIR/day1/cluster-network-03-config.yml $CLUSTER_DIR/manifests/</span>
-</code></pre></div><h2 id=deploying-the-cluster>Deploying the cluster</h2>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml>$ cat &lt;&lt;EOF &gt; $CLUSTER_DIR/day1/cluster-network-03-config.yml<span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>apiVersion</span>:<span style=color:#bbb> </span>operator.openshift.io/v1<span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>kind</span>:<span style=color:#bbb> </span>Network<span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>metadata</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>creationTimestamp</span>:<span style=color:#bbb> </span><span style=color:#8b008b;font-weight:700>null</span><span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>cluster<span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>spec</span>:<span style=color:#bbb> 
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>clusterNetwork</span>:<span style=color:#bbb> 
+</span><span style=color:#bbb>  </span>- <span style=color:#8b008b;font-weight:700>cidr</span>:<span style=color:#bbb> </span><span style=color:#b452cd>10.128.0.0</span>/14<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>hostPrefix</span>:<span style=color:#bbb> </span><span style=color:#b452cd>23</span><span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>externalIP</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>policy</span>:<span style=color:#bbb> </span>{}<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>serviceNetwork</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>  </span>- <span style=color:#b452cd>172.30.0.0</span>/16<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>defaultNetwork</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>type</span>:<span style=color:#bbb> </span>OVNKubernetes <span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>ovnKubernetesConfig</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>hybridOverlayConfig</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>hybridClusterNetwork</span>:<span style=color:#bbb> 
+</span><span style=color:#bbb>        </span>- <span style=color:#8b008b;font-weight:700>cidr</span>:<span style=color:#bbb> </span><span style=color:#b452cd>10.132.0.0</span>/14<span style=color:#bbb>
+</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>hostPrefix</span>:<span style=color:#bbb> </span><span style=color:#b452cd>23</span><span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#228b22># next line VMware provider only. see https://docs.microsoft.com/en-us/virtualization/windowscontainers/kubernetes/common-problems\#pod-to-pod-connectivity-between-hosts-is-broken-on-my-kubernetes-cluster-running-on-vsphere</span><span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#228b22>#hybridOverlayVXLANPort: 9898 </span><span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>status</span>:<span style=color:#bbb> </span>{}<span style=color:#bbb>
+</span><span style=color:#bbb></span>EOF<span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb></span>$ cp -p $CLUSTER_DIR/day1/cluster-network-03-config.yml $CLUSTER_DIR/manifests/<span style=color:#bbb>
+</span></code></pre></div><h2 id=deploying-the-cluster>Deploying the cluster</h2>
 <p>With the Azure prerequisites complete, and this custom manifest in place it is finally time to <a href=https://docs.openshift.com/container-platform/4.7/installing/index.html title="OpenShift Installation Overview">deploy the cluster</a>.</p>
 <ul>
 <li>Run the installer to create the cluster</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ openshift-install create cluster --dir<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;</span>$CLUSTER_DIR<span style=color:#e6db74>&#34;</span> --log-level<span style=color:#f92672>=</span>debug
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ openshift-install create cluster --dir=<span style=color:#cd5555>&#34;</span><span style=color:#00688b>$CLUSTER_DIR</span><span style=color:#cd5555>&#34;</span> --log-level=debug
 </code></pre></div><p>The installer will utilize the service principal we created to provision a temporary bootstrap node, and a control plane. Once that control plane is up the machine API operator will take over and provision our Linux worker nodes.</p>
 <p>In another window monitor progress as follows.</p>
 <blockquote>
@@ -494,14 +494,14 @@ INFO Manifests created in: /Users/dale/src/redhat/openshift-practice/clusters/az
 <ul>
 <li>Copy the generated cluster credentials somewhere safe</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ mkdir /Volumes/Keybase/private/dlbewley/credz/ocp/$CLUSTER_NAME
-$ cp -p $CLUSTER_DIR/auth/* /Volumes/Keybase/private/dlbewley/credz/ocp/$CLUSTER_NAME
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ mkdir /Volumes/Keybase/private/dlbewley/credz/ocp/<span style=color:#00688b>$CLUSTER_NAME</span>
+$ cp -p <span style=color:#00688b>$CLUSTER_DIR</span>/auth/* /Volumes/Keybase/private/dlbewley/credz/ocp/<span style=color:#00688b>$CLUSTER_NAME</span>
 </code></pre></div><ul>
 <li>Pass credentials to <code>oc</code> via kubeconfig and login using my <a href=https://github.com/dlbewley/homelab/blob/master/bin/ocp>ocp</a> script or simply define <code>$KUBECONFIG</code>.</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ export KUBECONFIG<span style=color:#f92672>=</span>$CLUSTER_DIR/auth/kubeconfig
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ <span style=color:#658b00>export</span> <span style=color:#00688b>KUBECONFIG</span>=<span style=color:#00688b>$CLUSTER_DIR</span>/auth/kubeconfig
 </code></pre></div><p>Now interact with the cluster using <code>oc</code> or <code>kubectl</code>. The client will authenticate as <code>system:admin</code> using a certificate. No need to pass a username or a password.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc version
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc version
 Client Version: 4.7.8
 Server Version: 4.7.8
 Kubernetes Version: v1.20.0+7d0a2b2
@@ -517,11 +517,11 @@ win-x8v2z-worker-westus-gj86n   Ready    worker   7h23m   v1.20.0+7d0a2b2
 <p>Once the Azure steps are complete, a reinstall of the cluster can be performed pretty quickly. This can be helpful for tweaks or trial an error.</p>
 <blockquote>
 <p>📓 <strong>Pro Tip:</strong> Shorthand for recreating the OpenShift cluster.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ openshift-install destroy cluster --dir<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;</span>$CLUSTER_DIR<span style=color:#e6db74>&#34;</span> --log-level<span style=color:#f92672>=</span>debug
-$ cp -p $CLUSTER_DIR/install-config.yaml<span style=color:#f92672>{</span>.bak-<span style=color:#66d9ef>$(</span>date +%Y%m%d<span style=color:#66d9ef>)</span>,<span style=color:#f92672>}</span>
-$ openshift-install create manifests --dir<span style=color:#f92672>=</span>$CLUSTER_DIR
-$ cp -p $CLUSTER_DIR/day1/cluster-network-03-config.yml $CLUSTER_DIR/manifests/
-$ time openshift-install create cluster --dir<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;</span>$CLUSTER_DIR<span style=color:#e6db74>&#34;</span> --log-level<span style=color:#f92672>=</span>debug
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ openshift-install destroy cluster --dir=<span style=color:#cd5555>&#34;</span><span style=color:#00688b>$CLUSTER_DIR</span><span style=color:#cd5555>&#34;</span> --log-level=debug
+$ cp -p <span style=color:#00688b>$CLUSTER_DIR</span>/install-config.yaml{.bak-<span style=color:#8b008b;font-weight:700>$(</span>date +%Y%m%d<span style=color:#8b008b;font-weight:700>)</span>,}
+$ openshift-install create manifests --dir=<span style=color:#00688b>$CLUSTER_DIR</span>
+$ cp -p <span style=color:#00688b>$CLUSTER_DIR</span>/day1/cluster-network-03-config.yml <span style=color:#00688b>$CLUSTER_DIR</span>/manifests/
+$ <span style=color:#658b00>time</span> openshift-install create cluster --dir=<span style=color:#cd5555>&#34;</span><span style=color:#00688b>$CLUSTER_DIR</span><span style=color:#cd5555>&#34;</span> --log-level=debug
 </code></pre></div></blockquote>
 <h1 id=summary>Summary</h1>
 <p>OpenShift IPI installation automatically handled most of the heavy lifting for us.

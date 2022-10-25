@@ -6,7 +6,7 @@
 <meta name=viewport content="width=device-width,initial-scale=1">
 <title>Playbook to replace bootstrap.kubeconfig and node certificates on OpenShift 3.10 3.11</title>
 <meta name=author content="Dale Bewley">
-<meta name=keywords content="bewley,guifreelife,openshift,OCP3,troubleshooting">
+<meta name=keywords content="bewley,guifreelife,openshift,RHACS,stackrox">
 <meta name=description content="GUI Free Life">
 <meta name=generator content="Hugo 0.91.2">
 <link href="//fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,500,700,800" rel=stylesheet type=text/css>
@@ -108,7 +108,7 @@ May 9, 2019
 </p>
 <div id=post-content>
 <p>If you are a serial upgrader like me, you may have found that at one point during your 3.10.xx patching (say 3.10.119) you hit this error during the data plane upgrade:</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-plain data-lang=plain>TASK [openshift_node : Approve the node] ************************************************************
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-plain data-lang=plain>TASK [openshift_node : Approve the node] ************************************************************
 task path: /usr/share/ansible/openshift-ansible/roles/openshift_node/tasks/upgrade/restart.yml:49
 Using module file /usr/share/ansible/openshift-ansible/roles/lib_openshift/library/oc_csr_approve.py
 ...
@@ -131,7 +131,7 @@ FAILED - RETRYING: Approve the node (30 retries left).Result was: {
     &#34;msg&#34;: &#34;Could not find csr for nodes: ose-test-node-01.example.com&#34;,
 ...
 </code></pre></div><p>Turns out this was because the start up of <code>atomic-openshift-node</code> failed to generate a CSR.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-plain data-lang=plain>[root@ose-test-node-01 ~]# journalctl -xe
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-plain data-lang=plain>[root@ose-test-node-01 ~]# journalctl -xe
 ...
 Apr 05 11:17:13 ose-test-node-01.example.com atomic-openshift-node[62930]: I0405 11:17:13.675814   62930 bootstrap.go:56] Using bootstrap kubeconfig to generate TLS client cert, key and kubeconfig file
 Apr 05 11:17:13 ose-test-node-01.example.com atomic-openshift-node[62930]: I0405 11:17:13.677298   62930 bootstrap.go:86] No valid private key and/or certificate found, reusing existing private key or creating
@@ -139,133 +139,133 @@ Apr 05 11:17:13 ose-test-node-01.example.com atomic-openshift-node[62930]: F0405
 </code></pre></div><p>And why is that? It is because <code>/etc/origin/node/bootstrap.kubeconfig</code> is out of date. Why is this? A bug in the upgrade apparently.</p>
 <p>The fix is the same as it would be to replace the node certificates. There is a <a href=https://access.redhat.com/support/cases/#/case/02355566>handy knowledgebase article</a> for this.</p>
 <p><strong>Here is a playbook to replace bootstrap.kubeconfig and node certificates.</strong></p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml>---
-<span style=color:#75715e># Manually replace 3.10 or 3.11 node certificates https://access.redhat.com/solutions/3821042</span>
-<span style=color:#75715e>#</span>
-<span style=color:#75715e># Run from first master. </span>
-
-- <span style=color:#f92672>hosts</span>: <span style=color:#ae81ff>primary-nodes,infra-nodes</span>
-  <span style=color:#f92672>serial</span>: <span style=color:#ae81ff>1</span>
-  <span style=color:#f92672>vars</span>:
-    <span style=color:#75715e># only used for logging path</span>
-    <span style=color:#f92672>target_ver</span>: <span style=color:#ae81ff>3.10.119</span>
-    <span style=color:#f92672>node_backup_dir</span>: <span style=color:#e6db74>&#34;/root/playbook-openshift/docs/upgrades/{{ target_ver }}/bootstrap-fix-{{ansible_date_time.date}}-{{ansible_date_time.hour}}/&#34;</span>
-    <span style=color:#f92672>new_bootstrap</span>: <span style=color:#e6db74>&#34;{{ node_backup_dir }}/bootstrap.kubeconfig&#34;</span>
-    <span style=color:#f92672>files_to_replace</span>:
-        - <span style=color:#ae81ff>/etc/origin/node/bootstrap.kubeconfig</span>
-        - <span style=color:#ae81ff>/etc/origin/node/certificates/kubelet-client-current.pem</span>
-        - <span style=color:#ae81ff>/etc/origin/node/certificates/kubelet-server-current.pem</span>
-        - <span style=color:#ae81ff>/etc/origin/node/client-ca.crt</span>
-        - <span style=color:#ae81ff>/etc/origin/node/node.kubeconfig</span>
-
-  <span style=color:#f92672>tasks</span>:
-    - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>make a localhost dir to hold fetched node configs</span>
-      <span style=color:#f92672>delegate_to</span>: <span style=color:#ae81ff>localhost</span>
-      <span style=color:#f92672>run_once</span>: <span style=color:#66d9ef>true</span>
-      <span style=color:#f92672>file</span>:
-        <span style=color:#f92672>dest</span>: <span style=color:#e6db74>&#34;{{ node_backup_dir }}&#34;</span>
-        <span style=color:#f92672>state</span>: <span style=color:#ae81ff>directory</span>
-
-    - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>Create bootstrap.kubeconfig from openshift-infra/node-bootstrapper serviceaccount</span>
-      <span style=color:#f92672>delegate_to</span>: <span style=color:#ae81ff>localhost</span>
-      <span style=color:#f92672>run_once</span>: <span style=color:#66d9ef>true</span>
-      <span style=color:#f92672>shell</span>: &gt;<span style=color:#e6db74>
-</span><span style=color:#e6db74>        </span>        <span style=color:#ae81ff>oc serviceaccounts create-kubeconfig node-bootstrapper -n openshift-infra &gt; {{ new_bootstrap }}</span>
-      <span style=color:#f92672>args</span>:
-        <span style=color:#f92672>creates</span>: <span style=color:#e6db74>&#34;{{ new_bootstrap }}&#34;</span>
-
-    - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>Backup node PKI configs</span>
-      <span style=color:#f92672>fetch</span>:
-        <span style=color:#f92672>src</span>: <span style=color:#e6db74>&#34;{{ item }}&#34;</span>
-        <span style=color:#f92672>dest</span>: <span style=color:#e6db74>&#34;{{ node_backup_dir }}&#34;</span>
-      <span style=color:#f92672>with_items</span>: <span style=color:#e6db74>&#34;{{ files_to_replace }}&#34;</span>
-
-    - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>scheduling down</span>
-      <span style=color:#f92672>include_tasks</span>: <span style=color:#ae81ff>tasks/drain-node.yml</span>
-      <span style=color:#f92672>static</span>: <span style=color:#66d9ef>no</span>
-
-    - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>Remove node PKI configs</span>
-      <span style=color:#f92672>file</span>:
-        <span style=color:#f92672>path</span>: <span style=color:#e6db74>&#34;{{ item }}&#34;</span>
-        <span style=color:#f92672>state</span>: <span style=color:#ae81ff>absent</span>
-      <span style=color:#f92672>with_items</span>: <span style=color:#e6db74>&#34;{{ files_to_replace }}&#34;</span>
-
-    - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>Distribute new bootstrap.kubeconfig</span>
-      <span style=color:#f92672>copy</span>:
-        <span style=color:#f92672>src</span>: <span style=color:#e6db74>&#34;{{ new_bootstrap }}&#34;</span>
-        <span style=color:#f92672>dest</span>: <span style=color:#ae81ff>/etc/origin/node/</span>
-        <span style=color:#f92672>owner</span>: <span style=color:#ae81ff>root</span>
-        <span style=color:#f92672>group</span>: <span style=color:#ae81ff>root</span>
-        <span style=color:#f92672>mode</span>: <span style=color:#ae81ff>0600</span>
-        <span style=color:#f92672>backup</span>: <span style=color:#66d9ef>yes</span>
-
-    - <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;ALERT - The next step will hang!&#34;</span>
-      <span style=color:#f92672>debug</span>:
-        <span style=color:#f92672>msg</span>: <span style=color:#e6db74>&#34;You must open a second terminal and: &#39;oc get csr -o name | xargs oc adm certificate approve&#39;&#34;</span>
-
-    - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>Restart node service and generate new CSR</span>
-      <span style=color:#f92672>service</span>:
-        <span style=color:#f92672>name</span>: <span style=color:#ae81ff>atomic-openshift-node</span>
-        <span style=color:#f92672>state</span>: <span style=color:#ae81ff>restarted</span>
-
-
-- <span style=color:#f92672>hosts</span>: <span style=color:#ae81ff>localhost</span>
-  <span style=color:#f92672>serial</span>: <span style=color:#ae81ff>1</span>
-  <span style=color:#f92672>gather_facts</span>: <span style=color:#66d9ef>no</span>
-  <span style=color:#f92672>connection</span>: <span style=color:#ae81ff>local</span>
-
-  <span style=color:#f92672>tasks</span>:
-    - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>Presumably we should pause here for CSR arrival</span>
-      <span style=color:#f92672>pause</span>:
-        <span style=color:#f92672>seconds</span>: <span style=color:#ae81ff>5</span>
-
-    - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>Check for outstanding CSRs</span>
-      <span style=color:#f92672>command</span>: &gt;<span style=color:#e6db74>
-</span><span style=color:#e6db74>        </span>        <span style=color:#ae81ff>oc get csr -o name</span>
-      <span style=color:#f92672>register</span>: <span style=color:#ae81ff>oc_get_csr</span>
-
-    - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>Approve CSRs</span>
-      <span style=color:#f92672>command</span>: &gt;<span style=color:#e6db74>
-</span><span style=color:#e6db74>        </span>        <span style=color:#ae81ff>oc adm certificate approve {{ item }}</span>
-      <span style=color:#f92672>with_items</span>: <span style=color:#e6db74>&#34;{{ oc_get_csr.stdout_lines }}&#34;</span>
-
-
-- <span style=color:#f92672>hosts</span>: <span style=color:#ae81ff>primary-nodes,infra-nodes</span>
-  <span style=color:#f92672>serial</span>: <span style=color:#ae81ff>1</span>
-  <span style=color:#f92672>gather_facts</span>: <span style=color:#66d9ef>no</span>
- 
-  <span style=color:#f92672>tasks</span>:
-    - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>Check via master proxy to see if node is healthy after cert generation</span>
-      <span style=color:#f92672>command</span>: &gt;<span style=color:#e6db74>
-</span><span style=color:#e6db74>        </span>        <span style=color:#ae81ff>oc --config=/etc/origin/master/admin.kubeconfig get --raw /api/v1/nodes/{{inventory_hostname}}/proxy/healthz</span>
-      <span style=color:#f92672>register</span>: <span style=color:#ae81ff>node_health</span>
-      <span style=color:#f92672>delegate_to</span>: <span style=color:#ae81ff>localhost</span>
-      <span style=color:#f92672>until</span>: <span style=color:#ae81ff>node_health.stdout.find(&#34;ok&#34;)</span>
-      <span style=color:#f92672>delay</span>: <span style=color:#ae81ff>3</span>
-      <span style=color:#f92672>retries</span>: <span style=color:#ae81ff>5</span>
-
-    - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>Display health result</span>
-      <span style=color:#f92672>debug</span>: <span style=color:#ae81ff>var=node_health.stdout</span>
-
-    - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>Scheduling node up</span>
-      <span style=color:#f92672>include_tasks</span>: <span style=color:#ae81ff>tasks/make-node-schedulable.yml</span>
-      <span style=color:#f92672>static</span>: <span style=color:#66d9ef>no</span>
-      <span style=color:#f92672>tags</span>:
-        - <span style=color:#ae81ff>resume</span>
-</code></pre></div><p>Here are the two tasks which were included above.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#75715e># tasks/drain-node.yml</span>
-<span style=color:#75715e># https://kubernetes.io/images/docs/kubectl_drain.svg</span>
-<span style=color:#75715e># draining a node will make it unschedulable first</span>
-- <span style=color:#f92672>name</span>: <span style=color:#ae81ff>drain node of pods</span>
-  <span style=color:#f92672>command</span>: <span style=color:#e6db74>&#34;oc adm drain {{inventory_hostname}} --force --delete-local-data --ignore-daemonsets&#34;</span>
-  <span style=color:#f92672>delegate_to</span>: <span style=color:#ae81ff>127.0.0.1</span>
-  <span style=color:#f92672>when</span>: <span style=color:#e6db74>&#34;&#39;nodes&#39; in group_names&#34;</span>
-</code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#75715e># tasks/make-node-schedulable.yml</span>
-- <span style=color:#f92672>name</span>: <span style=color:#ae81ff>make node scheduleable</span>
-  <span style=color:#f92672>command</span>: <span style=color:#e6db74>&#34;oc adm manage-node {{inventory_hostname}} --schedulable=true&#34;</span>
-  <span style=color:#f92672>delegate_to</span>: <span style=color:#ae81ff>127.0.0.1</span>
-  <span style=color:#f92672>when</span>: <span style=color:#e6db74>&#34;&#39;nodes&#39; in group_names&#34;</span>
-</code></pre></div>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#008b45;text-decoration:underline>---</span><span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#228b22># Manually replace 3.10 or 3.11 node certificates https://access.redhat.com/solutions/3821042</span><span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#228b22>#</span><span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#228b22># Run from first master. </span><span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb></span>- <span style=color:#8b008b;font-weight:700>hosts</span>:<span style=color:#bbb> </span>primary-nodes,infra-nodes<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>serial</span>:<span style=color:#bbb> </span><span style=color:#b452cd>1</span><span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>vars</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#228b22># only used for logging path</span><span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>target_ver</span>:<span style=color:#bbb> </span><span style=color:#b452cd>3.10.119</span><span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>node_backup_dir</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;/root/playbook-openshift/docs/upgrades/{{ target_ver }}/bootstrap-fix-{{ansible_date_time.date}}-{{ansible_date_time.hour}}/&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>new_bootstrap</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;{{ node_backup_dir }}/bootstrap.kubeconfig&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>files_to_replace</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>        </span>- /etc/origin/node/bootstrap.kubeconfig<span style=color:#bbb>
+</span><span style=color:#bbb>        </span>- /etc/origin/node/certificates/kubelet-client-current.pem<span style=color:#bbb>
+</span><span style=color:#bbb>        </span>- /etc/origin/node/certificates/kubelet-server-current.pem<span style=color:#bbb>
+</span><span style=color:#bbb>        </span>- /etc/origin/node/client-ca.crt<span style=color:#bbb>
+</span><span style=color:#bbb>        </span>- /etc/origin/node/node.kubeconfig<span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>tasks</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>    </span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>make a localhost dir to hold fetched node configs<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>delegate_to</span>:<span style=color:#bbb> </span>localhost<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>run_once</span>:<span style=color:#bbb> </span><span style=color:#8b008b;font-weight:700>true</span><span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>file</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>dest</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;{{ node_backup_dir }}&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>state</span>:<span style=color:#bbb> </span>directory<span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb>    </span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>Create bootstrap.kubeconfig from openshift-infra/node-bootstrapper serviceaccount<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>delegate_to</span>:<span style=color:#bbb> </span>localhost<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>run_once</span>:<span style=color:#bbb> </span><span style=color:#8b008b;font-weight:700>true</span><span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>shell</span>:<span style=color:#bbb> </span>&gt;<span style=color:#cd5555>
+</span><span style=color:#cd5555>        </span><span style=color:#bbb>        </span>oc serviceaccounts create-kubeconfig node-bootstrapper -n openshift-infra &gt; {{ new_bootstrap }}<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>args</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>creates</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;{{ new_bootstrap }}&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb>    </span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>Backup node PKI configs<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>fetch</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>src</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;{{ item }}&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>dest</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;{{ node_backup_dir }}&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>with_items</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;{{ files_to_replace }}&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb>    </span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>scheduling down<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>include_tasks</span>:<span style=color:#bbb> </span>tasks/drain-node.yml<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>static</span>:<span style=color:#bbb> </span><span style=color:#8b008b;font-weight:700>no</span><span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb>    </span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>Remove node PKI configs<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>file</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>path</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;{{ item }}&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>state</span>:<span style=color:#bbb> </span>absent<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>with_items</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;{{ files_to_replace }}&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb>    </span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>Distribute new bootstrap.kubeconfig<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>copy</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>src</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;{{ new_bootstrap }}&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>dest</span>:<span style=color:#bbb> </span>/etc/origin/node/<span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>owner</span>:<span style=color:#bbb> </span>root<span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>group</span>:<span style=color:#bbb> </span>root<span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>mode</span>:<span style=color:#bbb> </span><span style=color:#b452cd>0600</span><span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>backup</span>:<span style=color:#bbb> </span><span style=color:#8b008b;font-weight:700>yes</span><span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb>    </span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;ALERT - The next step will hang!&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>debug</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>msg</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;You must open a second terminal and: &#39;oc get csr -o name | xargs oc adm certificate approve&#39;&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb>    </span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>Restart node service and generate new CSR<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>service</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>atomic-openshift-node<span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>state</span>:<span style=color:#bbb> </span>restarted<span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb></span>- <span style=color:#8b008b;font-weight:700>hosts</span>:<span style=color:#bbb> </span>localhost<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>serial</span>:<span style=color:#bbb> </span><span style=color:#b452cd>1</span><span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>gather_facts</span>:<span style=color:#bbb> </span><span style=color:#8b008b;font-weight:700>no</span><span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>connection</span>:<span style=color:#bbb> </span>local<span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>tasks</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>    </span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>Presumably we should pause here for CSR arrival<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>pause</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>seconds</span>:<span style=color:#bbb> </span><span style=color:#b452cd>5</span><span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb>    </span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>Check for outstanding CSRs<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>command</span>:<span style=color:#bbb> </span>&gt;<span style=color:#cd5555>
+</span><span style=color:#cd5555>        </span><span style=color:#bbb>        </span>oc get csr -o name<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>register</span>:<span style=color:#bbb> </span>oc_get_csr<span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb>    </span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>Approve CSRs<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>command</span>:<span style=color:#bbb> </span>&gt;<span style=color:#cd5555>
+</span><span style=color:#cd5555>        </span><span style=color:#bbb>        </span>oc adm certificate approve {{ item }}<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>with_items</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;{{ oc_get_csr.stdout_lines }}&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb></span>- <span style=color:#8b008b;font-weight:700>hosts</span>:<span style=color:#bbb> </span>primary-nodes,infra-nodes<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>serial</span>:<span style=color:#bbb> </span><span style=color:#b452cd>1</span><span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>gather_facts</span>:<span style=color:#bbb> </span><span style=color:#8b008b;font-weight:700>no</span><span style=color:#bbb>
+</span><span style=color:#bbb> 
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>tasks</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>    </span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>Check via master proxy to see if node is healthy after cert generation<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>command</span>:<span style=color:#bbb> </span>&gt;<span style=color:#cd5555>
+</span><span style=color:#cd5555>        </span><span style=color:#bbb>        </span>oc --config=/etc/origin/master/admin.kubeconfig get --raw /api/v1/nodes/{{inventory_hostname}}/proxy/healthz<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>register</span>:<span style=color:#bbb> </span>node_health<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>delegate_to</span>:<span style=color:#bbb> </span>localhost<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>until</span>:<span style=color:#bbb> </span>node_health.stdout.find(&#34;ok&#34;)<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>delay</span>:<span style=color:#bbb> </span><span style=color:#b452cd>3</span><span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>retries</span>:<span style=color:#bbb> </span><span style=color:#b452cd>5</span><span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb>    </span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>Display health result<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>debug</span>:<span style=color:#bbb> </span>var=node_health.stdout<span style=color:#bbb>
+</span><span style=color:#bbb>
+</span><span style=color:#bbb>    </span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>Scheduling node up<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>include_tasks</span>:<span style=color:#bbb> </span>tasks/make-node-schedulable.yml<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>static</span>:<span style=color:#bbb> </span><span style=color:#8b008b;font-weight:700>no</span><span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>tags</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>        </span>- resume<span style=color:#bbb>
+</span></code></pre></div><p>Here are the two tasks which were included above.</p>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#228b22># tasks/drain-node.yml</span><span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#228b22># https://kubernetes.io/images/docs/kubectl_drain.svg</span><span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#228b22># draining a node will make it unschedulable first</span><span style=color:#bbb>
+</span><span style=color:#bbb></span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>drain node of pods<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>command</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;oc adm drain {{inventory_hostname}} --force --delete-local-data --ignore-daemonsets&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>delegate_to</span>:<span style=color:#bbb> </span><span style=color:#b452cd>127.0.0.1</span><span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>when</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;&#39;nodes&#39; in group_names&#34;</span><span style=color:#bbb>
+</span></code></pre></div><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#228b22># tasks/make-node-schedulable.yml</span><span style=color:#bbb>
+</span><span style=color:#bbb></span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>make node scheduleable<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>command</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;oc adm manage-node {{inventory_hostname}} --schedulable=true&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>delegate_to</span>:<span style=color:#bbb> </span><span style=color:#b452cd>127.0.0.1</span><span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>when</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;&#39;nodes&#39; in group_names&#34;</span><span style=color:#bbb>
+</span></code></pre></div>
 </div>
 <div id=comments>
 <div id=disqus_thread></div>

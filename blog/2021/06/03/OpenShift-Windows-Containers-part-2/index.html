@@ -196,46 +196,46 @@ However, <a href=https://docs.openshift.com/container-platform/4.7/windows_conta
 <li>Create the <code>Namespace</code> -
 <strong><a href=https://gitlab.com/dlbewley/openshift-practice/-/blob/master/clusters/az-win/day2/base/namespace.yaml>clusters/az-win/day2/base/namespace.yaml</a></strong></li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#ae81ff>$ cat &lt;&lt;EOF | oc create -f -</span>
-<span style=color:#f92672>apiVersion</span>: <span style=color:#ae81ff>v1</span>
-<span style=color:#f92672>kind</span>: <span style=color:#ae81ff>Namespace</span>
-<span style=color:#f92672>metadata</span>:
-  <span style=color:#f92672>name</span>: <span style=color:#ae81ff>openshift-windows-machine-config-operator</span>
-  <span style=color:#f92672>labels</span>:
-    <span style=color:#f92672>openshift.io/cluster-monitoring</span>: <span style=color:#e6db74>&#34;true&#34;</span>
-<span style=color:#ae81ff>EOF</span>
-</code></pre></div><ul>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml>$ cat &lt;&lt;EOF | oc create -f -<span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>apiVersion</span>:<span style=color:#bbb> </span>v1<span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>kind</span>:<span style=color:#bbb> </span>Namespace<span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>metadata</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>openshift-windows-machine-config-operator<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>labels</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>openshift.io/cluster-monitoring</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;true&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb></span>EOF<span style=color:#bbb>
+</span></code></pre></div><ul>
 <li>Create the <code>OperatorGroup</code> -
 <strong><a href=https://gitlab.com/dlbewley/openshift-practice/-/blob/master/clusters/az-win/day2/base/operatorgroup.yaml>clusters/az-win/day2/base/operatorgroup.yaml</a></strong></li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#ae81ff>$ cat &lt;&lt;EOF | oc create -f -</span>
-<span style=color:#f92672>apiVersion</span>: <span style=color:#ae81ff>operators.coreos.com/v1</span>
-<span style=color:#f92672>kind</span>: <span style=color:#ae81ff>OperatorGroup</span>
-<span style=color:#f92672>metadata</span>:
-  <span style=color:#f92672>name</span>: <span style=color:#ae81ff>windows-machine-config-operator</span>
-  <span style=color:#f92672>namespace</span>: <span style=color:#ae81ff>openshift-windows-machine-config-operator</span>
-<span style=color:#f92672>spec</span>:
-  <span style=color:#f92672>targetNamespaces</span>:
-  - <span style=color:#ae81ff>openshift-windows-machine-config-operator</span>
-<span style=color:#ae81ff>EOF</span>
-</code></pre></div><ul>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml>$ cat &lt;&lt;EOF | oc create -f -<span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>apiVersion</span>:<span style=color:#bbb> </span>operators.coreos.com/v1<span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>kind</span>:<span style=color:#bbb> </span>OperatorGroup<span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>metadata</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>windows-machine-config-operator<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>namespace</span>:<span style=color:#bbb> </span>openshift-windows-machine-config-operator<span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>spec</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>targetNamespaces</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>  </span>- openshift-windows-machine-config-operator<span style=color:#bbb>
+</span><span style=color:#bbb></span>EOF<span style=color:#bbb>
+</span></code></pre></div><ul>
 <li>Create the <code>Subscription</code> -
 <strong><a href=https://gitlab.com/dlbewley/openshift-practice/-/blob/master/clusters/az-win/day2/base/subscription.yaml>clusters/az-win/day2/base/subscription.yaml</a></strong></li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#ae81ff>$ cat &lt;&lt;EOF | oc create -f -</span>
-<span style=color:#f92672>apiVersion</span>: <span style=color:#ae81ff>operators.coreos.com/v1alpha1</span>
-<span style=color:#f92672>kind</span>: <span style=color:#ae81ff>Subscription</span>
-<span style=color:#f92672>metadata</span>:
-  <span style=color:#f92672>name</span>: <span style=color:#ae81ff>windows-machine-config-operator</span>
-  <span style=color:#f92672>namespace</span>: <span style=color:#ae81ff>openshift-windows-machine-config-operator</span>
-<span style=color:#f92672>spec</span>:
-  <span style=color:#f92672>channel</span>: <span style=color:#e6db74>&#34;stable&#34;</span> 
-  <span style=color:#f92672>installPlanApproval</span>: <span style=color:#e6db74>&#34;Automatic&#34;</span> 
-  <span style=color:#f92672>name</span>: <span style=color:#e6db74>&#34;windows-machine-config-operator&#34;</span>
-  <span style=color:#f92672>source</span>: <span style=color:#e6db74>&#34;redhat-operators&#34;</span> 
-  <span style=color:#f92672>sourceNamespace</span>: <span style=color:#e6db74>&#34;openshift-marketplace&#34;</span> 
-<span style=color:#ae81ff>EOF</span>
-</code></pre></div><p>After a few seconds check that the <a href=https://docs.openshift.com/container-platform/4.7/rest_api/operatorhub_apis/clusterserviceversion-operators-coreos-com-v1alpha1.html title="ClusterServiceVersion CR"><code>ClusterServiceVersion</code></a> has been created. This is used to tell the <a href=https://github.com/operator-framework/operator-lifecycle-manager title="Operator Lifecycle Manager">Operator Lifecycle Manager</a> how to install the operator.</p>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml>$ cat &lt;&lt;EOF | oc create -f -<span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>apiVersion</span>:<span style=color:#bbb> </span>operators.coreos.com/v1alpha1<span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>kind</span>:<span style=color:#bbb> </span>Subscription<span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>metadata</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>windows-machine-config-operator<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>namespace</span>:<span style=color:#bbb> </span>openshift-windows-machine-config-operator<span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>spec</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>channel</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;stable&#34;</span><span style=color:#bbb> 
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>installPlanApproval</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;Automatic&#34;</span><span style=color:#bbb> 
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;windows-machine-config-operator&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>source</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;redhat-operators&#34;</span><span style=color:#bbb> 
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>sourceNamespace</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;openshift-marketplace&#34;</span><span style=color:#bbb> 
+</span><span style=color:#bbb></span>EOF<span style=color:#bbb>
+</span></code></pre></div><p>After a few seconds check that the <a href=https://docs.openshift.com/container-platform/4.7/rest_api/operatorhub_apis/clusterserviceversion-operators-coreos-com-v1alpha1.html title="ClusterServiceVersion CR"><code>ClusterServiceVersion</code></a> has been created. This is used to tell the <a href=https://github.com/operator-framework/operator-lifecycle-manager title="Operator Lifecycle Manager">Operator Lifecycle Manager</a> how to install the operator.</p>
 <pre tabindex=0><code>$ oc get csv -n openshift-windows-machine-config-operator
 </code></pre><blockquote>
 <p>📓 <strong>Do you GitOps?</strong></p>
@@ -253,80 +253,80 @@ A <a href=https://kustomize.io>Kustomize</a> template can be applied with the <a
 <p>Here is an example with placeholder values.
 Further details on the values to replace in this example MachineSet are <a href=https://github.com/openshift/windows-machine-config-operator/blob/master/docs/machineset-azure.md title="MachineSet Azure docs from WMCO">discussed in the WMCO github repo</a>.</p>
 <p><strong><a href=https://gitlab.com/dlbewley/openshift-practice/-/blob/master/clusters/az-win/day2/base/machineset.yaml>clusters/az-win/day2/base/machineset.yaml</a></strong></p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#75715e># example MachineSet before replacing &#34;&lt;values&gt;&#34;</span>
-<span style=color:#f92672>apiVersion</span>: <span style=color:#ae81ff>machine.openshift.io/v1beta1</span>
-<span style=color:#f92672>kind</span>: <span style=color:#ae81ff>MachineSet</span>
-<span style=color:#f92672>metadata</span>:
-  <span style=color:#f92672>labels</span>:
-    <span style=color:#f92672>machine.openshift.io/cluster-api-cluster</span>: <span style=color:#ae81ff>&lt;infrastructureID&gt;</span>
-  <span style=color:#f92672>name</span>: <span style=color:#ae81ff>winworker</span>
-  <span style=color:#f92672>namespace</span>: <span style=color:#ae81ff>openshift-machine-api</span>
-<span style=color:#f92672>spec</span>:
-  <span style=color:#f92672>replicas</span>: <span style=color:#ae81ff>0</span>
-  <span style=color:#f92672>selector</span>:
-    <span style=color:#f92672>matchLabels</span>:
-      <span style=color:#f92672>machine.openshift.io/cluster-api-cluster</span>: <span style=color:#ae81ff>&lt;infrastructureID&gt;</span>
-      <span style=color:#f92672>machine.openshift.io/cluster-api-machineset</span>: <span style=color:#ae81ff>winworker</span>
-  <span style=color:#f92672>template</span>:
-    <span style=color:#f92672>metadata</span>:
-      <span style=color:#f92672>labels</span>:
-        <span style=color:#f92672>machine.openshift.io/cluster-api-cluster</span>: <span style=color:#ae81ff>&lt;infrastructureID&gt;</span>
-        <span style=color:#f92672>machine.openshift.io/cluster-api-machine-role</span>: <span style=color:#ae81ff>worker</span>
-        <span style=color:#f92672>machine.openshift.io/cluster-api-machine-type</span>: <span style=color:#ae81ff>worker</span>
-        <span style=color:#f92672>machine.openshift.io/cluster-api-machineset</span>: <span style=color:#ae81ff>winworker</span>
-        <span style=color:#f92672>machine.openshift.io/os-id</span>: <span style=color:#ae81ff>Windows</span>
-    <span style=color:#f92672>spec</span>:
-      <span style=color:#f92672>metadata</span>:
-        <span style=color:#f92672>labels</span>:
-          <span style=color:#f92672>node-role.kubernetes.io/worker</span>: <span style=color:#e6db74>&#34;&#34;</span>
-      <span style=color:#f92672>providerSpec</span>:
-        <span style=color:#f92672>value</span>:
-          <span style=color:#f92672>apiVersion</span>: <span style=color:#ae81ff>azureproviderconfig.openshift.io/v1beta1</span>
-          <span style=color:#f92672>credentialsSecret</span>:
-            <span style=color:#f92672>name</span>: <span style=color:#ae81ff>azure-cloud-credentials</span>
-            <span style=color:#f92672>namespace</span>: <span style=color:#ae81ff>openshift-machine-api</span>
-          <span style=color:#f92672>image</span>:
-            <span style=color:#f92672>offer</span>: <span style=color:#ae81ff>WindowsServer</span>
-            <span style=color:#f92672>publisher</span>: <span style=color:#ae81ff>MicrosoftWindowsServer</span>
-            <span style=color:#f92672>resourceID</span>: <span style=color:#e6db74>&#34;&#34;</span>
-            <span style=color:#f92672>sku</span>: <span style=color:#ae81ff>2019</span>-<span style=color:#ae81ff>Datacenter-with-Containers</span>
-            <span style=color:#f92672>version</span>: <span style=color:#ae81ff>latest</span>
-          <span style=color:#f92672>kind</span>: <span style=color:#ae81ff>AzureMachineProviderSpec</span>
-          <span style=color:#f92672>location</span>: <span style=color:#ae81ff>&lt;location&gt;</span>
-          <span style=color:#f92672>managedIdentity</span>: <span style=color:#ae81ff>&lt;infrastructureID&gt;-identity</span>
-          <span style=color:#f92672>networkResourceGroup</span>: <span style=color:#ae81ff>&lt;infrastructureID&gt;-rg</span>
-          <span style=color:#f92672>osDisk</span>:
-            <span style=color:#f92672>diskSizeGB</span>: <span style=color:#ae81ff>128</span>
-            <span style=color:#f92672>managedDisk</span>:
-              <span style=color:#f92672>storageAccountType</span>: <span style=color:#ae81ff>Premium_LRS</span>
-            <span style=color:#f92672>osType</span>: <span style=color:#ae81ff>Windows</span>
-          <span style=color:#f92672>publicIP</span>: <span style=color:#66d9ef>false</span>
-          <span style=color:#f92672>resourceGroup</span>: <span style=color:#ae81ff>&lt;infrastructureID&gt;-rg</span>
-          <span style=color:#f92672>subnet</span>: <span style=color:#ae81ff>&lt;infrastructureID&gt;-worker-subnet</span>
-          <span style=color:#f92672>userDataSecret</span>:
-            <span style=color:#f92672>name</span>: <span style=color:#ae81ff>windows-user-data</span>
-            <span style=color:#f92672>namespace</span>: <span style=color:#ae81ff>openshift-machine-api</span>
-          <span style=color:#f92672>vmSize</span>: <span style=color:#ae81ff>Standard_D2s_v3</span>
-          <span style=color:#f92672>vnet</span>: <span style=color:#ae81ff>&lt;infrastructureID&gt;-vnet</span>
-          <span style=color:#f92672>zone</span>: <span style=color:#e6db74>&#34;&lt;zone&gt;&#34;</span>
-</code></pre></div><p>Every cluster has an infrastructure name that is a combination of the cluster name and a unique string. We will need to use this value in the Windows MachineSet.</p>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#228b22># example MachineSet before replacing &#34;&lt;values&gt;&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>apiVersion</span>:<span style=color:#bbb> </span>machine.openshift.io/v1beta1<span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>kind</span>:<span style=color:#bbb> </span>MachineSet<span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>metadata</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>labels</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>machine.openshift.io/cluster-api-cluster</span>:<span style=color:#bbb> </span>&lt;infrastructureID&gt;<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>winworker<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>namespace</span>:<span style=color:#bbb> </span>openshift-machine-api<span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>spec</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>replicas</span>:<span style=color:#bbb> </span><span style=color:#b452cd>0</span><span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>selector</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>matchLabels</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>machine.openshift.io/cluster-api-cluster</span>:<span style=color:#bbb> </span>&lt;infrastructureID&gt;<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>machine.openshift.io/cluster-api-machineset</span>:<span style=color:#bbb> </span>winworker<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>template</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>metadata</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>labels</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>machine.openshift.io/cluster-api-cluster</span>:<span style=color:#bbb> </span>&lt;infrastructureID&gt;<span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>machine.openshift.io/cluster-api-machine-role</span>:<span style=color:#bbb> </span>worker<span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>machine.openshift.io/cluster-api-machine-type</span>:<span style=color:#bbb> </span>worker<span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>machine.openshift.io/cluster-api-machineset</span>:<span style=color:#bbb> </span>winworker<span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>machine.openshift.io/os-id</span>:<span style=color:#bbb> </span>Windows<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>spec</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>metadata</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>labels</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>node-role.kubernetes.io/worker</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>providerSpec</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>value</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>apiVersion</span>:<span style=color:#bbb> </span>azureproviderconfig.openshift.io/v1beta1<span style=color:#bbb>
+</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>credentialsSecret</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>            </span><span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>azure-cloud-credentials<span style=color:#bbb>
+</span><span style=color:#bbb>            </span><span style=color:#8b008b;font-weight:700>namespace</span>:<span style=color:#bbb> </span>openshift-machine-api<span style=color:#bbb>
+</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>image</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>            </span><span style=color:#8b008b;font-weight:700>offer</span>:<span style=color:#bbb> </span>WindowsServer<span style=color:#bbb>
+</span><span style=color:#bbb>            </span><span style=color:#8b008b;font-weight:700>publisher</span>:<span style=color:#bbb> </span>MicrosoftWindowsServer<span style=color:#bbb>
+</span><span style=color:#bbb>            </span><span style=color:#8b008b;font-weight:700>resourceID</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>            </span><span style=color:#8b008b;font-weight:700>sku</span>:<span style=color:#bbb> </span><span style=color:#b452cd>2019</span>-Datacenter-with-Containers<span style=color:#bbb>
+</span><span style=color:#bbb>            </span><span style=color:#8b008b;font-weight:700>version</span>:<span style=color:#bbb> </span>latest<span style=color:#bbb>
+</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>kind</span>:<span style=color:#bbb> </span>AzureMachineProviderSpec<span style=color:#bbb>
+</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>location</span>:<span style=color:#bbb> </span>&lt;location&gt;<span style=color:#bbb>
+</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>managedIdentity</span>:<span style=color:#bbb> </span>&lt;infrastructureID&gt;-identity<span style=color:#bbb>
+</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>networkResourceGroup</span>:<span style=color:#bbb> </span>&lt;infrastructureID&gt;-rg<span style=color:#bbb>
+</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>osDisk</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>            </span><span style=color:#8b008b;font-weight:700>diskSizeGB</span>:<span style=color:#bbb> </span><span style=color:#b452cd>128</span><span style=color:#bbb>
+</span><span style=color:#bbb>            </span><span style=color:#8b008b;font-weight:700>managedDisk</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>              </span><span style=color:#8b008b;font-weight:700>storageAccountType</span>:<span style=color:#bbb> </span>Premium_LRS<span style=color:#bbb>
+</span><span style=color:#bbb>            </span><span style=color:#8b008b;font-weight:700>osType</span>:<span style=color:#bbb> </span>Windows<span style=color:#bbb>
+</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>publicIP</span>:<span style=color:#bbb> </span><span style=color:#8b008b;font-weight:700>false</span><span style=color:#bbb>
+</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>resourceGroup</span>:<span style=color:#bbb> </span>&lt;infrastructureID&gt;-rg<span style=color:#bbb>
+</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>subnet</span>:<span style=color:#bbb> </span>&lt;infrastructureID&gt;-worker-subnet<span style=color:#bbb>
+</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>userDataSecret</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>            </span><span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>windows-user-data<span style=color:#bbb>
+</span><span style=color:#bbb>            </span><span style=color:#8b008b;font-weight:700>namespace</span>:<span style=color:#bbb> </span>openshift-machine-api<span style=color:#bbb>
+</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>vmSize</span>:<span style=color:#bbb> </span>Standard_D2s_v3<span style=color:#bbb>
+</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>vnet</span>:<span style=color:#bbb> </span>&lt;infrastructureID&gt;-vnet<span style=color:#bbb>
+</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>zone</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;&lt;zone&gt;&#34;</span><span style=color:#bbb>
+</span></code></pre></div><p>Every cluster has an infrastructure name that is a combination of the cluster name and a unique string. We will need to use this value in the Windows MachineSet.</p>
 <ul>
 <li>Capture the infrastructure ID</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ export CLUSTER_ID<span style=color:#f92672>=</span><span style=color:#66d9ef>$(</span>oc get -o jsonpath<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;{.status.infrastructureName}{&#34;\n&#34;}&#39;</span> infrastructure cluster<span style=color:#66d9ef>)</span>
-$ echo $CLUSTER_ID
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ <span style=color:#658b00>export</span> <span style=color:#00688b>CLUSTER_ID</span>=<span style=color:#8b008b;font-weight:700>$(</span>oc get -o <span style=color:#00688b>jsonpath</span>=<span style=color:#cd5555>&#39;{.status.infrastructureName}{&#34;\n&#34;}&#39;</span> infrastructure cluster<span style=color:#8b008b;font-weight:700>)</span>
+$ <span style=color:#658b00>echo</span> <span style=color:#00688b>$CLUSTER_ID</span>
 win-tmk9g
 </code></pre></div><ul>
 <li>Create the above MachineSet after updating the placeholder values (there are no availability zones in westus region)</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ sed <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>  -e <span style=color:#e6db74>&#34;s/&lt;infrastructureID&gt;/</span>$CLUSTER_ID<span style=color:#e6db74>/&#34;</span> <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>  -e <span style=color:#e6db74>&#34;s/&lt;location&gt;/westus/&#34;</span> <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>  -e <span style=color:#e6db74>&#34;s/&lt;zone&gt;//&#34;</span> <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>  -i.bak <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>  $CLUSTER_DIR/day2/base/machineset.yaml
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ sed <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>  -e <span style=color:#cd5555>&#34;s/&lt;infrastructureID&gt;/</span><span style=color:#00688b>$CLUSTER_ID</span><span style=color:#cd5555>/&#34;</span> <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>  -e <span style=color:#cd5555>&#34;s/&lt;location&gt;/westus/&#34;</span> <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>  -e <span style=color:#cd5555>&#34;s/&lt;zone&gt;//&#34;</span> <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>  -i.bak <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>  <span style=color:#00688b>$CLUSTER_DIR</span>/day2/base/machineset.yaml
 
-$ oc apply -n openshift-machine-api -f $CLUSTER_DIR/day2/base/machineset.yaml
+$ oc apply -n openshift-machine-api -f <span style=color:#00688b>$CLUSTER_DIR</span>/day2/base/machineset.yaml
 </code></pre></div><h2 id=providing-an-ssh-private-key>Providing an SSH Private Key</h2>
 <p>In part 1 of this series, <a href=http://guifreelife.com/blog/2021/05/18/OpenShift-Windows-Containers-part-1/#generating-an-ssh-key>we generated an ssh key</a> for installing OpenShift.
 Now we will give this same key to the WMCO for use in configuring our Windows node.
@@ -334,9 +334,9 @@ By providing the private key, a new public key will be minted by the operator an
 <ul>
 <li>Create a secret containing the private key that will be used to access the Windows VMs</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc create secret generic cloud-private-key <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>  --from-file<span style=color:#f92672>=</span>private-key.pem<span style=color:#f92672>=</span><span style=color:#e6db74>${</span>HOME<span style=color:#e6db74>}</span>/.ssh/az-win <span style=color:#ae81ff>\
-</span><span style=color:#ae81ff></span>  -n openshift-windows-machine-config-operator
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc create secret generic cloud-private-key <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>  --from-file=private-key.pem=<span style=color:#cd5555>${</span><span style=color:#00688b>HOME</span><span style=color:#cd5555>}</span>/.ssh/az-win <span style=color:#cd5555>\
+</span><span style=color:#cd5555></span>  -n openshift-windows-machine-config-operator
 </code></pre></div><p>After the ssh key is created the WMCO will generate a public key and create a <code>windows-user-data</code> secret for use by the openshift-machine-api when provisioning the machine.</p>
 <pre tabindex=0><code>$ oc logs -n openshift-windows-machine-config-operator \
     deployment/windows-machine-config-operator | tail -1
@@ -344,30 +344,30 @@ By providing the private key, a new public key will be minted by the operator an
 2021-05-24T18:26:13.851Z        INFO    secret_controller       secret not found, creating the secret   {&quot;namespace&quot;: &quot;openshift-windows-machine-config-operator&quot;, &quot;name&quot;: &quot;cloud-private-key&quot;, &quot;name&quot;: &quot;windows-user-data&quot;}
 </code></pre><p>You can extract the secret to view the contents.
 Notice the authorized key file modification.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc extract secret/windows-user-data -n openshift-machine-api --to<span style=color:#f92672>=</span>-
-<span style=color:#75715e># userData</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc extract secret/windows-user-data -n openshift-machine-api --to=-
+<span style=color:#228b22># userData</span>
 &lt;powershell&gt;
   Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0
-  $firewallRuleName <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;ContainerLogsPort&#34;</span>
-  $containerLogsPort <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;10250&#34;</span>
-  New-NetFirewallRule -DisplayName $firewallRuleName -Direction Inbound -Action Allow -Protocol TCP -LocalPort $containerLogsPort -EdgeTraversalPolicy Allow
+  <span style=color:#00688b>$firewallRuleName</span> = <span style=color:#cd5555>&#34;ContainerLogsPort&#34;</span>
+  <span style=color:#00688b>$containerLogsPort</span> = <span style=color:#cd5555>&#34;10250&#34;</span>
+  New-NetFirewallRule -DisplayName <span style=color:#00688b>$firewallRuleName</span> -Direction Inbound -Action Allow -Protocol TCP -LocalPort <span style=color:#00688b>$containerLogsPort</span> -EdgeTraversalPolicy Allow
   Set-Service -Name sshd -StartupType ‘Automatic’
   Start-Service sshd
-  $pubKeyConf <span style=color:#f92672>=</span> <span style=color:#f92672>(</span>Get-Content -path C:<span style=color:#ae81ff>\P</span>rogramData<span style=color:#ae81ff>\s</span>sh<span style=color:#ae81ff>\s</span>shd_config<span style=color:#f92672>)</span> -replace <span style=color:#e6db74>&#39;#PubkeyAuthentication yes&#39;</span>,<span style=color:#e6db74>&#39;PubkeyAuthentication yes&#39;</span>
-  $pubKeyConf | Set-Content -Path C:<span style=color:#ae81ff>\P</span>rogramData<span style=color:#ae81ff>\s</span>sh<span style=color:#ae81ff>\s</span>shd_config
-  $passwordConf <span style=color:#f92672>=</span> <span style=color:#f92672>(</span>Get-Content -path C:<span style=color:#ae81ff>\P</span>rogramData<span style=color:#ae81ff>\s</span>sh<span style=color:#ae81ff>\s</span>shd_config<span style=color:#f92672>)</span> -replace <span style=color:#e6db74>&#39;#PasswordAuthentication yes&#39;</span>,<span style=color:#e6db74>&#39;PasswordAuthentication yes&#39;</span>
-  $passwordConf | Set-Content -Path C:<span style=color:#ae81ff>\P</span>rogramData<span style=color:#ae81ff>\s</span>sh<span style=color:#ae81ff>\s</span>shd_config
-  $authorizedKeyFilePath <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;</span>$env<span style=color:#e6db74>:ProgramData\ssh\administrators_authorized_keys&#34;</span>
-  New-Item -Force $authorizedKeyFilePath
-  echo <span style=color:#e6db74>&#34;ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJhagYxgTRdyNVUU8w+WwISvm2Syq6Wu+GV0nz/XoP99
-</span><span style=color:#e6db74>  &#34;</span>| Out-File $authorizedKeyFilePath -Encoding ascii
-  $acl <span style=color:#f92672>=</span> Get-Acl C:<span style=color:#ae81ff>\P</span>rogramData<span style=color:#ae81ff>\s</span>sh<span style=color:#ae81ff>\a</span>dministrators_authorized_keys
-  $acl.SetAccessRuleProtection<span style=color:#f92672>(</span>$true, $false<span style=color:#f92672>)</span>
-  $administratorsRule <span style=color:#f92672>=</span> New-Object system.security.accesscontrol.filesystemaccessrule<span style=color:#f92672>(</span><span style=color:#e6db74>&#34;Administrators&#34;</span>,<span style=color:#e6db74>&#34;FullControl&#34;</span>,<span style=color:#e6db74>&#34;Allow&#34;</span><span style=color:#f92672>)</span>
-  $systemRule <span style=color:#f92672>=</span> New-Object system.security.accesscontrol.filesystemaccessrule<span style=color:#f92672>(</span><span style=color:#e6db74>&#34;SYSTEM&#34;</span>,<span style=color:#e6db74>&#34;FullControl&#34;</span>,<span style=color:#e6db74>&#34;Allow&#34;</span><span style=color:#f92672>)</span>
-  $acl.SetAccessRule<span style=color:#f92672>(</span>$administratorsRule<span style=color:#f92672>)</span>
-  $acl.SetAccessRule<span style=color:#f92672>(</span>$systemRule<span style=color:#f92672>)</span>
-  $acl | Set-Acl
+  <span style=color:#00688b>$pubKeyConf</span> = (Get-Content -path C:<span style=color:#cd5555>\P</span>rogramData<span style=color:#cd5555>\s</span>sh<span style=color:#cd5555>\s</span>shd_config) -replace <span style=color:#cd5555>&#39;#PubkeyAuthentication yes&#39;</span>,<span style=color:#cd5555>&#39;PubkeyAuthentication yes&#39;</span>
+  <span style=color:#00688b>$pubKeyConf</span> | Set-Content -Path C:<span style=color:#cd5555>\P</span>rogramData<span style=color:#cd5555>\s</span>sh<span style=color:#cd5555>\s</span>shd_config
+  <span style=color:#00688b>$passwordConf</span> = (Get-Content -path C:<span style=color:#cd5555>\P</span>rogramData<span style=color:#cd5555>\s</span>sh<span style=color:#cd5555>\s</span>shd_config) -replace <span style=color:#cd5555>&#39;#PasswordAuthentication yes&#39;</span>,<span style=color:#cd5555>&#39;PasswordAuthentication yes&#39;</span>
+  <span style=color:#00688b>$passwordConf</span> | Set-Content -Path C:<span style=color:#cd5555>\P</span>rogramData<span style=color:#cd5555>\s</span>sh<span style=color:#cd5555>\s</span>shd_config
+  <span style=color:#00688b>$authorizedKeyFilePath</span> = <span style=color:#cd5555>&#34;</span><span style=color:#00688b>$env</span><span style=color:#cd5555>:ProgramData\ssh\administrators_authorized_keys&#34;</span>
+  New-Item -Force <span style=color:#00688b>$authorizedKeyFilePath</span>
+  <span style=color:#658b00>echo</span> <span style=color:#cd5555>&#34;ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJhagYxgTRdyNVUU8w+WwISvm2Syq6Wu+GV0nz/XoP99
+</span><span style=color:#cd5555>  &#34;</span>| Out-File <span style=color:#00688b>$authorizedKeyFilePath</span> -Encoding ascii
+  <span style=color:#00688b>$acl</span> = Get-Acl C:<span style=color:#cd5555>\P</span>rogramData<span style=color:#cd5555>\s</span>sh<span style=color:#cd5555>\a</span>dministrators_authorized_keys
+  <span style=color:#00688b>$acl</span>.SetAccessRuleProtection(<span style=color:#00688b>$true</span>, <span style=color:#00688b>$false</span>)
+  <span style=color:#00688b>$administratorsRule</span> = New-Object system.security.accesscontrol.filesystemaccessrule(<span style=color:#cd5555>&#34;Administrators&#34;</span>,<span style=color:#cd5555>&#34;FullControl&#34;</span>,<span style=color:#cd5555>&#34;Allow&#34;</span>)
+  <span style=color:#00688b>$systemRule</span> = New-Object system.security.accesscontrol.filesystemaccessrule(<span style=color:#cd5555>&#34;SYSTEM&#34;</span>,<span style=color:#cd5555>&#34;FullControl&#34;</span>,<span style=color:#cd5555>&#34;Allow&#34;</span>)
+  <span style=color:#00688b>$acl</span>.SetAccessRule(<span style=color:#00688b>$administratorsRule</span>)
+  <span style=color:#00688b>$acl</span>.SetAccessRule(<span style=color:#00688b>$systemRule</span>)
+  <span style=color:#00688b>$acl</span> | Set-Acl
   Restart-Service sshd
 &lt;/powershell&gt;
 &lt;persist&gt;true&lt;/persist&gt;
@@ -386,7 +386,7 @@ $ oc get -n openshift-windows-machine-config-operator \
 <ul>
 <li>Scale up the machineset</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc scale machineset winworker --replicas<span style=color:#f92672>=</span><span style=color:#ae81ff>1</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc scale machineset winworker --replicas=<span style=color:#b452cd>1</span>
 </code></pre></div><p>Eventually there will be a windows machine and it will become a node. We can use some labels to identify the operating systems.</p>
 <pre tabindex=0><code>$ oc get machines -n openshift-machine-api -L machine.openshift.io/os-id
 NAME                            PHASE     TYPE              REGION   ZONE   AGE    OS-ID
@@ -420,45 +420,45 @@ winworker-74qw4                 Ready    worker   61m    v1.20.0-1030+cac2421340
 <li>Create a Deployment to launch the bastion pod, courtesy of Christian Hernandez&rsquo;s <a href=https://github.com/RedHatWorkshops/windows-containers-quickstart title="Windows Containers Quickstart Workshop">Windows Containers Quickstart Workshop</a> -
 <strong><a href=https://gitlab.com/dlbewley/openshift-practice/-/blob/master/clusters/az-win/day2/base/deployment.yaml>clusters/az-win/day2/base/deployment.yaml</a></strong></li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#f92672>apiVersion</span>: <span style=color:#ae81ff>apps/v1</span>
-<span style=color:#f92672>kind</span>: <span style=color:#ae81ff>Deployment</span>
-<span style=color:#f92672>metadata</span>:
-  <span style=color:#f92672>creationTimestamp</span>: <span style=color:#66d9ef>null</span>
-  <span style=color:#f92672>labels</span>:
-    <span style=color:#f92672>app</span>: <span style=color:#ae81ff>winc-ssh</span>
-  <span style=color:#f92672>name</span>: <span style=color:#ae81ff>winc-ssh</span>
-  <span style=color:#f92672>namespace</span>: <span style=color:#ae81ff>openshift-windows-machine-config-operator</span>
-<span style=color:#f92672>spec</span>:
-  <span style=color:#f92672>replicas</span>: <span style=color:#ae81ff>1</span>
-  <span style=color:#f92672>selector</span>:
-    <span style=color:#f92672>matchLabels</span>:
-      <span style=color:#f92672>app</span>: <span style=color:#ae81ff>winc-ssh</span>
-  <span style=color:#f92672>strategy</span>: {}
-  <span style=color:#f92672>template</span>:
-    <span style=color:#f92672>metadata</span>:
-      <span style=color:#f92672>creationTimestamp</span>: <span style=color:#66d9ef>null</span>
-      <span style=color:#f92672>labels</span>:
-        <span style=color:#f92672>app</span>: <span style=color:#ae81ff>winc-ssh</span>
-    <span style=color:#f92672>spec</span>:
-      <span style=color:#f92672>containers</span>:
-      - <span style=color:#f92672>command</span>:
-        - <span style=color:#ae81ff>/bin/bash</span>
-        - -<span style=color:#ae81ff>c</span>
-        - |<span style=color:#e6db74>
-</span><span style=color:#e6db74>          </span>          <span style=color:#ae81ff>sleep infinity</span>
-        <span style=color:#f92672>image</span>: <span style=color:#ae81ff>quay.io/redhatworkshops/winc-ssh:latest</span>
-        <span style=color:#f92672>name</span>: <span style=color:#ae81ff>winc-ssh-container</span>
-        <span style=color:#f92672>resources</span>: {}
-        <span style=color:#f92672>volumeMounts</span>:
-          - <span style=color:#f92672>mountPath</span>: <span style=color:#ae81ff>/tmp/ssh</span>
-            <span style=color:#f92672>name</span>: <span style=color:#ae81ff>sshkey</span>
-            <span style=color:#f92672>readOnly</span>: <span style=color:#66d9ef>true</span>
-      <span style=color:#f92672>volumes</span>:
-      - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>sshkey</span>
-        <span style=color:#f92672>secret</span>:
-          <span style=color:#f92672>defaultMode</span>: <span style=color:#ae81ff>256</span>
-          <span style=color:#f92672>secretName</span>: <span style=color:#ae81ff>cloud-private-key</span>
-</code></pre></div><blockquote>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#8b008b;font-weight:700>apiVersion</span>:<span style=color:#bbb> </span>apps/v1<span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>kind</span>:<span style=color:#bbb> </span>Deployment<span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>metadata</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>creationTimestamp</span>:<span style=color:#bbb> </span><span style=color:#8b008b;font-weight:700>null</span><span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>labels</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>app</span>:<span style=color:#bbb> </span>winc-ssh<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>winc-ssh<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>namespace</span>:<span style=color:#bbb> </span>openshift-windows-machine-config-operator<span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>spec</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>replicas</span>:<span style=color:#bbb> </span><span style=color:#b452cd>1</span><span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>selector</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>matchLabels</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>app</span>:<span style=color:#bbb> </span>winc-ssh<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>strategy</span>:<span style=color:#bbb> </span>{}<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>template</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>metadata</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>creationTimestamp</span>:<span style=color:#bbb> </span><span style=color:#8b008b;font-weight:700>null</span><span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>labels</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>app</span>:<span style=color:#bbb> </span>winc-ssh<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>spec</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>containers</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>      </span>- <span style=color:#8b008b;font-weight:700>command</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>        </span>- /bin/bash<span style=color:#bbb>
+</span><span style=color:#bbb>        </span>- -c<span style=color:#bbb>
+</span><span style=color:#bbb>        </span>- |<span style=color:#cd5555>
+</span><span style=color:#cd5555>          </span><span style=color:#bbb>          </span>sleep infinity<span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>image</span>:<span style=color:#bbb> </span>quay.io/redhatworkshops/winc-ssh:latest<span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>winc-ssh-container<span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>resources</span>:<span style=color:#bbb> </span>{}<span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>volumeMounts</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>          </span>- <span style=color:#8b008b;font-weight:700>mountPath</span>:<span style=color:#bbb> </span>/tmp/ssh<span style=color:#bbb>
+</span><span style=color:#bbb>            </span><span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>sshkey<span style=color:#bbb>
+</span><span style=color:#bbb>            </span><span style=color:#8b008b;font-weight:700>readOnly</span>:<span style=color:#bbb> </span><span style=color:#8b008b;font-weight:700>true</span><span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>volumes</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>      </span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>sshkey<span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>secret</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>defaultMode</span>:<span style=color:#bbb> </span><span style=color:#b452cd>256</span><span style=color:#bbb>
+</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>secretName</span>:<span style=color:#bbb> </span>cloud-private-key<span style=color:#bbb>
+</span></code></pre></div><blockquote>
 <p>📓 <strong>Pending Pod</strong>
 If you notice that the winc-ssh pod is stuck in &lsquo;pending&rsquo; state, it is likely because the pod needs to mount a secret which <a href=http://guifreelife.com/blog/2021/06/03/OpenShift-Windows-Containers-part-2/#providing-an-ssh-private-key>wasn&rsquo;t created</a> yet.</p>
 </blockquote>

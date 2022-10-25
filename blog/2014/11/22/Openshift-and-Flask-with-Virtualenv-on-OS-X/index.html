@@ -136,168 +136,168 @@ Some of these settings are only relevant to later steps, but go ahead and put th
 <p>vim ~/.bash_profile</p>
 </li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#75715e># Set architecture flags</span>
-export ARCHFLAGS<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;-arch x86_64&#34;</span>
-<span style=color:#75715e># Ensure user-installed binaries take precedence</span>
-export PATH<span style=color:#f92672>=</span>/usr/local/bin:$PATH
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#228b22># Set architecture flags</span>
+<span style=color:#658b00>export</span> <span style=color:#00688b>ARCHFLAGS</span>=<span style=color:#cd5555>&#34;-arch x86_64&#34;</span>
+<span style=color:#228b22># Ensure user-installed binaries take precedence</span>
+<span style=color:#658b00>export</span> <span style=color:#00688b>PATH</span>=/usr/local/bin:<span style=color:#00688b>$PATH</span>
 
-<span style=color:#75715e># Load brew bash completeion if it exists</span>
-<span style=color:#66d9ef>if</span> <span style=color:#f92672>[</span> -f <span style=color:#66d9ef>$(</span>brew --prefix<span style=color:#66d9ef>)</span>/etc/bash_completion <span style=color:#f92672>]</span>; <span style=color:#66d9ef>then</span>
-    . <span style=color:#66d9ef>$(</span>brew --prefix<span style=color:#66d9ef>)</span>/etc/bash_completion
-<span style=color:#66d9ef>fi</span>
+<span style=color:#228b22># Load brew bash completeion if it exists</span>
+<span style=color:#8b008b;font-weight:700>if</span> [ -f <span style=color:#8b008b;font-weight:700>$(</span>brew --prefix<span style=color:#8b008b;font-weight:700>)</span>/etc/bash_completion ]; <span style=color:#8b008b;font-weight:700>then</span>
+    . <span style=color:#8b008b;font-weight:700>$(</span>brew --prefix<span style=color:#8b008b;font-weight:700>)</span>/etc/bash_completion
+<span style=color:#8b008b;font-weight:700>fi</span>
 
-<span style=color:#75715e># pip should only run if there is a virtualenv currently activated</span>
-export PIP_REQUIRE_VIRTUALENV<span style=color:#f92672>=</span>true
-<span style=color:#75715e># cache pip-installed packages to avoid re-downloading</span>
-export PIP_DOWNLOAD_CACHE<span style=color:#f92672>=</span>$HOME/.pip/cache
+<span style=color:#228b22># pip should only run if there is a virtualenv currently activated</span>
+<span style=color:#658b00>export</span> <span style=color:#00688b>PIP_REQUIRE_VIRTUALENV</span>=<span style=color:#658b00>true</span>
+<span style=color:#228b22># cache pip-installed packages to avoid re-downloading</span>
+<span style=color:#658b00>export</span> <span style=color:#00688b>PIP_DOWNLOAD_CACHE</span>=<span style=color:#00688b>$HOME</span>/.pip/cache
 
-<span style=color:#75715e># Load .bashrc if it exists</span>
-test -f ~/.bashrc <span style=color:#f92672>&amp;&amp;</span> source ~/.bashrc
+<span style=color:#228b22># Load .bashrc if it exists</span>
+<span style=color:#658b00>test</span> -f ~/.bashrc &amp;&amp; <span style=color:#658b00>source</span> ~/.bashrc
 </code></pre></div><ul>
 <li>Source those changes. Ignore the <em>-bash: brew: command not found</em> error.</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>. ~/.bash_profile
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>. ~/.bash_profile
 </code></pre></div><ul>
 <li>Install command line developer tools or Xcode. You&rsquo;ll need to be on the actual console, so don&rsquo;t do this step over SSH.</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>xcode-select --install
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>xcode-select --install
 </code></pre></div><p>This will prompt you with a GUI dialog asking you to install the command line developer tools. Click the <em>Install</em> button.</p>
 <h2 id=install-homebrew>Install Homebrew</h2>
 <ul>
 <li>Install Homebrew</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>ruby -e <span style=color:#e6db74>&#34;</span><span style=color:#66d9ef>$(</span>curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install<span style=color:#66d9ef>)</span><span style=color:#e6db74>&#34;</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>ruby -e <span style=color:#cd5555>&#34;</span><span style=color:#8b008b;font-weight:700>$(</span>curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install<span style=color:#8b008b;font-weight:700>)</span><span style=color:#cd5555>&#34;</span>
 </code></pre></div><ul>
 <li>Inspect and update brew install.</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#75715e># This step will possibly point out permissions problems to be fixed.</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#228b22># This step will possibly point out permissions problems to be fixed.</span>
 brew doctor
 brew update
-brew help
+brew <span style=color:#658b00>help</span>
 </code></pre></div><ul>
 <li>Install some brew packages</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>brew install bash-completion ssh-copy-id wget
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>brew install bash-completion ssh-copy-id wget
 </code></pre></div><h1 id=install-python>Install Python</h1>
 <p>Install the latest 2.7.x Python with Homebrew.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>brew install python --with-brewed-openssl
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>brew install python --with-brewed-openssl
 </code></pre></div><h1 id=setup-virtenv>Setup Virtenv</h1>
 <p>Use pip to install virtualenv.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#75715e># override the requirement we set in .bash_profile above. just this once.</span>
-PIP_REQUIRE_VIRTUALENV<span style=color:#f92672>=</span>false pip install virtualenv
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#228b22># override the requirement we set in .bash_profile above. just this once.</span>
+<span style=color:#00688b>PIP_REQUIRE_VIRTUALENV</span>=<span style=color:#658b00>false</span> pip install virtualenv
 mkdir -p ~/src ~/Projects ~/Virtualenvs
 </code></pre></div><h1 id=setup-openshift>Setup Openshift</h1>
 <p>Interaction with Openshift is via <a href=http://www.openshift.com>the website</a> and via the <a href=https://www.openshift.com/developers/rhc-client-tools-install>rhc client tool</a>.</p>
 <ul>
 <li>Install rhc</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>sudo gem install rhc
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>sudo gem install rhc
 </code></pre></div><ul>
 <li>Configure rhc.</li>
 </ul>
 <blockquote>
 <p><em>You&rsquo;ll need to have a username and login for <a href=http://www.openshift.com>Openshift</a> before proceeding.</em></p>
 </blockquote>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>rhc setup
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>rhc setup
 </code></pre></div><h2 id=create-an-openshift-app-and-configure-for-virtualenv>Create an Openshift App and Configure for Virtualenv</h2>
 <p>It is helpful to have a virtualenv on your development machine(s) which matches the environment of your Openshift app. This enables much quicker turnaround time for quick tests of changes, and doesn&rsquo;t require a git commit and push to see the effect of a change.</p>
 <ul>
 <li>Create an Openshift app named Flaskapp.</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>cd ~/src
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#658b00>cd</span> ~/src
 rhc app create flaskapp python-2.7
 </code></pre></div><ul>
 <li>Clone App locally into ~/src/flaskapp if you created the app using the web site instead of rhc.</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>rhc git-clone flaskapp
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>rhc git-clone flaskapp
 </code></pre></div><ul>
 <li>Tell git to ignore the <code>venv/</code> dir and other artifacts we are about to create.</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>echo <span style=color:#e6db74>&#39;venv/&#39;</span> &gt;&gt; ~/src/flaskapp/.gitignore
-echo <span style=color:#e6db74>&#39;*.egg-info/&#39;</span> &gt;&gt; ~/src/flaskapp/.gitignore
-echo <span style=color:#e6db74>&#39;dist/&#39;</span> &gt;&gt; ~/src/flaskapp/.gitignore
-git commit -am .gitignore <span style=color:#e6db74>&#39;ignore artifacts&#39;</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#658b00>echo</span> <span style=color:#cd5555>&#39;venv/&#39;</span> &gt;&gt; ~/src/flaskapp/.gitignore
+<span style=color:#658b00>echo</span> <span style=color:#cd5555>&#39;*.egg-info/&#39;</span> &gt;&gt; ~/src/flaskapp/.gitignore
+<span style=color:#658b00>echo</span> <span style=color:#cd5555>&#39;dist/&#39;</span> &gt;&gt; ~/src/flaskapp/.gitignore
+git commit -am .gitignore <span style=color:#cd5555>&#39;ignore artifacts&#39;</span>
 </code></pre></div><ul>
 <li>Setup a venv with the required python version inside <code>flaskapp</code></li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>cd ~/src/flaskapp/
-<span style=color:#75715e># create venv/ dir</span>
-virtualenv --python<span style=color:#f92672>=</span>python2.7 venv
-<span style=color:#75715e># activate this virtual env</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#658b00>cd</span> ~/src/flaskapp/
+<span style=color:#228b22># create venv/ dir</span>
+virtualenv --python=python2.7 venv
+<span style=color:#228b22># activate this virtual env</span>
 . venv/bin/activate
 </code></pre></div><ul>
 <li>Install Flask in the new venv we just activated.</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>pip install flask flask-wtf flask-babel markdown flup 
-<span style=color:#75715e># later we can just just use setup.py</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>pip install flask flask-wtf flask-babel markdown flup 
+<span style=color:#228b22># later we can just just use setup.py</span>
 python setup.py install
 </code></pre></div><ul>
 <li>Tell our app&rsquo;s <code>setup.py</code> about our python module requirements.</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>cd ~/src/flaskapp
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#658b00>cd</span> ~/src/flaskapp
 vim setup.py
 </code></pre></div><ul>
 <li>Modify the <em>install_requires</em> line to look like this:</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>install_requires<span style=color:#f92672>=</span>[<span style=color:#e6db74>&#39;Flask&#39;</span>,<span style=color:#e6db74>&#39;flask-wtf&#39;</span>,<span style=color:#e6db74>&#39;flask-babel&#39;</span>,<span style=color:#e6db74>&#39;markdown&#39;</span>,<span style=color:#e6db74>&#39;flup&#39;</span>],
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>install_requires=[<span style=color:#cd5555>&#39;Flask&#39;</span>,<span style=color:#cd5555>&#39;flask-wtf&#39;</span>,<span style=color:#cd5555>&#39;flask-babel&#39;</span>,<span style=color:#cd5555>&#39;markdown&#39;</span>,<span style=color:#cd5555>&#39;flup&#39;</span>],
 </code></pre></div><h2 id=create-hello-world-flask-app>Create Hello World Flask App</h2>
 <p>Create the required directories</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>cd ~/src/flaskapp/wsgi
-mkdir -p app/<span style=color:#f92672>{</span>static,templates<span style=color:#f92672>}</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#658b00>cd</span> ~/src/flaskapp/wsgi
+mkdir -p app/{static,templates}
 mkdir tmp
-cd ~/src/flaskapp/wsgi/app
+<span style=color:#658b00>cd</span> ~/src/flaskapp/wsgi/app
 </code></pre></div><p>Create applications files. Pay attention Openshift has some particular requirements.</p>
 <ul>
 <li><em>~/src/flaskapp/wsgi/app/__init__.py</em></li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#f92672>from</span> flask <span style=color:#f92672>import</span> Flask  
-app <span style=color:#f92672>=</span> Flask(__name__)  
-<span style=color:#f92672>from</span> app <span style=color:#f92672>import</span> views
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#8b008b;font-weight:700>from</span> <span style=color:#008b45;text-decoration:underline>flask</span> <span style=color:#8b008b;font-weight:700>import</span> Flask  
+app = Flask(__name__)  
+<span style=color:#8b008b;font-weight:700>from</span> <span style=color:#008b45;text-decoration:underline>app</span> <span style=color:#8b008b;font-weight:700>import</span> views
 </code></pre></div><ul>
 <li><em>~/src/flaskapp/wsgi/app/views.py</em></li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#f92672>from</span> app <span style=color:#f92672>import</span> app
-<span style=color:#a6e22e>@app</span><span style=color:#f92672>.</span>route(<span style=color:#e6db74>&#39;/&#39;</span>)
-<span style=color:#a6e22e>@app</span><span style=color:#f92672>.</span>route(<span style=color:#e6db74>&#39;/index&#39;</span>)
-<span style=color:#66d9ef>def</span> <span style=color:#a6e22e>index</span>():
-    <span style=color:#66d9ef>return</span> <span style=color:#e6db74>&#34;Hello, World!&#34;</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#8b008b;font-weight:700>from</span> <span style=color:#008b45;text-decoration:underline>app</span> <span style=color:#8b008b;font-weight:700>import</span> app
+<span style=color:#707a7c>@app</span>.route(<span style=color:#cd5555>&#39;/&#39;</span>)
+<span style=color:#707a7c>@app</span>.route(<span style=color:#cd5555>&#39;/index&#39;</span>)
+<span style=color:#8b008b;font-weight:700>def</span> <span style=color:#008b45>index</span>():
+    <span style=color:#8b008b;font-weight:700>return</span> <span style=color:#cd5555>&#34;Hello, World!&#34;</span>
 </code></pre></div><ul>
 <li><em>~/src/flaskapp/wsgi/application</em> - This application file is required by OpenShift</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#75715e>#!/usr/bin/python</span>
-<span style=color:#f92672>import</span> os
-<span style=color:#f92672>import</span> sys
-sys<span style=color:#f92672>.</span>path<span style=color:#f92672>.</span>insert(<span style=color:#ae81ff>0</span>, os<span style=color:#f92672>.</span>path<span style=color:#f92672>.</span>dirname(__file__) <span style=color:#f92672>or</span> <span style=color:#e6db74>&#39;.&#39;</span>)
-PY_DIR <span style=color:#f92672>=</span> os<span style=color:#f92672>.</span>path<span style=color:#f92672>.</span>join(os<span style=color:#f92672>.</span>environ[<span style=color:#e6db74>&#39;OPENSHIFT_HOMEDIR&#39;</span>], <span style=color:#e6db74>&#34;python&#34;</span>)
-virtenv <span style=color:#f92672>=</span> PY_DIR <span style=color:#f92672>+</span> <span style=color:#e6db74>&#39;/virtenv/&#39;</span>
-PY_CACHE <span style=color:#f92672>=</span> os<span style=color:#f92672>.</span>path<span style=color:#f92672>.</span>join(virtenv, <span style=color:#e6db74>&#39;lib&#39;</span>, os<span style=color:#f92672>.</span>environ[<span style=color:#e6db74>&#39;OPENSHIFT_PYTHON_VERSION&#39;</span>], <span style=color:#e6db74>&#39;site-packages&#39;</span>)
-os<span style=color:#f92672>.</span>environ[<span style=color:#e6db74>&#39;PYTHON_EGG_CACHE&#39;</span>] <span style=color:#f92672>=</span> os<span style=color:#f92672>.</span>path<span style=color:#f92672>.</span>join(PY_CACHE)
-virtualenv <span style=color:#f92672>=</span> os<span style=color:#f92672>.</span>path<span style=color:#f92672>.</span>join(virtenv, <span style=color:#e6db74>&#39;bin/activate_this.py&#39;</span>)
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#228b22>#!/usr/bin/python</span>
+<span style=color:#8b008b;font-weight:700>import</span> <span style=color:#008b45;text-decoration:underline>os</span>
+<span style=color:#8b008b;font-weight:700>import</span> <span style=color:#008b45;text-decoration:underline>sys</span>
+sys.path.insert(<span style=color:#b452cd>0</span>, os.path.dirname(__file__) <span style=color:#8b008b>or</span> <span style=color:#cd5555>&#39;.&#39;</span>)
+PY_DIR = os.path.join(os.environ[<span style=color:#cd5555>&#39;OPENSHIFT_HOMEDIR&#39;</span>], <span style=color:#cd5555>&#34;python&#34;</span>)
+virtenv = PY_DIR + <span style=color:#cd5555>&#39;/virtenv/&#39;</span>
+PY_CACHE = os.path.join(virtenv, <span style=color:#cd5555>&#39;lib&#39;</span>, os.environ[<span style=color:#cd5555>&#39;OPENSHIFT_PYTHON_VERSION&#39;</span>], <span style=color:#cd5555>&#39;site-packages&#39;</span>)
+os.environ[<span style=color:#cd5555>&#39;PYTHON_EGG_CACHE&#39;</span>] = os.path.join(PY_CACHE)
+virtualenv = os.path.join(virtenv, <span style=color:#cd5555>&#39;bin/activate_this.py&#39;</span>)
 
-<span style=color:#66d9ef>try</span>:
-    exec(open(virtualenv)<span style=color:#f92672>.</span>read(), dict(__file__<span style=color:#f92672>=</span>virtualenv))
-<span style=color:#66d9ef>except</span> <span style=color:#a6e22e>IOError</span>:
-    <span style=color:#66d9ef>pass</span>
+<span style=color:#8b008b;font-weight:700>try</span>:
+    exec(<span style=color:#658b00>open</span>(virtualenv).read(), <span style=color:#658b00>dict</span>(__file__=virtualenv))
+<span style=color:#8b008b;font-weight:700>except</span> <span style=color:#008b45;font-weight:700>IOError</span>:
+    <span style=color:#8b008b;font-weight:700>pass</span>
 
-<span style=color:#f92672>from</span> run <span style=color:#f92672>import</span> app <span style=color:#66d9ef>as</span> application
+<span style=color:#8b008b;font-weight:700>from</span> <span style=color:#008b45;text-decoration:underline>run</span> <span style=color:#8b008b;font-weight:700>import</span> app <span style=color:#8b008b;font-weight:700>as</span> application
 </code></pre></div><ul>
 <li><em>~/src/flaskapp/wsgi/run.py</em> - Called by <em>application</em>.</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#f92672>from</span> app <span style=color:#f92672>import</span> app
-<span style=color:#66d9ef>if</span> __name__ <span style=color:#f92672>==</span> <span style=color:#e6db74>&#34;__main__&#34;</span>:
-    app<span style=color:#f92672>.</span>run(debug <span style=color:#f92672>=</span> <span style=color:#66d9ef>True</span>) <span style=color:#75715e>#We will set debug false in production </span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#8b008b;font-weight:700>from</span> <span style=color:#008b45;text-decoration:underline>app</span> <span style=color:#8b008b;font-weight:700>import</span> app
+<span style=color:#8b008b;font-weight:700>if</span> __name__ == <span style=color:#cd5555>&#34;__main__&#34;</span>:
+    app.run(debug = <span style=color:#8b008b;font-weight:700>True</span>) <span style=color:#228b22>#We will set debug false in production </span>
 </code></pre></div><h1 id=test-flaskapp-on-localhost>Test Flaskapp on localhost</h1>
 <p>Activate venv and run the app.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>cd ~/src/flaskapp/
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#658b00>cd</span> ~/src/flaskapp/
 . venv/bin/activate
 python setup.py install
 python run.py
 curl http://localhost:5000/index
 </code></pre></div><h1 id=deploy-flaskapp-to-openshift>Deploy Flaskapp to Openshift</h1>
 <p>After making local changes, commit them to git, and push them to the origin. Openshift will then automagically install the required flask modules and spin up your Flaskapp.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>cd ~/src/flaskapp
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#658b00>cd</span> ~/src/flaskapp
 git add .
-git commit -a -m <span style=color:#e6db74>&#39;Firstsies&#39;</span>
+git commit -a -m <span style=color:#cd5555>&#39;Firstsies&#39;</span>
 git push
 </code></pre></div><p>Now go check out your new app on <a href=http://www.openshift.com>Openshift</a></p>
 <h1 id=references>References</h1>

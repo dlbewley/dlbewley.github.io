@@ -112,7 +112,7 @@ September 8, 2015
 <p>The MIBs will end in <code>.txt</code> but drop that when you reference them. An example might be <code>/usr/share/snmp/mibs/CMC-TC-MIB.txt</code>.</p>
 <h1 id=explore-a-mib-with-snmptranslate>Explore a MIB with <code>snmptranslate</code></h1>
 <p>The <a href=http://www.net-snmp.org/wiki/index.php/TUT:snmptranslate>snmptranslate</a> command can be used to translate the OIDs in a MIB to various representations.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-text data-lang=text>-T TRANSOPTS
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-text data-lang=text>-T TRANSOPTS
        Provides control over the translation of the OID values.  The following TRANSOPTS are available:
 
        -Td   Print full details of the specified OID.
@@ -124,7 +124,7 @@ September 8, 2015
        -Tt   Dump a tree form of the loaded MIBs (mostly useful for debugging).
        -Tz   Dump a numeric and labeled form of all objects (compatible with MIB2SCHEMA format).
 </code></pre></div><p>There are other <a href=http://www.net-snmp.org/wiki/index.php/TUT:Customized_Output_Formats>output options</a> to be found in the <code>snmpcmd</code> man page. Use these with <code>snmpwalk</code> or <code>snmpget</code>.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-text data-lang=text>  -O OUTOPTS            Toggle various defaults controlling output display:
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-text data-lang=text>  -O OUTOPTS            Toggle various defaults controlling output display:
       0:  print leading 0 for single-digit hex characters
       a:  print all strings in ascii format
       b:  do not break OID indexes down
@@ -147,7 +147,7 @@ September 8, 2015
 <ul>
 <li><code>-Ts</code> <strong>Get a list of all OID names in a MIB</strong></li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>snmptranslate -Ts -M /usr/share/snmp/mibs -m RITTAL-CMC-TC-MIB &gt; /tmp/rittal-cmc-tc-oid-list.txt
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>snmptranslate -Ts -M /usr/share/snmp/mibs -m RITTAL-CMC-TC-MIB &gt; /tmp/rittal-cmc-tc-oid-list.txt
 snmptranslate -Ts -M /usr/share/snmp/mibs -m RITTAL-CMC-TC-MIB | head
 .iso.org
 .iso.org.dod
@@ -163,37 +163,37 @@ snmptranslate -Ts -M /usr/share/snmp/mibs -m RITTAL-CMC-TC-MIB | head
 <li><code>-Tl</code> <strong>Get a labeled list of OID names and numbers</strong>
 This is good for comparisons and figuring out numeric OIDs.</li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>snmptranslate -Tl -M /usr/share/snmp/mibs -m RITTAL-CMC-TC-MIB &gt; /tmp/rittal-cmc-tc-oid-labeled.txt
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>snmptranslate -Tl -M /usr/share/snmp/mibs -m RITTAL-CMC-TC-MIB &gt; /tmp/rittal-cmc-tc-oid-labeled.txt
 snmptranslate -Tl -M /usr/share/snmp/mibs -m RITTAL-CMC-TC-MIB | head
-.iso<span style=color:#f92672>(</span>1<span style=color:#f92672>)</span>.org<span style=color:#f92672>(</span>3<span style=color:#f92672>)</span>
-.iso<span style=color:#f92672>(</span>1<span style=color:#f92672>)</span>.org<span style=color:#f92672>(</span>3<span style=color:#f92672>)</span>.dod<span style=color:#f92672>(</span>6<span style=color:#f92672>)</span>
-.iso<span style=color:#f92672>(</span>1<span style=color:#f92672>)</span>.org<span style=color:#f92672>(</span>3<span style=color:#f92672>)</span>.dod<span style=color:#f92672>(</span>6<span style=color:#f92672>)</span>.internet<span style=color:#f92672>(</span>1<span style=color:#f92672>)</span>
-.iso<span style=color:#f92672>(</span>1<span style=color:#f92672>)</span>.org<span style=color:#f92672>(</span>3<span style=color:#f92672>)</span>.dod<span style=color:#f92672>(</span>6<span style=color:#f92672>)</span>.internet<span style=color:#f92672>(</span>1<span style=color:#f92672>)</span>.directory<span style=color:#f92672>(</span>1<span style=color:#f92672>)</span>
-.iso<span style=color:#f92672>(</span>1<span style=color:#f92672>)</span>.org<span style=color:#f92672>(</span>3<span style=color:#f92672>)</span>.dod<span style=color:#f92672>(</span>6<span style=color:#f92672>)</span>.internet<span style=color:#f92672>(</span>1<span style=color:#f92672>)</span>.mgmt<span style=color:#f92672>(</span>2<span style=color:#f92672>)</span>
-.iso<span style=color:#f92672>(</span>1<span style=color:#f92672>)</span>.org<span style=color:#f92672>(</span>3<span style=color:#f92672>)</span>.dod<span style=color:#f92672>(</span>6<span style=color:#f92672>)</span>.internet<span style=color:#f92672>(</span>1<span style=color:#f92672>)</span>.mgmt<span style=color:#f92672>(</span>2<span style=color:#f92672>)</span>.mib-2<span style=color:#f92672>(</span>1<span style=color:#f92672>)</span>
-.iso<span style=color:#f92672>(</span>1<span style=color:#f92672>)</span>.org<span style=color:#f92672>(</span>3<span style=color:#f92672>)</span>.dod<span style=color:#f92672>(</span>6<span style=color:#f92672>)</span>.internet<span style=color:#f92672>(</span>1<span style=color:#f92672>)</span>.mgmt<span style=color:#f92672>(</span>2<span style=color:#f92672>)</span>.mib-2<span style=color:#f92672>(</span>1<span style=color:#f92672>)</span>.system<span style=color:#f92672>(</span>1<span style=color:#f92672>)</span>
-.iso<span style=color:#f92672>(</span>1<span style=color:#f92672>)</span>.org<span style=color:#f92672>(</span>3<span style=color:#f92672>)</span>.dod<span style=color:#f92672>(</span>6<span style=color:#f92672>)</span>.internet<span style=color:#f92672>(</span>1<span style=color:#f92672>)</span>.mgmt<span style=color:#f92672>(</span>2<span style=color:#f92672>)</span>.mib-2<span style=color:#f92672>(</span>1<span style=color:#f92672>)</span>.system<span style=color:#f92672>(</span>1<span style=color:#f92672>)</span>.sysDescr<span style=color:#f92672>(</span>1<span style=color:#f92672>)</span>
-.iso<span style=color:#f92672>(</span>1<span style=color:#f92672>)</span>.org<span style=color:#f92672>(</span>3<span style=color:#f92672>)</span>.dod<span style=color:#f92672>(</span>6<span style=color:#f92672>)</span>.internet<span style=color:#f92672>(</span>1<span style=color:#f92672>)</span>.mgmt<span style=color:#f92672>(</span>2<span style=color:#f92672>)</span>.mib-2<span style=color:#f92672>(</span>1<span style=color:#f92672>)</span>.system<span style=color:#f92672>(</span>1<span style=color:#f92672>)</span>.sysObjectID<span style=color:#f92672>(</span>2<span style=color:#f92672>)</span>
-.iso<span style=color:#f92672>(</span>1<span style=color:#f92672>)</span>.org<span style=color:#f92672>(</span>3<span style=color:#f92672>)</span>.dod<span style=color:#f92672>(</span>6<span style=color:#f92672>)</span>.internet<span style=color:#f92672>(</span>1<span style=color:#f92672>)</span>.mgmt<span style=color:#f92672>(</span>2<span style=color:#f92672>)</span>.mib-2<span style=color:#f92672>(</span>1<span style=color:#f92672>)</span>.system<span style=color:#f92672>(</span>1<span style=color:#f92672>)</span>.sysUpTime<span style=color:#f92672>(</span>3<span style=color:#f92672>)</span>
+.iso(1).org(3)
+.iso(1).org(3).dod(6)
+.iso(1).org(3).dod(6).internet(1)
+.iso(1).org(3).dod(6).internet(1).directory(1)
+.iso(1).org(3).dod(6).internet(1).mgmt(2)
+.iso(1).org(3).dod(6).internet(1).mgmt(2).mib-2(1)
+.iso(1).org(3).dod(6).internet(1).mgmt(2).mib-2(1).system(1)
+.iso(1).org(3).dod(6).internet(1).mgmt(2).mib-2(1).system(1).sysDescr(1)
+.iso(1).org(3).dod(6).internet(1).mgmt(2).mib-2(1).system(1).sysObjectID(2)
+.iso(1).org(3).dod(6).internet(1).mgmt(2).mib-2(1).system(1).sysUpTime(3)
 </code></pre></div><ul>
 <li><code>-Tp</code> <strong>Get a nice tree output</strong></li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>snmptranslate -Tp -M /usr/share/snmp/mibs -m RITTAL-CMC-TC-MIB &gt; /tmp/rittal-cmc-tc-oid-tree.txt
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>snmptranslate -Tp -M /usr/share/snmp/mibs -m RITTAL-CMC-TC-MIB &gt; /tmp/rittal-cmc-tc-oid-tree.txt
 snmptranslate -Tp -M /usr/share/snmp/mibs -m RITTAL-CMC-TC-MIB | head
-+--iso<span style=color:#f92672>(</span>1<span style=color:#f92672>)</span>
++--iso(1)
    |
-   +--org<span style=color:#f92672>(</span>3<span style=color:#f92672>)</span>
+   +--org(3)
       |
-      +--dod<span style=color:#f92672>(</span>6<span style=color:#f92672>)</span>
+      +--dod(6)
          |
-         +--internet<span style=color:#f92672>(</span>1<span style=color:#f92672>)</span>
+         +--internet(1)
             |
-            +--directory<span style=color:#f92672>(</span>1<span style=color:#f92672>)</span>
+            +--directory(1)
             |
 </code></pre></div><ul>
 <li><code>-TB</code> <strong>To <em>grep</em> for a OID</strong></li>
 </ul>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>snmptranslate -TB -Of -M /usr/share/snmp/mibs -m RITTAL-CMC-TC-MIB .<span style=color:#ae81ff>\*</span>sensor.<span style=color:#ae81ff>\*</span> | head
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>snmptranslate -TB -Of -M /usr/share/snmp/mibs -m RITTAL-CMC-TC-MIB .<span style=color:#cd5555>\*</span>sensor.<span style=color:#cd5555>\*</span> | head
 .iso.org.dod.internet.private.enterprises.rittal.cmcTc.cmcTc#.alarmSensorUnit4
 .iso.org.dod.internet.private.enterprises.rittal.cmcTc.cmcTc#.alarmSensorUnit3
 .iso.org.dod.internet.private.enterprises.rittal.cmcTc.cmcTc#.alarmSensorUnit2
@@ -206,19 +206,19 @@ snmptranslate -Tp -M /usr/share/snmp/mibs -m RITTAL-CMC-TC-MIB | head
 .iso.org.dod.internet.private.enterprises.rittal.cmcTc.cmcTcStatus.cmcTcStatusSensorUnit4.cmcTcStatusUnit4Sensors.cmcTcUnit4SensorTable.cmcTcUnit4SensorEntry.unit4SensorUnit
 </code></pre></div><h1 id=find-the-name-for-a-known-numberic-oid>Find the name for a known numberic OID</h1>
 <p>I know it is in the RITTAL-CMC-TC-MIB but how can I most easily find the name for <code>1.3.6.1.4.1.2606.4.2.4.5.2.1.5.5</code>.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>snmptranslate -Of -M /usr/share/snmp/mibs -m RITTAL-CMC-TC-MIB 1.3.6.1.4.1.2606.4.2.4.5.2.1.5.5
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>snmptranslate -Of -M /usr/share/snmp/mibs -m RITTAL-CMC-TC-MIB 1.3.6.1.4.1.2606.4.2.4.5.2.1.5.5
 .iso.org.dod.internet.private.enterprises.rittal.cmcTc.cmcTcStatus.cmcTcStatusSensorUnit2.cmcTcStatusUnit2Sensors.cmcTcUnit2SensorTable.cmcTcUnit2SensorEntry.unit2SensorValue.5
 </code></pre></div><p>Add <code>-Td</code> to get the description of the OID from the MIB.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>snmptranslate -Td -M /usr/share/snmp/mibs -m RITTAL-CMC-TC-MIB 1.3.6.1.4.1.2606.4.2.4.5.2.1.5.5
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>snmptranslate -Td -M /usr/share/snmp/mibs -m RITTAL-CMC-TC-MIB 1.3.6.1.4.1.2606.4.2.4.5.2.1.5.5
 RITTAL-CMC-TC-MIB::unit2SensorValue.5
 unit2SensorValue OBJECT-TYPE
   -- FROM       RITTAL-CMC-TC-MIB
   SYNTAX        INTEGER
   MAX-ACCESS    read-only
   STATUS        mandatory
-  DESCRIPTION   <span style=color:#e6db74>&#34;Value of sensor&#34;</span>
-<span style=color:#f92672>{</span>% raw %<span style=color:#f92672>}</span>
-::<span style=color:#f92672>=</span> <span style=color:#f92672>{</span> iso<span style=color:#f92672>(</span>1<span style=color:#f92672>)</span> org<span style=color:#f92672>(</span>3<span style=color:#f92672>)</span> dod<span style=color:#f92672>(</span>6<span style=color:#f92672>)</span> internet<span style=color:#f92672>(</span>1<span style=color:#f92672>)</span> private<span style=color:#f92672>(</span>4<span style=color:#f92672>)</span> enterprises<span style=color:#f92672>(</span>1<span style=color:#f92672>)</span> rittal<span style=color:#f92672>(</span>2606<span style=color:#f92672>)</span> cmcTc<span style=color:#f92672>(</span>4<span style=color:#f92672>)</span> cmcTcStatus<span style=color:#f92672>(</span>2<span style=color:#f92672>)</span> cmcTcStatusSensorUnit2<span style=color:#f92672>(</span>4<span style=color:#f92672>)</span> cmcTcStatusUnit2Sensors<span style=color:#f92672>(</span>5<span style=color:#f92672>)</span> cmcTcUnit2SensorTable<span style=color:#f92672>(</span>2<span style=color:#f92672>)</span> cmcTcUnit2SensorEntry<span style=color:#f92672>(</span>1<span style=color:#f92672>)</span> unit2SensorValue<span style=color:#f92672>(</span>5<span style=color:#f92672>)</span> <span style=color:#ae81ff>5</span> <span style=color:#f92672>}</span>
+  DESCRIPTION   <span style=color:#cd5555>&#34;Value of sensor&#34;</span>
+{% raw %}
+::= { iso(1) org(3) dod(6) internet(1) private(4) enterprises(1) rittal(2606) cmcTc(4) cmcTcStatus(2) cmcTcStatusSensorUnit2(4) cmcTcStatusUnit2Sensors(5) cmcTcUnit2SensorTable(2) cmcTcUnit2SensorEntry(1) unit2SensorValue(5) <span style=color:#b452cd>5</span> }
 </code></pre></div><pre tabindex=0><code>
 # SNMP Tables #
 
@@ -230,7 +230,7 @@ RITTAL-CMC-TC-MIB::unit2SensorValue.5 = INTEGER: 680
 </code></pre><h1 id=debugging-mibs>Debugging MIBs</h1>
 <h2 id=missing-mib>Missing MIB</h2>
 <p>Cmd:</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-text data-lang=text>{% raw %}
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-text data-lang=text>{% raw %}
 snmptranslate -TBd -Of -M /usr/share/snmp/mibs -m EATON-PXG-MIB &#39;.*xups.*&#39;
 Cannot find module (ENTITY-MIB): At line 10 in /usr/share/snmp/mibs/EATON-PXG-MIB.txt
 Did not find &#39;entPhysicalName&#39; in module #-1 (/usr/share/snmp/mibs/EATON-PXG-MIB.txt)
@@ -332,7 +332,7 @@ snmpwalk -v1 -c public -Of -M /usr/share/snmp/mibs -m all 192.168.0.1 .iso.org.d
 .iso.org.dod.internet.mgmt.mib-2.entityMIB.entityMIBObjects.entityPhysical.entPhysicalTable.entPhysicalEntry.entPhysicalDescr.107 = STRING: DSH-1B
 .iso.org.dod.internet.mgmt.mib-2.entityMIB.entityMIBObjects.entityPhysical.entPhysicalTable.entPhysicalEntry.entPhysicalDescr.160 = STRING: PXG COM 3 Port
 </code></pre><p>OK, so let&rsquo;s see what we can learn about MS-1B Meter.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-text data-lang=text>snmpwalk -v1 -c public -Of -M /usr/share/snmp/mibs -m all 192.168.0.1 .iso.org.dod.internet.mgmt.mib-2.entityMIB.entityMIBObjects.entityPhysical.entPhysicalTable.entPhysicalEntry | grep 94
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-text data-lang=text>snmpwalk -v1 -c public -Of -M /usr/share/snmp/mibs -m all 192.168.0.1 .iso.org.dod.internet.mgmt.mib-2.entityMIB.entityMIBObjects.entityPhysical.entPhysicalTable.entPhysicalEntry | grep 94
 .iso.org.dod.internet.mgmt.mib-2.entityMIB.entityMIBObjects.entityPhysical.entPhysicalTable.entPhysicalEntry.entPhysicalDescr.94 = STRING: MS-1B Meter
 .iso.org.dod.internet.mgmt.mib-2.entityMIB.entityMIBObjects.entityPhysical.entPhysicalTable.entPhysicalEntry.entPhysicalVendorType.94 = OID: .ccitt.zeroDotZero
 .iso.org.dod.internet.mgmt.mib-2.entityMIB.entityMIBObjects.entityPhysical.entPhysicalTable.entPhysicalEntry.entPhysicalContainedIn.94 = INTEGER: 90
@@ -349,7 +349,7 @@ snmpwalk -v1 -c public -Of -M /usr/share/snmp/mibs -m all 192.168.0.1 .iso.org.d
 .iso.org.dod.internet.mgmt.mib-2.entityMIB.entityMIBObjects.entityPhysical.entPhysicalTable.entPhysicalEntry.entPhysicalAssetID.94 = STRING: Customer AssetIdTag
 .iso.org.dod.internet.mgmt.mib-2.entityMIB.entityMIBObjects.entityPhysical.entPhysicalTable.entPhysicalEntry.entPhysicalIsFRU.94 = INTEGER: true(1)
 .iso.org.dod.internet.mgmt.mib-2.entityMIB.entityMIBObjects.entityPhysical.entPhysicalTable.entPhysicalEntry.18.94 = &#34;&#34;
-</code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-text data-lang=text>snmpwalk -v1 -c public -Of -M /usr/share/snmp/mibs -m all 192.168.0.1 .iso.org.dod.internet.private.enterprises.powerware.powerChain.pcdMIB | grep 94
+</code></pre></div><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-text data-lang=text>snmpwalk -v1 -c public -Of -M /usr/share/snmp/mibs -m all 192.168.0.1 .iso.org.dod.internet.private.enterprises.powerware.powerChain.pcdMIB | grep 94
 .iso.org.dod.internet.private.enterprises.powerware.powerChain.pcdMIB.pcdMIBObjects.pcdMeasures.pcdMeasuresTable.pcdMeasuresEntry.pcdMeasuresFrequency.94 = INTEGER: 0 0.01 Hertz
 .iso.org.dod.internet.private.enterprises.powerware.powerChain.pcdMIB.pcdMIBObjects.pcdMeasures.pcdPhaseMeasuresTable.pcdPhaseMeasuresEntry.pcdPhaseMeasuresVoltageLL.94.1 = INTEGER: 495 Volts
 .iso.org.dod.internet.private.enterprises.powerware.powerChain.pcdMIB.pcdMIBObjects.pcdMeasures.pcdPhaseMeasuresTable.pcdPhaseMeasuresEntry.pcdPhaseMeasuresVoltageLL.94.2 = INTEGER: 492 Volts

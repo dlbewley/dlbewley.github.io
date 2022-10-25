@@ -166,83 +166,83 @@ March 24, 2016
 </ul>
 <p>Update <code>/etc/origin/master/master-config.yaml</code> to reference those certificates when accessing the public master URL.</p>
 <p><strong>Before</strong></p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#f92672>apiLevels</span>:
-- <span style=color:#ae81ff>v1</span>
-<span style=color:#f92672>apiVersion</span>: <span style=color:#ae81ff>v1</span>
-<span style=color:#f92672>assetConfig</span>:
-  <span style=color:#f92672>logoutURL</span>: <span style=color:#e6db74>&#34;&#34;</span>
-  <span style=color:#f92672>masterPublicURL</span>: <span style=color:#ae81ff>https://openshift.example.com:8443</span>
-  <span style=color:#f92672>publicURL</span>: <span style=color:#ae81ff>https://openshift.example.com:8443/console/</span>
-  <span style=color:#f92672>servingInfo</span>:
-    <span style=color:#f92672>bindAddress</span>: <span style=color:#ae81ff>0.0.0.0</span>:<span style=color:#ae81ff>8443</span>
-    <span style=color:#f92672>bindNetwork</span>: <span style=color:#ae81ff>tcp4</span>
-    <span style=color:#f92672>certFile</span>: <span style=color:#ae81ff>master.server.crt</span>
-    <span style=color:#f92672>clientCA</span>: <span style=color:#e6db74>&#34;&#34;</span>
-    <span style=color:#f92672>keyFile</span>: <span style=color:#ae81ff>master.server.key</span>
-    <span style=color:#f92672>maxRequestsInFlight</span>: <span style=color:#ae81ff>0</span>
-    <span style=color:#f92672>requestTimeoutSeconds</span>: <span style=color:#ae81ff>0</span>
-  <span style=color:#f92672>metricsPublicURL</span>: <span style=color:#e6db74>&#34;https://metrics.os.example.com/hawkular/metrics&#34;</span>
-<span style=color:#75715e>#... skip to the botom</span>
-<span style=color:#f92672>servingInfo</span>:
-  <span style=color:#f92672>bindAddress</span>: <span style=color:#ae81ff>0.0.0.0</span>:<span style=color:#ae81ff>8443</span>
-  <span style=color:#f92672>bindNetwork</span>: <span style=color:#ae81ff>tcp4</span>
-  <span style=color:#f92672>certFile</span>: <span style=color:#ae81ff>master.server.crt</span>
-  <span style=color:#f92672>clientCA</span>: <span style=color:#ae81ff>ca.crt</span>
-  <span style=color:#f92672>keyFile</span>: <span style=color:#ae81ff>master.server.key</span>
-  <span style=color:#f92672>maxRequestsInFlight</span>: <span style=color:#ae81ff>500</span>
-  <span style=color:#f92672>requestTimeoutSeconds</span>: <span style=color:#ae81ff>3600</span>
-</code></pre></div><p><strong>After</strong></p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#f92672>apiLevels</span>:
-- <span style=color:#ae81ff>v1</span>
-<span style=color:#f92672>apiVersion</span>: <span style=color:#ae81ff>v1</span>
-<span style=color:#f92672>assetConfig</span>:
-  <span style=color:#f92672>logoutURL</span>: <span style=color:#e6db74>&#34;&#34;</span>
-  <span style=color:#f92672>masterPublicURL</span>: <span style=color:#ae81ff>https://openshift.example.com:8443</span>
-  <span style=color:#f92672>publicURL</span>: <span style=color:#ae81ff>https://openshift.example.com:8443/console/</span>
-  <span style=color:#f92672>servingInfo</span>:
-    <span style=color:#f92672>bindAddress</span>: <span style=color:#ae81ff>0.0.0.0</span>:<span style=color:#ae81ff>8443</span>
-    <span style=color:#f92672>bindNetwork</span>: <span style=color:#ae81ff>tcp4</span>
-    <span style=color:#f92672>certFile</span>: <span style=color:#ae81ff>master.server.crt</span>
-    <span style=color:#f92672>clientCA</span>: <span style=color:#e6db74>&#34;&#34;</span>
-    <span style=color:#f92672>keyFile</span>: <span style=color:#ae81ff>master.server.key</span>
-    <span style=color:#f92672>maxRequestsInFlight</span>: <span style=color:#ae81ff>0</span>
-    <span style=color:#f92672>requestTimeoutSeconds</span>: <span style=color:#ae81ff>0</span>
-    <span style=color:#f92672>namedCertificates</span>:
-      - <span style=color:#f92672>certFile</span>: <span style=color:#ae81ff>wildcard.example.com.crt</span>
-        <span style=color:#f92672>keyFile</span>: <span style=color:#ae81ff>wildcard.example.com.key</span>
-        <span style=color:#f92672>names</span>:
-          - <span style=color:#e6db74>&#34;openshift.example.com&#34;</span>
-  <span style=color:#f92672>metricsPublicURL</span>: <span style=color:#e6db74>&#34;https://metrics.os.example.com/hawkular/metrics&#34;</span>
-<span style=color:#75715e>#... skip to the botom</span>
-<span style=color:#f92672>servingInfo</span>:
-  <span style=color:#f92672>bindAddress</span>: <span style=color:#ae81ff>0.0.0.0</span>:<span style=color:#ae81ff>8443</span>
-  <span style=color:#f92672>bindNetwork</span>: <span style=color:#ae81ff>tcp4</span>
-  <span style=color:#f92672>certFile</span>: <span style=color:#ae81ff>master.server.crt</span>
-  <span style=color:#f92672>clientCA</span>: <span style=color:#ae81ff>ca.crt</span>
-  <span style=color:#f92672>keyFile</span>: <span style=color:#ae81ff>master.server.key</span>
-  <span style=color:#f92672>maxRequestsInFlight</span>: <span style=color:#ae81ff>500</span>
-  <span style=color:#f92672>requestTimeoutSeconds</span>: <span style=color:#ae81ff>3600</span>
-  <span style=color:#f92672>namedCertificates</span>:
-    - <span style=color:#f92672>certFile</span>: <span style=color:#ae81ff>wildcard.example.com.crt</span>
-      <span style=color:#f92672>keyFile</span>: <span style=color:#ae81ff>wildcard.example.com.key</span>
-      <span style=color:#f92672>names</span>:
-        - <span style=color:#e6db74>&#34;openshift.example.com&#34;</span>
-</code></pre></div><p>Restart the master and watch for TLS errors for a few seconds. You will notice problems pretty quickly if you affected the internal API URL.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>systemctl restart atomic-openshift-master-api
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#8b008b;font-weight:700>apiLevels</span>:<span style=color:#bbb>
+</span><span style=color:#bbb></span>- v1<span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>apiVersion</span>:<span style=color:#bbb> </span>v1<span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>assetConfig</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>logoutURL</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>masterPublicURL</span>:<span style=color:#bbb> </span>https://openshift.example.com:8443<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>publicURL</span>:<span style=color:#bbb> </span>https://openshift.example.com:8443/console/<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>servingInfo</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>bindAddress</span>:<span style=color:#bbb> </span><span style=color:#b452cd>0.0.0.0</span>:<span style=color:#b452cd>8443</span><span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>bindNetwork</span>:<span style=color:#bbb> </span>tcp4<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>certFile</span>:<span style=color:#bbb> </span>master.server.crt<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>clientCA</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>keyFile</span>:<span style=color:#bbb> </span>master.server.key<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>maxRequestsInFlight</span>:<span style=color:#bbb> </span><span style=color:#b452cd>0</span><span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>requestTimeoutSeconds</span>:<span style=color:#bbb> </span><span style=color:#b452cd>0</span><span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>metricsPublicURL</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;https://metrics.os.example.com/hawkular/metrics&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#228b22>#... skip to the botom</span><span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>servingInfo</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>bindAddress</span>:<span style=color:#bbb> </span><span style=color:#b452cd>0.0.0.0</span>:<span style=color:#b452cd>8443</span><span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>bindNetwork</span>:<span style=color:#bbb> </span>tcp4<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>certFile</span>:<span style=color:#bbb> </span>master.server.crt<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>clientCA</span>:<span style=color:#bbb> </span>ca.crt<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>keyFile</span>:<span style=color:#bbb> </span>master.server.key<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>maxRequestsInFlight</span>:<span style=color:#bbb> </span><span style=color:#b452cd>500</span><span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>requestTimeoutSeconds</span>:<span style=color:#bbb> </span><span style=color:#b452cd>3600</span><span style=color:#bbb>
+</span></code></pre></div><p><strong>After</strong></p>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#8b008b;font-weight:700>apiLevels</span>:<span style=color:#bbb>
+</span><span style=color:#bbb></span>- v1<span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>apiVersion</span>:<span style=color:#bbb> </span>v1<span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>assetConfig</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>logoutURL</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>masterPublicURL</span>:<span style=color:#bbb> </span>https://openshift.example.com:8443<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>publicURL</span>:<span style=color:#bbb> </span>https://openshift.example.com:8443/console/<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>servingInfo</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>bindAddress</span>:<span style=color:#bbb> </span><span style=color:#b452cd>0.0.0.0</span>:<span style=color:#b452cd>8443</span><span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>bindNetwork</span>:<span style=color:#bbb> </span>tcp4<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>certFile</span>:<span style=color:#bbb> </span>master.server.crt<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>clientCA</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>keyFile</span>:<span style=color:#bbb> </span>master.server.key<span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>maxRequestsInFlight</span>:<span style=color:#bbb> </span><span style=color:#b452cd>0</span><span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>requestTimeoutSeconds</span>:<span style=color:#bbb> </span><span style=color:#b452cd>0</span><span style=color:#bbb>
+</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>namedCertificates</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>      </span>- <span style=color:#8b008b;font-weight:700>certFile</span>:<span style=color:#bbb> </span>wildcard.example.com.crt<span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>keyFile</span>:<span style=color:#bbb> </span>wildcard.example.com.key<span style=color:#bbb>
+</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>names</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>          </span>- <span style=color:#cd5555>&#34;openshift.example.com&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>metricsPublicURL</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;https://metrics.os.example.com/hawkular/metrics&#34;</span><span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#228b22>#... skip to the botom</span><span style=color:#bbb>
+</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>servingInfo</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>bindAddress</span>:<span style=color:#bbb> </span><span style=color:#b452cd>0.0.0.0</span>:<span style=color:#b452cd>8443</span><span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>bindNetwork</span>:<span style=color:#bbb> </span>tcp4<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>certFile</span>:<span style=color:#bbb> </span>master.server.crt<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>clientCA</span>:<span style=color:#bbb> </span>ca.crt<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>keyFile</span>:<span style=color:#bbb> </span>master.server.key<span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>maxRequestsInFlight</span>:<span style=color:#bbb> </span><span style=color:#b452cd>500</span><span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>requestTimeoutSeconds</span>:<span style=color:#bbb> </span><span style=color:#b452cd>3600</span><span style=color:#bbb>
+</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>namedCertificates</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>    </span>- <span style=color:#8b008b;font-weight:700>certFile</span>:<span style=color:#bbb> </span>wildcard.example.com.crt<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>keyFile</span>:<span style=color:#bbb> </span>wildcard.example.com.key<span style=color:#bbb>
+</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>names</span>:<span style=color:#bbb>
+</span><span style=color:#bbb>        </span>- <span style=color:#cd5555>&#34;openshift.example.com&#34;</span><span style=color:#bbb>
+</span></code></pre></div><p>Restart the master and watch for TLS errors for a few seconds. You will notice problems pretty quickly if you affected the internal API URL.</p>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>systemctl restart atomic-openshift-master-api
 journalctl -f
 </code></pre></div><h1 id=using-ansible>Using Ansible</h1>
 <p>There is support for this in <a href=https://github.com/openshift/openshift-ansible>the playbook</a>, which is probably the best method, but <strong>I have not tested this yet</strong>.</p>
 <p>Update your inventory for <a href=https://docs.openshift.com/enterprise/3.1/install_config/install/advanced_install.html#advanced-install-custom-certificates>OpenShift Advanced Installation</a> while referring to the <a href=https://github.com/openshift/openshift-ansible/blob/master/inventory/byo/hosts.ose.example#L180>byo example</a>.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ini data-lang=ini><span style=color:#a6e22e>openshift_master_cluster_method</span><span style=color:#f92672>=</span><span style=color:#e6db74>native</span>
-<span style=color:#a6e22e>openshift_master_cluster_hostname</span><span style=color:#f92672>=</span><span style=color:#e6db74>master.os.example.com</span>
-<span style=color:#a6e22e>openshift_master_cluster_public_hostname</span><span style=color:#f92672>=</span><span style=color:#e6db74>openshift.example.com</span>
-<span style=color:#a6e22e>openshift_master_overwrite_named_certificates</span><span style=color:#f92672>=</span><span style=color:#e6db74>true</span>
-<span style=color:#75715e>#</span>
-<span style=color:#75715e># Provide local certificate paths which will be deployed to masters</span>
-<span style=color:#a6e22e>openshift_master_named_certificates</span><span style=color:#f92672>=</span><span style=color:#e6db74>[{&#34;certfile&#34;: &#34;wildcard.example.com.crt&#34;, &#34;keyfile&#34;: &#34;wildcard.example.com.key&#34;}]</span>
-<span style=color:#75715e>#</span>
-<span style=color:#75715e># Detected names may be overridden by specifying the &#34;names&#34; key</span>
-<span style=color:#75715e>#openshift_master_named_certificates=[{&#34;certfile&#34;: &#34;wildcard.example.com.crt&#34;, &#34;keyfile&#34;: &#34;wildcard.example.com.key&#34;, &#34;names&#34;: [&#34;openshift.example.com&#34;]}]</span>
+<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ini data-lang=ini><span style=color:#658b00>openshift_master_cluster_method</span>=<span style=color:#cd5555>native</span>
+<span style=color:#658b00>openshift_master_cluster_hostname</span>=<span style=color:#cd5555>master.os.example.com</span>
+<span style=color:#658b00>openshift_master_cluster_public_hostname</span>=<span style=color:#cd5555>openshift.example.com</span>
+<span style=color:#658b00>openshift_master_overwrite_named_certificates</span>=<span style=color:#cd5555>true</span>
+<span style=color:#228b22>#</span>
+<span style=color:#228b22># Provide local certificate paths which will be deployed to masters</span>
+<span style=color:#658b00>openshift_master_named_certificates</span>=<span style=color:#cd5555>[{&#34;certfile&#34;: &#34;wildcard.example.com.crt&#34;, &#34;keyfile&#34;: &#34;wildcard.example.com.key&#34;}]</span>
+<span style=color:#228b22>#</span>
+<span style=color:#228b22># Detected names may be overridden by specifying the &#34;names&#34; key</span>
+<span style=color:#228b22>#openshift_master_named_certificates=[{&#34;certfile&#34;: &#34;wildcard.example.com.crt&#34;, &#34;keyfile&#34;: &#34;wildcard.example.com.key&#34;, &#34;names&#34;: [&#34;openshift.example.com&#34;]}]</span>
 </code></pre></div><h1 id=related-reading>Related Reading</h1>
 <ul>
 <li><a href=https://docs.openshift.com/enterprise/3.1/install_config/install/advanced_install.html#configuring-ansible>OpenShift Advanced Installation</a></li>
