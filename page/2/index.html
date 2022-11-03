@@ -31,7 +31,7 @@
 <meta property="og:image:type" content="image/png">
 <meta property="og:image:width" content="179">
 <meta property="og:image:height" content="50">
-<meta property="og:updated_time" content="2022-09-19T00:00:00Z">
+<meta property="og:updated_time" content="2022-11-03T00:00:00Z">
 <meta name=twitter:card content="summary">
 <meta name=twitter:site content="@dlbewley">
 <meta name=twitter:title content="GUI Free Life">
@@ -221,17 +221,6 @@
 </div>
 <div class="col-md-4 col-1 col-even">
 <div class=box-simple>
-<a href=tags/RHEL>
-<div class=icon>
-<i class="fab fa-redhat"></i>
-</div>
-</a>
-<h3>Linux</h3>
-<p>Opensource and Linux</p>
-</div>
-</div>
-<div class="col-md-4 col-2 col-odd">
-<div class=box-simple>
 <a href=https://github.com/dlbewley/>
 <div class=icon>
 <i class="fab fa-github"></i>
@@ -239,6 +228,17 @@
 </a>
 <h3>Projects</h3>
 <p><a href=https://github.com/dlbewley/>Github</a>, <a href=https://gitlab.com/dlbewley/>Gitlab</a></p>
+</div>
+</div>
+<div class="col-md-4 col-2 col-odd">
+<div class=box-simple>
+<a href=tags/RHEL>
+<div class=icon>
+<i class="fab fa-redhat"></i>
+</div>
+</a>
+<h3>Linux</h3>
+<p>Opensource and Linux</p>
 </div>
 </div>
 </div>
@@ -271,6 +271,33 @@ GUI Free Life
 <p class=lead>
 </p>
 <div class=row>
+<div class="col-md-3 col-sm-6">
+<div class="box-image-text blog">
+<div class=top>
+<div class=image style=overflow:hidden>
+<img src=/images/a-right-side-view-of-the-space-shuttle-orbiter-enterprise-and-its-specially-2f6920.jpg class=img-responsive alt>
+</div>
+<div class=bg></div>
+<div class=text>
+<p class=buttons>
+<a href=http://guifreelife.com/blog/2021/05/18/OpenShift-Windows-Containers-part-1/ class="btn btn-template-transparent-primary"><i class="fas fa-link"></i> Read more</a>
+</p>
+</div>
+</div>
+<div class=content>
+<h4><a href=http://guifreelife.com/blog/2021/05/18/OpenShift-Windows-Containers-part-1/>Installing OpenShift on Azure for Windows Containers</a></h4>
+<p class=author-category>
+on May 18, 2021
+</p>
+<p class=intro><p>Adding support for Windows nodes in your OpenShift cluster is a day 2 operation that requires preparation at install time.
+It is important to accommodate the hybrid networking requirements for Windows Kubernetes nodes.
+Azure specific tasks and gotchas are highlighted in this part 1 of 3 while laying the groundwork applicable to deploying OpenShift on any provider in preparation for managing Windows containers.</p></p>
+<p class=read-more>
+<a href=http://guifreelife.com/blog/2021/05/18/OpenShift-Windows-Containers-part-1/ class="btn btn-template-main">Continue reading</a>
+</p>
+</div>
+</div>
+</div>
 <div class="col-md-3 col-sm-6">
 <div class="box-image-text blog">
 <div class=top>
@@ -350,32 +377,6 @@ TASK [openshift_node : Approve the node] ***************************************
 </div>
 </div>
 </div>
-<div class="col-md-3 col-sm-6">
-<div class="box-image-text blog">
-<div class=top>
-<div class=image style=overflow:hidden>
-<img src=/img/banners/banner-27.jpg class=img-responsive alt>
-</div>
-<div class=bg></div>
-<div class=text>
-<p class=buttons>
-<a href=http://guifreelife.com/blog/2019/02/19/Downgrade-Etcd-for-OpenShift-Compatibility/ class="btn btn-template-transparent-primary"><i class="fas fa-link"></i> Read more</a>
-</p>
-</div>
-</div>
-<div class=content>
-<h4><a href=http://guifreelife.com/blog/2019/02/19/Downgrade-Etcd-for-OpenShift-Compatibility/>Downgrade Etcd 3.3.11 to 3.2.22 for OpenShift Compatibility</a></h4>
-<p class=author-category>
-on February 19, 2019
-</p>
-<p class=intro>While I was working on migrating etcd to my master nodes I was bitten by an incompatible etcd v3.3.11 RPM made available via RHEL Server Extras repo. Before I got to my last master the RPM was no longer available, and the scaleup playbook failed. I became aware that 3.3.11 is not compatible and should not have been made available.
-Unfortunately all members of my etcd cluster were already upgraded and the fix is to take down the cluster, downgrade etcd, and restore from snapshot.</p>
-<p class=read-more>
-<a href=http://guifreelife.com/blog/2019/02/19/Downgrade-Etcd-for-OpenShift-Compatibility/ class="btn btn-template-main">Continue reading</a>
-</p>
-</div>
-</div>
-</div>
 </div>
 </div>
 </div>
@@ -398,6 +399,16 @@ Unfortunately all members of my etcd cluster were already upgraded and the fix i
 <div class=blog-entries>
 <div class="item same-height-row clearfix">
 <div class="image same-height-always">
+<a href=http://guifreelife.com/blog/2022/11/03/Autoscaling-OpenShift-Workloads-with-Custom-Prometheus-Metrics/>
+<img src=/images/openshift-keda-autoscaling-sequence.png class=img-responsive alt="Autoscaling OpenShift Workloads With Custom Prometheus Metrics">
+</a>
+</div>
+<div class="name same-height-always">
+<h5><a href=http://guifreelife.com/blog/2022/11/03/Autoscaling-OpenShift-Workloads-with-Custom-Prometheus-Metrics/>Autoscaling OpenShift Workloads With Custom Prometheus Metrics</a></h5>
+</div>
+</div>
+<div class="item same-height-row clearfix">
+<div class="image same-height-always">
 <a href=http://guifreelife.com/blog/2022/09/19/Hybrid-Cloud-Management-with-Red-Hat/>
 <img src=/images/port-of-oakland-night.png class=img-responsive alt="Hybrid Cloud Management With Red Hat">
 </a>
@@ -414,16 +425,6 @@ Unfortunately all members of my etcd cluster were already upgraded and the fix i
 </div>
 <div class="name same-height-always">
 <h5><a href=http://guifreelife.com/blog/2022/05/13/OpenShift-Virtualization-on-vSphere/>OpenShift Virtualization on vSphere</a></h5>
-</div>
-</div>
-<div class="item same-height-row clearfix">
-<div class="image same-height-always">
-<a href=http://guifreelife.com/blog/2022/03/10/Debugging-AWS-STS-Authentication-for-OpenShift-Operators/>
-<img src=/images/debug-sts-banner.jpg class=img-responsive alt="Debugging AWS STS Authentication for OpenShift Operators">
-</a>
-</div>
-<div class="name same-height-always">
-<h5><a href=http://guifreelife.com/blog/2022/03/10/Debugging-AWS-STS-Authentication-for-OpenShift-Operators/>Debugging AWS STS Authentication for OpenShift Operators</a></h5>
 </div>
 </div>
 </div>
