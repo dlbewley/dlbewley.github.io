@@ -4,7 +4,7 @@
 <meta name=robots content="all,follow">
 <meta name=googlebot content="index,follow,snippet,archive">
 <meta name=viewport content="width=device-width,initial-scale=1">
-<title>GUI Free Life</title>
+<title>Home | GUI Free Life</title>
 <meta name=author content="Dale Bewley">
 <meta name=keywords content="bewley,guifreelife">
 <meta name=description content="GUI Free Life">
@@ -31,7 +31,7 @@
 <meta property="og:image:type" content="image/png">
 <meta property="og:image:width" content="179">
 <meta property="og:image:height" content="50">
-<meta property="og:updated_time" content="2023-03-09T00:00:00Z">
+<meta property="og:updated_time" content="2023-04-06T00:00:00Z">
 <meta name=twitter:card content="summary">
 <meta name=twitter:site content="@dlbewley">
 <meta name=twitter:title content="GUI Free Life">
@@ -221,17 +221,6 @@
 </div>
 <div class="col-md-4 col-1 col-even">
 <div class=box-simple>
-<a href=https://github.com/dlbewley/>
-<div class=icon>
-<i class="fab fa-github"></i>
-</div>
-</a>
-<h3>Projects</h3>
-<p><a href=https://github.com/dlbewley/>Github</a>, <a href=https://gitlab.com/dlbewley/>Gitlab</a></p>
-</div>
-</div>
-<div class="col-md-4 col-2 col-odd">
-<div class=box-simple>
 <a href=tags/RHEL>
 <div class=icon>
 <i class="fab fa-redhat"></i>
@@ -239,6 +228,17 @@
 </a>
 <h3>Linux</h3>
 <p>Opensource and Linux</p>
+</div>
+</div>
+<div class="col-md-4 col-2 col-odd">
+<div class=box-simple>
+<a href=https://github.com/dlbewley/>
+<div class=icon>
+<i class="fab fa-github"></i>
+</div>
+</a>
+<h3>Projects</h3>
+<p><a href=https://github.com/dlbewley/>Github</a>, <a href=https://gitlab.com/dlbewley/>Gitlab</a></p>
 </div>
 </div>
 </div>
@@ -271,6 +271,33 @@ GUI Free Life
 <p class=lead>
 </p>
 <div class=row>
+<div class="col-md-3 col-sm-6">
+<div class="box-image-text blog">
+<div class=top>
+<div class=image style=overflow:hidden>
+<img src=/img/banners/banner-14.jpg class=img-responsive alt>
+</div>
+<div class=bg></div>
+<div class=text>
+<p class=buttons>
+<a href=http://guifreelife.com/blog/2018/10/30/OpenStack-Private-Provider-Network/ class="btn btn-template-transparent-primary"><i class="fas fa-link"></i> Read more</a>
+</p>
+</div>
+</div>
+<div class=content>
+<h4><a href=http://guifreelife.com/blog/2018/10/30/OpenStack-Private-Provider-Network/>Creating OpenStack Provider Network for Use by a Single Project</a></h4>
+<p class=author-category>
+on October 30, 2018
+</p>
+<p class=intro>OpenStack supports &ldquo;provider&rdquo; networks, which are networks that pre-exist in your physical infrastructure and are &ldquo;provided&rdquo; to the cloud users rather than created by the user. Only an admin is permitted to create a provider network.
+A prequisite is the provider network must be plumbed to the external bridge on your controller and nova nodes.
+Here is an Ansible playbook to create a project, place a unshared provider network and subnet in that project.</p>
+<p class=read-more>
+<a href=http://guifreelife.com/blog/2018/10/30/OpenStack-Private-Provider-Network/ class="btn btn-template-main">Continue reading</a>
+</p>
+</div>
+</div>
+</div>
 <div class="col-md-3 col-sm-6">
 <div class="box-image-text blog">
 <div class=top>
@@ -351,32 +378,6 @@ Doc Overview So where are the docs?</p>
 </div>
 </div>
 </div>
-<div class="col-md-3 col-sm-6">
-<div class="box-image-text blog">
-<div class=top>
-<div class=image style=overflow:hidden>
-<img src=/images/thumb/openstack-network-pub.png class=img-responsive alt>
-</div>
-<div class=bg></div>
-<div class=text>
-<p class=buttons>
-<a href=http://guifreelife.com/blog/2017/08/14/OpenStack-Network-Diagram/ class="btn btn-template-transparent-primary"><i class="fas fa-link"></i> Read more</a>
-</p>
-</div>
-</div>
-<div class=content>
-<h4><a href=http://guifreelife.com/blog/2017/08/14/OpenStack-Network-Diagram/>OpenStack Network Diagram</a></h4>
-<p class=author-category>
-on August 14, 2017
-</p>
-<p class=intro>What does the networking for OpenStack look like? Maybe something like this.
-# Network VLAN IP CIDR N1 Provisioning (PXE) V:310 172.23.32.0/20 N2 Internal API V:311 172.23.21.0/24 N3 Storage Network (Front) V:312 172.23.22.0/24 N4 Storage Mgmt (Back) V:313 172.23.23.0/24 N5 External Floating IPs V:179 192.0.179.0/24 N6 Public API V:177 192.0.177.0/24 N7 Overcloud Provisioning (Tenant PXE) V:314 172.</p>
-<p class=read-more>
-<a href=http://guifreelife.com/blog/2017/08/14/OpenStack-Network-Diagram/ class="btn btn-template-main">Continue reading</a>
-</p>
-</div>
-</div>
-</div>
 </div>
 </div>
 </div>
@@ -399,6 +400,16 @@ on August 14, 2017
 <div class=blog-entries>
 <div class="item same-height-row clearfix">
 <div class="image same-height-always">
+<a href=http://guifreelife.com/blog/2023/04/06/Accessing-Ceph-CLI-with-OpenShift-Data-Foundation/>
+<img src=/images/uncovered-bumper.png class=img-responsive alt="Accessing the Ceph CLI with OpenShift Data Foundation">
+</a>
+</div>
+<div class="name same-height-always">
+<h5><a href=http://guifreelife.com/blog/2023/04/06/Accessing-Ceph-CLI-with-OpenShift-Data-Foundation/>Accessing the Ceph CLI with OpenShift Data Foundation</a></h5>
+</div>
+</div>
+<div class="item same-height-row clearfix">
+<div class="image same-height-always">
 <a href=http://guifreelife.com/blog/2023/03/09/Extracting-CA-Certs-From-Kubeconfig/>
 <img src=/img/banners/banner-buffy-xmas.png class=img-responsive alt="Extracting TLS CA Certificates from Kubeconfig File">
 </a>
@@ -415,16 +426,6 @@ on August 14, 2017
 </div>
 <div class="name same-height-always">
 <h5><a href=http://guifreelife.com/blog/2022/11/03/Autoscaling-OpenShift-Workloads-with-Custom-Prometheus-Metrics/>Autoscaling OpenShift Workloads With Custom Prometheus Metrics</a></h5>
-</div>
-</div>
-<div class="item same-height-row clearfix">
-<div class="image same-height-always">
-<a href=http://guifreelife.com/blog/2022/09/19/Hybrid-Cloud-Management-with-Red-Hat/>
-<img src=/images/port-of-oakland-night.png class=img-responsive alt="Hybrid Cloud Management With Red Hat">
-</a>
-</div>
-<div class="name same-height-always">
-<h5><a href=http://guifreelife.com/blog/2022/09/19/Hybrid-Cloud-Management-with-Red-Hat/>Hybrid Cloud Management With Red Hat</a></h5>
 </div>
 </div>
 </div>
