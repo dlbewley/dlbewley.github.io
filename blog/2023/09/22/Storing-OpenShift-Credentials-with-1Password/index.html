@@ -172,7 +172,7 @@ $ <span style=color:#658b00>echo</span> <span style=color:#00688b>$KUBECONFIG</s
 $ oc whoami
 system:admin
 </code></pre></div><p>Now you can &ldquo;kube&rdquo; to your ♥️ content!</p>
-<p>If you dedeploy the cluster, just remove the file from <code>~/.kube/ocp/&lt;cluster>/kubeconfig</code> and repeat above to update 1Password and write out a new kubeconfig.</p>
+<p>If you redeploy the cluster, just remove the file from <code>~/.kube/ocp/&lt;cluster>/kubeconfig</code> and repeat above to update 1Password and write out a new kubeconfig.</p>
 <h1 id=possible-improvements>Possible Improvements</h1>
 <p>There are other tools for managing kubernetes contexts but those seem to stem from putting too much information in one kubeconfig. I find this solution to be adequate for my needs.</p>
 <p>As I mentioned there is a bug that duplicates the kubeadmin. Maybe you can fix it for me.</p>
