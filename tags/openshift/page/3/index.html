@@ -31,7 +31,7 @@
 <meta property="og:image:type" content="image/png">
 <meta property="og:image:width" content="179">
 <meta property="og:image:height" content="50">
-<meta property="og:updated_time" content="2023-04-06T00:00:00Z">
+<meta property="og:updated_time" content="2023-09-22T00:00:00Z">
 <meta name=twitter:card content="summary">
 <meta name=twitter:site content="@dlbewley">
 <meta name=twitter:title content="openshift">
@@ -95,6 +95,32 @@
 <div class=container>
 <div class=row>
 <div class=col-md-9 id=blog-listing-medium>
+<section class=post>
+<div class=row>
+<div class=col-md-4>
+<div class=image>
+<a href=http://guifreelife.com/blog/2017/10/13/OpenShift-3.6-Upgrade-Metrics-Fails-Missing-heapster-certs-Secret/>
+<img src=/img/banners/banner-7.jpg class=img-responsive alt>
+</a>
+</div>
+</div>
+<div class=col-md-8>
+<h2><a href=http://guifreelife.com/blog/2017/10/13/OpenShift-3.6-Upgrade-Metrics-Fails-Missing-heapster-certs-Secret/>OpenShift 3.6 Upgrade Metrics Fails Missing heapster-certs Secret</a></h2>
+<div class=clearfix>
+<p class=author-category>
+</p>
+<p class=date-comments>
+<a href=http://guifreelife.com/blog/2017/10/13/OpenShift-3.6-Upgrade-Metrics-Fails-Missing-heapster-certs-Secret/><i class="far fa-calendar"></i> October 13, 2017</a>
+</p>
+</div>
+<p class=intro>After your upgrade to OpenShift v3.6 did the deployment of cluster metrics wind up with empty graphs? Check if the heapster pod failed to start due to a missing secret called heapster-certs in the openshift-infra namespace.
+Problem Heapster pod is failing to start
+$ oc get pods NAME READY STATUS RESTARTS AGE hawkular-cassandra-1-l1f3s 1/1 Running 0 9m hawkular-metrics-rdl07 1/1 Running 0 9m heapster-cfpcj 0/1 ContainerCreating 0 3m Check what volumes it is attempting to mount</p>
+<p class=read-more><a href=http://guifreelife.com/blog/2017/10/13/OpenShift-3.6-Upgrade-Metrics-Fails-Missing-heapster-certs-Secret/ class="btn btn-template-main">Continue reading</a>
+</p>
+</div>
+</div>
+</section>
 <section class=post>
 <div class=row>
 <div class=col-md-4>
@@ -334,33 +360,6 @@ ip failover had to be updated manually there was about 5 minutes downtime during
 </div>
 </div>
 </section>
-<section class=post>
-<div class=row>
-<div class=col-md-4>
-<div class=image>
-<a href=http://guifreelife.com/blog/2016/03/24/Replace-OpenShift-Console-SSL-Certificate/>
-<img src=/img/banners/banner-21.jpg class=img-responsive alt>
-</a>
-</div>
-</div>
-<div class=col-md-8>
-<h2><a href=http://guifreelife.com/blog/2016/03/24/Replace-OpenShift-Console-SSL-Certificate/>Changing the SSL Certificate for OpenShift Console</a></h2>
-<div class=clearfix>
-<p class=author-category>
-</p>
-<p class=date-comments>
-<a href=http://guifreelife.com/blog/2016/03/24/Replace-OpenShift-Console-SSL-Certificate/><i class="far fa-calendar"></i> March 24, 2016</a>
-</p>
-</div>
-<p class=intro>OpenShift has an internal CA for generating certificates to authenticate intra-cluster communication, but your browser doesn&rsquo;t trust this CA. Perhaps you want to fix that without mucking with the internal SSL communication? I did. Here is how.
-This OpenShift doc explains how to do this, but it isn&rsquo;t very clear, to me at least.
-Overview An outline of the steps:
-Only make changes to the public URLs and not any internal URLs.</p>
-<p class=read-more><a href=http://guifreelife.com/blog/2016/03/24/Replace-OpenShift-Console-SSL-Certificate/ class="btn btn-template-main">Continue reading</a>
-</p>
-</div>
-</div>
-</section>
 <ul class=pager>
 <li class=previous><a href=/tags/openshift/page/2/>&larr; Newer</a></li>
 <li class=next><a href=/tags/openshift/page/4/>Older &rarr;</a></li>
@@ -483,6 +482,9 @@ Only make changes to the public URLs and not any internal URLs.</p>
 <a href=/tags/router><i class="fas fa-tags"></i> router</a>
 </li>
 <li>
+<a href=/tags/security><i class="fas fa-tags"></i> security</a>
+</li>
+<li>
 <a href=/tags/ssl><i class="fas fa-tags"></i> ssl</a>
 </li>
 <li>
@@ -540,6 +542,16 @@ Only make changes to the public URLs and not any internal URLs.</p>
 <div class=blog-entries>
 <div class="item same-height-row clearfix">
 <div class="image same-height-always">
+<a href=http://guifreelife.com/blog/2023/09/22/Storing-OpenShift-Credentials-with-1Password/>
+<img src=/img/banners/mushroom-moss.jpg class=img-responsive alt="Storing OpenShift Credentials with 1Password">
+</a>
+</div>
+<div class="name same-height-always">
+<h5><a href=http://guifreelife.com/blog/2023/09/22/Storing-OpenShift-Credentials-with-1Password/>Storing OpenShift Credentials with 1Password</a></h5>
+</div>
+</div>
+<div class="item same-height-row clearfix">
+<div class="image same-height-always">
 <a href=http://guifreelife.com/blog/2023/04/06/Accessing-Ceph-CLI-with-OpenShift-Data-Foundation/>
 <img src=/images/uncovered-bumper.png class=img-responsive alt="Accessing the Ceph CLI with OpenShift Data Foundation">
 </a>
@@ -556,16 +568,6 @@ Only make changes to the public URLs and not any internal URLs.</p>
 </div>
 <div class="name same-height-always">
 <h5><a href=http://guifreelife.com/blog/2023/03/09/Extracting-CA-Certs-From-Kubeconfig/>Extracting TLS CA Certificates from Kubeconfig File</a></h5>
-</div>
-</div>
-<div class="item same-height-row clearfix">
-<div class="image same-height-always">
-<a href=http://guifreelife.com/blog/2022/11/03/Autoscaling-OpenShift-Workloads-with-Custom-Prometheus-Metrics/>
-<img src=/images/openshift-keda-autoscaling-sequence.png class=img-responsive alt="Autoscaling OpenShift Workloads With Custom Prometheus Metrics">
-</a>
-</div>
-<div class="name same-height-always">
-<h5><a href=http://guifreelife.com/blog/2022/11/03/Autoscaling-OpenShift-Workloads-with-Custom-Prometheus-Metrics/>Autoscaling OpenShift Workloads With Custom Prometheus Metrics</a></h5>
 </div>
 </div>
 </div>
