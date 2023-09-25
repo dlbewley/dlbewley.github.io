@@ -109,7 +109,7 @@ September 22, 2023
 <div id=post-content>
 <p>If you find yourself frequently rebuilding OpenShift clusters and potentially reusing cluster names, you may find it challanging to manage the credentials consistently and securely. Here is a solution using <a href=https://developer.1password.com/docs/cli/get-started/ title="Get started with 1Password CLI">1Password</a>.</p>
 <h1 id=whats-in-a-kubeconfig>What&rsquo;s in a Kubeconfig?</h1>
-<p>When you interact with a kubernetes cluster the <code>kubectl</code> or <code>oc</code> client will read and store configuration details in a file affectionately known as &ldquo;kubeconfig&rdquo; located at <code>$HOME/.kube/config</code>. This file contains the CA certificates or <code>certificate-authority-data</code> used to validate communication with a cluster. The file also keeps track of the usernames and namespaces you interact with. The combination of those items forms what is known as a &ldquo;context&rdquo;, but we can ignore that concept today.</p>
+<p>When you interact with a kubernetes cluster the <code>kubectl</code> or <code>oc</code> client will read and store configuration details in a file affectionately known as &ldquo;kubeconfig&rdquo; located at <code>$HOME/.kube/config</code>. This file contains the CA certificates or <code>certificate-authority-data</code> used to validate communication with a cluster. The file also keeps track of the usernames and namespaces you interact with. The combination of those items forms what is known as a &ldquo;context&rdquo;.</p>
 <blockquote>
 <p>⭐ <strong>Pro Tip:</strong>
 See <a href=http://guifreelife.com/blog/2023/03/09/Extracting-CA-Certs-From-Kubeconfig/ title="Extracting CA Certs From Kubeconfig">this post</a> for details on extracting the certificate data from a kubeconfig to enable your operating system and web browser to trust your cluster.</p>
@@ -149,6 +149,11 @@ See <a href=http://guifreelife.com/blog/2023/03/09/Extracting-CA-Certs-From-Kube
 <p>📓 <em>There&rsquo;s a bug here. When updating an existing entry. The kubeadmin password will be repeated. Do you know why?</em></p>
 </blockquote>
 <script type=application/javascript src="https://gist.github.com/dlbewley/3a862af8c68b03d7477ed847261345a7.js?file=ocp21p"></script>
+<p>Here is an example vault entry created by the script.</p>
+<figure><a href=/images/ocp21p-1password.png><img src=/images/ocp21p-1password.png alt="1Password Vault Entry" width=50%></a><figcaption>
+<p>1Password Vault Entry</p>
+</figcaption>
+</figure>
 <h1 id=reading-kubernetes-credentials-from-1password>Reading Kubernetes Credentials from 1Password</h1>
 <p>Once stored in 1Password you can read the credentials and kubeconfig by sourcing an env file written like the following.</p>
 <blockquote>
