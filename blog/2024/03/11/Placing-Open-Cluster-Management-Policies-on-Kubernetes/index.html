@@ -72,55 +72,40 @@
 </span></span></span><span style=display:flex><span><span style=color:#bbb></span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>policy-role<span style=color:#bbb>
 </span></span></span><span style=display:flex><span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>kind</span>:<span style=color:#bbb> </span>Policy<span style=color:#bbb>
 </span></span></span><span style=display:flex><span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>apiGroup</span>:<span style=color:#bbb> </span>policy.open-cluster-management.io<span style=color:#bbb>
-</span></span></span></code></pre></div><h1 id=fitting-it-all-together>Fitting it all together</h1><p>In this visual representation there are 3 corporate standard policies which we expect to apply to all 4 of our clusters, and there is 1 additional policy which we expect to apply to the production clusters.</p><p>This is accomplished by creating a standard (&ldquo;STD&rdquo;) Placement that targets all clusters and a PROD Placement that matches only the production cluster. This targetting is permitted by the existance of the ManagedClusterSetBinding in this same namespace.</p><pre tabindex=0><code class=language-mermaid data-lang=mermaid>graph TD;
-
-subgraph clusterwide[&#34;Cluster Scoped Resources&#34;]
-  subgraph mcs-dev[&#34;ManagedClusterSet &#39;Dev&#39;&#34;]
-      cluster-dev1[&#34;Cluster Dev-1&#34;]
-      cluster-dev2[&#34;Cluster Dev-2&#34;]
-  end
-
-  subgraph mcs-prod[&#34;ManagedClusterSet &#39;Prod&#39;&#34;]
-      cluster-prod1[&#34;Cluster Prod-1&#34;]
-      cluster-prod2[&#34;Cluster Prod-2&#34;]
-  end
-
+</span></span></span></code></pre></div><h1 id=fitting-it-all-together>Fitting it all together</h1><p>In this visual representation there are 3 corporate standard policies which we expect to apply to all 4 of our clusters, and there is 1 additional policy which we expect to apply to the production clusters.</p><p>This is accomplished by creating a standard (&ldquo;STD&rdquo;) Placement that targets all clusters and a PROD Placement that matches only the production cluster. This targetting is permitted by the existance of the ManagedClusterSetBinding in this same namespace.</p><div class=mermaid>graph TD;
+subgraph clusterwide["Cluster Scoped Resources"]
+subgraph mcs-dev["ManagedClusterSet 'Dev'"]
+cluster-dev1["Cluster Dev-1"]
+cluster-dev2["Cluster Dev-2"]
 end
-
-
-subgraph ns-my-policies[&#34;Namespace &#39;my-policies&#39;&#34;]
-    mcsb-dev(&#34;fa:fa-file-contract ManagedClusterSetBinding &#39;dev&#39;&#34;)
-    mcsb-dev -.-&gt; mcs-dev
-
-    mcsb-prod(&#34;fa:fa-file-contract ManagedClusterSetBinding &#39;prod&#39;&#34;)
-    mcsb-prod -.-&gt; mcs-prod
-
-    policy-std-1[&#34;fa:fa-file-code Policy &#39;corp-std-1&#39;&#34;]
-    policy-std-2[&#34;fa:fa-file-code Policy &#39;corp-std-2&#39;&#34;]
-    policy-std-3[&#34;fa:fa-file-code Policy &#39;corp-std-3&#39;&#34;]
-
-    policy-prod[&#34;fa:fa-file-code Policy &#39;prod-config&#39;&#34;]
-
-    placement-std[&#34;fa:fa-filter Placement &#39;std&#39;&#34;]
-    placement-prod[&#34;fa:fa-filter Placement &#39;prod&#39;&#34;]
-
-    placementbinding-std(&#34;fa:fa-file-contract PlacementBinding &#39;std&#39;&#34;)
-    placementbinding-prod(&#34;fa:fa-file-contract PlacementBinding &#39;prod&#39;&#34;)
-
-    policy-std-1 --&gt; placementbinding-std
-    policy-std-2 --&gt; placementbinding-std
-    policy-std-3 --&gt; placementbinding-std
-                     placementbinding-std --&gt; placement-std
-
-                                              placement-std --&gt; mcsb-dev
-                                              placement-std --&gt; mcsb-prod
-
-    policy-prod  --&gt; placementbinding-prod --&gt; placement-prod
-                                               placement-prod --&gt; mcsb-prod
-
-    placement-std-filter{&#34;fa:fa-filter Optional filter on&lt;br&gt; cluster set by labels&#34;}
+subgraph mcs-prod["ManagedClusterSet 'Prod'"]
+cluster-prod1["Cluster Prod-1"]
+cluster-prod2["Cluster Prod-2"]
 end
-</code></pre><h1 id=summary>Summary</h1><p><code>ManagedClusterSetBindings</code> provide a controlled lense through which ManagedClusterSets may be managed. By controlling the creation of ManagedClusterSetBindings, the Policy management task may be delegated to a namespace administrator while retaining the control over which clusters may be impacted by that namespace administrator.</p><h1 id=references>References</h1><ul><li><a href=https://access.redhat.com/products/red-hat-advanced-cluster-management-for-kubernetes/ title=RHACM>Red Hat Advanced Cluster Management for Kubernetes</a></li><li><a href=https://access.redhat.com/documentation/en-us/red_hat_advanced_cluster_management_for_kubernetes/2.9/html/clusters/cluster_mce_overview#placement-intro title="Placement Introduction">Placement Introduction</a></li><li><a href=https://github.com/stolostron/policy-collection title="stolostron / policy-collection">Collection of policy examples for Open Cluster Management</a></li><li><a href=https://open-cluster-management.io/ title="Open Cluster Management">Open Cluster Management</a></li></ul></div><script type=application/javascript src=https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js></script>
+end
+subgraph ns-my-policies["Namespace 'my-policies'"]
+mcsb-dev("fa:fa-file-contract ManagedClusterSetBinding 'dev'")
+mcsb-dev -.-> mcs-dev
+mcsb-prod("fa:fa-file-contract ManagedClusterSetBinding 'prod'")
+mcsb-prod -.-> mcs-prod
+policy-std-1["fa:fa-file-code Policy 'corp-std-1'"]
+policy-std-2["fa:fa-file-code Policy 'corp-std-2'"]
+policy-std-3["fa:fa-file-code Policy 'corp-std-3'"]
+policy-prod["fa:fa-file-code Policy 'prod-config'"]
+placement-std["fa:fa-filter Placement 'std'"]
+placement-prod["fa:fa-filter Placement 'prod'"]
+placementbinding-std("fa:fa-file-contract PlacementBinding 'std'")
+placementbinding-prod("fa:fa-file-contract PlacementBinding 'prod'")
+policy-std-1 --> placementbinding-std
+policy-std-2 --> placementbinding-std
+policy-std-3 --> placementbinding-std
+placementbinding-std --> placement-std
+placement-std --> mcsb-dev
+placement-std --> mcsb-prod
+policy-prod --> placementbinding-prod --> placement-prod
+placement-prod --> mcsb-prod
+placement-std-filter{"fa:fa-filter Optional filter on<br>cluster set by labels"}
+end</div><h1 id=summary>Summary</h1><p><code>ManagedClusterSetBindings</code> provide a controlled lense through which ManagedClusterSets may be managed. By controlling the creation of ManagedClusterSetBindings, the Policy management task may be delegated to a namespace administrator while retaining the control over which clusters may be impacted by that namespace administrator.</p><h1 id=references>References</h1><ul><li><a href=https://access.redhat.com/products/red-hat-advanced-cluster-management-for-kubernetes/ title=RHACM>Red Hat Advanced Cluster Management for Kubernetes</a></li><li><a href=https://access.redhat.com/documentation/en-us/red_hat_advanced_cluster_management_for_kubernetes/2.9/html/clusters/cluster_mce_overview#placement-intro title="Placement Introduction">Placement Introduction</a></li><li><a href=https://github.com/stolostron/policy-collection title="stolostron / policy-collection">Collection of policy examples for Open Cluster Management</a></li><li><a href=https://open-cluster-management.io/ title="Open Cluster Management">Open Cluster Management</a></li></ul></div><script type=application/javascript src=https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js></script>
 <script>var config={startOnLoad:!0,theme:"base",align:"center"};mermaid.initialize(config)</script><div id=comments><div id=disqus_thread></div><script type=application/javascript>window.disqus_config=function(){},function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById("disqus_thread").innerHTML="Disqus comments not available by default when the website is previewed locally.";return}var t=document,e=t.createElement("script");e.async=!0,e.src="//dlbewleygithubio.disqus.com/embed.js",e.setAttribute("data-timestamp",+new Date),(t.head||t.body).appendChild(e)}()</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript><a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a></div></div><div class=col-md-3><div class="panel panel-default sidebar-menu"><div class=panel-heading><h3 class=panel-title>Search</h3></div><div class=panel-body><form action=//google.com/search method=get accept-charset=utf-8 role=search><div class=input-group><input type=search name=q class=form-control placeholder=Search>
 <input type=hidden name=sitesearch value=http://guifreelife.com/>
 <span class=input-group-btn><button type=submit class="btn btn-template-main"><i class="fas fa-search"></i></button></span></div></form></div></div><div class="panel sidebar-menu"><div class=panel-heading><h3 class=panel-title>Tagged</h3></div><div class=panel-body><ul class=tag-cloud><li class=active><a href=/tags/RHACM><i class="fas fa-tags"></i> RHACM</a></li><li class=active><a href=/tags/openshift><i class="fas fa-tags"></i> openshift</a></li><li class=active><a href=/tags/kubernetes><i class="fas fa-tags"></i> kubernetes</a></li></ul></div></div><div class="panel sidebar-menu"><div class=panel-heading><h3 class=panel-title>TOC</h3></div><div class=panel-body><nav id=TableOfContents><ul><li><a href=#open-cluster-management>Open Cluster Management</a><ul><li><a href=#policies>Policies</a></li></ul></li><li><a href=#placement-rules>Placement Rules</a></li><li><a href=#managed-clusters-and-managed-cluster-sets>Managed Clusters and Managed Cluster Sets</a><ul><li><a href=#managed-cluster-set-bindings>Managed Cluster Set Bindings</a></li></ul></li><li><a href=#placement>Placement</a><ul><li><a href=#subselecting-from-cluster-sets-with-predicates>Subselecting from Cluster Sets with Predicates</a></li></ul></li><li><a href=#placement-binding>Placement Binding</a></li><li><a href=#fitting-it-all-together>Fitting it all together</a></li><li><a href=#summary>Summary</a></li><li><a href=#references>References</a></li></ul></nav></div></div><div class="panel sidebar-menu"><div class=panel-heading><h3 class=panel-title>Tags</h3></div><div class=panel-body><ul class=tag-cloud><li><a href=/tags/AWS><i class="fas fa-tags"></i> AWS</a></li><li><a href=/tags/CDK><i class="fas fa-tags"></i> CDK</a></li><li><a href=/tags/OCP3><i class="fas fa-tags"></i> OCP3</a></li><li><a href=/tags/OCP4><i class="fas fa-tags"></i> OCP4</a></li><li><a href=/tags/RHACM><i class="fas fa-tags"></i> RHACM</a></li><li><a href=/tags/RHACS><i class="fas fa-tags"></i> RHACS</a></li><li><a href=/tags/RHEL><i class="fas fa-tags"></i> RHEL</a></li><li><a href=/tags/ansible><i class="fas fa-tags"></i> ansible</a></li><li><a href=/tags/automation><i class="fas fa-tags"></i> automation</a></li><li><a href=/tags/azure><i class="fas fa-tags"></i> azure</a></li><li><a href=/tags/debugging><i class="fas fa-tags"></i> debugging</a></li><li><a href=/tags/docker><i class="fas fa-tags"></i> docker</a></li><li><a href=/tags/draft><i class="fas fa-tags"></i> draft</a></li><li><a href=/tags/etcd><i class="fas fa-tags"></i> etcd</a></li><li><a href=/tags/git><i class="fas fa-tags"></i> git</a></li><li><a href=/tags/haproxy><i class="fas fa-tags"></i> haproxy</a></li><li><a href=/tags/heat><i class="fas fa-tags"></i> heat</a></li><li><a href=/tags/hybrid-cloud><i class="fas fa-tags"></i> hybrid-cloud</a></li><li><a href=/tags/install><i class="fas fa-tags"></i> install</a></li><li><a href=/tags/kubernetes><i class="fas fa-tags"></i> kubernetes</a></li><li><a href=/tags/mac><i class="fas fa-tags"></i> mac</a></li><li><a href=/tags/metrics><i class="fas fa-tags"></i> metrics</a></li><li><a href=/tags/migration><i class="fas fa-tags"></i> migration</a></li><li><a href=/tags/monitoring><i class="fas fa-tags"></i> monitoring</a></li><li><a href=/tags/networking><i class="fas fa-tags"></i> networking</a></li><li><a href=/tags/openshift><i class="fas fa-tags"></i> openshift</a></li><li><a href=/tags/openstack><i class="fas fa-tags"></i> openstack</a></li><li><a href=/tags/operators><i class="fas fa-tags"></i> operators</a></li><li><a href=/tags/prometheus><i class="fas fa-tags"></i> prometheus</a></li><li><a href=/tags/python><i class="fas fa-tags"></i> python</a></li><li><a href=/tags/router><i class="fas fa-tags"></i> router</a></li><li><a href=/tags/security><i class="fas fa-tags"></i> security</a></li><li><a href=/tags/ssl><i class="fas fa-tags"></i> ssl</a></li><li><a href=/tags/stackrox><i class="fas fa-tags"></i> stackrox</a></li><li><a href=/tags/storage><i class="fas fa-tags"></i> storage</a></li><li><a href=/tags/troubleshooting><i class="fas fa-tags"></i> troubleshooting</a></li><li><a href=/tags/upgrade><i class="fas fa-tags"></i> upgrade</a></li><li><a href=/tags/vagrant><i class="fas fa-tags"></i> vagrant</a></li><li><a href=/tags/virtualization><i class="fas fa-tags"></i> virtualization</a></li><li><a href=/tags/webinar><i class="fas fa-tags"></i> webinar</a></li><li><a href=/tags/windows><i class="fas fa-tags"></i> windows</a></li><li><a href=/tags/zabbix><i class="fas fa-tags"></i> zabbix</a></li><li><a href=/tags/zimbra><i class="fas fa-tags"></i> zimbra</a></li></ul></div></div></div></div></div></div><footer id=footer><div class=container><div class="col-md-4 col-sm-6"><h4>Share</h4><i class="fab fa-2x fa-twitter" title="Share this on Twitter" onclick='window.open("http://twitter.com/home?status=http://guifreelife.com/blog/2024/03/11/Placing-Open-Cluster-Management-Policies-on-Kubernetes/")'></i>
