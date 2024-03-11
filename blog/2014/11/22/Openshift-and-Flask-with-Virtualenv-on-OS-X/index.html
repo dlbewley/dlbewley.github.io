@@ -1,609 +1,108 @@
-<!doctype html><html lang=en-us>
-<head>
-<meta charset=utf-8>
-<meta name=robots content="all,follow">
-<meta name=googlebot content="index,follow,snippet,archive">
-<meta name=viewport content="width=device-width,initial-scale=1">
-<title>Openshift V2 and Flask with Virtualenv on OS X | GUI Free Life</title>
-<meta name=author content="Dale Bewley">
-<meta name=keywords content="bewley,guifreelife,python,openshift,mac">
-<meta name=description content="GUI Free Life, by Dale Bewley covers Kubernetes, Linux, Networking, OpenShift and more">
-<meta name=generator content="Hugo 0.91.2">
-<link href="//fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,500,700,800" rel=stylesheet type=text/css>
-<link rel=stylesheet href=//use.fontawesome.com/releases/v5.11.2/css/all.css>
-<link rel=stylesheet href=//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css integrity=sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u crossorigin=anonymous>
-<link href=/css/animate.css rel=stylesheet>
-<link href=/css/style.turquoise.css rel=stylesheet id=theme-stylesheet>
-<link href=/css/custom.css rel=stylesheet><!--[if lt IE 9]><script src=https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js></script>
-<script src=https://oss.maxcdn.com/respond/1.4.2/respond.min.js></script><![endif]-->
-<link rel="shortcut icon" href=/img/favicon.ico type=image/x-icon>
-<link rel=apple-touch-icon href=/img/apple-touch-icon.png>
-<link href=/css/owl.carousel.css rel=stylesheet>
-<link href=/css/owl.theme.css rel=stylesheet>
-<link rel=alternate href=http://guifreelife.com/index.xml type=application/rss+xml title="GUI Free Life">
-<meta property="og:locale" content="en_us">
-<meta property="og:site_name" content="GUI Free Life">
-<meta property="og:title" content="Openshift V2 and Flask with Virtualenv on OS X">
-<meta property="og:type" content="article">
-<meta property="og:url" content="http://guifreelife.com/blog/2014/11/22/Openshift-and-Flask-with-Virtualenv-on-OS-X/">
-<meta property="og:description" content="GUI Free Life, by Dale Bewley covers Kubernetes, Linux, Networking, OpenShift and more">
-<meta property="og:image" content="http://guifreelife.com/img/banners/banner-1.jpg">
-<meta property="og:image:type" content="image/jpg">
-<meta property="og:image:width" content="1000">
-<meta property="og:image:height" content="750">
-<meta property="og:updated_time" content="2014-11-22T00:00:00Z">
-<meta property="article:tag" content="python">
-<meta property="article:tag" content="openshift">
-<meta property="article:tag" content="mac">
-<meta property="article:published_time" content="2014-11-22T00:00:00Z">
-<meta property="article:modified_time" content="2014-11-22T00:00:00Z">
-<meta name=twitter:card content="summary_large_image">
-<meta name=twitter:site content="@dlbewley">
-<meta name=twitter:title content="Openshift V2 and Flask with Virtualenv on OS X">
-<meta name=twitter:image content="http://guifreelife.com/img/banners/banner-1.jpg">
-<meta name=twitter:description content="GUI Free Life, by Dale Bewley covers Kubernetes, Linux, Networking, OpenShift and more">
-</head>
-<body>
-<div id=all>
-<header class=navbar-affixed-top data-spy=affix data-offset-top=62>
-<div class="navbar navbar-default yamm" role=navigation id=navbar>
-<div class=container>
-<div class=navbar-header>
-<a class="navbar-brand home" href=/>
-<img src=/img/logo.png alt="Openshift V2 and Flask with Virtualenv on OS X logo" class="hidden-xs hidden-sm">
+<!doctype html><html lang=en-us><head><meta charset=utf-8><meta name=robots content="all,follow"><meta name=googlebot content="index,follow,snippet,archive"><meta name=viewport content="width=device-width,initial-scale=1"><title>Openshift V2 and Flask with Virtualenv on OS X | GUI Free Life</title><meta name=author content="Dale Bewley"><meta name=keywords content="bewley,guifreelife,python,openshift,mac"><meta name=description content="GUI Free Life, by Dale Bewley covers Kubernetes, Linux, Networking, OpenShift and more"><meta name=generator content="Hugo 0.119.0"><link href='//fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,500,700,800' rel=stylesheet type=text/css><link rel=stylesheet href=//use.fontawesome.com/releases/v5.11.2/css/all.css><link rel=stylesheet href=//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css integrity=sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u crossorigin=anonymous><link href=/css/animate.css rel=stylesheet><link href=/css/style.turquoise.css rel=stylesheet id=theme-stylesheet><link href=/css/custom.css rel=stylesheet><!--[if lt IE 9]><script src=https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js></script>
+<script src=https://oss.maxcdn.com/respond/1.4.2/respond.min.js></script><![endif]--><link rel="shortcut icon" href=/img/favicon.ico type=image/x-icon><link rel=apple-touch-icon href=/img/apple-touch-icon.png><link href=/css/owl.carousel.css rel=stylesheet><link href=/css/owl.theme.css rel=stylesheet><link rel=alternate href=http://guifreelife.com/index.xml type=application/rss+xml title="GUI Free Life"><meta property="og:locale" content="en_us"><meta property="og:site_name" content="GUI Free Life"><meta property="og:title" content="Openshift V2 and Flask with Virtualenv on OS X"><meta property="og:type" content="article"><meta property="og:url" content="http://guifreelife.com/blog/2014/11/22/Openshift-and-Flask-with-Virtualenv-on-OS-X/"><meta property="og:description" content="GUI Free Life, by Dale Bewley covers Kubernetes, Linux, Networking, OpenShift and more"><meta property="og:image" content="http://guifreelife.com/img/banners/banner-1.jpg"><meta property="og:image:type" content="image/jpg"><meta property="og:image:width" content="1000"><meta property="og:image:height" content="750"><meta property="og:updated_time" content="2014-11-22T00:00:00Z"><meta property="article:tag" content="python"><meta property="article:tag" content="openshift"><meta property="article:tag" content="mac"><meta property="article:published_time" content="2014-11-22T00:00:00Z"><meta property="article:modified_time" content="2014-11-22T00:00:00Z"><meta name=twitter:card content="summary_large_image"><meta name=twitter:site content="@dlbewley"><meta name=twitter:title content="Openshift V2 and Flask with Virtualenv on OS X"><meta name=twitter:image content="http://guifreelife.com/img/banners/banner-1.jpg"><meta name=twitter:description content="GUI Free Life, by Dale Bewley covers Kubernetes, Linux, Networking, OpenShift and more"></head><body><div id=all><header class=navbar-affixed-top data-spy=affix data-offset-top=62><div class="navbar navbar-default yamm" role=navigation id=navbar><div class=container><div class=navbar-header><a class="navbar-brand home" href=/><img src=/img/logo.png alt="Openshift V2 and Flask with Virtualenv on OS X logo" class="hidden-xs hidden-sm">
 <img src=/img/logo-small.png alt="Openshift V2 and Flask with Virtualenv on OS X logo" class="visible-xs visible-sm">
-<span class=sr-only>Openshift V2 and Flask with Virtualenv on OS X - go to homepage</span>
-</a>
-<div class=navbar-buttons>
-<button type=button class="navbar-toggle btn-template-main" data-toggle=collapse data-target=#navigation>
+<span class=sr-only>Openshift V2 and Flask with Virtualenv on OS X - go to homepage</span></a><div class=navbar-buttons><button type=button class="navbar-toggle btn-template-main" data-toggle=collapse data-target=#navigation>
 <span class=sr-only>Toggle Navigation</span>
-<i class="fas fa-align-justify"></i>
-</button>
-</div>
-</div>
-<div class="navbar-collapse collapse" id=navigation>
-<ul class="nav navbar-nav navbar-right">
-<li class=dropdown>
-<a href=/>Home</a>
-</li>
-<li class="dropdown active">
-<a href=/blog/>Blog</a>
-</li>
-<li class=dropdown>
-<a href=/contact/>Contact</a>
-</li>
-</ul>
-</div>
-<div class="collapse clearfix" id=search>
-<form class=navbar-form role=search>
-<div class=input-group>
-<input type=text class=form-control placeholder=Search>
-<span class=input-group-btn>
-<button type=submit class="btn btn-template-main"><i class="fas fa-search"></i></button>
-</span>
-</div>
-</form>
-</div>
-</div>
-</div>
-</header>
-<style>.bar.background-image-fixed-banner{background:url(/img/banners/banner-1.jpg)50% 0 no-repeat;background-attachment:fixed;background-size:cover;padding:100px 5%;text-shadow:2px 3px 4px var(--primary-accent),0 0 1em var(--navbar-border-top)}</style>
-<div>
-<div class=container>
-<div class=row>
-<div class=col-md-12>
-<section class="bar background-image-fixed-banner heading h2 color-white text-center">
-<h1>Openshift V2 and Flask with Virtualenv on OS X</h1>
-</section>
-</div>
-</div>
-</div>
-</div>
-<div id=content>
-<div class=container>
-<div class=row>
-<div class=col-md-9 id=blog-post>
-<p class="text-muted text-uppercase mb-small text-right">
-November 22, 2014
-</p>
-<div id=post-content>
-<p>Create a flask app for Openshift with a matching local python virtualenv to perform local testing.</p>
-<p>In this case we&rsquo;ll use Python 2.7 on Mac OS X 10.9.</p>
-<h2 id=overview-of-the-steps>Overview of the steps</h2>
-<ol>
-<li>Install <a href=http://hackercodex.com/guide/mac-osx-mavericks-10.9-configuration/>Homebrew</a></li>
-<li>Install <a href=http://hackercodex.com/guide/python-development-environment-on-mac-osx/>Python Development Environment on Mac OS X</a></li>
-<li>Install <a href=https://www.openshift.com/developers/rhc-client-tools-install>rhc client tools</a>.</li>
-<li>Install <a href=https://www.openshift.com/blogs/how-to-install-and-configure-a-python-flask-dev-environment-deploy-to-openshift>and Configure a Python Flask for OpenShift</a></li>
-</ol>
-<h1 id=installing-homebrew>Installing Homebrew</h1>
-<h2 id=ready-the-system-for-homebrew>Ready the system for Homebrew</h2>
-<ul>
-<li>
-<p>First unhide ~/Library folder.</p>
-<ol>
-<li>Open Finder</li>
-<li>Press <em>shift-command-H</em></li>
-<li>Press <em>command-J</em></li>
-<li>Check <em>Show Library Folder</em></li>
-</ol>
-</li>
-<li>
-<p>Now Setup shell environment
-Some of these settings are only relevant to later steps, but go ahead and put them all in now.</p>
-</li>
-<li>
-<p>vim ~/.bash_profile</p>
-</li>
-</ul>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#228b22># Set architecture flags</span>
-<span style=color:#658b00>export</span> <span style=color:#00688b>ARCHFLAGS</span>=<span style=color:#cd5555>&#34;-arch x86_64&#34;</span>
-<span style=color:#228b22># Ensure user-installed binaries take precedence</span>
-<span style=color:#658b00>export</span> <span style=color:#00688b>PATH</span>=/usr/local/bin:<span style=color:#00688b>$PATH</span>
-
-<span style=color:#228b22># Load brew bash completeion if it exists</span>
-<span style=color:#8b008b;font-weight:700>if</span> [ -f <span style=color:#8b008b;font-weight:700>$(</span>brew --prefix<span style=color:#8b008b;font-weight:700>)</span>/etc/bash_completion ]; <span style=color:#8b008b;font-weight:700>then</span>
-    . <span style=color:#8b008b;font-weight:700>$(</span>brew --prefix<span style=color:#8b008b;font-weight:700>)</span>/etc/bash_completion
-<span style=color:#8b008b;font-weight:700>fi</span>
-
-<span style=color:#228b22># pip should only run if there is a virtualenv currently activated</span>
-<span style=color:#658b00>export</span> <span style=color:#00688b>PIP_REQUIRE_VIRTUALENV</span>=<span style=color:#658b00>true</span>
-<span style=color:#228b22># cache pip-installed packages to avoid re-downloading</span>
-<span style=color:#658b00>export</span> <span style=color:#00688b>PIP_DOWNLOAD_CACHE</span>=<span style=color:#00688b>$HOME</span>/.pip/cache
-
-<span style=color:#228b22># Load .bashrc if it exists</span>
-<span style=color:#658b00>test</span> -f ~/.bashrc &amp;&amp; <span style=color:#658b00>source</span> ~/.bashrc
-</code></pre></div><ul>
-<li>Source those changes. Ignore the <em>-bash: brew: command not found</em> error.</li>
-</ul>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>. ~/.bash_profile
-</code></pre></div><ul>
-<li>Install command line developer tools or Xcode. You&rsquo;ll need to be on the actual console, so don&rsquo;t do this step over SSH.</li>
-</ul>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>xcode-select --install
-</code></pre></div><p>This will prompt you with a GUI dialog asking you to install the command line developer tools. Click the <em>Install</em> button.</p>
-<h2 id=install-homebrew>Install Homebrew</h2>
-<ul>
-<li>Install Homebrew</li>
-</ul>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>ruby -e <span style=color:#cd5555>&#34;</span><span style=color:#8b008b;font-weight:700>$(</span>curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install<span style=color:#8b008b;font-weight:700>)</span><span style=color:#cd5555>&#34;</span>
-</code></pre></div><ul>
-<li>Inspect and update brew install.</li>
-</ul>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#228b22># This step will possibly point out permissions problems to be fixed.</span>
-brew doctor
-brew update
-brew <span style=color:#658b00>help</span>
-</code></pre></div><ul>
-<li>Install some brew packages</li>
-</ul>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>brew install bash-completion ssh-copy-id wget
-</code></pre></div><h1 id=install-python>Install Python</h1>
-<p>Install the latest 2.7.x Python with Homebrew.</p>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>brew install python --with-brewed-openssl
-</code></pre></div><h1 id=setup-virtenv>Setup Virtenv</h1>
-<p>Use pip to install virtualenv.</p>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#228b22># override the requirement we set in .bash_profile above. just this once.</span>
-<span style=color:#00688b>PIP_REQUIRE_VIRTUALENV</span>=<span style=color:#658b00>false</span> pip install virtualenv
-mkdir -p ~/src ~/Projects ~/Virtualenvs
-</code></pre></div><h1 id=setup-openshift>Setup Openshift</h1>
-<p>Interaction with Openshift is via <a href=http://www.openshift.com>the website</a> and via the <a href=https://www.openshift.com/developers/rhc-client-tools-install>rhc client tool</a>.</p>
-<ul>
-<li>Install rhc</li>
-</ul>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>sudo gem install rhc
-</code></pre></div><ul>
-<li>Configure rhc.</li>
-</ul>
-<blockquote>
-<p><em>You&rsquo;ll need to have a username and login for <a href=http://www.openshift.com>Openshift</a> before proceeding.</em></p>
-</blockquote>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>rhc setup
-</code></pre></div><h2 id=create-an-openshift-app-and-configure-for-virtualenv>Create an Openshift App and Configure for Virtualenv</h2>
-<p>It is helpful to have a virtualenv on your development machine(s) which matches the environment of your Openshift app. This enables much quicker turnaround time for quick tests of changes, and doesn&rsquo;t require a git commit and push to see the effect of a change.</p>
-<ul>
-<li>Create an Openshift app named Flaskapp.</li>
-</ul>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#658b00>cd</span> ~/src
-rhc app create flaskapp python-2.7
-</code></pre></div><ul>
-<li>Clone App locally into ~/src/flaskapp if you created the app using the web site instead of rhc.</li>
-</ul>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>rhc git-clone flaskapp
-</code></pre></div><ul>
-<li>Tell git to ignore the <code>venv/</code> dir and other artifacts we are about to create.</li>
-</ul>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#658b00>echo</span> <span style=color:#cd5555>&#39;venv/&#39;</span> &gt;&gt; ~/src/flaskapp/.gitignore
-<span style=color:#658b00>echo</span> <span style=color:#cd5555>&#39;*.egg-info/&#39;</span> &gt;&gt; ~/src/flaskapp/.gitignore
-<span style=color:#658b00>echo</span> <span style=color:#cd5555>&#39;dist/&#39;</span> &gt;&gt; ~/src/flaskapp/.gitignore
-git commit -am .gitignore <span style=color:#cd5555>&#39;ignore artifacts&#39;</span>
-</code></pre></div><ul>
-<li>Setup a venv with the required python version inside <code>flaskapp</code></li>
-</ul>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#658b00>cd</span> ~/src/flaskapp/
-<span style=color:#228b22># create venv/ dir</span>
-virtualenv --python=python2.7 venv
-<span style=color:#228b22># activate this virtual env</span>
-. venv/bin/activate
-</code></pre></div><ul>
-<li>Install Flask in the new venv we just activated.</li>
-</ul>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>pip install flask flask-wtf flask-babel markdown flup 
-<span style=color:#228b22># later we can just just use setup.py</span>
-python setup.py install
-</code></pre></div><ul>
-<li>Tell our app&rsquo;s <code>setup.py</code> about our python module requirements.</li>
-</ul>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#658b00>cd</span> ~/src/flaskapp
-vim setup.py
-</code></pre></div><ul>
-<li>Modify the <em>install_requires</em> line to look like this:</li>
-</ul>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>install_requires=[<span style=color:#cd5555>&#39;Flask&#39;</span>,<span style=color:#cd5555>&#39;flask-wtf&#39;</span>,<span style=color:#cd5555>&#39;flask-babel&#39;</span>,<span style=color:#cd5555>&#39;markdown&#39;</span>,<span style=color:#cd5555>&#39;flup&#39;</span>],
-</code></pre></div><h2 id=create-hello-world-flask-app>Create Hello World Flask App</h2>
-<p>Create the required directories</p>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#658b00>cd</span> ~/src/flaskapp/wsgi
-mkdir -p app/{static,templates}
-mkdir tmp
-<span style=color:#658b00>cd</span> ~/src/flaskapp/wsgi/app
-</code></pre></div><p>Create applications files. Pay attention Openshift has some particular requirements.</p>
-<ul>
-<li><em>~/src/flaskapp/wsgi/app/__init__.py</em></li>
-</ul>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#8b008b;font-weight:700>from</span> <span style=color:#008b45;text-decoration:underline>flask</span> <span style=color:#8b008b;font-weight:700>import</span> Flask  
-app = Flask(__name__)  
-<span style=color:#8b008b;font-weight:700>from</span> <span style=color:#008b45;text-decoration:underline>app</span> <span style=color:#8b008b;font-weight:700>import</span> views
-</code></pre></div><ul>
-<li><em>~/src/flaskapp/wsgi/app/views.py</em></li>
-</ul>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#8b008b;font-weight:700>from</span> <span style=color:#008b45;text-decoration:underline>app</span> <span style=color:#8b008b;font-weight:700>import</span> app
-<span style=color:#707a7c>@app</span>.route(<span style=color:#cd5555>&#39;/&#39;</span>)
-<span style=color:#707a7c>@app</span>.route(<span style=color:#cd5555>&#39;/index&#39;</span>)
-<span style=color:#8b008b;font-weight:700>def</span> <span style=color:#008b45>index</span>():
-    <span style=color:#8b008b;font-weight:700>return</span> <span style=color:#cd5555>&#34;Hello, World!&#34;</span>
-</code></pre></div><ul>
-<li><em>~/src/flaskapp/wsgi/application</em> - This application file is required by OpenShift</li>
-</ul>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#228b22>#!/usr/bin/python</span>
-<span style=color:#8b008b;font-weight:700>import</span> <span style=color:#008b45;text-decoration:underline>os</span>
-<span style=color:#8b008b;font-weight:700>import</span> <span style=color:#008b45;text-decoration:underline>sys</span>
-sys.path.insert(<span style=color:#b452cd>0</span>, os.path.dirname(__file__) <span style=color:#8b008b>or</span> <span style=color:#cd5555>&#39;.&#39;</span>)
-PY_DIR = os.path.join(os.environ[<span style=color:#cd5555>&#39;OPENSHIFT_HOMEDIR&#39;</span>], <span style=color:#cd5555>&#34;python&#34;</span>)
-virtenv = PY_DIR + <span style=color:#cd5555>&#39;/virtenv/&#39;</span>
-PY_CACHE = os.path.join(virtenv, <span style=color:#cd5555>&#39;lib&#39;</span>, os.environ[<span style=color:#cd5555>&#39;OPENSHIFT_PYTHON_VERSION&#39;</span>], <span style=color:#cd5555>&#39;site-packages&#39;</span>)
-os.environ[<span style=color:#cd5555>&#39;PYTHON_EGG_CACHE&#39;</span>] = os.path.join(PY_CACHE)
-virtualenv = os.path.join(virtenv, <span style=color:#cd5555>&#39;bin/activate_this.py&#39;</span>)
-
-<span style=color:#8b008b;font-weight:700>try</span>:
-    exec(<span style=color:#658b00>open</span>(virtualenv).read(), <span style=color:#658b00>dict</span>(__file__=virtualenv))
-<span style=color:#8b008b;font-weight:700>except</span> <span style=color:#008b45;font-weight:700>IOError</span>:
-    <span style=color:#8b008b;font-weight:700>pass</span>
-
-<span style=color:#8b008b;font-weight:700>from</span> <span style=color:#008b45;text-decoration:underline>run</span> <span style=color:#8b008b;font-weight:700>import</span> app <span style=color:#8b008b;font-weight:700>as</span> application
-</code></pre></div><ul>
-<li><em>~/src/flaskapp/wsgi/run.py</em> - Called by <em>application</em>.</li>
-</ul>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#8b008b;font-weight:700>from</span> <span style=color:#008b45;text-decoration:underline>app</span> <span style=color:#8b008b;font-weight:700>import</span> app
-<span style=color:#8b008b;font-weight:700>if</span> __name__ == <span style=color:#cd5555>&#34;__main__&#34;</span>:
-    app.run(debug = <span style=color:#8b008b;font-weight:700>True</span>) <span style=color:#228b22>#We will set debug false in production </span>
-</code></pre></div><h1 id=test-flaskapp-on-localhost>Test Flaskapp on localhost</h1>
-<p>Activate venv and run the app.</p>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#658b00>cd</span> ~/src/flaskapp/
-. venv/bin/activate
-python setup.py install
-python run.py
-curl http://localhost:5000/index
-</code></pre></div><h1 id=deploy-flaskapp-to-openshift>Deploy Flaskapp to Openshift</h1>
-<p>After making local changes, commit them to git, and push them to the origin. Openshift will then automagically install the required flask modules and spin up your Flaskapp.</p>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#658b00>cd</span> ~/src/flaskapp
-git add .
-git commit -a -m <span style=color:#cd5555>&#39;Firstsies&#39;</span>
-git push
-</code></pre></div><p>Now go check out your new app on <a href=http://www.openshift.com>Openshift</a></p>
-<h1 id=references>References</h1>
-<ul>
-<li><a href=https://www.openshift.com/blogs/how-to-install-and-configure-a-python-flask-dev-environment-deploy-to-openshift>How-to Install and Configure a Python Flask Dev Environment & Deploy to OpenShift</a></li>
-<li><a href=http://www.virtualenv.org/en/latest/index.html#what-it-does>Virtualenv</a></li>
-<li><a href=http://hackercodex.com/guide/mac-osx-mavericks-10.9-configuration/>Homebrew on Mac OS X</a></li>
-<li><a href=http://hackercodex.com/guide/python-development-environment-on-mac-osx/>Python Development Environment on Mac OS X</a></li>
-<li><a href=https://github.com/openshift/flask-example>Flask-example</a></li>
-<li><a href=https://www.openshift.com/developers/rhc-client-tools-install>Installing RHC Client Tools</a></li>
-</ul>
-</div>
-<div id=comments>
-<div id=disqus_thread></div>
-<script type=application/javascript>var disqus_config=function(){};(function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById('disqus_thread').innerHTML='Disqus comments not available by default when the website is previewed locally.';return}var b=document,a=b.createElement('script');a.async=!0,a.src='//dlbewleygithubio.disqus.com/embed.js',a.setAttribute('data-timestamp',+new Date),(b.head||b.body).appendChild(a)})()</script>
-<noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript>
-<a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a>
-</div>
-</div>
-<div class=col-md-3>
-<div class="panel panel-default sidebar-menu">
-<div class=panel-heading>
-<h3 class=panel-title>Search</h3>
-</div>
-<div class=panel-body>
-<form action=//google.com/search method=get accept-charset=utf-8 role=search>
-<div class=input-group>
-<input type=search name=q class=form-control placeholder=Search>
+<i class="fas fa-align-justify"></i></button></div></div><div class="navbar-collapse collapse" id=navigation><ul class="nav navbar-nav navbar-right"><li class=dropdown><a href=/>Home</a></li><li class="dropdown active"><a href=/blog/>Blog</a></li><li class=dropdown><a href=/contact/>Contact</a></li></ul></div><div class="collapse clearfix" id=search><form class=navbar-form role=search><div class=input-group><input type=text class=form-control placeholder=Search>
+<span class=input-group-btn><button type=submit class="btn btn-template-main"><i class="fas fa-search"></i></button></span></div></form></div></div></div></header><style>.bar.background-image-fixed-banner{background:url(/img/banners/banner-1.jpg)50% 0 no-repeat;background-attachment:fixed;background-size:cover;padding:100px 5%;text-shadow:2px 3px 4px var(--primary-accent),0 0 1em var(--navbar-border-top)}</style><div><div class=container><div class=row><div class=col-md-12><section class="bar background-image-fixed-banner heading h2 color-white text-center"><h1>Openshift V2 and Flask with Virtualenv on OS X</h1></section></div></div></div></div><div id=content><div class=container><div class=row><div class=col-md-9 id=blog-post><p class="text-muted text-uppercase mb-small text-right">November 22, 2014</p><div id=post-content><p>Create a flask app for Openshift with a matching local python virtualenv to perform local testing.</p><p>In this case we&rsquo;ll use Python 2.7 on Mac OS X 10.9.</p><h2 id=overview-of-the-steps>Overview of the steps</h2><ol><li>Install <a href=http://hackercodex.com/guide/mac-osx-mavericks-10.9-configuration/>Homebrew</a></li><li>Install <a href=http://hackercodex.com/guide/python-development-environment-on-mac-osx/>Python Development Environment on Mac OS X</a></li><li>Install <a href=https://www.openshift.com/developers/rhc-client-tools-install>rhc client tools</a>.</li><li>Install <a href=https://www.openshift.com/blogs/how-to-install-and-configure-a-python-flask-dev-environment-deploy-to-openshift>and Configure a Python Flask for OpenShift</a></li></ol><h1 id=installing-homebrew>Installing Homebrew</h1><h2 id=ready-the-system-for-homebrew>Ready the system for Homebrew</h2><ul><li><p>First unhide ~/Library folder.</p><ol><li>Open Finder</li><li>Press <em>shift-command-H</em></li><li>Press <em>command-J</em></li><li>Check <em>Show Library Folder</em></li></ol></li><li><p>Now Setup shell environment
+Some of these settings are only relevant to later steps, but go ahead and put them all in now.</p></li><li><p>vim ~/.bash_profile</p></li></ul><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#228b22># Set architecture flags</span>
+</span></span><span style=display:flex><span><span style=color:#658b00>export</span> <span style=color:#00688b>ARCHFLAGS</span>=<span style=color:#cd5555>&#34;-arch x86_64&#34;</span>
+</span></span><span style=display:flex><span><span style=color:#228b22># Ensure user-installed binaries take precedence</span>
+</span></span><span style=display:flex><span><span style=color:#658b00>export</span> <span style=color:#00688b>PATH</span>=/usr/local/bin:<span style=color:#00688b>$PATH</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#228b22># Load brew bash completeion if it exists</span>
+</span></span><span style=display:flex><span><span style=color:#8b008b;font-weight:700>if</span> [ -f <span style=color:#8b008b;font-weight:700>$(</span>brew --prefix<span style=color:#8b008b;font-weight:700>)</span>/etc/bash_completion ]; <span style=color:#8b008b;font-weight:700>then</span>
+</span></span><span style=display:flex><span>    . <span style=color:#8b008b;font-weight:700>$(</span>brew --prefix<span style=color:#8b008b;font-weight:700>)</span>/etc/bash_completion
+</span></span><span style=display:flex><span><span style=color:#8b008b;font-weight:700>fi</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#228b22># pip should only run if there is a virtualenv currently activated</span>
+</span></span><span style=display:flex><span><span style=color:#658b00>export</span> <span style=color:#00688b>PIP_REQUIRE_VIRTUALENV</span>=<span style=color:#658b00>true</span>
+</span></span><span style=display:flex><span><span style=color:#228b22># cache pip-installed packages to avoid re-downloading</span>
+</span></span><span style=display:flex><span><span style=color:#658b00>export</span> <span style=color:#00688b>PIP_DOWNLOAD_CACHE</span>=<span style=color:#00688b>$HOME</span>/.pip/cache
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#228b22># Load .bashrc if it exists</span>
+</span></span><span style=display:flex><span><span style=color:#658b00>test</span> -f ~/.bashrc &amp;&amp; <span style=color:#658b00>source</span> ~/.bashrc
+</span></span></code></pre></div><ul><li>Source those changes. Ignore the <em>-bash: brew: command not found</em> error.</li></ul><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>. ~/.bash_profile
+</span></span></code></pre></div><ul><li>Install command line developer tools or Xcode. You&rsquo;ll need to be on the actual console, so don&rsquo;t do this step over SSH.</li></ul><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>xcode-select --install
+</span></span></code></pre></div><p>This will prompt you with a GUI dialog asking you to install the command line developer tools. Click the <em>Install</em> button.</p><h2 id=install-homebrew>Install Homebrew</h2><ul><li>Install Homebrew</li></ul><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>ruby -e <span style=color:#cd5555>&#34;</span><span style=color:#8b008b;font-weight:700>$(</span>curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install<span style=color:#8b008b;font-weight:700>)</span><span style=color:#cd5555>&#34;</span>
+</span></span></code></pre></div><ul><li>Inspect and update brew install.</li></ul><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#228b22># This step will possibly point out permissions problems to be fixed.</span>
+</span></span><span style=display:flex><span>brew doctor
+</span></span><span style=display:flex><span>brew update
+</span></span><span style=display:flex><span>brew <span style=color:#658b00>help</span>
+</span></span></code></pre></div><ul><li>Install some brew packages</li></ul><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>brew install bash-completion ssh-copy-id wget
+</span></span></code></pre></div><h1 id=install-python>Install Python</h1><p>Install the latest 2.7.x Python with Homebrew.</p><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>brew install python --with-brewed-openssl
+</span></span></code></pre></div><h1 id=setup-virtenv>Setup Virtenv</h1><p>Use pip to install virtualenv.</p><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#228b22># override the requirement we set in .bash_profile above. just this once.</span>
+</span></span><span style=display:flex><span><span style=color:#00688b>PIP_REQUIRE_VIRTUALENV</span>=<span style=color:#658b00>false</span> pip install virtualenv
+</span></span><span style=display:flex><span>mkdir -p ~/src ~/Projects ~/Virtualenvs
+</span></span></code></pre></div><h1 id=setup-openshift>Setup Openshift</h1><p>Interaction with Openshift is via <a href=http://www.openshift.com>the website</a> and via the <a href=https://www.openshift.com/developers/rhc-client-tools-install>rhc client tool</a>.</p><ul><li>Install rhc</li></ul><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>sudo gem install rhc
+</span></span></code></pre></div><ul><li>Configure rhc.</li></ul><blockquote><p><em>You&rsquo;ll need to have a username and login for <a href=http://www.openshift.com>Openshift</a> before proceeding.</em></p></blockquote><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>rhc setup
+</span></span></code></pre></div><h2 id=create-an-openshift-app-and-configure-for-virtualenv>Create an Openshift App and Configure for Virtualenv</h2><p>It is helpful to have a virtualenv on your development machine(s) which matches the environment of your Openshift app. This enables much quicker turnaround time for quick tests of changes, and doesn&rsquo;t require a git commit and push to see the effect of a change.</p><ul><li>Create an Openshift app named Flaskapp.</li></ul><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#658b00>cd</span> ~/src
+</span></span><span style=display:flex><span>rhc app create flaskapp python-2.7
+</span></span></code></pre></div><ul><li>Clone App locally into ~/src/flaskapp if you created the app using the web site instead of rhc.</li></ul><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>rhc git-clone flaskapp
+</span></span></code></pre></div><ul><li>Tell git to ignore the <code>venv/</code> dir and other artifacts we are about to create.</li></ul><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#658b00>echo</span> <span style=color:#cd5555>&#39;venv/&#39;</span> &gt;&gt; ~/src/flaskapp/.gitignore
+</span></span><span style=display:flex><span><span style=color:#658b00>echo</span> <span style=color:#cd5555>&#39;*.egg-info/&#39;</span> &gt;&gt; ~/src/flaskapp/.gitignore
+</span></span><span style=display:flex><span><span style=color:#658b00>echo</span> <span style=color:#cd5555>&#39;dist/&#39;</span> &gt;&gt; ~/src/flaskapp/.gitignore
+</span></span><span style=display:flex><span>git commit -am .gitignore <span style=color:#cd5555>&#39;ignore artifacts&#39;</span>
+</span></span></code></pre></div><ul><li>Setup a venv with the required python version inside <code>flaskapp</code></li></ul><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#658b00>cd</span> ~/src/flaskapp/
+</span></span><span style=display:flex><span><span style=color:#228b22># create venv/ dir</span>
+</span></span><span style=display:flex><span>virtualenv --python=python2.7 venv
+</span></span><span style=display:flex><span><span style=color:#228b22># activate this virtual env</span>
+</span></span><span style=display:flex><span>. venv/bin/activate
+</span></span></code></pre></div><ul><li>Install Flask in the new venv we just activated.</li></ul><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>pip install flask flask-wtf flask-babel markdown flup 
+</span></span><span style=display:flex><span><span style=color:#228b22># later we can just just use setup.py</span>
+</span></span><span style=display:flex><span>python setup.py install
+</span></span></code></pre></div><ul><li>Tell our app&rsquo;s <code>setup.py</code> about our python module requirements.</li></ul><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#658b00>cd</span> ~/src/flaskapp
+</span></span><span style=display:flex><span>vim setup.py
+</span></span></code></pre></div><ul><li>Modify the <em>install_requires</em> line to look like this:</li></ul><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span>install_requires=[<span style=color:#cd5555>&#39;Flask&#39;</span>,<span style=color:#cd5555>&#39;flask-wtf&#39;</span>,<span style=color:#cd5555>&#39;flask-babel&#39;</span>,<span style=color:#cd5555>&#39;markdown&#39;</span>,<span style=color:#cd5555>&#39;flup&#39;</span>],
+</span></span></code></pre></div><h2 id=create-hello-world-flask-app>Create Hello World Flask App</h2><p>Create the required directories</p><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#658b00>cd</span> ~/src/flaskapp/wsgi
+</span></span><span style=display:flex><span>mkdir -p app/{static,templates}
+</span></span><span style=display:flex><span>mkdir tmp
+</span></span><span style=display:flex><span><span style=color:#658b00>cd</span> ~/src/flaskapp/wsgi/app
+</span></span></code></pre></div><p>Create applications files. Pay attention Openshift has some particular requirements.</p><ul><li><em>~/src/flaskapp/wsgi/app/__init__.py</em></li></ul><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#8b008b;font-weight:700>from</span> <span style=color:#008b45;text-decoration:underline>flask</span> <span style=color:#8b008b;font-weight:700>import</span> Flask  
+</span></span><span style=display:flex><span>app = Flask(__name__)  
+</span></span><span style=display:flex><span><span style=color:#8b008b;font-weight:700>from</span> <span style=color:#008b45;text-decoration:underline>app</span> <span style=color:#8b008b;font-weight:700>import</span> views
+</span></span></code></pre></div><ul><li><em>~/src/flaskapp/wsgi/app/views.py</em></li></ul><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#8b008b;font-weight:700>from</span> <span style=color:#008b45;text-decoration:underline>app</span> <span style=color:#8b008b;font-weight:700>import</span> app
+</span></span><span style=display:flex><span><span style=color:#707a7c>@app.route</span>(<span style=color:#cd5555>&#39;/&#39;</span>)
+</span></span><span style=display:flex><span><span style=color:#707a7c>@app.route</span>(<span style=color:#cd5555>&#39;/index&#39;</span>)
+</span></span><span style=display:flex><span><span style=color:#8b008b;font-weight:700>def</span> <span style=color:#008b45>index</span>():
+</span></span><span style=display:flex><span>    <span style=color:#8b008b;font-weight:700>return</span> <span style=color:#cd5555>&#34;Hello, World!&#34;</span>
+</span></span></code></pre></div><ul><li><em>~/src/flaskapp/wsgi/application</em> - This application file is required by OpenShift</li></ul><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#228b22>#!/usr/bin/python</span>
+</span></span><span style=display:flex><span><span style=color:#8b008b;font-weight:700>import</span> <span style=color:#008b45;text-decoration:underline>os</span>
+</span></span><span style=display:flex><span><span style=color:#8b008b;font-weight:700>import</span> <span style=color:#008b45;text-decoration:underline>sys</span>
+</span></span><span style=display:flex><span>sys.path.insert(<span style=color:#b452cd>0</span>, os.path.dirname(__file__) <span style=color:#8b008b>or</span> <span style=color:#cd5555>&#39;.&#39;</span>)
+</span></span><span style=display:flex><span>PY_DIR = os.path.join(os.environ[<span style=color:#cd5555>&#39;OPENSHIFT_HOMEDIR&#39;</span>], <span style=color:#cd5555>&#34;python&#34;</span>)
+</span></span><span style=display:flex><span>virtenv = PY_DIR + <span style=color:#cd5555>&#39;/virtenv/&#39;</span>
+</span></span><span style=display:flex><span>PY_CACHE = os.path.join(virtenv, <span style=color:#cd5555>&#39;lib&#39;</span>, os.environ[<span style=color:#cd5555>&#39;OPENSHIFT_PYTHON_VERSION&#39;</span>], <span style=color:#cd5555>&#39;site-packages&#39;</span>)
+</span></span><span style=display:flex><span>os.environ[<span style=color:#cd5555>&#39;PYTHON_EGG_CACHE&#39;</span>] = os.path.join(PY_CACHE)
+</span></span><span style=display:flex><span>virtualenv = os.path.join(virtenv, <span style=color:#cd5555>&#39;bin/activate_this.py&#39;</span>)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#8b008b;font-weight:700>try</span>:
+</span></span><span style=display:flex><span>    exec(<span style=color:#658b00>open</span>(virtualenv).read(), <span style=color:#658b00>dict</span>(__file__=virtualenv))
+</span></span><span style=display:flex><span><span style=color:#8b008b;font-weight:700>except</span> <span style=color:#008b45;font-weight:700>IOError</span>:
+</span></span><span style=display:flex><span>    <span style=color:#8b008b;font-weight:700>pass</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#8b008b;font-weight:700>from</span> <span style=color:#008b45;text-decoration:underline>run</span> <span style=color:#8b008b;font-weight:700>import</span> app <span style=color:#8b008b;font-weight:700>as</span> application
+</span></span></code></pre></div><ul><li><em>~/src/flaskapp/wsgi/run.py</em> - Called by <em>application</em>.</li></ul><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#8b008b;font-weight:700>from</span> <span style=color:#008b45;text-decoration:underline>app</span> <span style=color:#8b008b;font-weight:700>import</span> app
+</span></span><span style=display:flex><span><span style=color:#8b008b;font-weight:700>if</span> __name__ == <span style=color:#cd5555>&#34;__main__&#34;</span>:
+</span></span><span style=display:flex><span>    app.run(debug = <span style=color:#8b008b;font-weight:700>True</span>) <span style=color:#228b22>#We will set debug false in production </span>
+</span></span></code></pre></div><h1 id=test-flaskapp-on-localhost>Test Flaskapp on localhost</h1><p>Activate venv and run the app.</p><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#658b00>cd</span> ~/src/flaskapp/
+</span></span><span style=display:flex><span>. venv/bin/activate
+</span></span><span style=display:flex><span>python setup.py install
+</span></span><span style=display:flex><span>python run.py
+</span></span><span style=display:flex><span>curl http://localhost:5000/index
+</span></span></code></pre></div><h1 id=deploy-flaskapp-to-openshift>Deploy Flaskapp to Openshift</h1><p>After making local changes, commit them to git, and push them to the origin. Openshift will then automagically install the required flask modules and spin up your Flaskapp.</p><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#658b00>cd</span> ~/src/flaskapp
+</span></span><span style=display:flex><span>git add .
+</span></span><span style=display:flex><span>git commit -a -m <span style=color:#cd5555>&#39;Firstsies&#39;</span>
+</span></span><span style=display:flex><span>git push
+</span></span></code></pre></div><p>Now go check out your new app on <a href=http://www.openshift.com>Openshift</a></p><h1 id=references>References</h1><ul><li><a href=https://www.openshift.com/blogs/how-to-install-and-configure-a-python-flask-dev-environment-deploy-to-openshift>How-to Install and Configure a Python Flask Dev Environment & Deploy to OpenShift</a></li><li><a href=http://www.virtualenv.org/en/latest/index.html#what-it-does>Virtualenv</a></li><li><a href=http://hackercodex.com/guide/mac-osx-mavericks-10.9-configuration/>Homebrew on Mac OS X</a></li><li><a href=http://hackercodex.com/guide/python-development-environment-on-mac-osx/>Python Development Environment on Mac OS X</a></li><li><a href=https://github.com/openshift/flask-example>Flask-example</a></li><li><a href=https://www.openshift.com/developers/rhc-client-tools-install>Installing RHC Client Tools</a></li></ul></div><div id=comments><div id=disqus_thread></div><script type=application/javascript>window.disqus_config=function(){},function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById("disqus_thread").innerHTML="Disqus comments not available by default when the website is previewed locally.";return}var t=document,e=t.createElement("script");e.async=!0,e.src="//dlbewleygithubio.disqus.com/embed.js",e.setAttribute("data-timestamp",+new Date),(t.head||t.body).appendChild(e)}()</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript><a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a></div></div><div class=col-md-3><div class="panel panel-default sidebar-menu"><div class=panel-heading><h3 class=panel-title>Search</h3></div><div class=panel-body><form action=//google.com/search method=get accept-charset=utf-8 role=search><div class=input-group><input type=search name=q class=form-control placeholder=Search>
 <input type=hidden name=sitesearch value=http://guifreelife.com/>
-<span class=input-group-btn>
-<button type=submit class="btn btn-template-main"><i class="fas fa-search"></i></button>
-</span>
-</div>
-</form>
-</div>
-</div>
-<div class="panel sidebar-menu">
-<div class=panel-heading>
-<h3 class=panel-title>Tagged</h3>
-</div>
-<div class=panel-body>
-<ul class=tag-cloud>
-<li class=active>
-<a href=/tags/python><i class="fas fa-tags"></i> python</a>
-</li>
-<li class=active>
-<a href=/tags/openshift><i class="fas fa-tags"></i> openshift</a>
-</li>
-<li class=active>
-<a href=/tags/mac><i class="fas fa-tags"></i> mac</a>
-</li>
-</ul>
-</div>
-</div>
-<div class="panel sidebar-menu">
-<div class=panel-heading>
-<h3 class=panel-title>TOC</h3>
-</div>
-<div class=panel-body>
-<nav id=TableOfContents>
-<ul>
-<li>
-<ul>
-<li><a href=#overview-of-the-steps>Overview of the steps</a></li>
-</ul>
-</li>
-<li><a href=#installing-homebrew>Installing Homebrew</a>
-<ul>
-<li><a href=#ready-the-system-for-homebrew>Ready the system for Homebrew</a></li>
-<li><a href=#install-homebrew>Install Homebrew</a></li>
-</ul>
-</li>
-<li><a href=#install-python>Install Python</a></li>
-<li><a href=#setup-virtenv>Setup Virtenv</a></li>
-<li><a href=#setup-openshift>Setup Openshift</a>
-<ul>
-<li><a href=#create-an-openshift-app-and-configure-for-virtualenv>Create an Openshift App and Configure for Virtualenv</a></li>
-<li><a href=#create-hello-world-flask-app>Create Hello World Flask App</a></li>
-</ul>
-</li>
-<li><a href=#test-flaskapp-on-localhost>Test Flaskapp on localhost</a></li>
-<li><a href=#deploy-flaskapp-to-openshift>Deploy Flaskapp to Openshift</a></li>
-<li><a href=#references>References</a></li>
-</ul>
-</nav>
-</div>
-</div>
-<div class="panel sidebar-menu">
-<div class=panel-heading>
-<h3 class=panel-title>Tags</h3>
-</div>
-<div class=panel-body>
-<ul class=tag-cloud>
-<li>
-<a href=/tags/AWS><i class="fas fa-tags"></i> AWS</a>
-</li>
-<li>
-<a href=/tags/CDK><i class="fas fa-tags"></i> CDK</a>
-</li>
-<li>
-<a href=/tags/OCP3><i class="fas fa-tags"></i> OCP3</a>
-</li>
-<li>
-<a href=/tags/OCP4><i class="fas fa-tags"></i> OCP4</a>
-</li>
-<li>
-<a href=/tags/RHACM><i class="fas fa-tags"></i> RHACM</a>
-</li>
-<li>
-<a href=/tags/RHACS><i class="fas fa-tags"></i> RHACS</a>
-</li>
-<li>
-<a href=/tags/RHEL><i class="fas fa-tags"></i> RHEL</a>
-</li>
-<li>
-<a href=/tags/ansible><i class="fas fa-tags"></i> ansible</a>
-</li>
-<li>
-<a href=/tags/automation><i class="fas fa-tags"></i> automation</a>
-</li>
-<li>
-<a href=/tags/azure><i class="fas fa-tags"></i> azure</a>
-</li>
-<li>
-<a href=/tags/debugging><i class="fas fa-tags"></i> debugging</a>
-</li>
-<li>
-<a href=/tags/docker><i class="fas fa-tags"></i> docker</a>
-</li>
-<li>
-<a href=/tags/draft><i class="fas fa-tags"></i> draft</a>
-</li>
-<li>
-<a href=/tags/etcd><i class="fas fa-tags"></i> etcd</a>
-</li>
-<li>
-<a href=/tags/git><i class="fas fa-tags"></i> git</a>
-</li>
-<li>
-<a href=/tags/haproxy><i class="fas fa-tags"></i> haproxy</a>
-</li>
-<li>
-<a href=/tags/heat><i class="fas fa-tags"></i> heat</a>
-</li>
-<li>
-<a href=/tags/hybrid-cloud><i class="fas fa-tags"></i> hybrid-cloud</a>
-</li>
-<li>
-<a href=/tags/install><i class="fas fa-tags"></i> install</a>
-</li>
-<li>
-<a href=/tags/kubernetes><i class="fas fa-tags"></i> kubernetes</a>
-</li>
-<li>
-<a href=/tags/mac><i class="fas fa-tags"></i> mac</a>
-</li>
-<li>
-<a href=/tags/metrics><i class="fas fa-tags"></i> metrics</a>
-</li>
-<li>
-<a href=/tags/migration><i class="fas fa-tags"></i> migration</a>
-</li>
-<li>
-<a href=/tags/monitoring><i class="fas fa-tags"></i> monitoring</a>
-</li>
-<li>
-<a href=/tags/networking><i class="fas fa-tags"></i> networking</a>
-</li>
-<li>
-<a href=/tags/openshift><i class="fas fa-tags"></i> openshift</a>
-</li>
-<li>
-<a href=/tags/openstack><i class="fas fa-tags"></i> openstack</a>
-</li>
-<li>
-<a href=/tags/operators><i class="fas fa-tags"></i> operators</a>
-</li>
-<li>
-<a href=/tags/prometheus><i class="fas fa-tags"></i> prometheus</a>
-</li>
-<li>
-<a href=/tags/python><i class="fas fa-tags"></i> python</a>
-</li>
-<li>
-<a href=/tags/router><i class="fas fa-tags"></i> router</a>
-</li>
-<li>
-<a href=/tags/security><i class="fas fa-tags"></i> security</a>
-</li>
-<li>
-<a href=/tags/ssl><i class="fas fa-tags"></i> ssl</a>
-</li>
-<li>
-<a href=/tags/stackrox><i class="fas fa-tags"></i> stackrox</a>
-</li>
-<li>
-<a href=/tags/storage><i class="fas fa-tags"></i> storage</a>
-</li>
-<li>
-<a href=/tags/troubleshooting><i class="fas fa-tags"></i> troubleshooting</a>
-</li>
-<li>
-<a href=/tags/upgrade><i class="fas fa-tags"></i> upgrade</a>
-</li>
-<li>
-<a href=/tags/vagrant><i class="fas fa-tags"></i> vagrant</a>
-</li>
-<li>
-<a href=/tags/virtualization><i class="fas fa-tags"></i> virtualization</a>
-</li>
-<li>
-<a href=/tags/webinar><i class="fas fa-tags"></i> webinar</a>
-</li>
-<li>
-<a href=/tags/windows><i class="fas fa-tags"></i> windows</a>
-</li>
-<li>
-<a href=/tags/zabbix><i class="fas fa-tags"></i> zabbix</a>
-</li>
-<li>
-<a href=/tags/zimbra><i class="fas fa-tags"></i> zimbra</a>
-</li>
-</ul>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<footer id=footer>
-<div class=container>
-<div class="col-md-4 col-sm-6">
-<h4>Share</h4>
-<i class="fab fa-2x fa-twitter" title="Share this on Twitter" onclick="window.open('http://twitter.com/home?status=http://guifreelife.com/blog/2014/11/22/Openshift-and-Flask-with-Virtualenv-on-OS-X/')"></i>
-<i class="fab fa-2x fa-facebook" title="Share this on Facebook" onclick="window.open('http://www.facebook.com/share.php?u=http://guifreelife.com/blog/2014/11/22/Openshift-and-Flask-with-Virtualenv-on-OS-X/')"></i>
-<i class="fab fa-2x fa-linkedin" title="Share this on Linkedin" onclick="window.open('https://www.linkedin.com/shareArticle?mini=true&url=http://guifreelife.com/blog/2014/11/22/Openshift-and-Flask-with-Virtualenv-on-OS-X/&title=&summary=&source=')"></i>
-<i class="fab fa-2x fa-google-plus" title="Share this on Google Currents" onclick="window.open('https://plus.google.com/share?url=http://guifreelife.com/blog/2014/11/22/Openshift-and-Flask-with-Virtualenv-on-OS-X/')"></i>
-<i class="fa fa-2x fa-envelope" title="Share this through Email" onclick="window.open('mailto:?&body=http://guifreelife.com/blog/2014/11/22/Openshift-and-Flask-with-Virtualenv-on-OS-X/')"></i>
-<h4>About us</h4>
-<p>GUI Free Life is the personal, technical blog of Dale Bewley. Comments and opinions are my own and not that of my employers.</p>
-<hr class="hidden-md hidden-lg hidden-sm">
-</div>
-<div class="col-md-4 col-sm-6">
-<h4>Recent posts</h4>
-<div class=blog-entries>
-<div class="item same-height-row clearfix">
-<div class="image same-height-always">
-<a href=http://guifreelife.com/blog/2023/09/22/Storing-OpenShift-Credentials-with-1Password/>
-<img src=/img/banners/mushroom-moss.jpg class=img-responsive alt="Storing OpenShift Credentials with 1Password">
-</a>
-</div>
-<div class="name same-height-always">
-<h5><a href=http://guifreelife.com/blog/2023/09/22/Storing-OpenShift-Credentials-with-1Password/>Storing OpenShift Credentials with 1Password</a></h5>
-</div>
-</div>
-<div class="item same-height-row clearfix">
-<div class="image same-height-always">
-<a href=http://guifreelife.com/blog/2023/04/06/Accessing-Ceph-CLI-with-OpenShift-Data-Foundation/>
-<img src=/images/uncovered-bumper.png class=img-responsive alt="Accessing the Ceph CLI with OpenShift Data Foundation">
-</a>
-</div>
-<div class="name same-height-always">
-<h5><a href=http://guifreelife.com/blog/2023/04/06/Accessing-Ceph-CLI-with-OpenShift-Data-Foundation/>Accessing the Ceph CLI with OpenShift Data Foundation</a></h5>
-</div>
-</div>
-<div class="item same-height-row clearfix">
-<div class="image same-height-always">
-<a href=http://guifreelife.com/blog/2023/03/09/Extracting-CA-Certs-From-Kubeconfig/>
-<img src=/img/banners/banner-buffy-xmas.png class=img-responsive alt="Extracting TLS CA Certificates from Kubeconfig File">
-</a>
-</div>
-<div class="name same-height-always">
-<h5><a href=http://guifreelife.com/blog/2023/03/09/Extracting-CA-Certs-From-Kubeconfig/>Extracting TLS CA Certificates from Kubeconfig File</a></h5>
-</div>
-</div>
-</div>
-<hr class="hidden-md hidden-lg">
-</div>
-<div class="col-md-4 col-sm-6">
-<h4>Contact</h4>
-<p class=text-uppercase><strong>Dale Bewley</strong>
-<br>Oakland
-<br>California
-<br>
-<strong>USA</strong>
-</p>
-<a href=/contact class="btn btn-small btn-template-main">Go to contact page</a>
-<hr class="hidden-md hidden-lg hidden-sm">
-</div>
-</div>
-</footer>
-<div id=copyright>
-<div class=container>
-<div class=col-md-12>
-<p class=pull-left>Copyright (c) 2021, Dale Bewley; all rights reserved.</p>
-<p class=pull-right>
-Template by <a href=https://bootstrapious.com/p/universal-business-e-commerce-template>Bootstrapious</a>.
-Ported to Hugo by <a href=https://github.com/devcows/hugo-universal-theme>DevCows</a>.
-</p>
-</div>
-</div>
-</div>
-</div>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-39TSW9349X"></script>
-<script>var doNotTrack=!1;if(!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date),gtag('config','G-39TSW9349X',{anonymize_ip:!1})}</script>
-<script src=//code.jquery.com/jquery-3.1.1.min.js integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin=anonymous></script>
+<span class=input-group-btn><button type=submit class="btn btn-template-main"><i class="fas fa-search"></i></button></span></div></form></div></div><div class="panel sidebar-menu"><div class=panel-heading><h3 class=panel-title>Tagged</h3></div><div class=panel-body><ul class=tag-cloud><li class=active><a href=/tags/python><i class="fas fa-tags"></i> python</a></li><li class=active><a href=/tags/openshift><i class="fas fa-tags"></i> openshift</a></li><li class=active><a href=/tags/mac><i class="fas fa-tags"></i> mac</a></li></ul></div></div><div class="panel sidebar-menu"><div class=panel-heading><h3 class=panel-title>TOC</h3></div><div class=panel-body><nav id=TableOfContents><ul><li><ul><li><a href=#overview-of-the-steps>Overview of the steps</a></li></ul></li><li><a href=#installing-homebrew>Installing Homebrew</a><ul><li><a href=#ready-the-system-for-homebrew>Ready the system for Homebrew</a></li><li><a href=#install-homebrew>Install Homebrew</a></li></ul></li><li><a href=#install-python>Install Python</a></li><li><a href=#setup-virtenv>Setup Virtenv</a></li><li><a href=#setup-openshift>Setup Openshift</a><ul><li><a href=#create-an-openshift-app-and-configure-for-virtualenv>Create an Openshift App and Configure for Virtualenv</a></li><li><a href=#create-hello-world-flask-app>Create Hello World Flask App</a></li></ul></li><li><a href=#test-flaskapp-on-localhost>Test Flaskapp on localhost</a></li><li><a href=#deploy-flaskapp-to-openshift>Deploy Flaskapp to Openshift</a></li><li><a href=#references>References</a></li></ul></nav></div></div><div class="panel sidebar-menu"><div class=panel-heading><h3 class=panel-title>Tags</h3></div><div class=panel-body><ul class=tag-cloud><li><a href=/tags/AWS><i class="fas fa-tags"></i> AWS</a></li><li><a href=/tags/CDK><i class="fas fa-tags"></i> CDK</a></li><li><a href=/tags/OCP3><i class="fas fa-tags"></i> OCP3</a></li><li><a href=/tags/OCP4><i class="fas fa-tags"></i> OCP4</a></li><li><a href=/tags/RHACM><i class="fas fa-tags"></i> RHACM</a></li><li><a href=/tags/RHACS><i class="fas fa-tags"></i> RHACS</a></li><li><a href=/tags/RHEL><i class="fas fa-tags"></i> RHEL</a></li><li><a href=/tags/ansible><i class="fas fa-tags"></i> ansible</a></li><li><a href=/tags/automation><i class="fas fa-tags"></i> automation</a></li><li><a href=/tags/azure><i class="fas fa-tags"></i> azure</a></li><li><a href=/tags/debugging><i class="fas fa-tags"></i> debugging</a></li><li><a href=/tags/docker><i class="fas fa-tags"></i> docker</a></li><li><a href=/tags/draft><i class="fas fa-tags"></i> draft</a></li><li><a href=/tags/etcd><i class="fas fa-tags"></i> etcd</a></li><li><a href=/tags/git><i class="fas fa-tags"></i> git</a></li><li><a href=/tags/haproxy><i class="fas fa-tags"></i> haproxy</a></li><li><a href=/tags/heat><i class="fas fa-tags"></i> heat</a></li><li><a href=/tags/hybrid-cloud><i class="fas fa-tags"></i> hybrid-cloud</a></li><li><a href=/tags/install><i class="fas fa-tags"></i> install</a></li><li><a href=/tags/kubernetes><i class="fas fa-tags"></i> kubernetes</a></li><li><a href=/tags/mac><i class="fas fa-tags"></i> mac</a></li><li><a href=/tags/metrics><i class="fas fa-tags"></i> metrics</a></li><li><a href=/tags/migration><i class="fas fa-tags"></i> migration</a></li><li><a href=/tags/monitoring><i class="fas fa-tags"></i> monitoring</a></li><li><a href=/tags/networking><i class="fas fa-tags"></i> networking</a></li><li><a href=/tags/openshift><i class="fas fa-tags"></i> openshift</a></li><li><a href=/tags/openstack><i class="fas fa-tags"></i> openstack</a></li><li><a href=/tags/operators><i class="fas fa-tags"></i> operators</a></li><li><a href=/tags/prometheus><i class="fas fa-tags"></i> prometheus</a></li><li><a href=/tags/python><i class="fas fa-tags"></i> python</a></li><li><a href=/tags/router><i class="fas fa-tags"></i> router</a></li><li><a href=/tags/security><i class="fas fa-tags"></i> security</a></li><li><a href=/tags/ssl><i class="fas fa-tags"></i> ssl</a></li><li><a href=/tags/stackrox><i class="fas fa-tags"></i> stackrox</a></li><li><a href=/tags/storage><i class="fas fa-tags"></i> storage</a></li><li><a href=/tags/troubleshooting><i class="fas fa-tags"></i> troubleshooting</a></li><li><a href=/tags/upgrade><i class="fas fa-tags"></i> upgrade</a></li><li><a href=/tags/vagrant><i class="fas fa-tags"></i> vagrant</a></li><li><a href=/tags/virtualization><i class="fas fa-tags"></i> virtualization</a></li><li><a href=/tags/webinar><i class="fas fa-tags"></i> webinar</a></li><li><a href=/tags/windows><i class="fas fa-tags"></i> windows</a></li><li><a href=/tags/zabbix><i class="fas fa-tags"></i> zabbix</a></li><li><a href=/tags/zimbra><i class="fas fa-tags"></i> zimbra</a></li></ul></div></div></div></div></div></div><footer id=footer><div class=container><div class="col-md-4 col-sm-6"><h4>Share</h4><i class="fab fa-2x fa-twitter" title="Share this on Twitter" onclick='window.open("http://twitter.com/home?status=http://guifreelife.com/blog/2014/11/22/Openshift-and-Flask-with-Virtualenv-on-OS-X/")'></i>
+<i class="fab fa-2x fa-facebook" title="Share this on Facebook" onclick='window.open("http://www.facebook.com/share.php?u=http://guifreelife.com/blog/2014/11/22/Openshift-and-Flask-with-Virtualenv-on-OS-X/")'></i>
+<i class="fab fa-2x fa-linkedin" title="Share this on Linkedin" onclick='window.open("https://www.linkedin.com/shareArticle?mini=true&url=http://guifreelife.com/blog/2014/11/22/Openshift-and-Flask-with-Virtualenv-on-OS-X/&title=&summary=&source=")'></i>
+<i class="fab fa-2x fa-google-plus" title="Share this on Google Currents" onclick='window.open("https://plus.google.com/share?url=http://guifreelife.com/blog/2014/11/22/Openshift-and-Flask-with-Virtualenv-on-OS-X/")'></i>
+<i class="fa fa-2x fa-envelope" title="Share this through Email" onclick='window.open("mailto:?&body=http://guifreelife.com/blog/2014/11/22/Openshift-and-Flask-with-Virtualenv-on-OS-X/")'></i><h4>About us</h4><p>GUI Free Life is the personal, technical blog of Dale Bewley. Comments and opinions are my own and not that of my employers.</p><hr class="hidden-md hidden-lg hidden-sm"></div><div class="col-md-4 col-sm-6"><h4>Recent posts</h4><div class=blog-entries><div class="item same-height-row clearfix"><div class="image same-height-always"><a href=http://guifreelife.com/blog/2024/03/11/Placing-Open-Cluster-Management-Policies-on-Kubernetes/><img src=/images/DALL%c2%b7E%202024-01-30%2014.28.24%20-%20A%20whimsical%20scene%20featuring%20a%20traffic%20cop%20standing%20on%20a%20cloud,%20energetically%20directing%20a%20chaotic%20stream%20of%20various%20floating%20documents%20-%20papers,%20folder.png class=img-responsive alt="Using Placements to Apply Open Cluster Management Policies to Kubernetes Clusters"></a></div><div class="name same-height-always"><h5><a href=http://guifreelife.com/blog/2024/03/11/Placing-Open-Cluster-Management-Policies-on-Kubernetes/>Using Placements to Apply Open Cluster Management Policies to Kubernetes Clusters</a></h5></div></div><div class="item same-height-row clearfix"><div class="image same-height-always"><a href=http://guifreelife.com/blog/2023/09/22/Storing-OpenShift-Credentials-with-1Password/><img src=/img/banners/mushroom-moss.jpg class=img-responsive alt="Storing OpenShift Credentials with 1Password"></a></div><div class="name same-height-always"><h5><a href=http://guifreelife.com/blog/2023/09/22/Storing-OpenShift-Credentials-with-1Password/>Storing OpenShift Credentials with 1Password</a></h5></div></div><div class="item same-height-row clearfix"><div class="image same-height-always"><a href=http://guifreelife.com/blog/2023/04/06/Accessing-Ceph-CLI-with-OpenShift-Data-Foundation/><img src=/images/uncovered-bumper.png class=img-responsive alt="Accessing the Ceph CLI with OpenShift Data Foundation"></a></div><div class="name same-height-always"><h5><a href=http://guifreelife.com/blog/2023/04/06/Accessing-Ceph-CLI-with-OpenShift-Data-Foundation/>Accessing the Ceph CLI with OpenShift Data Foundation</a></h5></div></div></div><hr class="hidden-md hidden-lg"></div><div class="col-md-4 col-sm-6"><h4>Contact</h4><p class=text-uppercase><strong>Dale Bewley</strong><br>Oakland<br>California<br><strong>USA</strong></p><a href=/contact class="btn btn-small btn-template-main">Go to contact page</a><hr class="hidden-md hidden-lg hidden-sm"></div></div></footer><div id=copyright><div class=container><div class=col-md-12><p class=pull-left>Copyright (c) 2021, Dale Bewley; all rights reserved.</p><p class=pull-right>Template by <a href=https://bootstrapious.com/p/universal-business-e-commerce-template>Bootstrapious</a>.
+Ported to Hugo by <a href=https://github.com/devcows/hugo-universal-theme>DevCows</a>.</p></div></div></div></div><script async src="https://www.googletagmanager.com/gtag/js?id=G-39TSW9349X"></script>
+<script>var doNotTrack=!1;if(!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","G-39TSW9349X",{anonymize_ip:!1})}</script><script src=//code.jquery.com/jquery-3.1.1.min.js integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin=anonymous></script>
 <script src=//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js integrity=sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa crossorigin=anonymous></script>
 <script src=//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js></script>
 <script src=//cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/jquery.waypoints.min.js></script>
@@ -613,6 +112,4 @@ Ported to Hugo by <a href=https://github.com/devcows/hugo-universal-theme>DevCow
 <script src=/js/hpneo.gmaps.js></script>
 <script src=/js/gmaps.init.js></script>
 <script src=/js/front.js></script>
-<script src=/js/owl.carousel.min.js></script>
-</body>
-</html>
+<script src=/js/owl.carousel.min.js></script></body></html>

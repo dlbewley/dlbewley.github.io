@@ -1,537 +1,90 @@
-<!doctype html><html lang=en-us>
-<head>
-<meta charset=utf-8>
-<meta name=robots content="all,follow">
-<meta name=googlebot content="index,follow,snippet,archive">
-<meta name=viewport content="width=device-width,initial-scale=1">
-<title>Changing the SSL Certificate for OpenShift Console | GUI Free Life</title>
-<meta name=author content="Dale Bewley">
-<meta name=keywords content="bewley,guifreelife,kubernetes,openshift,OCP3,ssl">
-<meta name=description content="GUI Free Life, by Dale Bewley covers Kubernetes, Linux, Networking, OpenShift and more">
-<meta name=generator content="Hugo 0.91.2">
-<link href="//fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,500,700,800" rel=stylesheet type=text/css>
-<link rel=stylesheet href=//use.fontawesome.com/releases/v5.11.2/css/all.css>
-<link rel=stylesheet href=//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css integrity=sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u crossorigin=anonymous>
-<link href=/css/animate.css rel=stylesheet>
-<link href=/css/style.turquoise.css rel=stylesheet id=theme-stylesheet>
-<link href=/css/custom.css rel=stylesheet><!--[if lt IE 9]><script src=https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js></script>
-<script src=https://oss.maxcdn.com/respond/1.4.2/respond.min.js></script><![endif]-->
-<link rel="shortcut icon" href=/img/favicon.ico type=image/x-icon>
-<link rel=apple-touch-icon href=/img/apple-touch-icon.png>
-<link href=/css/owl.carousel.css rel=stylesheet>
-<link href=/css/owl.theme.css rel=stylesheet>
-<link rel=alternate href=http://guifreelife.com/index.xml type=application/rss+xml title="GUI Free Life">
-<meta property="og:locale" content="en_us">
-<meta property="og:site_name" content="GUI Free Life">
-<meta property="og:title" content="Changing the SSL Certificate for OpenShift Console">
-<meta property="og:type" content="article">
-<meta property="og:url" content="http://guifreelife.com/blog/2016/03/24/Replace-OpenShift-Console-SSL-Certificate/">
-<meta property="og:description" content="GUI Free Life, by Dale Bewley covers Kubernetes, Linux, Networking, OpenShift and more">
-<meta property="og:image" content="http://guifreelife.com/img/banners/banner-21.jpg">
-<meta property="og:image:type" content="image/jpg">
-<meta property="og:image:width" content="1000">
-<meta property="og:image:height" content="750">
-<meta property="og:updated_time" content="2016-03-24T00:00:00Z">
-<meta property="article:tag" content="kubernetes">
-<meta property="article:tag" content="openshift">
-<meta property="article:tag" content="OCP3">
-<meta property="article:tag" content="ssl">
-<meta property="article:published_time" content="2016-03-24T00:00:00Z">
-<meta property="article:modified_time" content="2016-03-24T00:00:00Z">
-<meta name=twitter:card content="summary_large_image">
-<meta name=twitter:site content="@dlbewley">
-<meta name=twitter:title content="Changing the SSL Certificate for OpenShift Console">
-<meta name=twitter:image content="http://guifreelife.com/img/banners/banner-21.jpg">
-<meta name=twitter:description content="GUI Free Life, by Dale Bewley covers Kubernetes, Linux, Networking, OpenShift and more">
-</head>
-<body>
-<div id=all>
-<header class=navbar-affixed-top data-spy=affix data-offset-top=62>
-<div class="navbar navbar-default yamm" role=navigation id=navbar>
-<div class=container>
-<div class=navbar-header>
-<a class="navbar-brand home" href=/>
-<img src=/img/logo.png alt="Changing the SSL Certificate for OpenShift Console logo" class="hidden-xs hidden-sm">
+<!doctype html><html lang=en-us><head><meta charset=utf-8><meta name=robots content="all,follow"><meta name=googlebot content="index,follow,snippet,archive"><meta name=viewport content="width=device-width,initial-scale=1"><title>Changing the SSL Certificate for OpenShift Console | GUI Free Life</title><meta name=author content="Dale Bewley"><meta name=keywords content="bewley,guifreelife,kubernetes,openshift,OCP3,ssl"><meta name=description content="GUI Free Life, by Dale Bewley covers Kubernetes, Linux, Networking, OpenShift and more"><meta name=generator content="Hugo 0.119.0"><link href='//fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,500,700,800' rel=stylesheet type=text/css><link rel=stylesheet href=//use.fontawesome.com/releases/v5.11.2/css/all.css><link rel=stylesheet href=//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css integrity=sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u crossorigin=anonymous><link href=/css/animate.css rel=stylesheet><link href=/css/style.turquoise.css rel=stylesheet id=theme-stylesheet><link href=/css/custom.css rel=stylesheet><!--[if lt IE 9]><script src=https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js></script>
+<script src=https://oss.maxcdn.com/respond/1.4.2/respond.min.js></script><![endif]--><link rel="shortcut icon" href=/img/favicon.ico type=image/x-icon><link rel=apple-touch-icon href=/img/apple-touch-icon.png><link href=/css/owl.carousel.css rel=stylesheet><link href=/css/owl.theme.css rel=stylesheet><link rel=alternate href=http://guifreelife.com/index.xml type=application/rss+xml title="GUI Free Life"><meta property="og:locale" content="en_us"><meta property="og:site_name" content="GUI Free Life"><meta property="og:title" content="Changing the SSL Certificate for OpenShift Console"><meta property="og:type" content="article"><meta property="og:url" content="http://guifreelife.com/blog/2016/03/24/Replace-OpenShift-Console-SSL-Certificate/"><meta property="og:description" content="GUI Free Life, by Dale Bewley covers Kubernetes, Linux, Networking, OpenShift and more"><meta property="og:image" content="http://guifreelife.com/img/banners/banner-21.jpg"><meta property="og:image:type" content="image/jpg"><meta property="og:image:width" content="1000"><meta property="og:image:height" content="750"><meta property="og:updated_time" content="2016-03-24T00:00:00Z"><meta property="article:tag" content="kubernetes"><meta property="article:tag" content="openshift"><meta property="article:tag" content="OCP3"><meta property="article:tag" content="ssl"><meta property="article:published_time" content="2016-03-24T00:00:00Z"><meta property="article:modified_time" content="2016-03-24T00:00:00Z"><meta name=twitter:card content="summary_large_image"><meta name=twitter:site content="@dlbewley"><meta name=twitter:title content="Changing the SSL Certificate for OpenShift Console"><meta name=twitter:image content="http://guifreelife.com/img/banners/banner-21.jpg"><meta name=twitter:description content="GUI Free Life, by Dale Bewley covers Kubernetes, Linux, Networking, OpenShift and more"></head><body><div id=all><header class=navbar-affixed-top data-spy=affix data-offset-top=62><div class="navbar navbar-default yamm" role=navigation id=navbar><div class=container><div class=navbar-header><a class="navbar-brand home" href=/><img src=/img/logo.png alt="Changing the SSL Certificate for OpenShift Console logo" class="hidden-xs hidden-sm">
 <img src=/img/logo-small.png alt="Changing the SSL Certificate for OpenShift Console logo" class="visible-xs visible-sm">
-<span class=sr-only>Changing the SSL Certificate for OpenShift Console - go to homepage</span>
-</a>
-<div class=navbar-buttons>
-<button type=button class="navbar-toggle btn-template-main" data-toggle=collapse data-target=#navigation>
+<span class=sr-only>Changing the SSL Certificate for OpenShift Console - go to homepage</span></a><div class=navbar-buttons><button type=button class="navbar-toggle btn-template-main" data-toggle=collapse data-target=#navigation>
 <span class=sr-only>Toggle Navigation</span>
-<i class="fas fa-align-justify"></i>
-</button>
-</div>
-</div>
-<div class="navbar-collapse collapse" id=navigation>
-<ul class="nav navbar-nav navbar-right">
-<li class=dropdown>
-<a href=/>Home</a>
-</li>
-<li class="dropdown active">
-<a href=/blog/>Blog</a>
-</li>
-<li class=dropdown>
-<a href=/contact/>Contact</a>
-</li>
-</ul>
-</div>
-<div class="collapse clearfix" id=search>
-<form class=navbar-form role=search>
-<div class=input-group>
-<input type=text class=form-control placeholder=Search>
-<span class=input-group-btn>
-<button type=submit class="btn btn-template-main"><i class="fas fa-search"></i></button>
-</span>
-</div>
-</form>
-</div>
-</div>
-</div>
-</header>
-<style>.bar.background-image-fixed-banner{background:url(/img/banners/banner-21.jpg)50% 0 no-repeat;background-attachment:fixed;background-size:cover;padding:100px 5%;text-shadow:2px 3px 4px var(--primary-accent),0 0 1em var(--navbar-border-top)}</style>
-<div>
-<div class=container>
-<div class=row>
-<div class=col-md-12>
-<section class="bar background-image-fixed-banner heading h2 color-white text-center">
-<h1>Changing the SSL Certificate for OpenShift Console</h1>
-</section>
-</div>
-</div>
-</div>
-</div>
-<div id=content>
-<div class=container>
-<div class=row>
-<div class=col-md-9 id=blog-post>
-<p class="text-muted text-uppercase mb-small text-right">
-March 24, 2016
-</p>
-<div id=post-content>
-<p>OpenShift has an internal CA for generating certificates to authenticate intra-cluster communication, but your browser doesn&rsquo;t trust this CA. Perhaps you want to fix that without mucking with the internal SSL communication? I did. Here is how.</p>
-<p>This <a href=https://docs.openshift.org/latest/install_config/certificate_customization.html>OpenShift doc</a> <em>explains</em> how to do this, but it isn&rsquo;t very clear, to me at least.</p>
-<h1 id=overview>Overview</h1>
-<p>An outline of the steps:</p>
-<ul>
-<li>Only make changes to the public URLs and not any internal URLs.</li>
-<li>Create a <code>namedCertificates</code> section in both <code>/servingInfo</code> and <code>/assetConfig/servingInfo</code> sections of <code>/etc/origin/master/master-config.yaml</code>.</li>
-<li>In those repeated sections:
-<ul>
-<li>identify a certificate and key</li>
-<li>identify the hostname(s) to match with that cert/key pair</li>
-</ul>
-</li>
-</ul>
-<p>Your installation may include the following hosts:</p>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>IP</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>ose-ha-master-01.example.com</td>
-<td>192.0.2.21</td>
-</tr>
-<tr>
-<td>ose-ha-master-02.example.com</td>
-<td>192.0.2.22</td>
-</tr>
-<tr>
-<td>ose-ha-master-03.example.com</td>
-<td>192.0.2.23</td>
-</tr>
-<tr>
-<td>ose-ha-lb-01.example.com</td>
-<td>192.0.2.41</td>
-</tr>
-<tr>
-<td>master.os.example.com</td>
-<td><em>CNAME ose-ha-lb-01.example.com</em></td>
-</tr>
-<tr>
-<td>openshift.example.com</td>
-<td><em>CNAME ose-ha-lb-01.example.com</em></td>
-</tr>
-</tbody>
-</table>
-<p>In this case <code>openshift.example.com</code> is an alias to the loadbalancer which directs traffic back to the 3 masters. The load balancer passes the traffic through for TLS termination on port 8443 of the master servers. Therefore, all three masters need to be updated.</p>
-<h1 id=install-your-certificate>Install Your Certificate</h1>
-<p>Copy your certificate and key to the masters in the <code>/etc/origin/master</code> directory and give them the following names.</p>
-<ul>
-<li><code>wildcard.example.com.crt</code></li>
-<li><code>wildcard.example.com.key</code></li>
-</ul>
-<p>Update <code>/etc/origin/master/master-config.yaml</code> to reference those certificates when accessing the public master URL.</p>
-<p><strong>Before</strong></p>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#8b008b;font-weight:700>apiLevels</span>:<span style=color:#bbb>
-</span><span style=color:#bbb></span>- v1<span style=color:#bbb>
-</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>apiVersion</span>:<span style=color:#bbb> </span>v1<span style=color:#bbb>
-</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>assetConfig</span>:<span style=color:#bbb>
-</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>logoutURL</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;&#34;</span><span style=color:#bbb>
-</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>masterPublicURL</span>:<span style=color:#bbb> </span>https://openshift.example.com:8443<span style=color:#bbb>
-</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>publicURL</span>:<span style=color:#bbb> </span>https://openshift.example.com:8443/console/<span style=color:#bbb>
-</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>servingInfo</span>:<span style=color:#bbb>
-</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>bindAddress</span>:<span style=color:#bbb> </span><span style=color:#b452cd>0.0.0.0</span>:<span style=color:#b452cd>8443</span><span style=color:#bbb>
-</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>bindNetwork</span>:<span style=color:#bbb> </span>tcp4<span style=color:#bbb>
-</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>certFile</span>:<span style=color:#bbb> </span>master.server.crt<span style=color:#bbb>
-</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>clientCA</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;&#34;</span><span style=color:#bbb>
-</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>keyFile</span>:<span style=color:#bbb> </span>master.server.key<span style=color:#bbb>
-</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>maxRequestsInFlight</span>:<span style=color:#bbb> </span><span style=color:#b452cd>0</span><span style=color:#bbb>
-</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>requestTimeoutSeconds</span>:<span style=color:#bbb> </span><span style=color:#b452cd>0</span><span style=color:#bbb>
-</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>metricsPublicURL</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;https://metrics.os.example.com/hawkular/metrics&#34;</span><span style=color:#bbb>
-</span><span style=color:#bbb></span><span style=color:#228b22>#... skip to the botom</span><span style=color:#bbb>
-</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>servingInfo</span>:<span style=color:#bbb>
-</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>bindAddress</span>:<span style=color:#bbb> </span><span style=color:#b452cd>0.0.0.0</span>:<span style=color:#b452cd>8443</span><span style=color:#bbb>
-</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>bindNetwork</span>:<span style=color:#bbb> </span>tcp4<span style=color:#bbb>
-</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>certFile</span>:<span style=color:#bbb> </span>master.server.crt<span style=color:#bbb>
-</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>clientCA</span>:<span style=color:#bbb> </span>ca.crt<span style=color:#bbb>
-</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>keyFile</span>:<span style=color:#bbb> </span>master.server.key<span style=color:#bbb>
-</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>maxRequestsInFlight</span>:<span style=color:#bbb> </span><span style=color:#b452cd>500</span><span style=color:#bbb>
-</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>requestTimeoutSeconds</span>:<span style=color:#bbb> </span><span style=color:#b452cd>3600</span><span style=color:#bbb>
-</span></code></pre></div><p><strong>After</strong></p>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#8b008b;font-weight:700>apiLevels</span>:<span style=color:#bbb>
-</span><span style=color:#bbb></span>- v1<span style=color:#bbb>
-</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>apiVersion</span>:<span style=color:#bbb> </span>v1<span style=color:#bbb>
-</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>assetConfig</span>:<span style=color:#bbb>
-</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>logoutURL</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;&#34;</span><span style=color:#bbb>
-</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>masterPublicURL</span>:<span style=color:#bbb> </span>https://openshift.example.com:8443<span style=color:#bbb>
-</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>publicURL</span>:<span style=color:#bbb> </span>https://openshift.example.com:8443/console/<span style=color:#bbb>
-</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>servingInfo</span>:<span style=color:#bbb>
-</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>bindAddress</span>:<span style=color:#bbb> </span><span style=color:#b452cd>0.0.0.0</span>:<span style=color:#b452cd>8443</span><span style=color:#bbb>
-</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>bindNetwork</span>:<span style=color:#bbb> </span>tcp4<span style=color:#bbb>
-</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>certFile</span>:<span style=color:#bbb> </span>master.server.crt<span style=color:#bbb>
-</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>clientCA</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;&#34;</span><span style=color:#bbb>
-</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>keyFile</span>:<span style=color:#bbb> </span>master.server.key<span style=color:#bbb>
-</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>maxRequestsInFlight</span>:<span style=color:#bbb> </span><span style=color:#b452cd>0</span><span style=color:#bbb>
-</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>requestTimeoutSeconds</span>:<span style=color:#bbb> </span><span style=color:#b452cd>0</span><span style=color:#bbb>
-</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>namedCertificates</span>:<span style=color:#bbb>
-</span><span style=color:#bbb>      </span>- <span style=color:#8b008b;font-weight:700>certFile</span>:<span style=color:#bbb> </span>wildcard.example.com.crt<span style=color:#bbb>
-</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>keyFile</span>:<span style=color:#bbb> </span>wildcard.example.com.key<span style=color:#bbb>
-</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>names</span>:<span style=color:#bbb>
-</span><span style=color:#bbb>          </span>- <span style=color:#cd5555>&#34;openshift.example.com&#34;</span><span style=color:#bbb>
-</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>metricsPublicURL</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;https://metrics.os.example.com/hawkular/metrics&#34;</span><span style=color:#bbb>
-</span><span style=color:#bbb></span><span style=color:#228b22>#... skip to the botom</span><span style=color:#bbb>
-</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>servingInfo</span>:<span style=color:#bbb>
-</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>bindAddress</span>:<span style=color:#bbb> </span><span style=color:#b452cd>0.0.0.0</span>:<span style=color:#b452cd>8443</span><span style=color:#bbb>
-</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>bindNetwork</span>:<span style=color:#bbb> </span>tcp4<span style=color:#bbb>
-</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>certFile</span>:<span style=color:#bbb> </span>master.server.crt<span style=color:#bbb>
-</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>clientCA</span>:<span style=color:#bbb> </span>ca.crt<span style=color:#bbb>
-</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>keyFile</span>:<span style=color:#bbb> </span>master.server.key<span style=color:#bbb>
-</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>maxRequestsInFlight</span>:<span style=color:#bbb> </span><span style=color:#b452cd>500</span><span style=color:#bbb>
-</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>requestTimeoutSeconds</span>:<span style=color:#bbb> </span><span style=color:#b452cd>3600</span><span style=color:#bbb>
-</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>namedCertificates</span>:<span style=color:#bbb>
-</span><span style=color:#bbb>    </span>- <span style=color:#8b008b;font-weight:700>certFile</span>:<span style=color:#bbb> </span>wildcard.example.com.crt<span style=color:#bbb>
-</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>keyFile</span>:<span style=color:#bbb> </span>wildcard.example.com.key<span style=color:#bbb>
-</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>names</span>:<span style=color:#bbb>
-</span><span style=color:#bbb>        </span>- <span style=color:#cd5555>&#34;openshift.example.com&#34;</span><span style=color:#bbb>
-</span></code></pre></div><p>Restart the master and watch for TLS errors for a few seconds. You will notice problems pretty quickly if you affected the internal API URL.</p>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>systemctl restart atomic-openshift-master-api
-journalctl -f
-</code></pre></div><h1 id=using-ansible>Using Ansible</h1>
-<p>There is support for this in <a href=https://github.com/openshift/openshift-ansible>the playbook</a>, which is probably the best method, but <strong>I have not tested this yet</strong>.</p>
-<p>Update your inventory for <a href=https://docs.openshift.com/enterprise/3.1/install_config/install/advanced_install.html#advanced-install-custom-certificates>OpenShift Advanced Installation</a> while referring to the <a href=https://github.com/openshift/openshift-ansible/blob/master/inventory/byo/hosts.ose.example#L180>byo example</a>.</p>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ini data-lang=ini><span style=color:#658b00>openshift_master_cluster_method</span>=<span style=color:#cd5555>native</span>
-<span style=color:#658b00>openshift_master_cluster_hostname</span>=<span style=color:#cd5555>master.os.example.com</span>
-<span style=color:#658b00>openshift_master_cluster_public_hostname</span>=<span style=color:#cd5555>openshift.example.com</span>
-<span style=color:#658b00>openshift_master_overwrite_named_certificates</span>=<span style=color:#cd5555>true</span>
-<span style=color:#228b22>#</span>
-<span style=color:#228b22># Provide local certificate paths which will be deployed to masters</span>
-<span style=color:#658b00>openshift_master_named_certificates</span>=<span style=color:#cd5555>[{&#34;certfile&#34;: &#34;wildcard.example.com.crt&#34;, &#34;keyfile&#34;: &#34;wildcard.example.com.key&#34;}]</span>
-<span style=color:#228b22>#</span>
-<span style=color:#228b22># Detected names may be overridden by specifying the &#34;names&#34; key</span>
-<span style=color:#228b22>#openshift_master_named_certificates=[{&#34;certfile&#34;: &#34;wildcard.example.com.crt&#34;, &#34;keyfile&#34;: &#34;wildcard.example.com.key&#34;, &#34;names&#34;: [&#34;openshift.example.com&#34;]}]</span>
-</code></pre></div><h1 id=related-reading>Related Reading</h1>
-<ul>
-<li><a href=https://docs.openshift.com/enterprise/3.1/install_config/install/advanced_install.html#configuring-ansible>OpenShift Advanced Installation</a></li>
-<li><a href=https://docs.openshift.org/latest/install_config/certificate_customization.html>OpenShift Certificate Customization</a></li>
-<li>Trello Card <a href=https://trello.com/c/Gc3FDSK8>Allow setting custom serving certs for specific hostnames in API / Console using SNI</a></li>
-<li><a href=https://github.com/openshift/origin/pull/5097>PR5097</a></li>
-<li><a href=http://akrambenaissi.com/2016/02/21/run-openshift-console-on-port-443/>Run OpenShift console on port 443</a></li>
-<li><a href=https://alword.wordpress.com/2016/03/11/make-openshift-console-available-on-port-443-https/>Make OpenShift console available on port 443</a></li>
-</ul>
-</div>
-<div id=comments>
-<div id=disqus_thread></div>
-<script type=application/javascript>var disqus_config=function(){};(function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById('disqus_thread').innerHTML='Disqus comments not available by default when the website is previewed locally.';return}var b=document,a=b.createElement('script');a.async=!0,a.src='//dlbewleygithubio.disqus.com/embed.js',a.setAttribute('data-timestamp',+new Date),(b.head||b.body).appendChild(a)})()</script>
-<noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript>
-<a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a>
-</div>
-</div>
-<div class=col-md-3>
-<div class="panel panel-default sidebar-menu">
-<div class=panel-heading>
-<h3 class=panel-title>Search</h3>
-</div>
-<div class=panel-body>
-<form action=//google.com/search method=get accept-charset=utf-8 role=search>
-<div class=input-group>
-<input type=search name=q class=form-control placeholder=Search>
+<i class="fas fa-align-justify"></i></button></div></div><div class="navbar-collapse collapse" id=navigation><ul class="nav navbar-nav navbar-right"><li class=dropdown><a href=/>Home</a></li><li class="dropdown active"><a href=/blog/>Blog</a></li><li class=dropdown><a href=/contact/>Contact</a></li></ul></div><div class="collapse clearfix" id=search><form class=navbar-form role=search><div class=input-group><input type=text class=form-control placeholder=Search>
+<span class=input-group-btn><button type=submit class="btn btn-template-main"><i class="fas fa-search"></i></button></span></div></form></div></div></div></header><style>.bar.background-image-fixed-banner{background:url(/img/banners/banner-21.jpg)50% 0 no-repeat;background-attachment:fixed;background-size:cover;padding:100px 5%;text-shadow:2px 3px 4px var(--primary-accent),0 0 1em var(--navbar-border-top)}</style><div><div class=container><div class=row><div class=col-md-12><section class="bar background-image-fixed-banner heading h2 color-white text-center"><h1>Changing the SSL Certificate for OpenShift Console</h1></section></div></div></div></div><div id=content><div class=container><div class=row><div class=col-md-9 id=blog-post><p class="text-muted text-uppercase mb-small text-right">March 24, 2016</p><div id=post-content><p>OpenShift has an internal CA for generating certificates to authenticate intra-cluster communication, but your browser doesn&rsquo;t trust this CA. Perhaps you want to fix that without mucking with the internal SSL communication? I did. Here is how.</p><p>This <a href=https://docs.openshift.org/latest/install_config/certificate_customization.html>OpenShift doc</a> <em>explains</em> how to do this, but it isn&rsquo;t very clear, to me at least.</p><h1 id=overview>Overview</h1><p>An outline of the steps:</p><ul><li>Only make changes to the public URLs and not any internal URLs.</li><li>Create a <code>namedCertificates</code> section in both <code>/servingInfo</code> and <code>/assetConfig/servingInfo</code> sections of <code>/etc/origin/master/master-config.yaml</code>.</li><li>In those repeated sections:<ul><li>identify a certificate and key</li><li>identify the hostname(s) to match with that cert/key pair</li></ul></li></ul><p>Your installation may include the following hosts:</p><table><thead><tr><th>Name</th><th>IP</th></tr></thead><tbody><tr><td>ose-ha-master-01.example.com</td><td>192.0.2.21</td></tr><tr><td>ose-ha-master-02.example.com</td><td>192.0.2.22</td></tr><tr><td>ose-ha-master-03.example.com</td><td>192.0.2.23</td></tr><tr><td>ose-ha-lb-01.example.com</td><td>192.0.2.41</td></tr><tr><td>master.os.example.com</td><td><em>CNAME ose-ha-lb-01.example.com</em></td></tr><tr><td>openshift.example.com</td><td><em>CNAME ose-ha-lb-01.example.com</em></td></tr></tbody></table><p>In this case <code>openshift.example.com</code> is an alias to the loadbalancer which directs traffic back to the 3 masters. The load balancer passes the traffic through for TLS termination on port 8443 of the master servers. Therefore, all three masters need to be updated.</p><h1 id=install-your-certificate>Install Your Certificate</h1><p>Copy your certificate and key to the masters in the <code>/etc/origin/master</code> directory and give them the following names.</p><ul><li><code>wildcard.example.com.crt</code></li><li><code>wildcard.example.com.key</code></li></ul><p>Update <code>/etc/origin/master/master-config.yaml</code> to reference those certificates when accessing the public master URL.</p><p><strong>Before</strong></p><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=display:flex><span><span style=color:#8b008b;font-weight:700>apiLevels</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb></span>- v1<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>apiVersion</span>:<span style=color:#bbb> </span>v1<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>assetConfig</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>logoutURL</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;&#34;</span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>masterPublicURL</span>:<span style=color:#bbb> </span>https://openshift.example.com:8443<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>publicURL</span>:<span style=color:#bbb> </span>https://openshift.example.com:8443/console/<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>servingInfo</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>bindAddress</span>:<span style=color:#bbb> </span><span style=color:#b452cd>0.0.0.0</span>:<span style=color:#b452cd>8443</span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>bindNetwork</span>:<span style=color:#bbb> </span>tcp4<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>certFile</span>:<span style=color:#bbb> </span>master.server.crt<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>clientCA</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;&#34;</span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>keyFile</span>:<span style=color:#bbb> </span>master.server.key<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>maxRequestsInFlight</span>:<span style=color:#bbb> </span><span style=color:#b452cd>0</span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>requestTimeoutSeconds</span>:<span style=color:#bbb> </span><span style=color:#b452cd>0</span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>metricsPublicURL</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;https://metrics.os.example.com/hawkular/metrics&#34;</span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb></span><span style=color:#228b22>#... skip to the botom</span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>servingInfo</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>bindAddress</span>:<span style=color:#bbb> </span><span style=color:#b452cd>0.0.0.0</span>:<span style=color:#b452cd>8443</span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>bindNetwork</span>:<span style=color:#bbb> </span>tcp4<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>certFile</span>:<span style=color:#bbb> </span>master.server.crt<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>clientCA</span>:<span style=color:#bbb> </span>ca.crt<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>keyFile</span>:<span style=color:#bbb> </span>master.server.key<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>maxRequestsInFlight</span>:<span style=color:#bbb> </span><span style=color:#b452cd>500</span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>requestTimeoutSeconds</span>:<span style=color:#bbb> </span><span style=color:#b452cd>3600</span><span style=color:#bbb>
+</span></span></span></code></pre></div><p><strong>After</strong></p><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=display:flex><span><span style=color:#8b008b;font-weight:700>apiLevels</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb></span>- v1<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>apiVersion</span>:<span style=color:#bbb> </span>v1<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>assetConfig</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>logoutURL</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;&#34;</span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>masterPublicURL</span>:<span style=color:#bbb> </span>https://openshift.example.com:8443<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>publicURL</span>:<span style=color:#bbb> </span>https://openshift.example.com:8443/console/<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>servingInfo</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>bindAddress</span>:<span style=color:#bbb> </span><span style=color:#b452cd>0.0.0.0</span>:<span style=color:#b452cd>8443</span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>bindNetwork</span>:<span style=color:#bbb> </span>tcp4<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>certFile</span>:<span style=color:#bbb> </span>master.server.crt<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>clientCA</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;&#34;</span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>keyFile</span>:<span style=color:#bbb> </span>master.server.key<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>maxRequestsInFlight</span>:<span style=color:#bbb> </span><span style=color:#b452cd>0</span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>requestTimeoutSeconds</span>:<span style=color:#bbb> </span><span style=color:#b452cd>0</span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>namedCertificates</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>      </span>- <span style=color:#8b008b;font-weight:700>certFile</span>:<span style=color:#bbb> </span>wildcard.example.com.crt<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>keyFile</span>:<span style=color:#bbb> </span>wildcard.example.com.key<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>names</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>          </span>- <span style=color:#cd5555>&#34;openshift.example.com&#34;</span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>metricsPublicURL</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;https://metrics.os.example.com/hawkular/metrics&#34;</span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb></span><span style=color:#228b22>#... skip to the botom</span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>servingInfo</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>bindAddress</span>:<span style=color:#bbb> </span><span style=color:#b452cd>0.0.0.0</span>:<span style=color:#b452cd>8443</span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>bindNetwork</span>:<span style=color:#bbb> </span>tcp4<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>certFile</span>:<span style=color:#bbb> </span>master.server.crt<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>clientCA</span>:<span style=color:#bbb> </span>ca.crt<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>keyFile</span>:<span style=color:#bbb> </span>master.server.key<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>maxRequestsInFlight</span>:<span style=color:#bbb> </span><span style=color:#b452cd>500</span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>requestTimeoutSeconds</span>:<span style=color:#bbb> </span><span style=color:#b452cd>3600</span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>namedCertificates</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>    </span>- <span style=color:#8b008b;font-weight:700>certFile</span>:<span style=color:#bbb> </span>wildcard.example.com.crt<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>keyFile</span>:<span style=color:#bbb> </span>wildcard.example.com.key<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>names</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>        </span>- <span style=color:#cd5555>&#34;openshift.example.com&#34;</span><span style=color:#bbb>
+</span></span></span></code></pre></div><p>Restart the master and watch for TLS errors for a few seconds. You will notice problems pretty quickly if you affected the internal API URL.</p><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>systemctl restart atomic-openshift-master-api
+</span></span><span style=display:flex><span>journalctl -f
+</span></span></code></pre></div><h1 id=using-ansible>Using Ansible</h1><p>There is support for this in <a href=https://github.com/openshift/openshift-ansible>the playbook</a>, which is probably the best method, but <strong>I have not tested this yet</strong>.</p><p>Update your inventory for <a href=https://docs.openshift.com/enterprise/3.1/install_config/install/advanced_install.html#advanced-install-custom-certificates>OpenShift Advanced Installation</a> while referring to the <a href=https://github.com/openshift/openshift-ansible/blob/master/inventory/byo/hosts.ose.example#L180>byo example</a>.</p><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ini data-lang=ini><span style=display:flex><span><span style=color:#658b00>openshift_master_cluster_method</span>=<span style=color:#cd5555>native</span>
+</span></span><span style=display:flex><span><span style=color:#658b00>openshift_master_cluster_hostname</span>=<span style=color:#cd5555>master.os.example.com</span>
+</span></span><span style=display:flex><span><span style=color:#658b00>openshift_master_cluster_public_hostname</span>=<span style=color:#cd5555>openshift.example.com</span>
+</span></span><span style=display:flex><span><span style=color:#658b00>openshift_master_overwrite_named_certificates</span>=<span style=color:#cd5555>true</span>
+</span></span><span style=display:flex><span><span style=color:#228b22>#</span>
+</span></span><span style=display:flex><span><span style=color:#228b22># Provide local certificate paths which will be deployed to masters</span>
+</span></span><span style=display:flex><span><span style=color:#658b00>openshift_master_named_certificates</span>=<span style=color:#cd5555>[{&#34;certfile&#34;: &#34;wildcard.example.com.crt&#34;, &#34;keyfile&#34;: &#34;wildcard.example.com.key&#34;}]</span>
+</span></span><span style=display:flex><span><span style=color:#228b22>#</span>
+</span></span><span style=display:flex><span><span style=color:#228b22># Detected names may be overridden by specifying the &#34;names&#34; key</span>
+</span></span><span style=display:flex><span><span style=color:#228b22>#openshift_master_named_certificates=[{&#34;certfile&#34;: &#34;wildcard.example.com.crt&#34;, &#34;keyfile&#34;: &#34;wildcard.example.com.key&#34;, &#34;names&#34;: [&#34;openshift.example.com&#34;]}]</span>
+</span></span></code></pre></div><h1 id=related-reading>Related Reading</h1><ul><li><a href=https://docs.openshift.com/enterprise/3.1/install_config/install/advanced_install.html#configuring-ansible>OpenShift Advanced Installation</a></li><li><a href=https://docs.openshift.org/latest/install_config/certificate_customization.html>OpenShift Certificate Customization</a></li><li>Trello Card <a href=https://trello.com/c/Gc3FDSK8>Allow setting custom serving certs for specific hostnames in API / Console using SNI</a></li><li><a href=https://github.com/openshift/origin/pull/5097>PR5097</a></li><li><a href=http://akrambenaissi.com/2016/02/21/run-openshift-console-on-port-443/>Run OpenShift console on port 443</a></li><li><a href=https://alword.wordpress.com/2016/03/11/make-openshift-console-available-on-port-443-https/>Make OpenShift console available on port 443</a></li></ul></div><div id=comments><div id=disqus_thread></div><script type=application/javascript>window.disqus_config=function(){},function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById("disqus_thread").innerHTML="Disqus comments not available by default when the website is previewed locally.";return}var t=document,e=t.createElement("script");e.async=!0,e.src="//dlbewleygithubio.disqus.com/embed.js",e.setAttribute("data-timestamp",+new Date),(t.head||t.body).appendChild(e)}()</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript><a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a></div></div><div class=col-md-3><div class="panel panel-default sidebar-menu"><div class=panel-heading><h3 class=panel-title>Search</h3></div><div class=panel-body><form action=//google.com/search method=get accept-charset=utf-8 role=search><div class=input-group><input type=search name=q class=form-control placeholder=Search>
 <input type=hidden name=sitesearch value=http://guifreelife.com/>
-<span class=input-group-btn>
-<button type=submit class="btn btn-template-main"><i class="fas fa-search"></i></button>
-</span>
-</div>
-</form>
-</div>
-</div>
-<div class="panel sidebar-menu">
-<div class=panel-heading>
-<h3 class=panel-title>Tagged</h3>
-</div>
-<div class=panel-body>
-<ul class=tag-cloud>
-<li class=active>
-<a href=/tags/kubernetes><i class="fas fa-tags"></i> kubernetes</a>
-</li>
-<li class=active>
-<a href=/tags/openshift><i class="fas fa-tags"></i> openshift</a>
-</li>
-<li class=active>
-<a href=/tags/OCP3><i class="fas fa-tags"></i> OCP3</a>
-</li>
-<li class=active>
-<a href=/tags/ssl><i class="fas fa-tags"></i> ssl</a>
-</li>
-</ul>
-</div>
-</div>
-<div class="panel sidebar-menu">
-<div class=panel-heading>
-<h3 class=panel-title>TOC</h3>
-</div>
-<div class=panel-body>
-<nav id=TableOfContents>
-<ul>
-<li><a href=#overview>Overview</a></li>
-<li><a href=#install-your-certificate>Install Your Certificate</a></li>
-<li><a href=#using-ansible>Using Ansible</a></li>
-<li><a href=#related-reading>Related Reading</a></li>
-</ul>
-</nav>
-</div>
-</div>
-<div class="panel sidebar-menu">
-<div class=panel-heading>
-<h3 class=panel-title>Tags</h3>
-</div>
-<div class=panel-body>
-<ul class=tag-cloud>
-<li>
-<a href=/tags/AWS><i class="fas fa-tags"></i> AWS</a>
-</li>
-<li>
-<a href=/tags/CDK><i class="fas fa-tags"></i> CDK</a>
-</li>
-<li>
-<a href=/tags/OCP3><i class="fas fa-tags"></i> OCP3</a>
-</li>
-<li>
-<a href=/tags/OCP4><i class="fas fa-tags"></i> OCP4</a>
-</li>
-<li>
-<a href=/tags/RHACM><i class="fas fa-tags"></i> RHACM</a>
-</li>
-<li>
-<a href=/tags/RHACS><i class="fas fa-tags"></i> RHACS</a>
-</li>
-<li>
-<a href=/tags/RHEL><i class="fas fa-tags"></i> RHEL</a>
-</li>
-<li>
-<a href=/tags/ansible><i class="fas fa-tags"></i> ansible</a>
-</li>
-<li>
-<a href=/tags/automation><i class="fas fa-tags"></i> automation</a>
-</li>
-<li>
-<a href=/tags/azure><i class="fas fa-tags"></i> azure</a>
-</li>
-<li>
-<a href=/tags/debugging><i class="fas fa-tags"></i> debugging</a>
-</li>
-<li>
-<a href=/tags/docker><i class="fas fa-tags"></i> docker</a>
-</li>
-<li>
-<a href=/tags/draft><i class="fas fa-tags"></i> draft</a>
-</li>
-<li>
-<a href=/tags/etcd><i class="fas fa-tags"></i> etcd</a>
-</li>
-<li>
-<a href=/tags/git><i class="fas fa-tags"></i> git</a>
-</li>
-<li>
-<a href=/tags/haproxy><i class="fas fa-tags"></i> haproxy</a>
-</li>
-<li>
-<a href=/tags/heat><i class="fas fa-tags"></i> heat</a>
-</li>
-<li>
-<a href=/tags/hybrid-cloud><i class="fas fa-tags"></i> hybrid-cloud</a>
-</li>
-<li>
-<a href=/tags/install><i class="fas fa-tags"></i> install</a>
-</li>
-<li>
-<a href=/tags/kubernetes><i class="fas fa-tags"></i> kubernetes</a>
-</li>
-<li>
-<a href=/tags/mac><i class="fas fa-tags"></i> mac</a>
-</li>
-<li>
-<a href=/tags/metrics><i class="fas fa-tags"></i> metrics</a>
-</li>
-<li>
-<a href=/tags/migration><i class="fas fa-tags"></i> migration</a>
-</li>
-<li>
-<a href=/tags/monitoring><i class="fas fa-tags"></i> monitoring</a>
-</li>
-<li>
-<a href=/tags/networking><i class="fas fa-tags"></i> networking</a>
-</li>
-<li>
-<a href=/tags/openshift><i class="fas fa-tags"></i> openshift</a>
-</li>
-<li>
-<a href=/tags/openstack><i class="fas fa-tags"></i> openstack</a>
-</li>
-<li>
-<a href=/tags/operators><i class="fas fa-tags"></i> operators</a>
-</li>
-<li>
-<a href=/tags/prometheus><i class="fas fa-tags"></i> prometheus</a>
-</li>
-<li>
-<a href=/tags/python><i class="fas fa-tags"></i> python</a>
-</li>
-<li>
-<a href=/tags/router><i class="fas fa-tags"></i> router</a>
-</li>
-<li>
-<a href=/tags/security><i class="fas fa-tags"></i> security</a>
-</li>
-<li>
-<a href=/tags/ssl><i class="fas fa-tags"></i> ssl</a>
-</li>
-<li>
-<a href=/tags/stackrox><i class="fas fa-tags"></i> stackrox</a>
-</li>
-<li>
-<a href=/tags/storage><i class="fas fa-tags"></i> storage</a>
-</li>
-<li>
-<a href=/tags/troubleshooting><i class="fas fa-tags"></i> troubleshooting</a>
-</li>
-<li>
-<a href=/tags/upgrade><i class="fas fa-tags"></i> upgrade</a>
-</li>
-<li>
-<a href=/tags/vagrant><i class="fas fa-tags"></i> vagrant</a>
-</li>
-<li>
-<a href=/tags/virtualization><i class="fas fa-tags"></i> virtualization</a>
-</li>
-<li>
-<a href=/tags/webinar><i class="fas fa-tags"></i> webinar</a>
-</li>
-<li>
-<a href=/tags/windows><i class="fas fa-tags"></i> windows</a>
-</li>
-<li>
-<a href=/tags/zabbix><i class="fas fa-tags"></i> zabbix</a>
-</li>
-<li>
-<a href=/tags/zimbra><i class="fas fa-tags"></i> zimbra</a>
-</li>
-</ul>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<footer id=footer>
-<div class=container>
-<div class="col-md-4 col-sm-6">
-<h4>Share</h4>
-<i class="fab fa-2x fa-twitter" title="Share this on Twitter" onclick="window.open('http://twitter.com/home?status=http://guifreelife.com/blog/2016/03/24/Replace-OpenShift-Console-SSL-Certificate/')"></i>
-<i class="fab fa-2x fa-facebook" title="Share this on Facebook" onclick="window.open('http://www.facebook.com/share.php?u=http://guifreelife.com/blog/2016/03/24/Replace-OpenShift-Console-SSL-Certificate/')"></i>
-<i class="fab fa-2x fa-linkedin" title="Share this on Linkedin" onclick="window.open('https://www.linkedin.com/shareArticle?mini=true&url=http://guifreelife.com/blog/2016/03/24/Replace-OpenShift-Console-SSL-Certificate/&title=&summary=&source=')"></i>
-<i class="fab fa-2x fa-google-plus" title="Share this on Google Currents" onclick="window.open('https://plus.google.com/share?url=http://guifreelife.com/blog/2016/03/24/Replace-OpenShift-Console-SSL-Certificate/')"></i>
-<i class="fa fa-2x fa-envelope" title="Share this through Email" onclick="window.open('mailto:?&body=http://guifreelife.com/blog/2016/03/24/Replace-OpenShift-Console-SSL-Certificate/')"></i>
-<h4>About us</h4>
-<p>GUI Free Life is the personal, technical blog of Dale Bewley. Comments and opinions are my own and not that of my employers.</p>
-<hr class="hidden-md hidden-lg hidden-sm">
-</div>
-<div class="col-md-4 col-sm-6">
-<h4>Recent posts</h4>
-<div class=blog-entries>
-<div class="item same-height-row clearfix">
-<div class="image same-height-always">
-<a href=http://guifreelife.com/blog/2023/09/22/Storing-OpenShift-Credentials-with-1Password/>
-<img src=/img/banners/mushroom-moss.jpg class=img-responsive alt="Storing OpenShift Credentials with 1Password">
-</a>
-</div>
-<div class="name same-height-always">
-<h5><a href=http://guifreelife.com/blog/2023/09/22/Storing-OpenShift-Credentials-with-1Password/>Storing OpenShift Credentials with 1Password</a></h5>
-</div>
-</div>
-<div class="item same-height-row clearfix">
-<div class="image same-height-always">
-<a href=http://guifreelife.com/blog/2023/04/06/Accessing-Ceph-CLI-with-OpenShift-Data-Foundation/>
-<img src=/images/uncovered-bumper.png class=img-responsive alt="Accessing the Ceph CLI with OpenShift Data Foundation">
-</a>
-</div>
-<div class="name same-height-always">
-<h5><a href=http://guifreelife.com/blog/2023/04/06/Accessing-Ceph-CLI-with-OpenShift-Data-Foundation/>Accessing the Ceph CLI with OpenShift Data Foundation</a></h5>
-</div>
-</div>
-<div class="item same-height-row clearfix">
-<div class="image same-height-always">
-<a href=http://guifreelife.com/blog/2023/03/09/Extracting-CA-Certs-From-Kubeconfig/>
-<img src=/img/banners/banner-buffy-xmas.png class=img-responsive alt="Extracting TLS CA Certificates from Kubeconfig File">
-</a>
-</div>
-<div class="name same-height-always">
-<h5><a href=http://guifreelife.com/blog/2023/03/09/Extracting-CA-Certs-From-Kubeconfig/>Extracting TLS CA Certificates from Kubeconfig File</a></h5>
-</div>
-</div>
-</div>
-<hr class="hidden-md hidden-lg">
-</div>
-<div class="col-md-4 col-sm-6">
-<h4>Contact</h4>
-<p class=text-uppercase><strong>Dale Bewley</strong>
-<br>Oakland
-<br>California
-<br>
-<strong>USA</strong>
-</p>
-<a href=/contact class="btn btn-small btn-template-main">Go to contact page</a>
-<hr class="hidden-md hidden-lg hidden-sm">
-</div>
-</div>
-</footer>
-<div id=copyright>
-<div class=container>
-<div class=col-md-12>
-<p class=pull-left>Copyright (c) 2021, Dale Bewley; all rights reserved.</p>
-<p class=pull-right>
-Template by <a href=https://bootstrapious.com/p/universal-business-e-commerce-template>Bootstrapious</a>.
-Ported to Hugo by <a href=https://github.com/devcows/hugo-universal-theme>DevCows</a>.
-</p>
-</div>
-</div>
-</div>
-</div>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-39TSW9349X"></script>
-<script>var doNotTrack=!1;if(!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date),gtag('config','G-39TSW9349X',{anonymize_ip:!1})}</script>
-<script src=//code.jquery.com/jquery-3.1.1.min.js integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin=anonymous></script>
+<span class=input-group-btn><button type=submit class="btn btn-template-main"><i class="fas fa-search"></i></button></span></div></form></div></div><div class="panel sidebar-menu"><div class=panel-heading><h3 class=panel-title>Tagged</h3></div><div class=panel-body><ul class=tag-cloud><li class=active><a href=/tags/kubernetes><i class="fas fa-tags"></i> kubernetes</a></li><li class=active><a href=/tags/openshift><i class="fas fa-tags"></i> openshift</a></li><li class=active><a href=/tags/OCP3><i class="fas fa-tags"></i> OCP3</a></li><li class=active><a href=/tags/ssl><i class="fas fa-tags"></i> ssl</a></li></ul></div></div><div class="panel sidebar-menu"><div class=panel-heading><h3 class=panel-title>TOC</h3></div><div class=panel-body><nav id=TableOfContents><ul><li><a href=#overview>Overview</a></li><li><a href=#install-your-certificate>Install Your Certificate</a></li><li><a href=#using-ansible>Using Ansible</a></li><li><a href=#related-reading>Related Reading</a></li></ul></nav></div></div><div class="panel sidebar-menu"><div class=panel-heading><h3 class=panel-title>Tags</h3></div><div class=panel-body><ul class=tag-cloud><li><a href=/tags/AWS><i class="fas fa-tags"></i> AWS</a></li><li><a href=/tags/CDK><i class="fas fa-tags"></i> CDK</a></li><li><a href=/tags/OCP3><i class="fas fa-tags"></i> OCP3</a></li><li><a href=/tags/OCP4><i class="fas fa-tags"></i> OCP4</a></li><li><a href=/tags/RHACM><i class="fas fa-tags"></i> RHACM</a></li><li><a href=/tags/RHACS><i class="fas fa-tags"></i> RHACS</a></li><li><a href=/tags/RHEL><i class="fas fa-tags"></i> RHEL</a></li><li><a href=/tags/ansible><i class="fas fa-tags"></i> ansible</a></li><li><a href=/tags/automation><i class="fas fa-tags"></i> automation</a></li><li><a href=/tags/azure><i class="fas fa-tags"></i> azure</a></li><li><a href=/tags/debugging><i class="fas fa-tags"></i> debugging</a></li><li><a href=/tags/docker><i class="fas fa-tags"></i> docker</a></li><li><a href=/tags/draft><i class="fas fa-tags"></i> draft</a></li><li><a href=/tags/etcd><i class="fas fa-tags"></i> etcd</a></li><li><a href=/tags/git><i class="fas fa-tags"></i> git</a></li><li><a href=/tags/haproxy><i class="fas fa-tags"></i> haproxy</a></li><li><a href=/tags/heat><i class="fas fa-tags"></i> heat</a></li><li><a href=/tags/hybrid-cloud><i class="fas fa-tags"></i> hybrid-cloud</a></li><li><a href=/tags/install><i class="fas fa-tags"></i> install</a></li><li><a href=/tags/kubernetes><i class="fas fa-tags"></i> kubernetes</a></li><li><a href=/tags/mac><i class="fas fa-tags"></i> mac</a></li><li><a href=/tags/metrics><i class="fas fa-tags"></i> metrics</a></li><li><a href=/tags/migration><i class="fas fa-tags"></i> migration</a></li><li><a href=/tags/monitoring><i class="fas fa-tags"></i> monitoring</a></li><li><a href=/tags/networking><i class="fas fa-tags"></i> networking</a></li><li><a href=/tags/openshift><i class="fas fa-tags"></i> openshift</a></li><li><a href=/tags/openstack><i class="fas fa-tags"></i> openstack</a></li><li><a href=/tags/operators><i class="fas fa-tags"></i> operators</a></li><li><a href=/tags/prometheus><i class="fas fa-tags"></i> prometheus</a></li><li><a href=/tags/python><i class="fas fa-tags"></i> python</a></li><li><a href=/tags/router><i class="fas fa-tags"></i> router</a></li><li><a href=/tags/security><i class="fas fa-tags"></i> security</a></li><li><a href=/tags/ssl><i class="fas fa-tags"></i> ssl</a></li><li><a href=/tags/stackrox><i class="fas fa-tags"></i> stackrox</a></li><li><a href=/tags/storage><i class="fas fa-tags"></i> storage</a></li><li><a href=/tags/troubleshooting><i class="fas fa-tags"></i> troubleshooting</a></li><li><a href=/tags/upgrade><i class="fas fa-tags"></i> upgrade</a></li><li><a href=/tags/vagrant><i class="fas fa-tags"></i> vagrant</a></li><li><a href=/tags/virtualization><i class="fas fa-tags"></i> virtualization</a></li><li><a href=/tags/webinar><i class="fas fa-tags"></i> webinar</a></li><li><a href=/tags/windows><i class="fas fa-tags"></i> windows</a></li><li><a href=/tags/zabbix><i class="fas fa-tags"></i> zabbix</a></li><li><a href=/tags/zimbra><i class="fas fa-tags"></i> zimbra</a></li></ul></div></div></div></div></div></div><footer id=footer><div class=container><div class="col-md-4 col-sm-6"><h4>Share</h4><i class="fab fa-2x fa-twitter" title="Share this on Twitter" onclick='window.open("http://twitter.com/home?status=http://guifreelife.com/blog/2016/03/24/Replace-OpenShift-Console-SSL-Certificate/")'></i>
+<i class="fab fa-2x fa-facebook" title="Share this on Facebook" onclick='window.open("http://www.facebook.com/share.php?u=http://guifreelife.com/blog/2016/03/24/Replace-OpenShift-Console-SSL-Certificate/")'></i>
+<i class="fab fa-2x fa-linkedin" title="Share this on Linkedin" onclick='window.open("https://www.linkedin.com/shareArticle?mini=true&url=http://guifreelife.com/blog/2016/03/24/Replace-OpenShift-Console-SSL-Certificate/&title=&summary=&source=")'></i>
+<i class="fab fa-2x fa-google-plus" title="Share this on Google Currents" onclick='window.open("https://plus.google.com/share?url=http://guifreelife.com/blog/2016/03/24/Replace-OpenShift-Console-SSL-Certificate/")'></i>
+<i class="fa fa-2x fa-envelope" title="Share this through Email" onclick='window.open("mailto:?&body=http://guifreelife.com/blog/2016/03/24/Replace-OpenShift-Console-SSL-Certificate/")'></i><h4>About us</h4><p>GUI Free Life is the personal, technical blog of Dale Bewley. Comments and opinions are my own and not that of my employers.</p><hr class="hidden-md hidden-lg hidden-sm"></div><div class="col-md-4 col-sm-6"><h4>Recent posts</h4><div class=blog-entries><div class="item same-height-row clearfix"><div class="image same-height-always"><a href=http://guifreelife.com/blog/2024/03/11/Placing-Open-Cluster-Management-Policies-on-Kubernetes/><img src=/images/DALL%c2%b7E%202024-01-30%2014.28.24%20-%20A%20whimsical%20scene%20featuring%20a%20traffic%20cop%20standing%20on%20a%20cloud,%20energetically%20directing%20a%20chaotic%20stream%20of%20various%20floating%20documents%20-%20papers,%20folder.png class=img-responsive alt="Using Placements to Apply Open Cluster Management Policies to Kubernetes Clusters"></a></div><div class="name same-height-always"><h5><a href=http://guifreelife.com/blog/2024/03/11/Placing-Open-Cluster-Management-Policies-on-Kubernetes/>Using Placements to Apply Open Cluster Management Policies to Kubernetes Clusters</a></h5></div></div><div class="item same-height-row clearfix"><div class="image same-height-always"><a href=http://guifreelife.com/blog/2023/09/22/Storing-OpenShift-Credentials-with-1Password/><img src=/img/banners/mushroom-moss.jpg class=img-responsive alt="Storing OpenShift Credentials with 1Password"></a></div><div class="name same-height-always"><h5><a href=http://guifreelife.com/blog/2023/09/22/Storing-OpenShift-Credentials-with-1Password/>Storing OpenShift Credentials with 1Password</a></h5></div></div><div class="item same-height-row clearfix"><div class="image same-height-always"><a href=http://guifreelife.com/blog/2023/04/06/Accessing-Ceph-CLI-with-OpenShift-Data-Foundation/><img src=/images/uncovered-bumper.png class=img-responsive alt="Accessing the Ceph CLI with OpenShift Data Foundation"></a></div><div class="name same-height-always"><h5><a href=http://guifreelife.com/blog/2023/04/06/Accessing-Ceph-CLI-with-OpenShift-Data-Foundation/>Accessing the Ceph CLI with OpenShift Data Foundation</a></h5></div></div></div><hr class="hidden-md hidden-lg"></div><div class="col-md-4 col-sm-6"><h4>Contact</h4><p class=text-uppercase><strong>Dale Bewley</strong><br>Oakland<br>California<br><strong>USA</strong></p><a href=/contact class="btn btn-small btn-template-main">Go to contact page</a><hr class="hidden-md hidden-lg hidden-sm"></div></div></footer><div id=copyright><div class=container><div class=col-md-12><p class=pull-left>Copyright (c) 2021, Dale Bewley; all rights reserved.</p><p class=pull-right>Template by <a href=https://bootstrapious.com/p/universal-business-e-commerce-template>Bootstrapious</a>.
+Ported to Hugo by <a href=https://github.com/devcows/hugo-universal-theme>DevCows</a>.</p></div></div></div></div><script async src="https://www.googletagmanager.com/gtag/js?id=G-39TSW9349X"></script>
+<script>var doNotTrack=!1;if(!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","G-39TSW9349X",{anonymize_ip:!1})}</script><script src=//code.jquery.com/jquery-3.1.1.min.js integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin=anonymous></script>
 <script src=//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js integrity=sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa crossorigin=anonymous></script>
 <script src=//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js></script>
 <script src=//cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/jquery.waypoints.min.js></script>
@@ -541,6 +94,4 @@ Ported to Hugo by <a href=https://github.com/devcows/hugo-universal-theme>DevCow
 <script src=/js/hpneo.gmaps.js></script>
 <script src=/js/gmaps.init.js></script>
 <script src=/js/front.js></script>
-<script src=/js/owl.carousel.min.js></script>
-</body>
-</html>
+<script src=/js/owl.carousel.min.js></script></body></html>

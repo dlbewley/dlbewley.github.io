@@ -1,175 +1,11 @@
-<!doctype html><html lang=en-us>
-<head>
-<meta charset=utf-8>
-<meta name=robots content="all,follow">
-<meta name=googlebot content="index,follow,snippet,archive">
-<meta name=viewport content="width=device-width,initial-scale=1">
-<title>Tuning ext4 Creation and Mount Options for Zimbra | GUI Free Life</title>
-<meta name=author content="Dale Bewley">
-<meta name=keywords content="bewley,guifreelife,ansible,zimbra">
-<meta name=description content="GUI Free Life, by Dale Bewley covers Kubernetes, Linux, Networking, OpenShift and more">
-<meta name=generator content="Hugo 0.91.2">
-<link href="//fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,500,700,800" rel=stylesheet type=text/css>
-<link rel=stylesheet href=//use.fontawesome.com/releases/v5.11.2/css/all.css>
-<link rel=stylesheet href=//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css integrity=sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u crossorigin=anonymous>
-<link href=/css/animate.css rel=stylesheet>
-<link href=/css/style.turquoise.css rel=stylesheet id=theme-stylesheet>
-<link href=/css/custom.css rel=stylesheet><!--[if lt IE 9]><script src=https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js></script>
-<script src=https://oss.maxcdn.com/respond/1.4.2/respond.min.js></script><![endif]-->
-<link rel="shortcut icon" href=/img/favicon.ico type=image/x-icon>
-<link rel=apple-touch-icon href=/img/apple-touch-icon.png>
-<link href=/css/owl.carousel.css rel=stylesheet>
-<link href=/css/owl.theme.css rel=stylesheet>
-<link rel=alternate href=http://guifreelife.com/index.xml type=application/rss+xml title="GUI Free Life">
-<meta property="og:locale" content="en_us">
-<meta property="og:site_name" content="GUI Free Life">
-<meta property="og:title" content="Tuning ext4 Creation and Mount Options for Zimbra">
-<meta property="og:type" content="article">
-<meta property="og:url" content="http://guifreelife.com/blog/2015/02/02/Ext4-Tuning-and-Mount-Options-for-Zimbra/">
-<meta property="og:description" content="GUI Free Life, by Dale Bewley covers Kubernetes, Linux, Networking, OpenShift and more">
-<meta property="og:image" content="http://guifreelife.com/img/banners/banner-31.jpg">
-<meta property="og:image:type" content="image/jpg">
-<meta property="og:image:width" content="1000">
-<meta property="og:image:height" content="750">
-<meta property="og:updated_time" content="2015-02-02T00:00:00Z">
-<meta property="article:tag" content="ansible">
-<meta property="article:tag" content="zimbra">
-<meta property="article:published_time" content="2015-02-02T00:00:00Z">
-<meta property="article:modified_time" content="2015-02-02T00:00:00Z">
-<meta name=twitter:card content="summary_large_image">
-<meta name=twitter:site content="@dlbewley">
-<meta name=twitter:title content="Tuning ext4 Creation and Mount Options for Zimbra">
-<meta name=twitter:image content="http://guifreelife.com/img/banners/banner-31.jpg">
-<meta name=twitter:description content="GUI Free Life, by Dale Bewley covers Kubernetes, Linux, Networking, OpenShift and more">
-</head>
-<body>
-<div id=all>
-<header class=navbar-affixed-top data-spy=affix data-offset-top=62>
-<div class="navbar navbar-default yamm" role=navigation id=navbar>
-<div class=container>
-<div class=navbar-header>
-<a class="navbar-brand home" href=/>
-<img src=/img/logo.png alt="Tuning ext4 Creation and Mount Options for Zimbra logo" class="hidden-xs hidden-sm">
+<!doctype html><html lang=en-us><head><meta charset=utf-8><meta name=robots content="all,follow"><meta name=googlebot content="index,follow,snippet,archive"><meta name=viewport content="width=device-width,initial-scale=1"><title>Tuning ext4 Creation and Mount Options for Zimbra | GUI Free Life</title><meta name=author content="Dale Bewley"><meta name=keywords content="bewley,guifreelife,ansible,zimbra"><meta name=description content="GUI Free Life, by Dale Bewley covers Kubernetes, Linux, Networking, OpenShift and more"><meta name=generator content="Hugo 0.119.0"><link href='//fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,500,700,800' rel=stylesheet type=text/css><link rel=stylesheet href=//use.fontawesome.com/releases/v5.11.2/css/all.css><link rel=stylesheet href=//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css integrity=sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u crossorigin=anonymous><link href=/css/animate.css rel=stylesheet><link href=/css/style.turquoise.css rel=stylesheet id=theme-stylesheet><link href=/css/custom.css rel=stylesheet><!--[if lt IE 9]><script src=https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js></script>
+<script src=https://oss.maxcdn.com/respond/1.4.2/respond.min.js></script><![endif]--><link rel="shortcut icon" href=/img/favicon.ico type=image/x-icon><link rel=apple-touch-icon href=/img/apple-touch-icon.png><link href=/css/owl.carousel.css rel=stylesheet><link href=/css/owl.theme.css rel=stylesheet><link rel=alternate href=http://guifreelife.com/index.xml type=application/rss+xml title="GUI Free Life"><meta property="og:locale" content="en_us"><meta property="og:site_name" content="GUI Free Life"><meta property="og:title" content="Tuning ext4 Creation and Mount Options for Zimbra"><meta property="og:type" content="article"><meta property="og:url" content="http://guifreelife.com/blog/2015/02/02/Ext4-Tuning-and-Mount-Options-for-Zimbra/"><meta property="og:description" content="GUI Free Life, by Dale Bewley covers Kubernetes, Linux, Networking, OpenShift and more"><meta property="og:image" content="http://guifreelife.com/img/banners/banner-31.jpg"><meta property="og:image:type" content="image/jpg"><meta property="og:image:width" content="1000"><meta property="og:image:height" content="750"><meta property="og:updated_time" content="2015-02-02T00:00:00Z"><meta property="article:tag" content="ansible"><meta property="article:tag" content="zimbra"><meta property="article:published_time" content="2015-02-02T00:00:00Z"><meta property="article:modified_time" content="2015-02-02T00:00:00Z"><meta name=twitter:card content="summary_large_image"><meta name=twitter:site content="@dlbewley"><meta name=twitter:title content="Tuning ext4 Creation and Mount Options for Zimbra"><meta name=twitter:image content="http://guifreelife.com/img/banners/banner-31.jpg"><meta name=twitter:description content="GUI Free Life, by Dale Bewley covers Kubernetes, Linux, Networking, OpenShift and more"></head><body><div id=all><header class=navbar-affixed-top data-spy=affix data-offset-top=62><div class="navbar navbar-default yamm" role=navigation id=navbar><div class=container><div class=navbar-header><a class="navbar-brand home" href=/><img src=/img/logo.png alt="Tuning ext4 Creation and Mount Options for Zimbra logo" class="hidden-xs hidden-sm">
 <img src=/img/logo-small.png alt="Tuning ext4 Creation and Mount Options for Zimbra logo" class="visible-xs visible-sm">
-<span class=sr-only>Tuning ext4 Creation and Mount Options for Zimbra - go to homepage</span>
-</a>
-<div class=navbar-buttons>
-<button type=button class="navbar-toggle btn-template-main" data-toggle=collapse data-target=#navigation>
+<span class=sr-only>Tuning ext4 Creation and Mount Options for Zimbra - go to homepage</span></a><div class=navbar-buttons><button type=button class="navbar-toggle btn-template-main" data-toggle=collapse data-target=#navigation>
 <span class=sr-only>Toggle Navigation</span>
-<i class="fas fa-align-justify"></i>
-</button>
-</div>
-</div>
-<div class="navbar-collapse collapse" id=navigation>
-<ul class="nav navbar-nav navbar-right">
-<li class=dropdown>
-<a href=/>Home</a>
-</li>
-<li class="dropdown active">
-<a href=/blog/>Blog</a>
-</li>
-<li class=dropdown>
-<a href=/contact/>Contact</a>
-</li>
-</ul>
-</div>
-<div class="collapse clearfix" id=search>
-<form class=navbar-form role=search>
-<div class=input-group>
-<input type=text class=form-control placeholder=Search>
-<span class=input-group-btn>
-<button type=submit class="btn btn-template-main"><i class="fas fa-search"></i></button>
-</span>
-</div>
-</form>
-</div>
-</div>
-</div>
-</header>
-<style>.bar.background-image-fixed-banner{background:url(/img/banners/banner-31.jpg)50% 0 no-repeat;background-attachment:fixed;background-size:cover;padding:100px 5%;text-shadow:2px 3px 4px var(--primary-accent),0 0 1em var(--navbar-border-top)}</style>
-<div>
-<div class=container>
-<div class=row>
-<div class=col-md-12>
-<section class="bar background-image-fixed-banner heading h2 color-white text-center">
-<h1>Tuning ext4 Creation and Mount Options for Zimbra</h1>
-</section>
-</div>
-</div>
-</div>
-</div>
-<div id=content>
-<div class=container>
-<div class=row>
-<div class=col-md-9 id=blog-post>
-<p class="text-muted text-uppercase mb-small text-right">
-February 2, 2015
-</p>
-<div id=post-content>
-<p><a href=http://www.zimbra.com/>Zimbra</a> is a email collaboration suite. Its various compontents perform MTA duties, message store, full text indexing. In a large environment, the number of files and I/O operations can really add up. How we ensure the filesystem is ready to support it?</p>
-<h1 id=zimbras-recommendations>Zimbra&rsquo;s Recommendations</h1>
-<p>Zimbra <a href="http://wiki.zimbra.com/index.php?title=Performance_Tuning_Guidelines_for_Large_Deployments#File_System">offers some guidance</a> for tuning the filesystem, with tips like:</p>
-<ul>
-<li>
-<p>Mount file systems with the <code>noatime</code> option.</p>
-<p>It generally is not important to know the last access time of all the files, so the extra write ops are wasteful.</p>
-</li>
-<li>
-<p>Enable <code>dirsync</code> for ext3/ext4 file systems. (mailstores, indexes, MTA queues)</p>
-<p>The mailbox and MTA fsync for files, but it is possible to lose the directory entry for the file in crash.
-It is also possible to affect this with <code>chattr -R +d</code>.</p>
-<p>More <a href=http://lwn.net/2002/0214/a/dirsync.php3>dirsync info</a>.</p>
-</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th>Mount Options</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>noatime</code></td>
-<td>Do not update access time</td>
-</tr>
-<tr>
-<td><code>dirsync</code></td>
-<td>Immediately flush directory operations</td>
-</tr>
-</tbody>
-</table>
-<p>The following filesystem creation options are also recommended.</p>
-<table>
-<thead>
-<tr>
-<th>Filesystem Options</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>-O dir_index</code></td>
-<td>Use hashed b-trees to speed up lookups in large directories.</td>
-</tr>
-<tr>
-<td><code>-m 2</code></td>
-<td>By default 5% of space is reserved. That can be a lot on a big filesystem.</td>
-</tr>
-<tr>
-<td><code>-i 10240</code></td>
-<td>Bytes per Inode or <code>inode_ratio</code>. An inode will be created for every <em>X</em> bytes. So <em>X</em> should be your average file size.</td>
-</tr>
-<tr>
-<td><code>-J size=400</code></td>
-<td>Journal size can influence metadata performance, so boost the size.</td>
-</tr>
-</tbody>
-</table>
-<p>How many filesystems do we need? Which filesystems need which options? Let&rsquo;s see what directories make good candidates for separation.</p>
-<h1 id=zimbra-filesystems>Zimbra Filesystems</h1>
-<p>How fine grained do you split up the filesystems? Below are some key directories within Zimbra which may or may not be candidates for unique filesystems.</p>
-<p>Dir | I/O Type | Latency Sensitivity | Function
+<i class="fas fa-align-justify"></i></button></div></div><div class="navbar-collapse collapse" id=navigation><ul class="nav navbar-nav navbar-right"><li class=dropdown><a href=/>Home</a></li><li class="dropdown active"><a href=/blog/>Blog</a></li><li class=dropdown><a href=/contact/>Contact</a></li></ul></div><div class="collapse clearfix" id=search><form class=navbar-form role=search><div class=input-group><input type=text class=form-control placeholder=Search>
+<span class=input-group-btn><button type=submit class="btn btn-template-main"><i class="fas fa-search"></i></button></span></div></form></div></div></div></header><style>.bar.background-image-fixed-banner{background:url(/img/banners/banner-31.jpg)50% 0 no-repeat;background-attachment:fixed;background-size:cover;padding:100px 5%;text-shadow:2px 3px 4px var(--primary-accent),0 0 1em var(--navbar-border-top)}</style><div><div class=container><div class=row><div class=col-md-12><section class="bar background-image-fixed-banner heading h2 color-white text-center"><h1>Tuning ext4 Creation and Mount Options for Zimbra</h1></section></div></div></div></div><div id=content><div class=container><div class=row><div class=col-md-9 id=blog-post><p class="text-muted text-uppercase mb-small text-right">February 2, 2015</p><div id=post-content><p><a href=http://www.zimbra.com/>Zimbra</a> is a email collaboration suite. Its various compontents perform MTA duties, message store, full text indexing. In a large environment, the number of files and I/O operations can really add up. How we ensure the filesystem is ready to support it?</p><h1 id=zimbras-recommendations>Zimbra&rsquo;s Recommendations</h1><p>Zimbra <a href="http://wiki.zimbra.com/index.php?title=Performance_Tuning_Guidelines_for_Large_Deployments#File_System">offers some guidance</a> for tuning the filesystem, with tips like:</p><ul><li><p>Mount file systems with the <code>noatime</code> option.</p><p>It generally is not important to know the last access time of all the files, so the extra write ops are wasteful.</p></li><li><p>Enable <code>dirsync</code> for ext3/ext4 file systems. (mailstores, indexes, MTA queues)</p><p>The mailbox and MTA fsync for files, but it is possible to lose the directory entry for the file in crash.
+It is also possible to affect this with <code>chattr -R +d</code>.</p><p>More <a href=http://lwn.net/2002/0214/a/dirsync.php3>dirsync info</a>.</p></li></ul><table><thead><tr><th>Mount Options</th><th>Description</th></tr></thead><tbody><tr><td><code>noatime</code></td><td>Do not update access time</td></tr><tr><td><code>dirsync</code></td><td>Immediately flush directory operations</td></tr></tbody></table><p>The following filesystem creation options are also recommended.</p><table><thead><tr><th>Filesystem Options</th><th>Description</th></tr></thead><tbody><tr><td><code>-O dir_index</code></td><td>Use hashed b-trees to speed up lookups in large directories.</td></tr><tr><td><code>-m 2</code></td><td>By default 5% of space is reserved. That can be a lot on a big filesystem.</td></tr><tr><td><code>-i 10240</code></td><td>Bytes per Inode or <code>inode_ratio</code>. An inode will be created for every <em>X</em> bytes. So <em>X</em> should be your average file size.</td></tr><tr><td><code>-J size=400</code></td><td>Journal size can influence metadata performance, so boost the size.</td></tr></tbody></table><p>How many filesystems do we need? Which filesystems need which options? Let&rsquo;s see what directories make good candidates for separation.</p><h1 id=zimbra-filesystems>Zimbra Filesystems</h1><p>How fine grained do you split up the filesystems? Below are some key directories within Zimbra which may or may not be candidates for unique filesystems.</p><p>Dir | I/O Type | Latency Sensitivity | Function
 &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;-|&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&ndash;
 /opt/zimbra | Random | Low | Application root
 /opt/zimbra/backup | High write | Low | Nightly dump of all other dirs. (Use a NFS mount)
@@ -178,436 +14,129 @@ It is also possible to affect this with <code>chattr -R +d</code>.</p>
 /opt/zimbra/data/amavisd/tmp | Random | High | Temp files created when Amavisd feeds mail to ClamAV and Spamassassin can be sped up with a <a href=http://wiki.zimbra.com/wiki/SpamAssassin_Customizations#2._Put_Amavis.27s_Temp_Dir_on_a_RAM_Disk>RAM disk</a>
 /opt/zimbra/index | High Random | High | Lucene full text index
 /opt/zimbra/redolog| High Write | High | Transaction log of all activity
-/opt/zimbra/store | Random | High | Message blob store</p>
-<h1 id=separating-out-filesystems>Separating out Filesystems</h1>
-<p>For starters I&rsquo;m going to go with:</p>
-<ul>
-<li>/opt/zimbra
-Nothing special yet. Just noatime.</li>
-<li>/opt/zimbra/backup
-Backups will go to a NFS filer. I&rsquo;m not concerned about the filesystem config there. That a job for the NAS admin.</li>
-<li>/opt/zimbra/index</li>
-<li>/opt/zimbra/redolog</li>
-<li>/opt/zimbra/store</li>
-</ul>
-<h1 id=selecting-filesystem-options>Selecting Filesystem Options</h1>
-<p>Based on those recommendations, let&rsquo;s decide which to follow, and how.</p>
-<p>I will be working on RHEL 6, and I&rsquo;m ignoring that fact that anything other than ext4 exists.</p>
-<h2 id=directory-index>Directory Index</h2>
-<p>The dir_index option speeds up directories with large numbers of files. It turns out this is on by default in <code>/etc/mke2fs.conf</code>. You can confirm by looking for <code>dir_index</code> in the filesystem features in the output of <code>tune2fs</code>. So, nothing to do here.</p>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-text data-lang=text>Filesystem features:      has_journal ext_attr resize_inode dir_index filetype needs_recovery extent flex_bg sparse_super large_file huge_file uninit_bg dir_nlink extra_isize
-</code></pre></div><h2 id=bytes-per-inode>Bytes per Inode</h2>
-<p>Inodes store metadata about files. Every file consumes an inode and you can&rsquo;t add more inodes. Zimbra stores message blobs as individual files, as opposed to one file per mail folder (ala mbox). Therefore the inode usage can be very high. You may have tons of space free, but if you run out of inodes, pack it in. Use <code>df -i</code> to examine your inode usage.</p>
-<p>Zimbra suggests <code>-i 10240</code> mke2fs option. This says create 1 inode for every 10KB of space on the filesystem. This assumes that you expect to fill the filesystem up with 10KB files.</p>
-<p>How many inodes do I have on my test filesystem?</p>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-text data-lang=text>[root@zimbra-mbox-10 ~]# tune2fs -l /dev/mapper/VGzstore-LVstore | grep &#39;Inode count&#39;
-Inode count:              67108864
-</code></pre></div><p>If I use the <code>-i 10240</code> option, how many inodes will I have then? You can find out with <code>mke2fs</code> in dry run mode. See line 4 below.</p>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-text data-lang=text>[root@zimbra-mbox-10 ~]# umount /opt/zimbra/store
-[root@zimbra-mbox-10 ~]# mke2fs -n -i 10240 /dev/mapper/VGzstore-LVstore | grep inodes
-mke2fs 1.41.12 (17-May-2010)
-107479040 inodes, 268435456 blocks
-13120 inodes per group
-</code></pre></div><p>Wow! That is support for up to 107 million files.</p>
-<p>How big is your average message? It looks like in my case we are looking at about 190 million emails split across numerous servers, and an average message size of 106KB. So an inode per 10KB is pretty generous. I can probably increase that ratio, and lower the inode count.</p>
-<p>Doing the math, it looks like by default I&rsquo;m getting one inode per 16K. This is borne out in <code>/etc/mk2fs.conf</code>.</p>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-text data-lang=text>[defaults]
-        base_features = sparse_super,filetype,resize_inode,dir_index,ext_attr
-        blocksize = 4096
-        inode_size = 256
-        inode_ratio = 16384
-</code></pre></div><p>So the default may be just fine. I could even raise the number, but I won&rsquo;t.</p>
-<h2 id=journal-size>Journal Size</h2>
-<p>Journal size reportedly can have a great impact on metadata operations. <a href="http://wiki.zimbra.com/index.php?title=Performance_Tuning_Guidelines_for_Large_Deployments">Zimbra suggests</a> an arbitrary 400M for journal size for filesystems.</p>
-<p>If I&rsquo;ve already created a filesystem, so how do I find out the size of the existing journal?</p>
-<p>Looks like <code>tune2fs -l</code> doesn&rsquo;t do the trick.</p>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-text data-lang=text>[root@zimbra-mbox-10 ~]# tune2fs -l /dev/mapper/VGzstore-LVstore
-tune2fs 1.41.12 (17-May-2010)
-Filesystem volume name:   &lt;none&gt;
-Last mounted on:          &lt;not available&gt;
-Filesystem UUID:          f859c1f6-28b5-4c4b-8bd2-618abcd33607
-Filesystem magic number:  0xEF53
-Filesystem revision #:    1 (dynamic)
-Filesystem features:      has_journal ext_attr resize_inode dir_index filetype needs_recovery extent flex_bg sparse_super large_file huge_file uninit_bg dir_nlink extra_isize
-Filesystem flags:         signed_directory_hash
-Default mount options:    (none)
-Filesystem state:         clean
-Errors behavior:          Continue
-Filesystem OS type:       Linux
-Inode count:              67108864
-Block count:              268435456
-Reserved block count:     2684354
-Free blocks:              264172519
-Free inodes:              67108853
-First block:              0
-Block size:               4096
-Fragment size:            4096
-Reserved GDT blocks:      960
-Blocks per group:         32768
-Fragments per group:      32768
-Inodes per group:         8192
-Inode blocks per group:   512
-Flex block group size:    16
-Filesystem created:       Mon Feb  2 21:41:09 2015
-Last mount time:          Mon Feb  2 21:41:38 2015
-Last write time:          Mon Feb  2 21:41:38 2015
-Mount count:              1
-Maximum mount count:      32
-Last checked:             Mon Feb  2 21:41:09 2015
-Check interval:           15552000 (6 months)
-Next check after:         Sat Aug  1 22:41:09 2015
-Lifetime writes:          16 GB
-Reserved blocks uid:      0 (user root)
-Reserved blocks gid:      0 (group root)
-First inode:              11
-Inode size:               256
-Required extra isize:     28
-Desired extra isize:      28
-Journal inode:            8
-Default directory hash:   half_md4
-Directory Hash Seed:      2394798b-a767-4a9c-b92f-dabd75e5f1e4
-Journal backup:           inode blocks
-</code></pre></div><p>After a little googling, I found <a href=http://blog.dailystuff.nl/2012/07/getting-ext34-journal-size/>this page</a> that suggested <code>dumpe2fs</code>. It looks like the default size for this 1TB filesystem was 128M.</p>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-text data-lang=text>[root@zimbra-mbox-10 ~]# dumpe2fs /dev/mapper/VGzstore-LVstore | grep ^Journal
-dumpe2fs 1.41.12 (17-May-2010)
-Journal inode:            8
-Journal backup:           inode blocks
-Journal features:         (none)
-Journal size:             128M
-Journal length:           32768
-Journal sequence:         0x00000001
-Journal start:            0
-</code></pre></div><p>What size is actually a good size? Well, <a href=http://www.linux-mag.com/id/7666/>this article</a> suggested that 256MB may be a good number. Also somewhat arbitrary.</p>
-<p>Let&rsquo;s just go with 256MB for now. I don&rsquo;t believe you can adjust the journal size after the fact, but in my case it doesn&rsquo;t matter. I&rsquo;m going to recreate it.</p>
-<p>I&rsquo;ll of course use the ansible <a href=http://docs.ansible.com/filesystem_module.html>filesystem module</a> and add a value of <code>-J size=256</code> in the <code>opts</code> parameter.</p>
-<h1 id=summary>Summary</h1>
-<p>So, in the end I&rsquo;ll be using Ansible <a href=http://docs.ansible.com/filesystem_module.html>filesystem</a> and <a href=http://docs.ansible.com/mount_module.html>mount</a> modules to setup filesytems whith a journal size of 256MB, and a reserve of 1%, and use noatime and dirsync mount options. I create a dictionary like this to do that.</p>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#8b008b;font-weight:700>zimbra_storage</span>:<span style=color:#bbb>
-</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>nfs</span>:<span style=color:#bbb>
-</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>backup</span>:<span style=color:#bbb>
-</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>export</span>:<span style=color:#bbb> </span>nfs-server:/zimbra/backup<span style=color:#bbb>
-</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>path</span>:<span style=color:#bbb> </span>/opt/zimbra/backup<span style=color:#bbb>
-</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>devices</span>:<span style=color:#bbb>
-</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>opt_disk</span>:<span style=color:#bbb>
-</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>dev</span>:<span style=color:#bbb> </span>/dev/sdb<span style=color:#bbb>
-</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>size</span>:<span style=color:#bbb> </span>500G<span style=color:#bbb>
-</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>vg</span>:<span style=color:#bbb> </span>VGzopt<span style=color:#bbb>
-</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>volumes</span>:<span style=color:#bbb>
-</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>opt</span>:<span style=color:#bbb>
-</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>LVzimbra<span style=color:#bbb>
-</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>path</span>:<span style=color:#bbb> </span>/opt/zimbra<span style=color:#bbb>
-</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>size</span>:<span style=color:#bbb> </span>50G<span style=color:#bbb>
-</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>fs_type</span>:<span style=color:#bbb> </span>ext4<span style=color:#bbb>
-</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>fs_opts</span>:<span style=color:#bbb>
-</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>mount_opts</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;noatime,dirsync&#34;</span><span style=color:#bbb>
-</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>index</span>:<span style=color:#bbb>
-</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>LVindex<span style=color:#bbb>
-</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>path</span>:<span style=color:#bbb> </span>/opt/zimbra/index<span style=color:#bbb>
-</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>size</span>:<span style=color:#bbb> </span>100G<span style=color:#bbb>
-</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>fs_type</span>:<span style=color:#bbb> </span>ext4<span style=color:#bbb>
-</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>fs_opts</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;-J size=256&#34;</span><span style=color:#bbb>
-</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>mount_opts</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;noatime,dirsync&#34;</span><span style=color:#bbb>
-</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>redo</span>:<span style=color:#bbb>
-</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>LVredo<span style=color:#bbb>
-</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>path</span>:<span style=color:#bbb> </span>/opt/zimbra/redolog<span style=color:#bbb>
-</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>size</span>:<span style=color:#bbb> </span>200G<span style=color:#bbb>
-</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>fs_type</span>:<span style=color:#bbb> </span>ext4<span style=color:#bbb>
-</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>fs_opts</span>:<span style=color:#bbb>
-</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>mount_opts</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;noatime&#34;</span><span style=color:#bbb>
-</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>store_disk</span>:<span style=color:#bbb>
-</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>dev</span>:<span style=color:#bbb> </span>/dev/sdc<span style=color:#bbb>
-</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>size</span>:<span style=color:#bbb> </span>2T<span style=color:#bbb>
-</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>vg</span>:<span style=color:#bbb> </span>VGzstore<span style=color:#bbb>
-</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>volumes</span>:<span style=color:#bbb>
-</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>store</span>:<span style=color:#bbb>
-</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>LVstore<span style=color:#bbb>
-</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>path</span>:<span style=color:#bbb> </span>/opt/zimbra/store<span style=color:#bbb>
-</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>size</span>:<span style=color:#bbb> </span>1T<span style=color:#bbb>
-</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>fs_type</span>:<span style=color:#bbb> </span>ext4<span style=color:#bbb>
-</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>fs_opts</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;-J size=256 -m 1&#34;</span><span style=color:#bbb>
-</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>mount_opts</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;noatime,dirsync&#34;</span><span style=color:#bbb>
-</span></code></pre></div>
-</div>
-<div id=comments>
-<div id=disqus_thread></div>
-<script type=application/javascript>var disqus_config=function(){};(function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById('disqus_thread').innerHTML='Disqus comments not available by default when the website is previewed locally.';return}var b=document,a=b.createElement('script');a.async=!0,a.src='//dlbewleygithubio.disqus.com/embed.js',a.setAttribute('data-timestamp',+new Date),(b.head||b.body).appendChild(a)})()</script>
-<noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript>
-<a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a>
-</div>
-</div>
-<div class=col-md-3>
-<div class="panel panel-default sidebar-menu">
-<div class=panel-heading>
-<h3 class=panel-title>Search</h3>
-</div>
-<div class=panel-body>
-<form action=//google.com/search method=get accept-charset=utf-8 role=search>
-<div class=input-group>
-<input type=search name=q class=form-control placeholder=Search>
+/opt/zimbra/store | Random | High | Message blob store</p><h1 id=separating-out-filesystems>Separating out Filesystems</h1><p>For starters I&rsquo;m going to go with:</p><ul><li>/opt/zimbra
+Nothing special yet. Just noatime.</li><li>/opt/zimbra/backup
+Backups will go to a NFS filer. I&rsquo;m not concerned about the filesystem config there. That a job for the NAS admin.</li><li>/opt/zimbra/index</li><li>/opt/zimbra/redolog</li><li>/opt/zimbra/store</li></ul><h1 id=selecting-filesystem-options>Selecting Filesystem Options</h1><p>Based on those recommendations, let&rsquo;s decide which to follow, and how.</p><p>I will be working on RHEL 6, and I&rsquo;m ignoring that fact that anything other than ext4 exists.</p><h2 id=directory-index>Directory Index</h2><p>The dir_index option speeds up directories with large numbers of files. It turns out this is on by default in <code>/etc/mke2fs.conf</code>. You can confirm by looking for <code>dir_index</code> in the filesystem features in the output of <code>tune2fs</code>. So, nothing to do here.</p><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-text data-lang=text><span style=display:flex><span>Filesystem features:      has_journal ext_attr resize_inode dir_index filetype needs_recovery extent flex_bg sparse_super large_file huge_file uninit_bg dir_nlink extra_isize
+</span></span></code></pre></div><h2 id=bytes-per-inode>Bytes per Inode</h2><p>Inodes store metadata about files. Every file consumes an inode and you can&rsquo;t add more inodes. Zimbra stores message blobs as individual files, as opposed to one file per mail folder (ala mbox). Therefore the inode usage can be very high. You may have tons of space free, but if you run out of inodes, pack it in. Use <code>df -i</code> to examine your inode usage.</p><p>Zimbra suggests <code>-i 10240</code> mke2fs option. This says create 1 inode for every 10KB of space on the filesystem. This assumes that you expect to fill the filesystem up with 10KB files.</p><p>How many inodes do I have on my test filesystem?</p><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-text data-lang=text><span style=display:flex><span>[root@zimbra-mbox-10 ~]# tune2fs -l /dev/mapper/VGzstore-LVstore | grep &#39;Inode count&#39;
+</span></span><span style=display:flex><span>Inode count:              67108864
+</span></span></code></pre></div><p>If I use the <code>-i 10240</code> option, how many inodes will I have then? You can find out with <code>mke2fs</code> in dry run mode. See line 4 below.</p><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-text data-lang=text><span style=display:flex><span>[root@zimbra-mbox-10 ~]# umount /opt/zimbra/store
+</span></span><span style=display:flex><span>[root@zimbra-mbox-10 ~]# mke2fs -n -i 10240 /dev/mapper/VGzstore-LVstore | grep inodes
+</span></span><span style=display:flex><span>mke2fs 1.41.12 (17-May-2010)
+</span></span><span style=display:flex><span>107479040 inodes, 268435456 blocks
+</span></span><span style=display:flex><span>13120 inodes per group
+</span></span></code></pre></div><p>Wow! That is support for up to 107 million files.</p><p>How big is your average message? It looks like in my case we are looking at about 190 million emails split across numerous servers, and an average message size of 106KB. So an inode per 10KB is pretty generous. I can probably increase that ratio, and lower the inode count.</p><p>Doing the math, it looks like by default I&rsquo;m getting one inode per 16K. This is borne out in <code>/etc/mk2fs.conf</code>.</p><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-text data-lang=text><span style=display:flex><span>[defaults]
+</span></span><span style=display:flex><span>        base_features = sparse_super,filetype,resize_inode,dir_index,ext_attr
+</span></span><span style=display:flex><span>        blocksize = 4096
+</span></span><span style=display:flex><span>        inode_size = 256
+</span></span><span style=display:flex><span>        inode_ratio = 16384
+</span></span></code></pre></div><p>So the default may be just fine. I could even raise the number, but I won&rsquo;t.</p><h2 id=journal-size>Journal Size</h2><p>Journal size reportedly can have a great impact on metadata operations. <a href="http://wiki.zimbra.com/index.php?title=Performance_Tuning_Guidelines_for_Large_Deployments">Zimbra suggests</a> an arbitrary 400M for journal size for filesystems.</p><p>If I&rsquo;ve already created a filesystem, so how do I find out the size of the existing journal?</p><p>Looks like <code>tune2fs -l</code> doesn&rsquo;t do the trick.</p><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-text data-lang=text><span style=display:flex><span>[root@zimbra-mbox-10 ~]# tune2fs -l /dev/mapper/VGzstore-LVstore
+</span></span><span style=display:flex><span>tune2fs 1.41.12 (17-May-2010)
+</span></span><span style=display:flex><span>Filesystem volume name:   &lt;none&gt;
+</span></span><span style=display:flex><span>Last mounted on:          &lt;not available&gt;
+</span></span><span style=display:flex><span>Filesystem UUID:          f859c1f6-28b5-4c4b-8bd2-618abcd33607
+</span></span><span style=display:flex><span>Filesystem magic number:  0xEF53
+</span></span><span style=display:flex><span>Filesystem revision #:    1 (dynamic)
+</span></span><span style=display:flex><span>Filesystem features:      has_journal ext_attr resize_inode dir_index filetype needs_recovery extent flex_bg sparse_super large_file huge_file uninit_bg dir_nlink extra_isize
+</span></span><span style=display:flex><span>Filesystem flags:         signed_directory_hash
+</span></span><span style=display:flex><span>Default mount options:    (none)
+</span></span><span style=display:flex><span>Filesystem state:         clean
+</span></span><span style=display:flex><span>Errors behavior:          Continue
+</span></span><span style=display:flex><span>Filesystem OS type:       Linux
+</span></span><span style=display:flex><span>Inode count:              67108864
+</span></span><span style=display:flex><span>Block count:              268435456
+</span></span><span style=display:flex><span>Reserved block count:     2684354
+</span></span><span style=display:flex><span>Free blocks:              264172519
+</span></span><span style=display:flex><span>Free inodes:              67108853
+</span></span><span style=display:flex><span>First block:              0
+</span></span><span style=display:flex><span>Block size:               4096
+</span></span><span style=display:flex><span>Fragment size:            4096
+</span></span><span style=display:flex><span>Reserved GDT blocks:      960
+</span></span><span style=display:flex><span>Blocks per group:         32768
+</span></span><span style=display:flex><span>Fragments per group:      32768
+</span></span><span style=display:flex><span>Inodes per group:         8192
+</span></span><span style=display:flex><span>Inode blocks per group:   512
+</span></span><span style=display:flex><span>Flex block group size:    16
+</span></span><span style=display:flex><span>Filesystem created:       Mon Feb  2 21:41:09 2015
+</span></span><span style=display:flex><span>Last mount time:          Mon Feb  2 21:41:38 2015
+</span></span><span style=display:flex><span>Last write time:          Mon Feb  2 21:41:38 2015
+</span></span><span style=display:flex><span>Mount count:              1
+</span></span><span style=display:flex><span>Maximum mount count:      32
+</span></span><span style=display:flex><span>Last checked:             Mon Feb  2 21:41:09 2015
+</span></span><span style=display:flex><span>Check interval:           15552000 (6 months)
+</span></span><span style=display:flex><span>Next check after:         Sat Aug  1 22:41:09 2015
+</span></span><span style=display:flex><span>Lifetime writes:          16 GB
+</span></span><span style=display:flex><span>Reserved blocks uid:      0 (user root)
+</span></span><span style=display:flex><span>Reserved blocks gid:      0 (group root)
+</span></span><span style=display:flex><span>First inode:              11
+</span></span><span style=display:flex><span>Inode size:               256
+</span></span><span style=display:flex><span>Required extra isize:     28
+</span></span><span style=display:flex><span>Desired extra isize:      28
+</span></span><span style=display:flex><span>Journal inode:            8
+</span></span><span style=display:flex><span>Default directory hash:   half_md4
+</span></span><span style=display:flex><span>Directory Hash Seed:      2394798b-a767-4a9c-b92f-dabd75e5f1e4
+</span></span><span style=display:flex><span>Journal backup:           inode blocks
+</span></span></code></pre></div><p>After a little googling, I found <a href=http://blog.dailystuff.nl/2012/07/getting-ext34-journal-size/>this page</a> that suggested <code>dumpe2fs</code>. It looks like the default size for this 1TB filesystem was 128M.</p><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-text data-lang=text><span style=display:flex><span>[root@zimbra-mbox-10 ~]# dumpe2fs /dev/mapper/VGzstore-LVstore | grep ^Journal
+</span></span><span style=display:flex><span>dumpe2fs 1.41.12 (17-May-2010)
+</span></span><span style=display:flex><span>Journal inode:            8
+</span></span><span style=display:flex><span>Journal backup:           inode blocks
+</span></span><span style=display:flex><span>Journal features:         (none)
+</span></span><span style=display:flex><span>Journal size:             128M
+</span></span><span style=display:flex><span>Journal length:           32768
+</span></span><span style=display:flex><span>Journal sequence:         0x00000001
+</span></span><span style=display:flex><span>Journal start:            0
+</span></span></code></pre></div><p>What size is actually a good size? Well, <a href=http://www.linux-mag.com/id/7666/>this article</a> suggested that 256MB may be a good number. Also somewhat arbitrary.</p><p>Let&rsquo;s just go with 256MB for now. I don&rsquo;t believe you can adjust the journal size after the fact, but in my case it doesn&rsquo;t matter. I&rsquo;m going to recreate it.</p><p>I&rsquo;ll of course use the ansible <a href=http://docs.ansible.com/filesystem_module.html>filesystem module</a> and add a value of <code>-J size=256</code> in the <code>opts</code> parameter.</p><h1 id=summary>Summary</h1><p>So, in the end I&rsquo;ll be using Ansible <a href=http://docs.ansible.com/filesystem_module.html>filesystem</a> and <a href=http://docs.ansible.com/mount_module.html>mount</a> modules to setup filesytems whith a journal size of 256MB, and a reserve of 1%, and use noatime and dirsync mount options. I create a dictionary like this to do that.</p><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=display:flex><span><span style=color:#8b008b;font-weight:700>zimbra_storage</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>nfs</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>backup</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>export</span>:<span style=color:#bbb> </span>nfs-server:/zimbra/backup<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>path</span>:<span style=color:#bbb> </span>/opt/zimbra/backup<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>devices</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>opt_disk</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>dev</span>:<span style=color:#bbb> </span>/dev/sdb<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>size</span>:<span style=color:#bbb> </span>500G<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>vg</span>:<span style=color:#bbb> </span>VGzopt<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>volumes</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>opt</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>LVzimbra<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>path</span>:<span style=color:#bbb> </span>/opt/zimbra<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>size</span>:<span style=color:#bbb> </span>50G<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>fs_type</span>:<span style=color:#bbb> </span>ext4<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>fs_opts</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>mount_opts</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;noatime,dirsync&#34;</span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>index</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>LVindex<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>path</span>:<span style=color:#bbb> </span>/opt/zimbra/index<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>size</span>:<span style=color:#bbb> </span>100G<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>fs_type</span>:<span style=color:#bbb> </span>ext4<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>fs_opts</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;-J size=256&#34;</span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>mount_opts</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;noatime,dirsync&#34;</span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>redo</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>LVredo<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>path</span>:<span style=color:#bbb> </span>/opt/zimbra/redolog<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>size</span>:<span style=color:#bbb> </span>200G<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>fs_type</span>:<span style=color:#bbb> </span>ext4<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>fs_opts</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>mount_opts</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;noatime&#34;</span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>store_disk</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>dev</span>:<span style=color:#bbb> </span>/dev/sdc<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>size</span>:<span style=color:#bbb> </span>2T<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>vg</span>:<span style=color:#bbb> </span>VGzstore<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>volumes</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>store</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>LVstore<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>path</span>:<span style=color:#bbb> </span>/opt/zimbra/store<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>size</span>:<span style=color:#bbb> </span>1T<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>fs_type</span>:<span style=color:#bbb> </span>ext4<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>fs_opts</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;-J size=256 -m 1&#34;</span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>mount_opts</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;noatime,dirsync&#34;</span><span style=color:#bbb>
+</span></span></span></code></pre></div></div><div id=comments><div id=disqus_thread></div><script type=application/javascript>window.disqus_config=function(){},function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById("disqus_thread").innerHTML="Disqus comments not available by default when the website is previewed locally.";return}var t=document,e=t.createElement("script");e.async=!0,e.src="//dlbewleygithubio.disqus.com/embed.js",e.setAttribute("data-timestamp",+new Date),(t.head||t.body).appendChild(e)}()</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript><a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a></div></div><div class=col-md-3><div class="panel panel-default sidebar-menu"><div class=panel-heading><h3 class=panel-title>Search</h3></div><div class=panel-body><form action=//google.com/search method=get accept-charset=utf-8 role=search><div class=input-group><input type=search name=q class=form-control placeholder=Search>
 <input type=hidden name=sitesearch value=http://guifreelife.com/>
-<span class=input-group-btn>
-<button type=submit class="btn btn-template-main"><i class="fas fa-search"></i></button>
-</span>
-</div>
-</form>
-</div>
-</div>
-<div class="panel sidebar-menu">
-<div class=panel-heading>
-<h3 class=panel-title>Tagged</h3>
-</div>
-<div class=panel-body>
-<ul class=tag-cloud>
-<li class=active>
-<a href=/tags/ansible><i class="fas fa-tags"></i> ansible</a>
-</li>
-<li class=active>
-<a href=/tags/zimbra><i class="fas fa-tags"></i> zimbra</a>
-</li>
-</ul>
-</div>
-</div>
-<div class="panel sidebar-menu">
-<div class=panel-heading>
-<h3 class=panel-title>TOC</h3>
-</div>
-<div class=panel-body>
-<nav id=TableOfContents>
-<ul>
-<li><a href=#zimbras-recommendations>Zimbra&rsquo;s Recommendations</a></li>
-<li><a href=#zimbra-filesystems>Zimbra Filesystems</a></li>
-<li><a href=#separating-out-filesystems>Separating out Filesystems</a></li>
-<li><a href=#selecting-filesystem-options>Selecting Filesystem Options</a>
-<ul>
-<li><a href=#directory-index>Directory Index</a></li>
-<li><a href=#bytes-per-inode>Bytes per Inode</a></li>
-<li><a href=#journal-size>Journal Size</a></li>
-</ul>
-</li>
-<li><a href=#summary>Summary</a></li>
-</ul>
-</nav>
-</div>
-</div>
-<div class="panel sidebar-menu">
-<div class=panel-heading>
-<h3 class=panel-title>Tags</h3>
-</div>
-<div class=panel-body>
-<ul class=tag-cloud>
-<li>
-<a href=/tags/AWS><i class="fas fa-tags"></i> AWS</a>
-</li>
-<li>
-<a href=/tags/CDK><i class="fas fa-tags"></i> CDK</a>
-</li>
-<li>
-<a href=/tags/OCP3><i class="fas fa-tags"></i> OCP3</a>
-</li>
-<li>
-<a href=/tags/OCP4><i class="fas fa-tags"></i> OCP4</a>
-</li>
-<li>
-<a href=/tags/RHACM><i class="fas fa-tags"></i> RHACM</a>
-</li>
-<li>
-<a href=/tags/RHACS><i class="fas fa-tags"></i> RHACS</a>
-</li>
-<li>
-<a href=/tags/RHEL><i class="fas fa-tags"></i> RHEL</a>
-</li>
-<li>
-<a href=/tags/ansible><i class="fas fa-tags"></i> ansible</a>
-</li>
-<li>
-<a href=/tags/automation><i class="fas fa-tags"></i> automation</a>
-</li>
-<li>
-<a href=/tags/azure><i class="fas fa-tags"></i> azure</a>
-</li>
-<li>
-<a href=/tags/debugging><i class="fas fa-tags"></i> debugging</a>
-</li>
-<li>
-<a href=/tags/docker><i class="fas fa-tags"></i> docker</a>
-</li>
-<li>
-<a href=/tags/draft><i class="fas fa-tags"></i> draft</a>
-</li>
-<li>
-<a href=/tags/etcd><i class="fas fa-tags"></i> etcd</a>
-</li>
-<li>
-<a href=/tags/git><i class="fas fa-tags"></i> git</a>
-</li>
-<li>
-<a href=/tags/haproxy><i class="fas fa-tags"></i> haproxy</a>
-</li>
-<li>
-<a href=/tags/heat><i class="fas fa-tags"></i> heat</a>
-</li>
-<li>
-<a href=/tags/hybrid-cloud><i class="fas fa-tags"></i> hybrid-cloud</a>
-</li>
-<li>
-<a href=/tags/install><i class="fas fa-tags"></i> install</a>
-</li>
-<li>
-<a href=/tags/kubernetes><i class="fas fa-tags"></i> kubernetes</a>
-</li>
-<li>
-<a href=/tags/mac><i class="fas fa-tags"></i> mac</a>
-</li>
-<li>
-<a href=/tags/metrics><i class="fas fa-tags"></i> metrics</a>
-</li>
-<li>
-<a href=/tags/migration><i class="fas fa-tags"></i> migration</a>
-</li>
-<li>
-<a href=/tags/monitoring><i class="fas fa-tags"></i> monitoring</a>
-</li>
-<li>
-<a href=/tags/networking><i class="fas fa-tags"></i> networking</a>
-</li>
-<li>
-<a href=/tags/openshift><i class="fas fa-tags"></i> openshift</a>
-</li>
-<li>
-<a href=/tags/openstack><i class="fas fa-tags"></i> openstack</a>
-</li>
-<li>
-<a href=/tags/operators><i class="fas fa-tags"></i> operators</a>
-</li>
-<li>
-<a href=/tags/prometheus><i class="fas fa-tags"></i> prometheus</a>
-</li>
-<li>
-<a href=/tags/python><i class="fas fa-tags"></i> python</a>
-</li>
-<li>
-<a href=/tags/router><i class="fas fa-tags"></i> router</a>
-</li>
-<li>
-<a href=/tags/security><i class="fas fa-tags"></i> security</a>
-</li>
-<li>
-<a href=/tags/ssl><i class="fas fa-tags"></i> ssl</a>
-</li>
-<li>
-<a href=/tags/stackrox><i class="fas fa-tags"></i> stackrox</a>
-</li>
-<li>
-<a href=/tags/storage><i class="fas fa-tags"></i> storage</a>
-</li>
-<li>
-<a href=/tags/troubleshooting><i class="fas fa-tags"></i> troubleshooting</a>
-</li>
-<li>
-<a href=/tags/upgrade><i class="fas fa-tags"></i> upgrade</a>
-</li>
-<li>
-<a href=/tags/vagrant><i class="fas fa-tags"></i> vagrant</a>
-</li>
-<li>
-<a href=/tags/virtualization><i class="fas fa-tags"></i> virtualization</a>
-</li>
-<li>
-<a href=/tags/webinar><i class="fas fa-tags"></i> webinar</a>
-</li>
-<li>
-<a href=/tags/windows><i class="fas fa-tags"></i> windows</a>
-</li>
-<li>
-<a href=/tags/zabbix><i class="fas fa-tags"></i> zabbix</a>
-</li>
-<li>
-<a href=/tags/zimbra><i class="fas fa-tags"></i> zimbra</a>
-</li>
-</ul>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<footer id=footer>
-<div class=container>
-<div class="col-md-4 col-sm-6">
-<h4>Share</h4>
-<i class="fab fa-2x fa-twitter" title="Share this on Twitter" onclick="window.open('http://twitter.com/home?status=http://guifreelife.com/blog/2015/02/02/Ext4-Tuning-and-Mount-Options-for-Zimbra/')"></i>
-<i class="fab fa-2x fa-facebook" title="Share this on Facebook" onclick="window.open('http://www.facebook.com/share.php?u=http://guifreelife.com/blog/2015/02/02/Ext4-Tuning-and-Mount-Options-for-Zimbra/')"></i>
-<i class="fab fa-2x fa-linkedin" title="Share this on Linkedin" onclick="window.open('https://www.linkedin.com/shareArticle?mini=true&url=http://guifreelife.com/blog/2015/02/02/Ext4-Tuning-and-Mount-Options-for-Zimbra/&title=&summary=&source=')"></i>
-<i class="fab fa-2x fa-google-plus" title="Share this on Google Currents" onclick="window.open('https://plus.google.com/share?url=http://guifreelife.com/blog/2015/02/02/Ext4-Tuning-and-Mount-Options-for-Zimbra/')"></i>
-<i class="fa fa-2x fa-envelope" title="Share this through Email" onclick="window.open('mailto:?&body=http://guifreelife.com/blog/2015/02/02/Ext4-Tuning-and-Mount-Options-for-Zimbra/')"></i>
-<h4>About us</h4>
-<p>GUI Free Life is the personal, technical blog of Dale Bewley. Comments and opinions are my own and not that of my employers.</p>
-<hr class="hidden-md hidden-lg hidden-sm">
-</div>
-<div class="col-md-4 col-sm-6">
-<h4>Recent posts</h4>
-<div class=blog-entries>
-<div class="item same-height-row clearfix">
-<div class="image same-height-always">
-<a href=http://guifreelife.com/blog/2023/09/22/Storing-OpenShift-Credentials-with-1Password/>
-<img src=/img/banners/mushroom-moss.jpg class=img-responsive alt="Storing OpenShift Credentials with 1Password">
-</a>
-</div>
-<div class="name same-height-always">
-<h5><a href=http://guifreelife.com/blog/2023/09/22/Storing-OpenShift-Credentials-with-1Password/>Storing OpenShift Credentials with 1Password</a></h5>
-</div>
-</div>
-<div class="item same-height-row clearfix">
-<div class="image same-height-always">
-<a href=http://guifreelife.com/blog/2023/04/06/Accessing-Ceph-CLI-with-OpenShift-Data-Foundation/>
-<img src=/images/uncovered-bumper.png class=img-responsive alt="Accessing the Ceph CLI with OpenShift Data Foundation">
-</a>
-</div>
-<div class="name same-height-always">
-<h5><a href=http://guifreelife.com/blog/2023/04/06/Accessing-Ceph-CLI-with-OpenShift-Data-Foundation/>Accessing the Ceph CLI with OpenShift Data Foundation</a></h5>
-</div>
-</div>
-<div class="item same-height-row clearfix">
-<div class="image same-height-always">
-<a href=http://guifreelife.com/blog/2023/03/09/Extracting-CA-Certs-From-Kubeconfig/>
-<img src=/img/banners/banner-buffy-xmas.png class=img-responsive alt="Extracting TLS CA Certificates from Kubeconfig File">
-</a>
-</div>
-<div class="name same-height-always">
-<h5><a href=http://guifreelife.com/blog/2023/03/09/Extracting-CA-Certs-From-Kubeconfig/>Extracting TLS CA Certificates from Kubeconfig File</a></h5>
-</div>
-</div>
-</div>
-<hr class="hidden-md hidden-lg">
-</div>
-<div class="col-md-4 col-sm-6">
-<h4>Contact</h4>
-<p class=text-uppercase><strong>Dale Bewley</strong>
-<br>Oakland
-<br>California
-<br>
-<strong>USA</strong>
-</p>
-<a href=/contact class="btn btn-small btn-template-main">Go to contact page</a>
-<hr class="hidden-md hidden-lg hidden-sm">
-</div>
-</div>
-</footer>
-<div id=copyright>
-<div class=container>
-<div class=col-md-12>
-<p class=pull-left>Copyright (c) 2021, Dale Bewley; all rights reserved.</p>
-<p class=pull-right>
-Template by <a href=https://bootstrapious.com/p/universal-business-e-commerce-template>Bootstrapious</a>.
-Ported to Hugo by <a href=https://github.com/devcows/hugo-universal-theme>DevCows</a>.
-</p>
-</div>
-</div>
-</div>
-</div>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-39TSW9349X"></script>
-<script>var doNotTrack=!1;if(!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date),gtag('config','G-39TSW9349X',{anonymize_ip:!1})}</script>
-<script src=//code.jquery.com/jquery-3.1.1.min.js integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin=anonymous></script>
+<span class=input-group-btn><button type=submit class="btn btn-template-main"><i class="fas fa-search"></i></button></span></div></form></div></div><div class="panel sidebar-menu"><div class=panel-heading><h3 class=panel-title>Tagged</h3></div><div class=panel-body><ul class=tag-cloud><li class=active><a href=/tags/ansible><i class="fas fa-tags"></i> ansible</a></li><li class=active><a href=/tags/zimbra><i class="fas fa-tags"></i> zimbra</a></li></ul></div></div><div class="panel sidebar-menu"><div class=panel-heading><h3 class=panel-title>TOC</h3></div><div class=panel-body><nav id=TableOfContents><ul><li><a href=#zimbras-recommendations>Zimbra&rsquo;s Recommendations</a></li><li><a href=#zimbra-filesystems>Zimbra Filesystems</a></li><li><a href=#separating-out-filesystems>Separating out Filesystems</a></li><li><a href=#selecting-filesystem-options>Selecting Filesystem Options</a><ul><li><a href=#directory-index>Directory Index</a></li><li><a href=#bytes-per-inode>Bytes per Inode</a></li><li><a href=#journal-size>Journal Size</a></li></ul></li><li><a href=#summary>Summary</a></li></ul></nav></div></div><div class="panel sidebar-menu"><div class=panel-heading><h3 class=panel-title>Tags</h3></div><div class=panel-body><ul class=tag-cloud><li><a href=/tags/AWS><i class="fas fa-tags"></i> AWS</a></li><li><a href=/tags/CDK><i class="fas fa-tags"></i> CDK</a></li><li><a href=/tags/OCP3><i class="fas fa-tags"></i> OCP3</a></li><li><a href=/tags/OCP4><i class="fas fa-tags"></i> OCP4</a></li><li><a href=/tags/RHACM><i class="fas fa-tags"></i> RHACM</a></li><li><a href=/tags/RHACS><i class="fas fa-tags"></i> RHACS</a></li><li><a href=/tags/RHEL><i class="fas fa-tags"></i> RHEL</a></li><li><a href=/tags/ansible><i class="fas fa-tags"></i> ansible</a></li><li><a href=/tags/automation><i class="fas fa-tags"></i> automation</a></li><li><a href=/tags/azure><i class="fas fa-tags"></i> azure</a></li><li><a href=/tags/debugging><i class="fas fa-tags"></i> debugging</a></li><li><a href=/tags/docker><i class="fas fa-tags"></i> docker</a></li><li><a href=/tags/draft><i class="fas fa-tags"></i> draft</a></li><li><a href=/tags/etcd><i class="fas fa-tags"></i> etcd</a></li><li><a href=/tags/git><i class="fas fa-tags"></i> git</a></li><li><a href=/tags/haproxy><i class="fas fa-tags"></i> haproxy</a></li><li><a href=/tags/heat><i class="fas fa-tags"></i> heat</a></li><li><a href=/tags/hybrid-cloud><i class="fas fa-tags"></i> hybrid-cloud</a></li><li><a href=/tags/install><i class="fas fa-tags"></i> install</a></li><li><a href=/tags/kubernetes><i class="fas fa-tags"></i> kubernetes</a></li><li><a href=/tags/mac><i class="fas fa-tags"></i> mac</a></li><li><a href=/tags/metrics><i class="fas fa-tags"></i> metrics</a></li><li><a href=/tags/migration><i class="fas fa-tags"></i> migration</a></li><li><a href=/tags/monitoring><i class="fas fa-tags"></i> monitoring</a></li><li><a href=/tags/networking><i class="fas fa-tags"></i> networking</a></li><li><a href=/tags/openshift><i class="fas fa-tags"></i> openshift</a></li><li><a href=/tags/openstack><i class="fas fa-tags"></i> openstack</a></li><li><a href=/tags/operators><i class="fas fa-tags"></i> operators</a></li><li><a href=/tags/prometheus><i class="fas fa-tags"></i> prometheus</a></li><li><a href=/tags/python><i class="fas fa-tags"></i> python</a></li><li><a href=/tags/router><i class="fas fa-tags"></i> router</a></li><li><a href=/tags/security><i class="fas fa-tags"></i> security</a></li><li><a href=/tags/ssl><i class="fas fa-tags"></i> ssl</a></li><li><a href=/tags/stackrox><i class="fas fa-tags"></i> stackrox</a></li><li><a href=/tags/storage><i class="fas fa-tags"></i> storage</a></li><li><a href=/tags/troubleshooting><i class="fas fa-tags"></i> troubleshooting</a></li><li><a href=/tags/upgrade><i class="fas fa-tags"></i> upgrade</a></li><li><a href=/tags/vagrant><i class="fas fa-tags"></i> vagrant</a></li><li><a href=/tags/virtualization><i class="fas fa-tags"></i> virtualization</a></li><li><a href=/tags/webinar><i class="fas fa-tags"></i> webinar</a></li><li><a href=/tags/windows><i class="fas fa-tags"></i> windows</a></li><li><a href=/tags/zabbix><i class="fas fa-tags"></i> zabbix</a></li><li><a href=/tags/zimbra><i class="fas fa-tags"></i> zimbra</a></li></ul></div></div></div></div></div></div><footer id=footer><div class=container><div class="col-md-4 col-sm-6"><h4>Share</h4><i class="fab fa-2x fa-twitter" title="Share this on Twitter" onclick='window.open("http://twitter.com/home?status=http://guifreelife.com/blog/2015/02/02/Ext4-Tuning-and-Mount-Options-for-Zimbra/")'></i>
+<i class="fab fa-2x fa-facebook" title="Share this on Facebook" onclick='window.open("http://www.facebook.com/share.php?u=http://guifreelife.com/blog/2015/02/02/Ext4-Tuning-and-Mount-Options-for-Zimbra/")'></i>
+<i class="fab fa-2x fa-linkedin" title="Share this on Linkedin" onclick='window.open("https://www.linkedin.com/shareArticle?mini=true&url=http://guifreelife.com/blog/2015/02/02/Ext4-Tuning-and-Mount-Options-for-Zimbra/&title=&summary=&source=")'></i>
+<i class="fab fa-2x fa-google-plus" title="Share this on Google Currents" onclick='window.open("https://plus.google.com/share?url=http://guifreelife.com/blog/2015/02/02/Ext4-Tuning-and-Mount-Options-for-Zimbra/")'></i>
+<i class="fa fa-2x fa-envelope" title="Share this through Email" onclick='window.open("mailto:?&body=http://guifreelife.com/blog/2015/02/02/Ext4-Tuning-and-Mount-Options-for-Zimbra/")'></i><h4>About us</h4><p>GUI Free Life is the personal, technical blog of Dale Bewley. Comments and opinions are my own and not that of my employers.</p><hr class="hidden-md hidden-lg hidden-sm"></div><div class="col-md-4 col-sm-6"><h4>Recent posts</h4><div class=blog-entries><div class="item same-height-row clearfix"><div class="image same-height-always"><a href=http://guifreelife.com/blog/2024/03/11/Placing-Open-Cluster-Management-Policies-on-Kubernetes/><img src=/images/DALL%c2%b7E%202024-01-30%2014.28.24%20-%20A%20whimsical%20scene%20featuring%20a%20traffic%20cop%20standing%20on%20a%20cloud,%20energetically%20directing%20a%20chaotic%20stream%20of%20various%20floating%20documents%20-%20papers,%20folder.png class=img-responsive alt="Using Placements to Apply Open Cluster Management Policies to Kubernetes Clusters"></a></div><div class="name same-height-always"><h5><a href=http://guifreelife.com/blog/2024/03/11/Placing-Open-Cluster-Management-Policies-on-Kubernetes/>Using Placements to Apply Open Cluster Management Policies to Kubernetes Clusters</a></h5></div></div><div class="item same-height-row clearfix"><div class="image same-height-always"><a href=http://guifreelife.com/blog/2023/09/22/Storing-OpenShift-Credentials-with-1Password/><img src=/img/banners/mushroom-moss.jpg class=img-responsive alt="Storing OpenShift Credentials with 1Password"></a></div><div class="name same-height-always"><h5><a href=http://guifreelife.com/blog/2023/09/22/Storing-OpenShift-Credentials-with-1Password/>Storing OpenShift Credentials with 1Password</a></h5></div></div><div class="item same-height-row clearfix"><div class="image same-height-always"><a href=http://guifreelife.com/blog/2023/04/06/Accessing-Ceph-CLI-with-OpenShift-Data-Foundation/><img src=/images/uncovered-bumper.png class=img-responsive alt="Accessing the Ceph CLI with OpenShift Data Foundation"></a></div><div class="name same-height-always"><h5><a href=http://guifreelife.com/blog/2023/04/06/Accessing-Ceph-CLI-with-OpenShift-Data-Foundation/>Accessing the Ceph CLI with OpenShift Data Foundation</a></h5></div></div></div><hr class="hidden-md hidden-lg"></div><div class="col-md-4 col-sm-6"><h4>Contact</h4><p class=text-uppercase><strong>Dale Bewley</strong><br>Oakland<br>California<br><strong>USA</strong></p><a href=/contact class="btn btn-small btn-template-main">Go to contact page</a><hr class="hidden-md hidden-lg hidden-sm"></div></div></footer><div id=copyright><div class=container><div class=col-md-12><p class=pull-left>Copyright (c) 2021, Dale Bewley; all rights reserved.</p><p class=pull-right>Template by <a href=https://bootstrapious.com/p/universal-business-e-commerce-template>Bootstrapious</a>.
+Ported to Hugo by <a href=https://github.com/devcows/hugo-universal-theme>DevCows</a>.</p></div></div></div></div><script async src="https://www.googletagmanager.com/gtag/js?id=G-39TSW9349X"></script>
+<script>var doNotTrack=!1;if(!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","G-39TSW9349X",{anonymize_ip:!1})}</script><script src=//code.jquery.com/jquery-3.1.1.min.js integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin=anonymous></script>
 <script src=//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js integrity=sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa crossorigin=anonymous></script>
 <script src=//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js></script>
 <script src=//cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/jquery.waypoints.min.js></script>
@@ -617,6 +146,4 @@ Ported to Hugo by <a href=https://github.com/devcows/hugo-universal-theme>DevCow
 <script src=/js/hpneo.gmaps.js></script>
 <script src=/js/gmaps.init.js></script>
 <script src=/js/front.js></script>
-<script src=/js/owl.carousel.min.js></script>
-</body>
-</html>
+<script src=/js/owl.carousel.min.js></script></body></html>

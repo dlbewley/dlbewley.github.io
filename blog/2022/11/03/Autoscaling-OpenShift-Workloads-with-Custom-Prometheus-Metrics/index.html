@@ -1,697 +1,135 @@
-<!doctype html><html lang=en-us>
-<head>
-<meta charset=utf-8>
-<meta name=robots content="all,follow">
-<meta name=googlebot content="index,follow,snippet,archive">
-<meta name=viewport content="width=device-width,initial-scale=1">
-<title>Autoscaling OpenShift Workloads With Custom Prometheus Metrics | GUI Free Life</title>
-<meta name=author content="Dale Bewley">
-<meta name=keywords content="bewley,guifreelife,kubernetes,openshift,prometheus,OCP4,monitoring">
-<meta name=description content="GUI Free Life, by Dale Bewley covers Kubernetes, Linux, Networking, OpenShift and more">
-<meta name=generator content="Hugo 0.91.2">
-<link href="//fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,500,700,800" rel=stylesheet type=text/css>
-<link rel=stylesheet href=//use.fontawesome.com/releases/v5.11.2/css/all.css>
-<link rel=stylesheet href=//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css integrity=sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u crossorigin=anonymous>
-<link href=/css/animate.css rel=stylesheet>
-<link href=/css/style.turquoise.css rel=stylesheet id=theme-stylesheet>
-<link href=/css/custom.css rel=stylesheet><!--[if lt IE 9]><script src=https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js></script>
-<script src=https://oss.maxcdn.com/respond/1.4.2/respond.min.js></script><![endif]-->
-<link rel="shortcut icon" href=/img/favicon.ico type=image/x-icon>
-<link rel=apple-touch-icon href=/img/apple-touch-icon.png>
-<link href=/css/owl.carousel.css rel=stylesheet>
-<link href=/css/owl.theme.css rel=stylesheet>
-<link rel=alternate href=http://guifreelife.com/index.xml type=application/rss+xml title="GUI Free Life">
-<meta property="og:locale" content="en_us">
-<meta property="og:site_name" content="GUI Free Life">
-<meta property="og:title" content="Autoscaling OpenShift Workloads With Custom Prometheus Metrics">
-<meta property="og:type" content="article">
-<meta property="og:url" content="http://guifreelife.com/blog/2022/11/03/Autoscaling-OpenShift-Workloads-with-Custom-Prometheus-Metrics/">
-<meta property="og:description" content="GUI Free Life, by Dale Bewley covers Kubernetes, Linux, Networking, OpenShift and more">
-<meta property="og:image" content="http://guifreelife.com/images/openshift-keda-autoscaling-sequence.png">
-<meta property="og:image:type" content="image/png">
-<meta property="og:image:width" content="739">
-<meta property="og:image:height" content="600">
-<meta property="og:updated_time" content="2022-11-03T00:00:00Z">
-<meta property="article:tag" content="kubernetes">
-<meta property="article:tag" content="openshift">
-<meta property="article:tag" content="prometheus">
-<meta property="article:tag" content="OCP4">
-<meta property="article:tag" content="monitoring">
-<meta property="article:published_time" content="2022-11-03T00:00:00Z">
-<meta property="article:modified_time" content="2022-11-03T00:00:00Z">
-<meta name=twitter:card content="summary_large_image">
-<meta name=twitter:site content="@dlbewley">
-<meta name=twitter:title content="Autoscaling OpenShift Workloads With Custom Prometheus Metrics">
-<meta name=twitter:image content="http://guifreelife.com/images/openshift-keda-autoscaling-sequence.png">
-<meta name=twitter:description content="GUI Free Life, by Dale Bewley covers Kubernetes, Linux, Networking, OpenShift and more">
-<link rel=stylesheet type=text/css href=/css/asciinema-player.css>
-<script src=/js/asciinema-player.js></script>
-</head>
-<body>
-<div id=all>
-<header class=navbar-affixed-top data-spy=affix data-offset-top=62>
-<div class="navbar navbar-default yamm" role=navigation id=navbar>
-<div class=container>
-<div class=navbar-header>
-<a class="navbar-brand home" href=/>
-<img src=/img/logo.png alt="Autoscaling OpenShift Workloads With Custom Prometheus Metrics logo" class="hidden-xs hidden-sm">
+<!doctype html><html lang=en-us><head><meta charset=utf-8><meta name=robots content="all,follow"><meta name=googlebot content="index,follow,snippet,archive"><meta name=viewport content="width=device-width,initial-scale=1"><title>Autoscaling OpenShift Workloads With Custom Prometheus Metrics | GUI Free Life</title><meta name=author content="Dale Bewley"><meta name=keywords content="bewley,guifreelife,kubernetes,openshift,prometheus,OCP4,monitoring"><meta name=description content="GUI Free Life, by Dale Bewley covers Kubernetes, Linux, Networking, OpenShift and more"><meta name=generator content="Hugo 0.119.0"><link href='//fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,500,700,800' rel=stylesheet type=text/css><link rel=stylesheet href=//use.fontawesome.com/releases/v5.11.2/css/all.css><link rel=stylesheet href=//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css integrity=sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u crossorigin=anonymous><link href=/css/animate.css rel=stylesheet><link href=/css/style.turquoise.css rel=stylesheet id=theme-stylesheet><link href=/css/custom.css rel=stylesheet><!--[if lt IE 9]><script src=https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js></script>
+<script src=https://oss.maxcdn.com/respond/1.4.2/respond.min.js></script><![endif]--><link rel="shortcut icon" href=/img/favicon.ico type=image/x-icon><link rel=apple-touch-icon href=/img/apple-touch-icon.png><link href=/css/owl.carousel.css rel=stylesheet><link href=/css/owl.theme.css rel=stylesheet><link rel=alternate href=http://guifreelife.com/index.xml type=application/rss+xml title="GUI Free Life"><meta property="og:locale" content="en_us"><meta property="og:site_name" content="GUI Free Life"><meta property="og:title" content="Autoscaling OpenShift Workloads With Custom Prometheus Metrics"><meta property="og:type" content="article"><meta property="og:url" content="http://guifreelife.com/blog/2022/11/03/Autoscaling-OpenShift-Workloads-with-Custom-Prometheus-Metrics/"><meta property="og:description" content="GUI Free Life, by Dale Bewley covers Kubernetes, Linux, Networking, OpenShift and more"><meta property="og:image" content="http://guifreelife.com/images/openshift-keda-autoscaling-sequence.png"><meta property="og:image:type" content="image/png"><meta property="og:image:width" content="739"><meta property="og:image:height" content="600"><meta property="og:updated_time" content="2022-11-03T00:00:00Z"><meta property="article:tag" content="kubernetes"><meta property="article:tag" content="openshift"><meta property="article:tag" content="prometheus"><meta property="article:tag" content="OCP4"><meta property="article:tag" content="monitoring"><meta property="article:published_time" content="2022-11-03T00:00:00Z"><meta property="article:modified_time" content="2022-11-03T00:00:00Z"><meta name=twitter:card content="summary_large_image"><meta name=twitter:site content="@dlbewley"><meta name=twitter:title content="Autoscaling OpenShift Workloads With Custom Prometheus Metrics"><meta name=twitter:image content="http://guifreelife.com/images/openshift-keda-autoscaling-sequence.png"><meta name=twitter:description content="GUI Free Life, by Dale Bewley covers Kubernetes, Linux, Networking, OpenShift and more"><link rel=stylesheet type=text/css href=/css/asciinema-player.css><script src=/js/asciinema-player.js></script></head><body><div id=all><header class=navbar-affixed-top data-spy=affix data-offset-top=62><div class="navbar navbar-default yamm" role=navigation id=navbar><div class=container><div class=navbar-header><a class="navbar-brand home" href=/><img src=/img/logo.png alt="Autoscaling OpenShift Workloads With Custom Prometheus Metrics logo" class="hidden-xs hidden-sm">
 <img src=/img/logo-small.png alt="Autoscaling OpenShift Workloads With Custom Prometheus Metrics logo" class="visible-xs visible-sm">
-<span class=sr-only>Autoscaling OpenShift Workloads With Custom Prometheus Metrics - go to homepage</span>
-</a>
-<div class=navbar-buttons>
-<button type=button class="navbar-toggle btn-template-main" data-toggle=collapse data-target=#navigation>
+<span class=sr-only>Autoscaling OpenShift Workloads With Custom Prometheus Metrics - go to homepage</span></a><div class=navbar-buttons><button type=button class="navbar-toggle btn-template-main" data-toggle=collapse data-target=#navigation>
 <span class=sr-only>Toggle Navigation</span>
-<i class="fas fa-align-justify"></i>
-</button>
-</div>
-</div>
-<div class="navbar-collapse collapse" id=navigation>
-<ul class="nav navbar-nav navbar-right">
-<li class=dropdown>
-<a href=/>Home</a>
-</li>
-<li class="dropdown active">
-<a href=/blog/>Blog</a>
-</li>
-<li class=dropdown>
-<a href=/contact/>Contact</a>
-</li>
-</ul>
-</div>
-<div class="collapse clearfix" id=search>
-<form class=navbar-form role=search>
-<div class=input-group>
-<input type=text class=form-control placeholder=Search>
-<span class=input-group-btn>
-<button type=submit class="btn btn-template-main"><i class="fas fa-search"></i></button>
-</span>
-</div>
-</form>
-</div>
-</div>
-</div>
-</header>
-<style>.bar.background-image-fixed-banner{background:url(/images/openshift-keda-autoscaling-sequence.png)50% 0 no-repeat;background-attachment:fixed;background-size:cover;padding:100px 5%;text-shadow:2px 3px 4px var(--primary-accent),0 0 1em var(--navbar-border-top)}</style>
-<div>
-<div class=container>
-<div class=row>
-<div class=col-md-12>
-<section class="bar background-image-fixed-banner heading h2 color-white text-center">
-<h1>Autoscaling OpenShift Workloads With Custom Prometheus Metrics</h1>
-</section>
-</div>
-</div>
-</div>
-</div>
-<div id=content>
-<div class=container>
-<div class=row>
-<div class=col-md-9 id=blog-post>
-<p class="text-muted text-uppercase mb-small text-right">
-November 3, 2022
-</p>
-<div id=post-content>
-<p>Kubernetes enables the automated scaling of applications to meet workload demands. Historically only memory and CPU consumption could be considered in scaling decisions, but the OpenShift Custom Metrics Autoscaler operator and KEDA remove that limitation. Read on to learn how OpenShift enables auto scaling based on the metrics that are important to your business.</p>
-<h1 id=understanding-openshift-monitoring>Understanding OpenShift Monitoring</h1>
-<p>OpenShift includes monitoring and alerting out of the box. Batteries included.</p>
-<p>Metrics are continuously collected and evaluated against dozens of predefined rules that identify potential issues. Metrics are also stored for review in graphical dashboards enabling troubleshooting and proactive capacity analysis.</p>
-<p>All of these metrics can be queried using Prometheus PromQL syntax in the console at <em>Observe -> Metrics</em>.</p>
-<figure><a href=/images/keda-dashboard-metrics.png><img src=/images/keda-dashboard-metrics.png alt="OpenShift Metrics Queries" width=100%></a><figcaption>
-<p>OpenShift Metrics Queries</p>
-</figcaption>
-</figure>
-<blockquote>
-<p><strong>⭐ Pro Tip:</strong> Red Hat Advanced Cluster Management aggregates metrics from all your clusters to a single pane of glass. See blog posts with the <a href=http://guifreelife.com/tags/RHACM/>RHACM tag</a></p>
-</blockquote>
-<p><strong>What is monitored?</strong></p>
-<p>All metrics are collected or &ldquo;scraped&rdquo; from Targets which can be found in the console at <em>Observe -> Targets</em>. These targets are defined using <code>ServiceMonitor</code> resources.</p>
-<p>For example there are ServiceMonitors for <a href=https://keda.sh/docs/2.8/scalers/prometheus/ title="KEDA Prometheus Scaler">Kube State Metrics</a>:</p>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc get servicemonitor/kube-state-metrics -n openshift-monitoring -o yaml | yq e <span style=color:#cd5555>&#39;.spec.selector&#39;</span> -
-matchLabels:
-  app.kubernetes.io/component: exporter
-  app.kubernetes.io/name: kube-state-metrics
-  app.kubernetes.io/part-of: openshift-monitoring
-
-$ oc get services -l app.kubernetes.io/component=exporter -A
-NAMESPACE              NAME                 TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)            AGE
-openshift-monitoring   kube-state-metrics   ClusterIP   None         &lt;none&gt;        8443/TCP,9443/TCP  6d
-openshift-monitoring   node-exporter        ClusterIP   None         &lt;none&gt;        9100/TCP           6d
-</code></pre></div><p>And there are ServiceMonitors that ship with add-on operators like OpenShift Data Foundation:</p>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc get servicemonitors -n openshift-storage
-NAME                                              AGE
-noobaa-mgmt-service-monitor                       6d
-ocs-metrics-exporter                              6d
-odf-operator-controller-manager-metrics-monitor   6d
-rook-ceph-mgr                                     6d
-s3-service-monitor                                6d
-</code></pre></div><p><strong>Demo:</strong> Listing the ServiceMonitors that define the Prometheus targets</p>
-<blockquote>
-<span class=expand>
-<span class=expand-label style=cursor:pointer onclick="$h=$(this),$h.next('div').slideToggle(200,function(){$h.children('i').attr('class',function(){return $h.next('div').is(':visible')?'fas fa-chevron-down':'fas fa-chevron-right'})})">
-📺 ASCII Screencast
-<i class="fas fa-chevron-right"></i>
-</span>
-<div class=expand-content style="display:none;margin:10px 0">
-<p>OpenShift monitors dozens of Prometheus targets defined through ServiceMonitors</p>
-<p>
-<asciinema-player src=/casts/servicemonitor-keda-20221013_1456.cast cols=640 rows=35 start-at=0 speed=1 poster=npt:0:06 font-size=smaller></asciinema-player>
-</p>
-</div>
-</span>
-</blockquote>
-<h1 id=understanding-horizontal-pod-autoscaling>Understanding Horizontal Pod Autoscaling</h1>
-<p><a href=https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/ title="Horizontal Pod Autoscaling">Horizontal pod autoscaling</a> (HPA) has been a feature since the earliest days of OpenShift, but scaling was triggered only by CPU and memory consumption metrics. When the average CPU load of pods in an application reached an identified threshold the Deployment or StatefulSet that created the pod was resized to add more pod replicas. When the load receded, the application was scaled down and the extra pods were terminated.</p>
-<p>Unfortunately, those simplistic metrics may not tell the whole story for your application.</p>
-<p>The OpenShift <a href=https://github.com/openshift/custom-metrics-autoscaler-operator title="Custom Metrics Autoscaler Operator">Custom Metrics Autoscaler operator</a> (CMA) enables you to create your own custom metrics and tailored PromQL queries for scaling. CMA is based on the upstream <a href=https://keda.sh title=KEDA.sh>Kubernetes Event Driven Autoscaling</a> project which makes it possible to trigger on a <a href=https://keda.sh/docs/latest/scalers/ title="KEDA Scalers">number of event sources</a> or &ldquo;Scalers&rdquo; in the KEDA vernacular. We will use the <a href=https://keda.sh/docs/2.8/scalers/prometheus/ title="KEDA Prometheus Scaler">Prometheus scaler</a>.</p>
-<blockquote>
-<p><strong>⭐ Pro Tip:</strong> This may remind you of <a href=https://www.redhat.com/en/technologies/cloud-computing/openshift/serverless title="OpenShift Serverless">OpenShift Serverless</a>, but the use case differs. KEDA, for example, will only permit you to scale as low as 1 pod. See <a href=https://access.redhat.com/articles/6636281 title="Knative versus KEDA">Knative versus KEDA</a></p>
-</blockquote>
-<h1 id=prerequisites>Prerequisites</h1>
-<h2 id=enabling-openshift-user-workload-monitoring>Enabling OpenShift User Workload Monitoring</h2>
-<p>To begin monitoring our own custom application we must first <a href=https://docs.openshift.com/container-platform/4.11/monitoring/enabling-monitoring-for-user-defined-projects.html title="Enabling user workload monitoring in OpenShift">enable user workload monitoring</a> in OpenShift.</p>
-<p>Easy peasy.</p>
-<blockquote>
-<p><strong>Demo:</strong> Enabling user workload monitoring</p>
-<p>⭐ <strong>Pro Tip:</strong> Use the <a href=https://github.com/mikefarah/yq>yq tool</a> to do it with 2 commands</p>
-</blockquote>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc extract configmap/cluster-monitoring-config <span style=color:#cd5555>\
-</span><span style=color:#cd5555></span>  -n openshift-monitoring --to=- <span style=color:#cd5555>\
-</span><span style=color:#cd5555></span>  | yq <span style=color:#658b00>eval</span> <span style=color:#cd5555>&#39;.enableUserWorkload = true&#39;</span> - &gt; config.yaml
-
-$ oc <span style=color:#658b00>set</span> data configmap/cluster-monitoring-config <span style=color:#cd5555>\
-</span><span style=color:#cd5555></span>  --from-file=config.yaml -n openshift-monitoring
-</code></pre></div><h2 id=installing-openshift-custom-metrics-autoscaler-operator>Installing OpenShift Custom Metrics Autoscaler Operator</h2>
-<p>Next, we must install the OpenShift <a href=https://github.com/openshift/custom-metrics-autoscaler-operator title="Custom Metrics Autoscaler Operator">Custom Metrics Autoscaler operator</a> which is built on the <a href=https://keda.sh title=KEDA.sh>KEDA</a> project. In addition to installing the operator, a <code>KedaController</code> operand must be created which will result in the deployment of pods to the openshift-keda namespace.</p>
-<blockquote>
-<p><strong>Demo:</strong> Deploying and <a href=https://github.com/dlbewley/demo-custom-metric-autoscaling/tree/main/operator>configuring KEDA</a> using Kustomize:</p>
-</blockquote>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc apply -k operator
-    namespace/openshift-keda created
-    kedacontroller.keda.sh/keda created
-    operatorgroup.operators.coreos.com/openshift-keda created
-    subscription.operators.coreos.com/openshift-custom-metrics-autoscaler-operator created
-
-<span style=color:#228b22># checking the status of KEDA</span>
-$ oc logs -f -n openshift-keda -l <span style=color:#00688b>app</span>=keda-operator
-</code></pre></div><h1 id=using-custom-metrics-autoscaling>Using Custom Metrics Autoscaling</h1>
-<p>Let&rsquo;s walk through an example using two applications. One will be the metered app called &ldquo;prometheus-example-app&rdquo; which exists only to provide a metric. Imagine this metric describes an amount of work piled up in a queue. The second application called &ldquo;static-app&rdquo; actually performs the work, and it will autoscale based on the metric advertised by the metered app.</p>
-<h2 id=enabling-custom-metrics-in-our-application>Enabling Custom Metrics in our Application</h2>
-<p>Prometheus expects applications to provide a <code>/metrics</code> endpoint which returns data in a format it understands. See the <a href=https://prometheus.io/docs/prometheus/latest/getting_started/>Prometheus docs</a> to get started with instrumenting your application. We&rsquo;ll use a contrived <a href=https://github.com/rhobs/prometheus-example-app title="Example Go App With Prometheus Metrics">example app</a> here.</p>
-<blockquote>
-<p>⚠️ <strong>Apply the Appropriate Monitoring ClusterRole:</strong> Creation of a <code>ServiceMonitor</code> is privileged, so unless you are a cluster admin you may have to request one of the following roles such as <code>monitoring-edit</code>.</p>
-</blockquote>
-<ul>
-<li><code>monitoring-rules-view</code> grants read access to PrometheusRule custom resources for a project.</li>
-<li><code>monitoring-rules-edit</code> grants create, modify, and deleting PrometheusRule custom resources for a project.</li>
-<li><code>monitoring-edit</code> grants <code>monitoring-rules-edit</code> plus grants creation of new scrape targets for services or pods. This cluster role is needed to create, modify, and delete ServiceMonitor and PodMonitor resources.</li>
-</ul>
-<blockquote>
-<p><strong>Demo:</strong> <a href=https://github.com/dlbewley/demo-custom-metric-autoscaling/tree/main/custom-metric-app>Deploying</a> an example metered application using Kustomize:</p>
-</blockquote>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc apply -k custom-metric-app
-    namespace/keda-test created
-    service/prometheus-example-app created
-    deployment.apps/prometheus-example-app created
-<span style=display:block;width:100%;background-color:#d6d6c6>    servicemonitor.monitoring.coreos.com/prometheus-example-monitor created
-</span>    route.route.openshift.io/prometheus-example-app created
-</code></pre></div><h2 id=understanding-servicemonitors>Understanding ServiceMonitors</h2>
-<blockquote>
-<figure><a href=/images/openshift-keda-autoscaling-sequence-1.png><img src=/images/openshift-keda-autoscaling-sequence-1.png alt="Exposing Custom Prometheus Metrics" width=100%></a><figcaption>
-<p>Exposing Custom Prometheus Metrics</p>
-</figcaption>
-</figure>
-</blockquote>
-<p>The OpenShift-monitoring operator automates the configuration of Prometheus using the ServiceMonitor resource to target matching Services and scrape any metrics that are exported at <code>/metrics</code>.</p>
-<p>Imagine a case where a metered-app is regularly checking a topic in Kafka to determine the length of a queue of work. We don&rsquo;t care to scale <em>this</em> application, but we want to use its <em>knowledge</em> to scale another app.</p>
-<blockquote>
-<p>⚠️ <strong>Warning:</strong> Be sure to name the port in the Service definition and reference this name and not the number in the ServiceMonitor definition! Symptoms include no Target nor metrics visible in Prometheus.</p>
-</blockquote>
-<p>Example <code>ServiceMonitor</code> resource for the metered app</p>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#8b008b;font-weight:700>apiVersion</span>:<span style=color:#bbb> </span>monitoring.coreos.com/v1<span style=color:#bbb>
-</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>kind</span>:<span style=color:#bbb> </span>ServiceMonitor<span style=color:#bbb>
-</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>metadata</span>:<span style=color:#bbb>
-</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>labels</span>:<span style=color:#bbb>
-</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>k8s-app</span>:<span style=color:#bbb> </span>prometheus-example-monitor<span style=color:#bbb>
-</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>prometheus-example-monitor<span style=color:#bbb>
-</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>spec</span>:<span style=color:#bbb>
-</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>endpoints</span>:<span style=color:#bbb>
-</span><span style=color:#bbb>  </span>- <span style=color:#8b008b;font-weight:700>interval</span>:<span style=color:#bbb> </span>30s<span style=color:#bbb>
-</span><span style=display:block;width:100%;background-color:#d6d6c6><span style=color:#bbb>    </span><span style=color:#228b22># use port name NOT port number</span><span style=color:#bbb>
-</span></span><span style=display:block;width:100%;background-color:#d6d6c6><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>port</span>:<span style=color:#bbb> </span>web<span style=color:#bbb>
-</span></span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>scheme</span>:<span style=color:#bbb> </span>http<span style=color:#bbb>
-</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>selector</span>:<span style=color:#bbb>
-</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>matchLabels</span>:<span style=color:#bbb>
-</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>app</span>:<span style=color:#bbb> </span>prometheus-example-app<span style=color:#bbb>
-</span></code></pre></div><h2 id=deploying-a-scaled-application>Deploying A Scaled Application</h2>
-<p>Another app exists to perform work based on that example work queue. It performs tasks in parallel, so it can benefit from scaling out horizontally.</p>
-<blockquote>
-<p><strong>Demo:</strong> Deploying an <a href=https://github.com/dlbewley/demo-custom-metric-autoscaling/tree/main/scaled-app>example scaled application</a> using kustomize:</p>
-</blockquote>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc apply -k scaled-app
-    namespace/keda-test unchanged
-    serviceaccount/thanos unchanged
-    role.rbac.authorization.k8s.io/thanos-metrics-reader unchanged
-    rolebinding.rbac.authorization.k8s.io/thanos-metrics-reader unchanged
-    secret/thanos-token unchanged
-    service/static-app configured
-    deployment.apps/static-app configured
-    buildconfig.build.openshift.io/static-app configured
-    imagestream.image.openshift.io/static-app configured
-<span style=display:block;width:100%;background-color:#d6d6c6>    scaledobject.keda.sh/static-app configured
-</span>    triggerauthentication.keda.sh/keda-trigger-auth-prometheus unchanged
-    route.route.openshift.io/static-app configured
-</code></pre></div><p>Notice that we did not create a HorizontalPodAutoscaler above, but one was created automatically using the information in the ScaledObject resource:</p>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc get hpa
-NAME                  REFERENCE               TARGETS     MINPODS   MAXPODS   REPLICAS   AGE
-keda-hpa-static-app   Deployment/static-app   0/5 (avg)   <span style=color:#b452cd>1</span>         <span style=color:#b452cd>10</span>        <span style=color:#b452cd>1</span>          14d
-</code></pre></div><h2 id=understanding-scaledobjects>Understanding ScaledObjects</h2>
-<p>Now that a custom metric is being collected, and an app exists which can benefit from the knowledge in this metric to scale more effectively, the two can be joined together using a <code>ScaledObject</code> resource.</p>
-<p>Given the inputs of:</p>
-<ul>
-<li>an object, such as a Deployment or Statefulset, which can be scaled (line 9)</li>
-<li>a trigger of type Prometheus that identifies the relevant metric (line 31)</li>
-<li>and authentication credentials to query metrics (line 35)</li>
-</ul>
-<p>&mldr;the operator will use the ScaledObject resource to create and program a <code>HorizontalPodAutoscaler</code> that will be triggered by the results of the Prometheus metrics query.</p>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 1</span><span style=color:#8b008b;font-weight:700>apiVersion</span>:<span style=color:#bbb> </span>keda.sh/v1alpha1<span style=color:#bbb>
-</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 2</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>kind</span>:<span style=color:#bbb> </span>ScaledObject<span style=color:#bbb>
-</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 3</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>metadata</span>:<span style=color:#bbb>
-</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 4</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>scaled-app<span style=color:#bbb>
-</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 5</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>spec</span>:<span style=color:#bbb>
-</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 6</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>scaleTargetRef</span>:<span style=color:#bbb>
-</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 7</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>api</span>:<span style=color:#bbb> </span>apps/v1 <span style=color:#bbb>
-</span><span style=display:block;width:100%;background-color:#d6d6c6><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 8</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>static-app<span style=color:#bbb>
-</span></span><span style=display:block;width:100%;background-color:#d6d6c6><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 9</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>kind</span>:<span style=color:#bbb> </span>Deployment <span style=color:#bbb>
-</span></span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">10</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>cooldownPeriod</span>:<span style=color:#bbb>  </span><span style=color:#b452cd>200</span><span style=color:#bbb> 
-</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">11</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>maxReplicaCount</span>:<span style=color:#bbb> </span><span style=color:#b452cd>10</span><span style=color:#bbb> 
-</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">12</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>minReplicaCount</span>:<span style=color:#bbb> </span><span style=color:#b452cd>1</span><span style=color:#bbb> 
-</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">13</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>pollingInterval</span>:<span style=color:#bbb> </span><span style=color:#b452cd>30</span><span style=color:#bbb> 
-</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">14</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>advanced</span>:<span style=color:#bbb>
-</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">15</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>restoreToOriginalReplicaCount</span>:<span style=color:#bbb> </span><span style=color:#8b008b;font-weight:700>false</span><span style=color:#bbb> 
-</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">16</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>horizontalPodAutoscalerConfig</span>:<span style=color:#bbb>
-</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">17</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>behavior</span>:<span style=color:#bbb> 
-</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">18</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>scaleDown</span>:<span style=color:#bbb>
-</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">19</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>stabilizationWindowSeconds</span>:<span style=color:#bbb> </span><span style=color:#b452cd>300</span><span style=color:#bbb>
-</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">20</span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>policies</span>:<span style=color:#bbb>
-</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">21</span><span style=color:#bbb>          </span>- <span style=color:#8b008b;font-weight:700>type</span>:<span style=color:#bbb> </span>Percent<span style=color:#bbb>
-</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">22</span><span style=color:#bbb>            </span><span style=color:#8b008b;font-weight:700>value</span>:<span style=color:#bbb> </span><span style=color:#b452cd>100</span><span style=color:#bbb>
-</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">23</span><span style=color:#bbb>            </span><span style=color:#8b008b;font-weight:700>periodSeconds</span>:<span style=color:#bbb> </span><span style=color:#b452cd>15</span><span style=color:#bbb>
-</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">24</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>triggers</span>:<span style=color:#bbb>
-</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">25</span><span style=color:#bbb>    </span>- <span style=color:#8b008b;font-weight:700>type</span>:<span style=color:#bbb> </span>prometheus <span style=color:#bbb>
-</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">26</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>metadata</span>:<span style=color:#bbb>
-</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">27</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>namespace</span>:<span style=color:#bbb> </span>keda-test<span style=color:#bbb>
-</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">28</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>serverAddress</span>:<span style=color:#bbb> </span>https://thanos-querier.openshift-monitoring.svc.cluster.local:9092<span style=color:#bbb>
-</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">29</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>metricName</span>:<span style=color:#bbb> </span>http_requests_total<span style=color:#bbb>
-</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">30</span><span style=color:#bbb>        </span><span style=color:#228b22># &#39;job&#39; corresponds to the &#39;app&#39; label value on deployment</span><span style=color:#bbb>
-</span><span style=display:block;width:100%;background-color:#d6d6c6><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">31</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>query</span>:<span style=color:#bbb> </span>sum(rate(http_requests_total{job=&#34;prometheus-example-app&#34;}[1m]))<span style=color:#bbb>
-</span></span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">32</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>threshold</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#39;5&#39;</span><span style=color:#bbb> 
-</span><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">33</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>authModes</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;bearer&#34;</span><span style=color:#bbb>
-</span><span style=display:block;width:100%;background-color:#d6d6c6><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">34</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>authenticationRef</span>:<span style=color:#bbb>
-</span></span><span style=display:block;width:100%;background-color:#d6d6c6><span style="margin-right:.4em;padding:0 .4em;color:#7f7f7f">35</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>keda-trigger-auth-prometheus<span style=color:#bbb>
-</span></span></code></pre></div><blockquote>
-<p>📓 Notice that the trigger contains a reference on line 35 to the <code>TriggerAuthentication</code> resource.</p>
-</blockquote>
-<h2 id=understanding-thanos>Understanding Thanos</h2>
-<p>OpenShift workload monitoring actually introduces a second Prometheus instance distinct from the platform instance, so an intermediary will be used when looking up metrics. This is where Thanos fits in. The CMA or KEDA operator will be looking up metrics values by asking the Thanos-querier for them. You may think of it as a proxy to Prometheus.</p>
-<p>The conversation with Thanos must be authenticated, and it is the <code>TriggerAuthentication</code> resource that supplies the credentials. Those credentials are the CA cert and token associated with the <em>thanos</em> service account created by our application deployment.</p>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#8b008b;font-weight:700>apiVersion</span>:<span style=color:#bbb> </span>keda.sh/v1alpha1<span style=color:#bbb>
-</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>kind</span>:<span style=color:#bbb> </span>TriggerAuthentication<span style=color:#bbb>
-</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>metadata</span>:<span style=color:#bbb>
-</span><span style=display:block;width:100%;background-color:#d6d6c6><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>keda-trigger-auth-prometheus<span style=color:#bbb>
-</span></span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>spec</span>:<span style=color:#bbb>
-</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>secretTargetRef</span>:<span style=color:#bbb> 
-</span><span style=color:#bbb>  </span>- <span style=color:#8b008b;font-weight:700>parameter</span>:<span style=color:#bbb> </span>bearerToken <span style=color:#bbb>
-</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>thanos-token<span style=color:#bbb>
-</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>key</span>:<span style=color:#bbb> </span>token <span style=color:#bbb>
-</span><span style=color:#bbb>  </span>- <span style=color:#8b008b;font-weight:700>parameter</span>:<span style=color:#bbb> </span>ca<span style=color:#bbb>
-</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>thanos-token<span style=color:#bbb>
-</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>key</span>:<span style=color:#bbb> </span>ca.crt<span style=color:#bbb>
-</span></code></pre></div><blockquote>
-<figure><a href=/images/openshift-keda-autoscaling-sequence-2.png><img src=/images/openshift-keda-autoscaling-sequence-2.png alt="Using Prometheus Metrics for KEDA Autoscaling" width=100%></a><figcaption>
-<p>Using Prometheus Metrics for KEDA Autoscaling</p>
-</figcaption>
-</figure>
-</blockquote>
-<h1 id=demo>Demo</h1>
-<p>We have all the pieces on the table, so let&rsquo;s put them together and see an example.</p>
-<p>For this demo we won&rsquo;t use the Kafka example mentioned, but we will <a href=https://github.com/dlbewley/demo-custom-metric-autoscaling/blob/main/load.yaml>increase the load</a> on the &ldquo;<a href=#enabling-custom-metrics-in-our-application>prometheus-example-app</a>&rdquo; which is acting as our metered-app.</p>
-<p>As the rate of HTTP hits to the metered-app increase, the HPA will be triggered and cause the &ldquo;<a href=#deploying-a-scaled-application>static-app</a>&rdquo; to scale out.</p>
-<p>Below is a graph of the query, defined by the ScaledOjbect, captured during this demo.</p>
-<figure><a href=/images/openshift-keda-autoscaling-demo-metric.png><img src=/images/openshift-keda-autoscaling-demo-metric.png alt="Custom Metric Graph with Load Generator" width=75%></a><figcaption>
-<p>Custom Metric Graph with Load Generator</p>
-</figcaption>
-</figure>
-<p><strong>Demo:</strong> Autoscaling one application based on the metrics of another. (<em>output has been sped up</em>)</p>
-<blockquote>
-<span class=expand>
-<span class=expand-label style=cursor:pointer onclick="$h=$(this),$h.next('div').slideToggle(200,function(){$h.children('i').attr('class',function(){return $h.next('div').is(':visible')?'fas fa-chevron-down':'fas fa-chevron-right'})})">
-📺 ASCII Screencast
-<i class="fas fa-chevron-down"></i>
-</span>
-<div class=expand-content style="display:block;margin:10px 0">
-<p>Scale app "static-app" based on the rate of hits counted in the app "prometheus-example-app"</p>
-<p>
-<asciinema-player src=/casts/scale-keda-20221102_1548.cast cols=640 rows=45 start-at=0 speed=1 poster=npt:2:00 font-size=smaller></asciinema-player>
-</p>
-</div>
-</span>
-</blockquote>
-<h1 id=summary>Summary</h1>
-<p><em>So, what did we just learn? TL;DR</em></p>
-<ul>
-<li>
-<p><strong>OpenShift provides platform and workload monitoring out of the box</strong></p>
-<p>Batteries included. The platform ships with Prometheus configured to comprehensively monitor the platform and graph the results.</p>
-</li>
-<li>
-<p><strong>Developers can add their own metrics to be monitored</strong></p>
-<p>Developers can add the Prometheus client libraries to their application, define a ServiceMonitor, and Prometheus will begin scraping them.</p>
-</li>
-<li>
-<p><strong>Custom metrics can be used in auto scaling triggers</strong></p>
-<p>With the addition of the <a href=https://github.com/openshift/custom-metrics-autoscaler-operator title="Custom Metrics Autoscaler Operator">OpenShift Custom Metrics Autoscaling operator</a>, a ScaledObject can program an Autoscaler to resize an application using any metric. You can now scale your application using intelligent metrics that are important to your business!</p>
-</li>
-</ul>
-<h1 id=references>References</h1>
-<figure><a href=/images/openshift-keda-autoscaling-sequence.png><img src=/images/openshift-keda-autoscaling-sequence.png alt="Custom Metric Autoscaling Sequence Diagram" width=75%></a><figcaption>
-<p>Custom Metric Autoscaling Sequence Diagram</p>
-</figcaption>
-</figure>
-<ul>
-<li><a href=https://cloud.redhat.com/blog/custom-metrics-autoscaler-on-openshift title=Blog>Custom Metrics Autoscaler on OpenShift</a> - Red Hat Blog</li>
-<li><a href=https://github.com/dlbewley/demo-custom-metric-autoscaling title="Custom Metrics Autoscaling Demo">Example Demo</a> - GitHub</li>
-<li><a href=https://docs.openshift.com/container-platform/4.11/nodes/pods/nodes-pods-autoscaling-custom.html title="Automatically scaling pods based on custom metrics">Automatically scaling pods based on custom metrics</a> - OpenShift Docs</li>
-<li><a href=https://docs.openshift.com/container-platform/4.11/monitoring/enabling-monitoring-for-user-defined-projects.html title="Enabling monitoring for user-defined projects">Enabling monitoring for user-defined projects</a> - OpenShift Docs</li>
-<li><a href=https://docs.openshift.com/container-platform/4.11/monitoring/managing-metrics.html title="Managing metrics">Managing metrics</a> - OpenShift Docs</li>
-<li><a href=https://github.com/openshift/custom-metrics-autoscaler-operator title="Custom Metrics Autoscaler Operator">Custom Metrics Autoscaler Operator</a> - GitHub</li>
-<li><a href=https://keda.sh title=KEDA.sh>KEDA.sh</a></li>
-<li><a href=https://keda.sh/docs/2.8/scalers/prometheus/ title="KEDA Prometheus Scaler">KEDA Prometheus Scaler</a></li>
-<li><a href=https://access.redhat.com/articles/6636281 title="Knative versus KEDA">Knative versus KEDA</a></li>
-<li><a href=https://keda.sh/docs/latest/scalers/ title="KEDA Scalers">List of KEDA Scaler Sources</a></li>
-<li><a href=https://github.com/dlbewley/demo-custom-metric-autoscaling title="Custom Metrics Autoscaling Demo">Custom Metrics Autoscaling Demo</a></li>
-<li><a href=https://prometheus.io title=Prometheus>Prometheus.io</a></li>
-<li><a href=https://blog.container-solutions.com/prometheus-operator-beginners-guide title="Beginners Guide to Prometheus Operator">Beginners Guide to Prometheus Operator</a></li>
-<li><a href=https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/ title="Horizontal Pod Autoscaling">Horizontal Pod Autoscaling</a></li>
-</ul>
-</div>
-<div id=comments>
-<div id=disqus_thread></div>
-<script type=application/javascript>var disqus_config=function(){};(function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById('disqus_thread').innerHTML='Disqus comments not available by default when the website is previewed locally.';return}var b=document,a=b.createElement('script');a.async=!0,a.src='//dlbewleygithubio.disqus.com/embed.js',a.setAttribute('data-timestamp',+new Date),(b.head||b.body).appendChild(a)})()</script>
-<noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript>
-<a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a>
-</div>
-</div>
-<div class=col-md-3>
-<div class="panel panel-default sidebar-menu">
-<div class=panel-heading>
-<h3 class=panel-title>Search</h3>
-</div>
-<div class=panel-body>
-<form action=//google.com/search method=get accept-charset=utf-8 role=search>
-<div class=input-group>
-<input type=search name=q class=form-control placeholder=Search>
+<i class="fas fa-align-justify"></i></button></div></div><div class="navbar-collapse collapse" id=navigation><ul class="nav navbar-nav navbar-right"><li class=dropdown><a href=/>Home</a></li><li class="dropdown active"><a href=/blog/>Blog</a></li><li class=dropdown><a href=/contact/>Contact</a></li></ul></div><div class="collapse clearfix" id=search><form class=navbar-form role=search><div class=input-group><input type=text class=form-control placeholder=Search>
+<span class=input-group-btn><button type=submit class="btn btn-template-main"><i class="fas fa-search"></i></button></span></div></form></div></div></div></header><style>.bar.background-image-fixed-banner{background:url(/images/openshift-keda-autoscaling-sequence.png)50% 0 no-repeat;background-attachment:fixed;background-size:cover;padding:100px 5%;text-shadow:2px 3px 4px var(--primary-accent),0 0 1em var(--navbar-border-top)}</style><div><div class=container><div class=row><div class=col-md-12><section class="bar background-image-fixed-banner heading h2 color-white text-center"><h1>Autoscaling OpenShift Workloads With Custom Prometheus Metrics</h1></section></div></div></div></div><div id=content><div class=container><div class=row><div class=col-md-9 id=blog-post><p class="text-muted text-uppercase mb-small text-right">November 3, 2022</p><div id=post-content><p>Kubernetes enables the automated scaling of applications to meet workload demands. Historically only memory and CPU consumption could be considered in scaling decisions, but the OpenShift Custom Metrics Autoscaler operator and KEDA remove that limitation. Read on to learn how OpenShift enables auto scaling based on the metrics that are important to your business.</p><h1 id=understanding-openshift-monitoring>Understanding OpenShift Monitoring</h1><p>OpenShift includes monitoring and alerting out of the box. Batteries included.</p><p>Metrics are continuously collected and evaluated against dozens of predefined rules that identify potential issues. Metrics are also stored for review in graphical dashboards enabling troubleshooting and proactive capacity analysis.</p><p>All of these metrics can be queried using Prometheus PromQL syntax in the console at <em>Observe -> Metrics</em>.</p><figure><a href=/images/keda-dashboard-metrics.png><img src=/images/keda-dashboard-metrics.png alt="OpenShift Metrics Queries" width=100%></a><figcaption><p>OpenShift Metrics Queries</p></figcaption></figure><blockquote><p><strong>⭐ Pro Tip:</strong> Red Hat Advanced Cluster Management aggregates metrics from all your clusters to a single pane of glass. See blog posts with the <a href=http://guifreelife.com/tags/RHACM/>RHACM tag</a></p></blockquote><p><strong>What is monitored?</strong></p><p>All metrics are collected or &ldquo;scraped&rdquo; from Targets which can be found in the console at <em>Observe -> Targets</em>. These targets are defined using <code>ServiceMonitor</code> resources.</p><p>For example there are ServiceMonitors for <a href=https://keda.sh/docs/2.8/scalers/prometheus/ title="KEDA Prometheus Scaler">Kube State Metrics</a>:</p><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>$ oc get servicemonitor/kube-state-metrics -n openshift-monitoring -o yaml | yq e <span style=color:#cd5555>&#39;.spec.selector&#39;</span> -
+</span></span><span style=display:flex><span>matchLabels:
+</span></span><span style=display:flex><span>  app.kubernetes.io/component: exporter
+</span></span><span style=display:flex><span>  app.kubernetes.io/name: kube-state-metrics
+</span></span><span style=display:flex><span>  app.kubernetes.io/part-of: openshift-monitoring
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>$ oc get services -l app.kubernetes.io/component=exporter -A
+</span></span><span style=display:flex><span>NAMESPACE              NAME                 TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)            AGE
+</span></span><span style=display:flex><span>openshift-monitoring   kube-state-metrics   ClusterIP   None         &lt;none&gt;        8443/TCP,9443/TCP  6d
+</span></span><span style=display:flex><span>openshift-monitoring   node-exporter        ClusterIP   None         &lt;none&gt;        9100/TCP           6d
+</span></span></code></pre></div><p>And there are ServiceMonitors that ship with add-on operators like OpenShift Data Foundation:</p><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>$ oc get servicemonitors -n openshift-storage
+</span></span><span style=display:flex><span>NAME                                              AGE
+</span></span><span style=display:flex><span>noobaa-mgmt-service-monitor                       6d
+</span></span><span style=display:flex><span>ocs-metrics-exporter                              6d
+</span></span><span style=display:flex><span>odf-operator-controller-manager-metrics-monitor   6d
+</span></span><span style=display:flex><span>rook-ceph-mgr                                     6d
+</span></span><span style=display:flex><span>s3-service-monitor                                6d
+</span></span></code></pre></div><p><strong>Demo:</strong> Listing the ServiceMonitors that define the Prometheus targets</p><blockquote><span class=expand><span class=expand-label style=cursor:pointer onclick='$h=$(this),$h.next("div").slideToggle(200,function(){$h.children("i").attr("class",function(){return $h.next("div").is(":visible")?"fas fa-chevron-down":"fas fa-chevron-right"})})'>📺 ASCII Screencast
+<i class="fas fa-chevron-right"></i></span><div class=expand-content style="display:none;margin:10px 0"><p>OpenShift monitors dozens of Prometheus targets defined through ServiceMonitors</p><p><asciinema-player src=/casts/servicemonitor-keda-20221013_1456.cast cols=640 rows=35 start-at=0 speed=1 poster=npt:0:06 font-size=smaller></asciinema-player></p></div></span></blockquote><h1 id=understanding-horizontal-pod-autoscaling>Understanding Horizontal Pod Autoscaling</h1><p><a href=https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/ title="Horizontal Pod Autoscaling">Horizontal pod autoscaling</a> (HPA) has been a feature since the earliest days of OpenShift, but scaling was triggered only by CPU and memory consumption metrics. When the average CPU load of pods in an application reached an identified threshold the Deployment or StatefulSet that created the pod was resized to add more pod replicas. When the load receded, the application was scaled down and the extra pods were terminated.</p><p>Unfortunately, those simplistic metrics may not tell the whole story for your application.</p><p>The OpenShift <a href=https://github.com/openshift/custom-metrics-autoscaler-operator title="Custom Metrics Autoscaler Operator">Custom Metrics Autoscaler operator</a> (CMA) enables you to create your own custom metrics and tailored PromQL queries for scaling. CMA is based on the upstream <a href=https://keda.sh title=KEDA.sh>Kubernetes Event Driven Autoscaling</a> project which makes it possible to trigger on a <a href=https://keda.sh/docs/latest/scalers/ title="KEDA Scalers">number of event sources</a> or &ldquo;Scalers&rdquo; in the KEDA vernacular. We will use the <a href=https://keda.sh/docs/2.8/scalers/prometheus/ title="KEDA Prometheus Scaler">Prometheus scaler</a>.</p><blockquote><p><strong>⭐ Pro Tip:</strong> This may remind you of <a href=https://www.redhat.com/en/technologies/cloud-computing/openshift/serverless title="OpenShift Serverless">OpenShift Serverless</a>, but the use case differs. KEDA, for example, will only permit you to scale as low as 1 pod. See <a href=https://access.redhat.com/articles/6636281 title="Knative versus KEDA">Knative versus KEDA</a></p></blockquote><h1 id=prerequisites>Prerequisites</h1><h2 id=enabling-openshift-user-workload-monitoring>Enabling OpenShift User Workload Monitoring</h2><p>To begin monitoring our own custom application we must first <a href=https://docs.openshift.com/container-platform/4.11/monitoring/enabling-monitoring-for-user-defined-projects.html title="Enabling user workload monitoring in OpenShift">enable user workload monitoring</a> in OpenShift.</p><p>Easy peasy.</p><blockquote><p><strong>Demo:</strong> Enabling user workload monitoring</p><p>⭐ <strong>Pro Tip:</strong> Use the <a href=https://github.com/mikefarah/yq>yq tool</a> to do it with 2 commands</p></blockquote><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>$ oc extract configmap/cluster-monitoring-config <span style=color:#cd5555>\
+</span></span></span><span style=display:flex><span><span style=color:#cd5555></span>  -n openshift-monitoring --to=- <span style=color:#cd5555>\
+</span></span></span><span style=display:flex><span><span style=color:#cd5555></span>  | yq <span style=color:#658b00>eval</span> <span style=color:#cd5555>&#39;.enableUserWorkload = true&#39;</span> - &gt; config.yaml
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>$ oc <span style=color:#658b00>set</span> data configmap/cluster-monitoring-config <span style=color:#cd5555>\
+</span></span></span><span style=display:flex><span><span style=color:#cd5555></span>  --from-file=config.yaml -n openshift-monitoring
+</span></span></code></pre></div><h2 id=installing-openshift-custom-metrics-autoscaler-operator>Installing OpenShift Custom Metrics Autoscaler Operator</h2><p>Next, we must install the OpenShift <a href=https://github.com/openshift/custom-metrics-autoscaler-operator title="Custom Metrics Autoscaler Operator">Custom Metrics Autoscaler operator</a> which is built on the <a href=https://keda.sh title=KEDA.sh>KEDA</a> project. In addition to installing the operator, a <code>KedaController</code> operand must be created which will result in the deployment of pods to the openshift-keda namespace.</p><blockquote><p><strong>Demo:</strong> Deploying and <a href=https://github.com/dlbewley/demo-custom-metric-autoscaling/tree/main/operator>configuring KEDA</a> using Kustomize:</p></blockquote><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>$ oc apply -k operator
+</span></span><span style=display:flex><span>    namespace/openshift-keda created
+</span></span><span style=display:flex><span>    kedacontroller.keda.sh/keda created
+</span></span><span style=display:flex><span>    operatorgroup.operators.coreos.com/openshift-keda created
+</span></span><span style=display:flex><span>    subscription.operators.coreos.com/openshift-custom-metrics-autoscaler-operator created
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#228b22># checking the status of KEDA</span>
+</span></span><span style=display:flex><span>$ oc logs -f -n openshift-keda -l <span style=color:#00688b>app</span>=keda-operator
+</span></span></code></pre></div><h1 id=using-custom-metrics-autoscaling>Using Custom Metrics Autoscaling</h1><p>Let&rsquo;s walk through an example using two applications. One will be the metered app called &ldquo;prometheus-example-app&rdquo; which exists only to provide a metric. Imagine this metric describes an amount of work piled up in a queue. The second application called &ldquo;static-app&rdquo; actually performs the work, and it will autoscale based on the metric advertised by the metered app.</p><h2 id=enabling-custom-metrics-in-our-application>Enabling Custom Metrics in our Application</h2><p>Prometheus expects applications to provide a <code>/metrics</code> endpoint which returns data in a format it understands. See the <a href=https://prometheus.io/docs/prometheus/latest/getting_started/>Prometheus docs</a> to get started with instrumenting your application. We&rsquo;ll use a contrived <a href=https://github.com/rhobs/prometheus-example-app title="Example Go App With Prometheus Metrics">example app</a> here.</p><blockquote><p>⚠️ <strong>Apply the Appropriate Monitoring ClusterRole:</strong> Creation of a <code>ServiceMonitor</code> is privileged, so unless you are a cluster admin you may have to request one of the following roles such as <code>monitoring-edit</code>.</p></blockquote><ul><li><code>monitoring-rules-view</code> grants read access to PrometheusRule custom resources for a project.</li><li><code>monitoring-rules-edit</code> grants create, modify, and deleting PrometheusRule custom resources for a project.</li><li><code>monitoring-edit</code> grants <code>monitoring-rules-edit</code> plus grants creation of new scrape targets for services or pods. This cluster role is needed to create, modify, and delete ServiceMonitor and PodMonitor resources.</li></ul><blockquote><p><strong>Demo:</strong> <a href=https://github.com/dlbewley/demo-custom-metric-autoscaling/tree/main/custom-metric-app>Deploying</a> an example metered application using Kustomize:</p></blockquote><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-bash data-lang=bash><span style=display:flex><span>$ oc apply -k custom-metric-app
+</span></span><span style=display:flex><span>    namespace/keda-test created
+</span></span><span style=display:flex><span>    service/prometheus-example-app created
+</span></span><span style=display:flex><span>    deployment.apps/prometheus-example-app created
+</span></span><span style=display:flex;background-color:#d6d6c6><span>    servicemonitor.monitoring.coreos.com/prometheus-example-monitor created
+</span></span><span style=display:flex><span>    route.route.openshift.io/prometheus-example-app created
+</span></span></code></pre></div><h2 id=understanding-servicemonitors>Understanding ServiceMonitors</h2><blockquote><figure><a href=/images/openshift-keda-autoscaling-sequence-1.png><img src=/images/openshift-keda-autoscaling-sequence-1.png alt="Exposing Custom Prometheus Metrics" width=100%></a><figcaption><p>Exposing Custom Prometheus Metrics</p></figcaption></figure></blockquote><p>The OpenShift-monitoring operator automates the configuration of Prometheus using the ServiceMonitor resource to target matching Services and scrape any metrics that are exported at <code>/metrics</code>.</p><p>Imagine a case where a metered-app is regularly checking a topic in Kafka to determine the length of a queue of work. We don&rsquo;t care to scale <em>this</em> application, but we want to use its <em>knowledge</em> to scale another app.</p><blockquote><p>⚠️ <strong>Warning:</strong> Be sure to name the port in the Service definition and reference this name and not the number in the ServiceMonitor definition! Symptoms include no Target nor metrics visible in Prometheus.</p></blockquote><p>Example <code>ServiceMonitor</code> resource for the metered app</p><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-yaml data-lang=yaml><span style=display:flex><span><span style=color:#8b008b;font-weight:700>apiVersion</span>:<span style=color:#bbb> </span>monitoring.coreos.com/v1<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>kind</span>:<span style=color:#bbb> </span>ServiceMonitor<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>metadata</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>labels</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>k8s-app</span>:<span style=color:#bbb> </span>prometheus-example-monitor<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>prometheus-example-monitor<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>spec</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>endpoints</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>  </span>- <span style=color:#8b008b;font-weight:700>interval</span>:<span style=color:#bbb> </span>30s<span style=color:#bbb>
+</span></span></span><span style=display:flex;background-color:#d6d6c6><span><span style=color:#bbb>    </span><span style=color:#228b22># use port name NOT port number</span><span style=color:#bbb>
+</span></span></span><span style=display:flex;background-color:#d6d6c6><span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>port</span>:<span style=color:#bbb> </span>web<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>scheme</span>:<span style=color:#bbb> </span>http<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>selector</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>matchLabels</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>app</span>:<span style=color:#bbb> </span>prometheus-example-app<span style=color:#bbb>
+</span></span></span></code></pre></div><h2 id=deploying-a-scaled-application>Deploying A Scaled Application</h2><p>Another app exists to perform work based on that example work queue. It performs tasks in parallel, so it can benefit from scaling out horizontally.</p><blockquote><p><strong>Demo:</strong> Deploying an <a href=https://github.com/dlbewley/demo-custom-metric-autoscaling/tree/main/scaled-app>example scaled application</a> using kustomize:</p></blockquote><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-bash data-lang=bash><span style=display:flex><span>$ oc apply -k scaled-app
+</span></span><span style=display:flex><span>    namespace/keda-test unchanged
+</span></span><span style=display:flex><span>    serviceaccount/thanos unchanged
+</span></span><span style=display:flex><span>    role.rbac.authorization.k8s.io/thanos-metrics-reader unchanged
+</span></span><span style=display:flex><span>    rolebinding.rbac.authorization.k8s.io/thanos-metrics-reader unchanged
+</span></span><span style=display:flex><span>    secret/thanos-token unchanged
+</span></span><span style=display:flex><span>    service/static-app configured
+</span></span><span style=display:flex><span>    deployment.apps/static-app configured
+</span></span><span style=display:flex><span>    buildconfig.build.openshift.io/static-app configured
+</span></span><span style=display:flex><span>    imagestream.image.openshift.io/static-app configured
+</span></span><span style=display:flex;background-color:#d6d6c6><span>    scaledobject.keda.sh/static-app configured
+</span></span><span style=display:flex><span>    triggerauthentication.keda.sh/keda-trigger-auth-prometheus unchanged
+</span></span><span style=display:flex><span>    route.route.openshift.io/static-app configured
+</span></span></code></pre></div><p>Notice that we did not create a HorizontalPodAutoscaler above, but one was created automatically using the information in the ScaledObject resource:</p><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>$ oc get hpa
+</span></span><span style=display:flex><span>NAME                  REFERENCE               TARGETS     MINPODS   MAXPODS   REPLICAS   AGE
+</span></span><span style=display:flex><span>keda-hpa-static-app   Deployment/static-app   0/5 (avg)   <span style=color:#b452cd>1</span>         <span style=color:#b452cd>10</span>        <span style=color:#b452cd>1</span>          14d
+</span></span></code></pre></div><h2 id=understanding-scaledobjects>Understanding ScaledObjects</h2><p>Now that a custom metric is being collected, and an app exists which can benefit from the knowledge in this metric to scale more effectively, the two can be joined together using a <code>ScaledObject</code> resource.</p><p>Given the inputs of:</p><ul><li>an object, such as a Deployment or Statefulset, which can be scaled (line 9)</li><li>a trigger of type Prometheus that identifies the relevant metric (line 31)</li><li>and authentication credentials to query metrics (line 35)</li></ul><p>&mldr;the operator will use the ScaledObject resource to create and program a <code>HorizontalPodAutoscaler</code> that will be triggered by the results of the Prometheus metrics query.</p><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-yaml data-lang=yaml><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 1</span><span><span style=color:#8b008b;font-weight:700>apiVersion</span>:<span style=color:#bbb> </span>keda.sh/v1alpha1<span style=color:#bbb>
+</span></span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 2</span><span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>kind</span>:<span style=color:#bbb> </span>ScaledObject<span style=color:#bbb>
+</span></span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 3</span><span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>metadata</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 4</span><span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>scaled-app<span style=color:#bbb>
+</span></span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 5</span><span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>spec</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 6</span><span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>scaleTargetRef</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 7</span><span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>api</span>:<span style=color:#bbb> </span>apps/v1 <span style=color:#bbb>
+</span></span></span><span style=display:flex;background-color:#d6d6c6><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 8</span><span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>static-app<span style=color:#bbb>
+</span></span></span><span style=display:flex;background-color:#d6d6c6><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f"> 9</span><span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>kind</span>:<span style=color:#bbb> </span>Deployment <span style=color:#bbb>
+</span></span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">10</span><span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>cooldownPeriod</span>:<span style=color:#bbb>  </span><span style=color:#b452cd>200</span><span style=color:#bbb> 
+</span></span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">11</span><span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>maxReplicaCount</span>:<span style=color:#bbb> </span><span style=color:#b452cd>10</span><span style=color:#bbb> 
+</span></span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">12</span><span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>minReplicaCount</span>:<span style=color:#bbb> </span><span style=color:#b452cd>1</span><span style=color:#bbb> 
+</span></span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">13</span><span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>pollingInterval</span>:<span style=color:#bbb> </span><span style=color:#b452cd>30</span><span style=color:#bbb> 
+</span></span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">14</span><span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>advanced</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">15</span><span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>restoreToOriginalReplicaCount</span>:<span style=color:#bbb> </span><span style=color:#8b008b;font-weight:700>false</span><span style=color:#bbb> 
+</span></span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">16</span><span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>horizontalPodAutoscalerConfig</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">17</span><span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>behavior</span>:<span style=color:#bbb> 
+</span></span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">18</span><span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>scaleDown</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">19</span><span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>stabilizationWindowSeconds</span>:<span style=color:#bbb> </span><span style=color:#b452cd>300</span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">20</span><span><span style=color:#bbb>          </span><span style=color:#8b008b;font-weight:700>policies</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">21</span><span><span style=color:#bbb>          </span>- <span style=color:#8b008b;font-weight:700>type</span>:<span style=color:#bbb> </span>Percent<span style=color:#bbb>
+</span></span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">22</span><span><span style=color:#bbb>            </span><span style=color:#8b008b;font-weight:700>value</span>:<span style=color:#bbb> </span><span style=color:#b452cd>100</span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">23</span><span><span style=color:#bbb>            </span><span style=color:#8b008b;font-weight:700>periodSeconds</span>:<span style=color:#bbb> </span><span style=color:#b452cd>15</span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">24</span><span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>triggers</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">25</span><span><span style=color:#bbb>    </span>- <span style=color:#8b008b;font-weight:700>type</span>:<span style=color:#bbb> </span>prometheus <span style=color:#bbb>
+</span></span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">26</span><span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>metadata</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">27</span><span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>namespace</span>:<span style=color:#bbb> </span>keda-test<span style=color:#bbb>
+</span></span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">28</span><span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>serverAddress</span>:<span style=color:#bbb> </span>https://thanos-querier.openshift-monitoring.svc.cluster.local:9092<span style=color:#bbb>
+</span></span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">29</span><span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>metricName</span>:<span style=color:#bbb> </span>http_requests_total<span style=color:#bbb>
+</span></span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">30</span><span><span style=color:#bbb>        </span><span style=color:#228b22># &#39;job&#39; corresponds to the &#39;app&#39; label value on deployment</span><span style=color:#bbb>
+</span></span></span><span style=display:flex;background-color:#d6d6c6><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">31</span><span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>query</span>:<span style=color:#bbb> </span>sum(rate(http_requests_total{job=&#34;prometheus-example-app&#34;}[1m]))<span style=color:#bbb>
+</span></span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">32</span><span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>threshold</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#39;5&#39;</span><span style=color:#bbb> 
+</span></span></span><span style=display:flex><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">33</span><span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>authModes</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;bearer&#34;</span><span style=color:#bbb>
+</span></span></span><span style=display:flex;background-color:#d6d6c6><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">34</span><span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>authenticationRef</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex;background-color:#d6d6c6><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:.4em;padding:0 .4em;color:#7f7f7f">35</span><span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>keda-trigger-auth-prometheus<span style=color:#bbb>
+</span></span></span></code></pre></div><blockquote><p>📓 Notice that the trigger contains a reference on line 35 to the <code>TriggerAuthentication</code> resource.</p></blockquote><h2 id=understanding-thanos>Understanding Thanos</h2><p>OpenShift workload monitoring actually introduces a second Prometheus instance distinct from the platform instance, so an intermediary will be used when looking up metrics. This is where Thanos fits in. The CMA or KEDA operator will be looking up metrics values by asking the Thanos-querier for them. You may think of it as a proxy to Prometheus.</p><p>The conversation with Thanos must be authenticated, and it is the <code>TriggerAuthentication</code> resource that supplies the credentials. Those credentials are the CA cert and token associated with the <em>thanos</em> service account created by our application deployment.</p><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;display:grid><code class=language-yaml data-lang=yaml><span style=display:flex><span><span style=color:#8b008b;font-weight:700>apiVersion</span>:<span style=color:#bbb> </span>keda.sh/v1alpha1<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>kind</span>:<span style=color:#bbb> </span>TriggerAuthentication<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>metadata</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex;background-color:#d6d6c6><span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>keda-trigger-auth-prometheus<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>spec</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>secretTargetRef</span>:<span style=color:#bbb> 
+</span></span></span><span style=display:flex><span><span style=color:#bbb>  </span>- <span style=color:#8b008b;font-weight:700>parameter</span>:<span style=color:#bbb> </span>bearerToken <span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>thanos-token<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>key</span>:<span style=color:#bbb> </span>token <span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>  </span>- <span style=color:#8b008b;font-weight:700>parameter</span>:<span style=color:#bbb> </span>ca<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>thanos-token<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>key</span>:<span style=color:#bbb> </span>ca.crt<span style=color:#bbb>
+</span></span></span></code></pre></div><blockquote><figure><a href=/images/openshift-keda-autoscaling-sequence-2.png><img src=/images/openshift-keda-autoscaling-sequence-2.png alt="Using Prometheus Metrics for KEDA Autoscaling" width=100%></a><figcaption><p>Using Prometheus Metrics for KEDA Autoscaling</p></figcaption></figure></blockquote><h1 id=demo>Demo</h1><p>We have all the pieces on the table, so let&rsquo;s put them together and see an example.</p><p>For this demo we won&rsquo;t use the Kafka example mentioned, but we will <a href=https://github.com/dlbewley/demo-custom-metric-autoscaling/blob/main/load.yaml>increase the load</a> on the &ldquo;<a href=#enabling-custom-metrics-in-our-application>prometheus-example-app</a>&rdquo; which is acting as our metered-app.</p><p>As the rate of HTTP hits to the metered-app increase, the HPA will be triggered and cause the &ldquo;<a href=#deploying-a-scaled-application>static-app</a>&rdquo; to scale out.</p><p>Below is a graph of the query, defined by the ScaledOjbect, captured during this demo.</p><figure><a href=/images/openshift-keda-autoscaling-demo-metric.png><img src=/images/openshift-keda-autoscaling-demo-metric.png alt="Custom Metric Graph with Load Generator" width=75%></a><figcaption><p>Custom Metric Graph with Load Generator</p></figcaption></figure><p><strong>Demo:</strong> Autoscaling one application based on the metrics of another. (<em>output has been sped up</em>)</p><blockquote><span class=expand><span class=expand-label style=cursor:pointer onclick='$h=$(this),$h.next("div").slideToggle(200,function(){$h.children("i").attr("class",function(){return $h.next("div").is(":visible")?"fas fa-chevron-down":"fas fa-chevron-right"})})'>📺 ASCII Screencast
+<i class="fas fa-chevron-down"></i></span><div class=expand-content style="display:block;margin:10px 0"><p>Scale app "static-app" based on the rate of hits counted in the app "prometheus-example-app"</p><p><asciinema-player src=/casts/scale-keda-20221102_1548.cast cols=640 rows=45 start-at=0 speed=1 poster=npt:2:00 font-size=smaller></asciinema-player></p></div></span></blockquote><h1 id=summary>Summary</h1><p><em>So, what did we just learn? TL;DR</em></p><ul><li><p><strong>OpenShift provides platform and workload monitoring out of the box</strong></p><p>Batteries included. The platform ships with Prometheus configured to comprehensively monitor the platform and graph the results.</p></li><li><p><strong>Developers can add their own metrics to be monitored</strong></p><p>Developers can add the Prometheus client libraries to their application, define a ServiceMonitor, and Prometheus will begin scraping them.</p></li><li><p><strong>Custom metrics can be used in auto scaling triggers</strong></p><p>With the addition of the <a href=https://github.com/openshift/custom-metrics-autoscaler-operator title="Custom Metrics Autoscaler Operator">OpenShift Custom Metrics Autoscaling operator</a>, a ScaledObject can program an Autoscaler to resize an application using any metric. You can now scale your application using intelligent metrics that are important to your business!</p></li></ul><h1 id=references>References</h1><figure><a href=/images/openshift-keda-autoscaling-sequence.png><img src=/images/openshift-keda-autoscaling-sequence.png alt="Custom Metric Autoscaling Sequence Diagram" width=75%></a><figcaption><p>Custom Metric Autoscaling Sequence Diagram</p></figcaption></figure><ul><li><a href=https://cloud.redhat.com/blog/custom-metrics-autoscaler-on-openshift title=Blog>Custom Metrics Autoscaler on OpenShift</a> - Red Hat Blog</li><li><a href=https://github.com/dlbewley/demo-custom-metric-autoscaling title="Custom Metrics Autoscaling Demo">Example Demo</a> - GitHub</li><li><a href=https://docs.openshift.com/container-platform/4.11/nodes/pods/nodes-pods-autoscaling-custom.html title="Automatically scaling pods based on custom metrics">Automatically scaling pods based on custom metrics</a> - OpenShift Docs</li><li><a href=https://docs.openshift.com/container-platform/4.11/monitoring/enabling-monitoring-for-user-defined-projects.html title="Enabling monitoring for user-defined projects">Enabling monitoring for user-defined projects</a> - OpenShift Docs</li><li><a href=https://docs.openshift.com/container-platform/4.11/monitoring/managing-metrics.html title="Managing metrics">Managing metrics</a> - OpenShift Docs</li><li><a href=https://github.com/openshift/custom-metrics-autoscaler-operator title="Custom Metrics Autoscaler Operator">Custom Metrics Autoscaler Operator</a> - GitHub</li><li><a href=https://keda.sh title=KEDA.sh>KEDA.sh</a></li><li><a href=https://keda.sh/docs/2.8/scalers/prometheus/ title="KEDA Prometheus Scaler">KEDA Prometheus Scaler</a></li><li><a href=https://access.redhat.com/articles/6636281 title="Knative versus KEDA">Knative versus KEDA</a></li><li><a href=https://keda.sh/docs/latest/scalers/ title="KEDA Scalers">List of KEDA Scaler Sources</a></li><li><a href=https://github.com/dlbewley/demo-custom-metric-autoscaling title="Custom Metrics Autoscaling Demo">Custom Metrics Autoscaling Demo</a></li><li><a href=https://prometheus.io title=Prometheus>Prometheus.io</a></li><li><a href=https://blog.container-solutions.com/prometheus-operator-beginners-guide title="Beginners Guide to Prometheus Operator">Beginners Guide to Prometheus Operator</a></li><li><a href=https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/ title="Horizontal Pod Autoscaling">Horizontal Pod Autoscaling</a></li></ul></div><div id=comments><div id=disqus_thread></div><script type=application/javascript>window.disqus_config=function(){},function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById("disqus_thread").innerHTML="Disqus comments not available by default when the website is previewed locally.";return}var t=document,e=t.createElement("script");e.async=!0,e.src="//dlbewleygithubio.disqus.com/embed.js",e.setAttribute("data-timestamp",+new Date),(t.head||t.body).appendChild(e)}()</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript><a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a></div></div><div class=col-md-3><div class="panel panel-default sidebar-menu"><div class=panel-heading><h3 class=panel-title>Search</h3></div><div class=panel-body><form action=//google.com/search method=get accept-charset=utf-8 role=search><div class=input-group><input type=search name=q class=form-control placeholder=Search>
 <input type=hidden name=sitesearch value=http://guifreelife.com/>
-<span class=input-group-btn>
-<button type=submit class="btn btn-template-main"><i class="fas fa-search"></i></button>
-</span>
-</div>
-</form>
-</div>
-</div>
-<div class="panel sidebar-menu">
-<div class=panel-heading>
-<h3 class=panel-title>Tagged</h3>
-</div>
-<div class=panel-body>
-<ul class=tag-cloud>
-<li class=active>
-<a href=/tags/kubernetes><i class="fas fa-tags"></i> kubernetes</a>
-</li>
-<li class=active>
-<a href=/tags/openshift><i class="fas fa-tags"></i> openshift</a>
-</li>
-<li class=active>
-<a href=/tags/prometheus><i class="fas fa-tags"></i> prometheus</a>
-</li>
-<li class=active>
-<a href=/tags/OCP4><i class="fas fa-tags"></i> OCP4</a>
-</li>
-<li class=active>
-<a href=/tags/monitoring><i class="fas fa-tags"></i> monitoring</a>
-</li>
-</ul>
-</div>
-</div>
-<div class="panel sidebar-menu">
-<div class=panel-heading>
-<h3 class=panel-title>TOC</h3>
-</div>
-<div class=panel-body>
-<nav id=TableOfContents>
-<ul>
-<li><a href=#understanding-openshift-monitoring>Understanding OpenShift Monitoring</a></li>
-<li><a href=#understanding-horizontal-pod-autoscaling>Understanding Horizontal Pod Autoscaling</a></li>
-<li><a href=#prerequisites>Prerequisites</a>
-<ul>
-<li><a href=#enabling-openshift-user-workload-monitoring>Enabling OpenShift User Workload Monitoring</a></li>
-<li><a href=#installing-openshift-custom-metrics-autoscaler-operator>Installing OpenShift Custom Metrics Autoscaler Operator</a></li>
-</ul>
-</li>
-<li><a href=#using-custom-metrics-autoscaling>Using Custom Metrics Autoscaling</a>
-<ul>
-<li><a href=#enabling-custom-metrics-in-our-application>Enabling Custom Metrics in our Application</a></li>
-<li><a href=#understanding-servicemonitors>Understanding ServiceMonitors</a></li>
-<li><a href=#deploying-a-scaled-application>Deploying A Scaled Application</a></li>
-<li><a href=#understanding-scaledobjects>Understanding ScaledObjects</a></li>
-<li><a href=#understanding-thanos>Understanding Thanos</a></li>
-</ul>
-</li>
-<li><a href=#demo>Demo</a></li>
-<li><a href=#summary>Summary</a></li>
-<li><a href=#references>References</a></li>
-</ul>
-</nav>
-</div>
-</div>
-<div class="panel sidebar-menu">
-<div class=panel-heading>
-<h3 class=panel-title>Tags</h3>
-</div>
-<div class=panel-body>
-<ul class=tag-cloud>
-<li>
-<a href=/tags/AWS><i class="fas fa-tags"></i> AWS</a>
-</li>
-<li>
-<a href=/tags/CDK><i class="fas fa-tags"></i> CDK</a>
-</li>
-<li>
-<a href=/tags/OCP3><i class="fas fa-tags"></i> OCP3</a>
-</li>
-<li>
-<a href=/tags/OCP4><i class="fas fa-tags"></i> OCP4</a>
-</li>
-<li>
-<a href=/tags/RHACM><i class="fas fa-tags"></i> RHACM</a>
-</li>
-<li>
-<a href=/tags/RHACS><i class="fas fa-tags"></i> RHACS</a>
-</li>
-<li>
-<a href=/tags/RHEL><i class="fas fa-tags"></i> RHEL</a>
-</li>
-<li>
-<a href=/tags/ansible><i class="fas fa-tags"></i> ansible</a>
-</li>
-<li>
-<a href=/tags/automation><i class="fas fa-tags"></i> automation</a>
-</li>
-<li>
-<a href=/tags/azure><i class="fas fa-tags"></i> azure</a>
-</li>
-<li>
-<a href=/tags/debugging><i class="fas fa-tags"></i> debugging</a>
-</li>
-<li>
-<a href=/tags/docker><i class="fas fa-tags"></i> docker</a>
-</li>
-<li>
-<a href=/tags/draft><i class="fas fa-tags"></i> draft</a>
-</li>
-<li>
-<a href=/tags/etcd><i class="fas fa-tags"></i> etcd</a>
-</li>
-<li>
-<a href=/tags/git><i class="fas fa-tags"></i> git</a>
-</li>
-<li>
-<a href=/tags/haproxy><i class="fas fa-tags"></i> haproxy</a>
-</li>
-<li>
-<a href=/tags/heat><i class="fas fa-tags"></i> heat</a>
-</li>
-<li>
-<a href=/tags/hybrid-cloud><i class="fas fa-tags"></i> hybrid-cloud</a>
-</li>
-<li>
-<a href=/tags/install><i class="fas fa-tags"></i> install</a>
-</li>
-<li>
-<a href=/tags/kubernetes><i class="fas fa-tags"></i> kubernetes</a>
-</li>
-<li>
-<a href=/tags/mac><i class="fas fa-tags"></i> mac</a>
-</li>
-<li>
-<a href=/tags/metrics><i class="fas fa-tags"></i> metrics</a>
-</li>
-<li>
-<a href=/tags/migration><i class="fas fa-tags"></i> migration</a>
-</li>
-<li>
-<a href=/tags/monitoring><i class="fas fa-tags"></i> monitoring</a>
-</li>
-<li>
-<a href=/tags/networking><i class="fas fa-tags"></i> networking</a>
-</li>
-<li>
-<a href=/tags/openshift><i class="fas fa-tags"></i> openshift</a>
-</li>
-<li>
-<a href=/tags/openstack><i class="fas fa-tags"></i> openstack</a>
-</li>
-<li>
-<a href=/tags/operators><i class="fas fa-tags"></i> operators</a>
-</li>
-<li>
-<a href=/tags/prometheus><i class="fas fa-tags"></i> prometheus</a>
-</li>
-<li>
-<a href=/tags/python><i class="fas fa-tags"></i> python</a>
-</li>
-<li>
-<a href=/tags/router><i class="fas fa-tags"></i> router</a>
-</li>
-<li>
-<a href=/tags/security><i class="fas fa-tags"></i> security</a>
-</li>
-<li>
-<a href=/tags/ssl><i class="fas fa-tags"></i> ssl</a>
-</li>
-<li>
-<a href=/tags/stackrox><i class="fas fa-tags"></i> stackrox</a>
-</li>
-<li>
-<a href=/tags/storage><i class="fas fa-tags"></i> storage</a>
-</li>
-<li>
-<a href=/tags/troubleshooting><i class="fas fa-tags"></i> troubleshooting</a>
-</li>
-<li>
-<a href=/tags/upgrade><i class="fas fa-tags"></i> upgrade</a>
-</li>
-<li>
-<a href=/tags/vagrant><i class="fas fa-tags"></i> vagrant</a>
-</li>
-<li>
-<a href=/tags/virtualization><i class="fas fa-tags"></i> virtualization</a>
-</li>
-<li>
-<a href=/tags/webinar><i class="fas fa-tags"></i> webinar</a>
-</li>
-<li>
-<a href=/tags/windows><i class="fas fa-tags"></i> windows</a>
-</li>
-<li>
-<a href=/tags/zabbix><i class="fas fa-tags"></i> zabbix</a>
-</li>
-<li>
-<a href=/tags/zimbra><i class="fas fa-tags"></i> zimbra</a>
-</li>
-</ul>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<footer id=footer>
-<div class=container>
-<div class="col-md-4 col-sm-6">
-<h4>Share</h4>
-<i class="fab fa-2x fa-twitter" title="Share this on Twitter" onclick="window.open('http://twitter.com/home?status=http://guifreelife.com/blog/2022/11/03/Autoscaling-OpenShift-Workloads-with-Custom-Prometheus-Metrics/')"></i>
-<i class="fab fa-2x fa-facebook" title="Share this on Facebook" onclick="window.open('http://www.facebook.com/share.php?u=http://guifreelife.com/blog/2022/11/03/Autoscaling-OpenShift-Workloads-with-Custom-Prometheus-Metrics/')"></i>
-<i class="fab fa-2x fa-linkedin" title="Share this on Linkedin" onclick="window.open('https://www.linkedin.com/shareArticle?mini=true&url=http://guifreelife.com/blog/2022/11/03/Autoscaling-OpenShift-Workloads-with-Custom-Prometheus-Metrics/&title=&summary=&source=')"></i>
-<i class="fab fa-2x fa-google-plus" title="Share this on Google Currents" onclick="window.open('https://plus.google.com/share?url=http://guifreelife.com/blog/2022/11/03/Autoscaling-OpenShift-Workloads-with-Custom-Prometheus-Metrics/')"></i>
-<i class="fa fa-2x fa-envelope" title="Share this through Email" onclick="window.open('mailto:?&body=http://guifreelife.com/blog/2022/11/03/Autoscaling-OpenShift-Workloads-with-Custom-Prometheus-Metrics/')"></i>
-<h4>About us</h4>
-<p>GUI Free Life is the personal, technical blog of Dale Bewley. Comments and opinions are my own and not that of my employers.</p>
-<hr class="hidden-md hidden-lg hidden-sm">
-</div>
-<div class="col-md-4 col-sm-6">
-<h4>Recent posts</h4>
-<div class=blog-entries>
-<div class="item same-height-row clearfix">
-<div class="image same-height-always">
-<a href=http://guifreelife.com/blog/2023/09/22/Storing-OpenShift-Credentials-with-1Password/>
-<img src=/img/banners/mushroom-moss.jpg class=img-responsive alt="Storing OpenShift Credentials with 1Password">
-</a>
-</div>
-<div class="name same-height-always">
-<h5><a href=http://guifreelife.com/blog/2023/09/22/Storing-OpenShift-Credentials-with-1Password/>Storing OpenShift Credentials with 1Password</a></h5>
-</div>
-</div>
-<div class="item same-height-row clearfix">
-<div class="image same-height-always">
-<a href=http://guifreelife.com/blog/2023/04/06/Accessing-Ceph-CLI-with-OpenShift-Data-Foundation/>
-<img src=/images/uncovered-bumper.png class=img-responsive alt="Accessing the Ceph CLI with OpenShift Data Foundation">
-</a>
-</div>
-<div class="name same-height-always">
-<h5><a href=http://guifreelife.com/blog/2023/04/06/Accessing-Ceph-CLI-with-OpenShift-Data-Foundation/>Accessing the Ceph CLI with OpenShift Data Foundation</a></h5>
-</div>
-</div>
-<div class="item same-height-row clearfix">
-<div class="image same-height-always">
-<a href=http://guifreelife.com/blog/2023/03/09/Extracting-CA-Certs-From-Kubeconfig/>
-<img src=/img/banners/banner-buffy-xmas.png class=img-responsive alt="Extracting TLS CA Certificates from Kubeconfig File">
-</a>
-</div>
-<div class="name same-height-always">
-<h5><a href=http://guifreelife.com/blog/2023/03/09/Extracting-CA-Certs-From-Kubeconfig/>Extracting TLS CA Certificates from Kubeconfig File</a></h5>
-</div>
-</div>
-</div>
-<hr class="hidden-md hidden-lg">
-</div>
-<div class="col-md-4 col-sm-6">
-<h4>Contact</h4>
-<p class=text-uppercase><strong>Dale Bewley</strong>
-<br>Oakland
-<br>California
-<br>
-<strong>USA</strong>
-</p>
-<a href=/contact class="btn btn-small btn-template-main">Go to contact page</a>
-<hr class="hidden-md hidden-lg hidden-sm">
-</div>
-</div>
-</footer>
-<div id=copyright>
-<div class=container>
-<div class=col-md-12>
-<p class=pull-left>Copyright (c) 2021, Dale Bewley; all rights reserved.</p>
-<p class=pull-right>
-Template by <a href=https://bootstrapious.com/p/universal-business-e-commerce-template>Bootstrapious</a>.
-Ported to Hugo by <a href=https://github.com/devcows/hugo-universal-theme>DevCows</a>.
-</p>
-</div>
-</div>
-</div>
-</div>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-39TSW9349X"></script>
-<script>var doNotTrack=!1;if(!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date),gtag('config','G-39TSW9349X',{anonymize_ip:!1})}</script>
-<script src=//code.jquery.com/jquery-3.1.1.min.js integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin=anonymous></script>
+<span class=input-group-btn><button type=submit class="btn btn-template-main"><i class="fas fa-search"></i></button></span></div></form></div></div><div class="panel sidebar-menu"><div class=panel-heading><h3 class=panel-title>Tagged</h3></div><div class=panel-body><ul class=tag-cloud><li class=active><a href=/tags/kubernetes><i class="fas fa-tags"></i> kubernetes</a></li><li class=active><a href=/tags/openshift><i class="fas fa-tags"></i> openshift</a></li><li class=active><a href=/tags/prometheus><i class="fas fa-tags"></i> prometheus</a></li><li class=active><a href=/tags/OCP4><i class="fas fa-tags"></i> OCP4</a></li><li class=active><a href=/tags/monitoring><i class="fas fa-tags"></i> monitoring</a></li></ul></div></div><div class="panel sidebar-menu"><div class=panel-heading><h3 class=panel-title>TOC</h3></div><div class=panel-body><nav id=TableOfContents><ul><li><a href=#understanding-openshift-monitoring>Understanding OpenShift Monitoring</a></li><li><a href=#understanding-horizontal-pod-autoscaling>Understanding Horizontal Pod Autoscaling</a></li><li><a href=#prerequisites>Prerequisites</a><ul><li><a href=#enabling-openshift-user-workload-monitoring>Enabling OpenShift User Workload Monitoring</a></li><li><a href=#installing-openshift-custom-metrics-autoscaler-operator>Installing OpenShift Custom Metrics Autoscaler Operator</a></li></ul></li><li><a href=#using-custom-metrics-autoscaling>Using Custom Metrics Autoscaling</a><ul><li><a href=#enabling-custom-metrics-in-our-application>Enabling Custom Metrics in our Application</a></li><li><a href=#understanding-servicemonitors>Understanding ServiceMonitors</a></li><li><a href=#deploying-a-scaled-application>Deploying A Scaled Application</a></li><li><a href=#understanding-scaledobjects>Understanding ScaledObjects</a></li><li><a href=#understanding-thanos>Understanding Thanos</a></li></ul></li><li><a href=#demo>Demo</a></li><li><a href=#summary>Summary</a></li><li><a href=#references>References</a></li></ul></nav></div></div><div class="panel sidebar-menu"><div class=panel-heading><h3 class=panel-title>Tags</h3></div><div class=panel-body><ul class=tag-cloud><li><a href=/tags/AWS><i class="fas fa-tags"></i> AWS</a></li><li><a href=/tags/CDK><i class="fas fa-tags"></i> CDK</a></li><li><a href=/tags/OCP3><i class="fas fa-tags"></i> OCP3</a></li><li><a href=/tags/OCP4><i class="fas fa-tags"></i> OCP4</a></li><li><a href=/tags/RHACM><i class="fas fa-tags"></i> RHACM</a></li><li><a href=/tags/RHACS><i class="fas fa-tags"></i> RHACS</a></li><li><a href=/tags/RHEL><i class="fas fa-tags"></i> RHEL</a></li><li><a href=/tags/ansible><i class="fas fa-tags"></i> ansible</a></li><li><a href=/tags/automation><i class="fas fa-tags"></i> automation</a></li><li><a href=/tags/azure><i class="fas fa-tags"></i> azure</a></li><li><a href=/tags/debugging><i class="fas fa-tags"></i> debugging</a></li><li><a href=/tags/docker><i class="fas fa-tags"></i> docker</a></li><li><a href=/tags/draft><i class="fas fa-tags"></i> draft</a></li><li><a href=/tags/etcd><i class="fas fa-tags"></i> etcd</a></li><li><a href=/tags/git><i class="fas fa-tags"></i> git</a></li><li><a href=/tags/haproxy><i class="fas fa-tags"></i> haproxy</a></li><li><a href=/tags/heat><i class="fas fa-tags"></i> heat</a></li><li><a href=/tags/hybrid-cloud><i class="fas fa-tags"></i> hybrid-cloud</a></li><li><a href=/tags/install><i class="fas fa-tags"></i> install</a></li><li><a href=/tags/kubernetes><i class="fas fa-tags"></i> kubernetes</a></li><li><a href=/tags/mac><i class="fas fa-tags"></i> mac</a></li><li><a href=/tags/metrics><i class="fas fa-tags"></i> metrics</a></li><li><a href=/tags/migration><i class="fas fa-tags"></i> migration</a></li><li><a href=/tags/monitoring><i class="fas fa-tags"></i> monitoring</a></li><li><a href=/tags/networking><i class="fas fa-tags"></i> networking</a></li><li><a href=/tags/openshift><i class="fas fa-tags"></i> openshift</a></li><li><a href=/tags/openstack><i class="fas fa-tags"></i> openstack</a></li><li><a href=/tags/operators><i class="fas fa-tags"></i> operators</a></li><li><a href=/tags/prometheus><i class="fas fa-tags"></i> prometheus</a></li><li><a href=/tags/python><i class="fas fa-tags"></i> python</a></li><li><a href=/tags/router><i class="fas fa-tags"></i> router</a></li><li><a href=/tags/security><i class="fas fa-tags"></i> security</a></li><li><a href=/tags/ssl><i class="fas fa-tags"></i> ssl</a></li><li><a href=/tags/stackrox><i class="fas fa-tags"></i> stackrox</a></li><li><a href=/tags/storage><i class="fas fa-tags"></i> storage</a></li><li><a href=/tags/troubleshooting><i class="fas fa-tags"></i> troubleshooting</a></li><li><a href=/tags/upgrade><i class="fas fa-tags"></i> upgrade</a></li><li><a href=/tags/vagrant><i class="fas fa-tags"></i> vagrant</a></li><li><a href=/tags/virtualization><i class="fas fa-tags"></i> virtualization</a></li><li><a href=/tags/webinar><i class="fas fa-tags"></i> webinar</a></li><li><a href=/tags/windows><i class="fas fa-tags"></i> windows</a></li><li><a href=/tags/zabbix><i class="fas fa-tags"></i> zabbix</a></li><li><a href=/tags/zimbra><i class="fas fa-tags"></i> zimbra</a></li></ul></div></div></div></div></div></div><footer id=footer><div class=container><div class="col-md-4 col-sm-6"><h4>Share</h4><i class="fab fa-2x fa-twitter" title="Share this on Twitter" onclick='window.open("http://twitter.com/home?status=http://guifreelife.com/blog/2022/11/03/Autoscaling-OpenShift-Workloads-with-Custom-Prometheus-Metrics/")'></i>
+<i class="fab fa-2x fa-facebook" title="Share this on Facebook" onclick='window.open("http://www.facebook.com/share.php?u=http://guifreelife.com/blog/2022/11/03/Autoscaling-OpenShift-Workloads-with-Custom-Prometheus-Metrics/")'></i>
+<i class="fab fa-2x fa-linkedin" title="Share this on Linkedin" onclick='window.open("https://www.linkedin.com/shareArticle?mini=true&url=http://guifreelife.com/blog/2022/11/03/Autoscaling-OpenShift-Workloads-with-Custom-Prometheus-Metrics/&title=&summary=&source=")'></i>
+<i class="fab fa-2x fa-google-plus" title="Share this on Google Currents" onclick='window.open("https://plus.google.com/share?url=http://guifreelife.com/blog/2022/11/03/Autoscaling-OpenShift-Workloads-with-Custom-Prometheus-Metrics/")'></i>
+<i class="fa fa-2x fa-envelope" title="Share this through Email" onclick='window.open("mailto:?&body=http://guifreelife.com/blog/2022/11/03/Autoscaling-OpenShift-Workloads-with-Custom-Prometheus-Metrics/")'></i><h4>About us</h4><p>GUI Free Life is the personal, technical blog of Dale Bewley. Comments and opinions are my own and not that of my employers.</p><hr class="hidden-md hidden-lg hidden-sm"></div><div class="col-md-4 col-sm-6"><h4>Recent posts</h4><div class=blog-entries><div class="item same-height-row clearfix"><div class="image same-height-always"><a href=http://guifreelife.com/blog/2024/03/11/Placing-Open-Cluster-Management-Policies-on-Kubernetes/><img src=/images/DALL%c2%b7E%202024-01-30%2014.28.24%20-%20A%20whimsical%20scene%20featuring%20a%20traffic%20cop%20standing%20on%20a%20cloud,%20energetically%20directing%20a%20chaotic%20stream%20of%20various%20floating%20documents%20-%20papers,%20folder.png class=img-responsive alt="Using Placements to Apply Open Cluster Management Policies to Kubernetes Clusters"></a></div><div class="name same-height-always"><h5><a href=http://guifreelife.com/blog/2024/03/11/Placing-Open-Cluster-Management-Policies-on-Kubernetes/>Using Placements to Apply Open Cluster Management Policies to Kubernetes Clusters</a></h5></div></div><div class="item same-height-row clearfix"><div class="image same-height-always"><a href=http://guifreelife.com/blog/2023/09/22/Storing-OpenShift-Credentials-with-1Password/><img src=/img/banners/mushroom-moss.jpg class=img-responsive alt="Storing OpenShift Credentials with 1Password"></a></div><div class="name same-height-always"><h5><a href=http://guifreelife.com/blog/2023/09/22/Storing-OpenShift-Credentials-with-1Password/>Storing OpenShift Credentials with 1Password</a></h5></div></div><div class="item same-height-row clearfix"><div class="image same-height-always"><a href=http://guifreelife.com/blog/2023/04/06/Accessing-Ceph-CLI-with-OpenShift-Data-Foundation/><img src=/images/uncovered-bumper.png class=img-responsive alt="Accessing the Ceph CLI with OpenShift Data Foundation"></a></div><div class="name same-height-always"><h5><a href=http://guifreelife.com/blog/2023/04/06/Accessing-Ceph-CLI-with-OpenShift-Data-Foundation/>Accessing the Ceph CLI with OpenShift Data Foundation</a></h5></div></div></div><hr class="hidden-md hidden-lg"></div><div class="col-md-4 col-sm-6"><h4>Contact</h4><p class=text-uppercase><strong>Dale Bewley</strong><br>Oakland<br>California<br><strong>USA</strong></p><a href=/contact class="btn btn-small btn-template-main">Go to contact page</a><hr class="hidden-md hidden-lg hidden-sm"></div></div></footer><div id=copyright><div class=container><div class=col-md-12><p class=pull-left>Copyright (c) 2021, Dale Bewley; all rights reserved.</p><p class=pull-right>Template by <a href=https://bootstrapious.com/p/universal-business-e-commerce-template>Bootstrapious</a>.
+Ported to Hugo by <a href=https://github.com/devcows/hugo-universal-theme>DevCows</a>.</p></div></div></div></div><script async src="https://www.googletagmanager.com/gtag/js?id=G-39TSW9349X"></script>
+<script>var doNotTrack=!1;if(!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","G-39TSW9349X",{anonymize_ip:!1})}</script><script src=//code.jquery.com/jquery-3.1.1.min.js integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin=anonymous></script>
 <script src=//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js integrity=sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa crossorigin=anonymous></script>
 <script src=//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js></script>
 <script src=//cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/jquery.waypoints.min.js></script>
@@ -701,6 +139,4 @@ Ported to Hugo by <a href=https://github.com/devcows/hugo-universal-theme>DevCow
 <script src=/js/hpneo.gmaps.js></script>
 <script src=/js/gmaps.init.js></script>
 <script src=/js/front.js></script>
-<script src=/js/owl.carousel.min.js></script>
-</body>
-</html>
+<script src=/js/owl.carousel.min.js></script></body></html>

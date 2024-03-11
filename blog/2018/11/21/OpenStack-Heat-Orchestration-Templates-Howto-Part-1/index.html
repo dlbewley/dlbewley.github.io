@@ -1,626 +1,207 @@
-<!doctype html><html lang=en-us>
-<head>
-<meta charset=utf-8>
-<meta name=robots content="all,follow">
-<meta name=googlebot content="index,follow,snippet,archive">
-<meta name=viewport content="width=device-width,initial-scale=1">
-<title>How to Create and Use OpenStack Heat Orchestration Templates Part 1 | GUI Free Life</title>
-<meta name=author content="Dale Bewley">
-<meta name=keywords content="bewley,guifreelife,automation,heat,openstack">
-<meta name=description content="GUI Free Life, by Dale Bewley covers Kubernetes, Linux, Networking, OpenShift and more">
-<meta name=generator content="Hugo 0.91.2">
-<link href="//fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,500,700,800" rel=stylesheet type=text/css>
-<link rel=stylesheet href=//use.fontawesome.com/releases/v5.11.2/css/all.css>
-<link rel=stylesheet href=//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css integrity=sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u crossorigin=anonymous>
-<link href=/css/animate.css rel=stylesheet>
-<link href=/css/style.turquoise.css rel=stylesheet id=theme-stylesheet>
-<link href=/css/custom.css rel=stylesheet><!--[if lt IE 9]><script src=https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js></script>
-<script src=https://oss.maxcdn.com/respond/1.4.2/respond.min.js></script><![endif]-->
-<link rel="shortcut icon" href=/img/favicon.ico type=image/x-icon>
-<link rel=apple-touch-icon href=/img/apple-touch-icon.png>
-<link href=/css/owl.carousel.css rel=stylesheet>
-<link href=/css/owl.theme.css rel=stylesheet>
-<link rel=alternate href=http://guifreelife.com/index.xml type=application/rss+xml title="GUI Free Life">
-<meta property="og:locale" content="en_us">
-<meta property="og:site_name" content="GUI Free Life">
-<meta property="og:title" content="How to Create and Use OpenStack Heat Orchestration Templates Part 1">
-<meta property="og:type" content="article">
-<meta property="og:url" content="http://guifreelife.com/blog/2018/11/21/OpenStack-Heat-Orchestration-Templates-Howto-Part-1/">
-<meta property="og:description" content="GUI Free Life, by Dale Bewley covers Kubernetes, Linux, Networking, OpenShift and more">
-<meta property="og:image" content="http://guifreelife.com/img/banners/banner-2.jpg">
-<meta property="og:image:type" content="image/jpg">
-<meta property="og:image:width" content="563">
-<meta property="og:image:height" content="750">
-<meta property="og:updated_time" content="2018-11-21T00:00:00Z">
-<meta property="article:tag" content="automation">
-<meta property="article:tag" content="heat">
-<meta property="article:tag" content="openstack">
-<meta property="article:published_time" content="2018-11-21T00:00:00Z">
-<meta property="article:modified_time" content="2018-11-21T00:00:00Z">
-<meta name=twitter:card content="summary_large_image">
-<meta name=twitter:site content="@dlbewley">
-<meta name=twitter:title content="How to Create and Use OpenStack Heat Orchestration Templates Part 1">
-<meta name=twitter:image content="http://guifreelife.com/img/banners/banner-2.jpg">
-<meta name=twitter:description content="GUI Free Life, by Dale Bewley covers Kubernetes, Linux, Networking, OpenShift and more">
-</head>
-<body>
-<div id=all>
-<header class=navbar-affixed-top data-spy=affix data-offset-top=62>
-<div class="navbar navbar-default yamm" role=navigation id=navbar>
-<div class=container>
-<div class=navbar-header>
-<a class="navbar-brand home" href=/>
-<img src=/img/logo.png alt="How to Create and Use OpenStack Heat Orchestration Templates Part 1 logo" class="hidden-xs hidden-sm">
+<!doctype html><html lang=en-us><head><meta charset=utf-8><meta name=robots content="all,follow"><meta name=googlebot content="index,follow,snippet,archive"><meta name=viewport content="width=device-width,initial-scale=1"><title>How to Create and Use OpenStack Heat Orchestration Templates Part 1 | GUI Free Life</title><meta name=author content="Dale Bewley"><meta name=keywords content="bewley,guifreelife,automation,heat,openstack"><meta name=description content="GUI Free Life, by Dale Bewley covers Kubernetes, Linux, Networking, OpenShift and more"><meta name=generator content="Hugo 0.119.0"><link href='//fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,500,700,800' rel=stylesheet type=text/css><link rel=stylesheet href=//use.fontawesome.com/releases/v5.11.2/css/all.css><link rel=stylesheet href=//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css integrity=sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u crossorigin=anonymous><link href=/css/animate.css rel=stylesheet><link href=/css/style.turquoise.css rel=stylesheet id=theme-stylesheet><link href=/css/custom.css rel=stylesheet><!--[if lt IE 9]><script src=https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js></script>
+<script src=https://oss.maxcdn.com/respond/1.4.2/respond.min.js></script><![endif]--><link rel="shortcut icon" href=/img/favicon.ico type=image/x-icon><link rel=apple-touch-icon href=/img/apple-touch-icon.png><link href=/css/owl.carousel.css rel=stylesheet><link href=/css/owl.theme.css rel=stylesheet><link rel=alternate href=http://guifreelife.com/index.xml type=application/rss+xml title="GUI Free Life"><meta property="og:locale" content="en_us"><meta property="og:site_name" content="GUI Free Life"><meta property="og:title" content="How to Create and Use OpenStack Heat Orchestration Templates Part 1"><meta property="og:type" content="article"><meta property="og:url" content="http://guifreelife.com/blog/2018/11/21/OpenStack-Heat-Orchestration-Templates-Howto-Part-1/"><meta property="og:description" content="GUI Free Life, by Dale Bewley covers Kubernetes, Linux, Networking, OpenShift and more"><meta property="og:image" content="http://guifreelife.com/img/banners/banner-2.jpg"><meta property="og:image:type" content="image/jpg"><meta property="og:image:width" content="563"><meta property="og:image:height" content="750"><meta property="og:updated_time" content="2018-11-21T00:00:00Z"><meta property="article:tag" content="automation"><meta property="article:tag" content="heat"><meta property="article:tag" content="openstack"><meta property="article:published_time" content="2018-11-21T00:00:00Z"><meta property="article:modified_time" content="2018-11-21T00:00:00Z"><meta name=twitter:card content="summary_large_image"><meta name=twitter:site content="@dlbewley"><meta name=twitter:title content="How to Create and Use OpenStack Heat Orchestration Templates Part 1"><meta name=twitter:image content="http://guifreelife.com/img/banners/banner-2.jpg"><meta name=twitter:description content="GUI Free Life, by Dale Bewley covers Kubernetes, Linux, Networking, OpenShift and more"></head><body><div id=all><header class=navbar-affixed-top data-spy=affix data-offset-top=62><div class="navbar navbar-default yamm" role=navigation id=navbar><div class=container><div class=navbar-header><a class="navbar-brand home" href=/><img src=/img/logo.png alt="How to Create and Use OpenStack Heat Orchestration Templates Part 1 logo" class="hidden-xs hidden-sm">
 <img src=/img/logo-small.png alt="How to Create and Use OpenStack Heat Orchestration Templates Part 1 logo" class="visible-xs visible-sm">
-<span class=sr-only>How to Create and Use OpenStack Heat Orchestration Templates Part 1 - go to homepage</span>
-</a>
-<div class=navbar-buttons>
-<button type=button class="navbar-toggle btn-template-main" data-toggle=collapse data-target=#navigation>
+<span class=sr-only>How to Create and Use OpenStack Heat Orchestration Templates Part 1 - go to homepage</span></a><div class=navbar-buttons><button type=button class="navbar-toggle btn-template-main" data-toggle=collapse data-target=#navigation>
 <span class=sr-only>Toggle Navigation</span>
-<i class="fas fa-align-justify"></i>
-</button>
-</div>
-</div>
-<div class="navbar-collapse collapse" id=navigation>
-<ul class="nav navbar-nav navbar-right">
-<li class=dropdown>
-<a href=/>Home</a>
-</li>
-<li class="dropdown active">
-<a href=/blog/>Blog</a>
-</li>
-<li class=dropdown>
-<a href=/contact/>Contact</a>
-</li>
-</ul>
-</div>
-<div class="collapse clearfix" id=search>
-<form class=navbar-form role=search>
-<div class=input-group>
-<input type=text class=form-control placeholder=Search>
-<span class=input-group-btn>
-<button type=submit class="btn btn-template-main"><i class="fas fa-search"></i></button>
-</span>
-</div>
-</form>
-</div>
-</div>
-</div>
-</header>
-<style>.bar.background-image-fixed-banner{background:url(/img/banners/banner-2.jpg)50% 0 no-repeat;background-attachment:fixed;background-size:cover;padding:100px 5%;text-shadow:2px 3px 4px var(--primary-accent),0 0 1em var(--navbar-border-top)}</style>
-<div>
-<div class=container>
-<div class=row>
-<div class=col-md-12>
-<section class="bar background-image-fixed-banner heading h2 color-white text-center">
-<h1>How to Create and Use OpenStack Heat Orchestration Templates Part 1</h1>
-</section>
-</div>
-</div>
-</div>
-</div>
-<div id=content>
-<div class=container>
-<div class=row>
-<div class=col-md-9 id=blog-post>
-<p class="text-muted text-uppercase mb-small text-right">
-November 21, 2018
-</p>
-<div id=post-content>
-<p>OpenStack enables automated creation of resources such as networks, routers, and servers using <a href=http://docs.openstack.org/developer/heat/template_guide/hot_spec.html>Heat</a> Orchestration Templates. If you are new to OpenStack and are using a <a href=https://docs.openstack.org/tripleo-docs/latest/>TripleO</a> based distribution you may have seen them up close and personal without knowing it. What follows is a very basic exploration of Heat.</p>
-<p>Heat templates are written in YAML format, and you can quickly see from the documentation that a basic template will likely have 4 sections:</p>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#228b22># templates will use features as of this release of OpenStack</span><span style=color:#bbb>
-</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>heat_template_version</span>:<span style=color:#bbb> </span>queens<span style=color:#bbb>
-</span><span style=color:#bbb>  </span>...<span style=color:#bbb>
-</span><span style=color:#bbb></span><span style=color:#228b22># variables to inform the creation of resources to follow </span><span style=color:#bbb>
-</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>parameters</span>:<span style=color:#bbb>
-</span><span style=color:#bbb>  </span>...<span style=color:#bbb>
-</span><span style=color:#bbb></span><span style=color:#228b22># the things the template will be creating</span><span style=color:#bbb>
-</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>resources</span>:<span style=color:#bbb>
-</span><span style=color:#bbb>  </span>...<span style=color:#bbb>
-</span><span style=color:#bbb></span><span style=color:#228b22># information about the things that were created</span><span style=color:#bbb>
-</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>outputs</span>:<span style=color:#bbb>
-</span><span style=color:#bbb>  </span>...<span style=color:#bbb>
-</span></code></pre></div><p>The <a href=https://docs.openstack.org/heat/latest/template_guide/hot_spec.html#heat-template-version>heat_template_version</a> specifies the features expected to be supported by the template to follow. You may see dated versions, but since Newton the release name is supported. I would use that if the template is not going to be used on a cloud older than that.</p>
-<p>The <a href=https://docs.openstack.org/heat/latest/template_guide/hot_spec.html#parameters-section>parameters</a> section identifies any variables that will be used later in the template. This is where a place holder for a server name, or the flavor to use would be defined. Parameters can have a default value and miscellaneous constraints applied for validation.</p>
-<p>Objects like a server instance are known as <a href=https://docs.openstack.org/heat/latest/template_guide/hot_spec.html#resources-section>resources</a>. Anything that the template will create or instantiate will be listed in the <code>resources</code> section and will be informed by the <code>parameters</code> section.</p>
-<p>Once a template has been &ldquo;launched&rdquo; or fed to OpenStack it will create what is called a <code>stack</code> of all the resources requested. There are likely some obvious questions you want to ask about a stack like: <em>&ldquo;What is the name of the server I just created?"</em> or <em>&ldquo;What is the IP of my server?"</em>. The <code>outputs</code> section makes it easy to expose that information.</p>
-<h1 id=simple-example-template>Simple Example Template</h1>
-<p>Here is a template that will create a server and attach it to a network, but it assumes that a network exists. In my case I already have a network named <code>provider192</code>.</p>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#228b22># file: example-1.yaml</span><span style=color:#bbb>
-</span><span style=color:#bbb></span><span style=color:#228b22># i never plan to run on OpenStack &lt; Queens</span><span style=color:#bbb>
-</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>heat_template_version</span>:<span style=color:#bbb> </span>queens<span style=color:#bbb>
-</span><span style=color:#bbb>
-</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>description</span>:<span style=color:#bbb> </span>Create a server instance<span style=color:#bbb>
-</span><span style=color:#bbb>
-</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>parameters</span>:<span style=color:#bbb>
-</span><span style=color:#bbb>  </span><span style=color:#228b22># define a variable named &#34;image&#34; to use later</span><span style=color:#bbb>
-</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>image</span>:<span style=color:#bbb>
-</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>description</span>:<span style=color:#bbb> </span>Name of image from Glance to create an instance from.<span style=color:#bbb>
-</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>type</span>:<span style=color:#bbb> </span>string<span style=color:#bbb>
-</span><span style=color:#bbb>    </span><span style=color:#228b22># Do you have an image named this already?</span><span style=color:#bbb>
-</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>default</span>:<span style=color:#bbb> </span>cirros-0.4.0.raw<span style=color:#bbb>
-</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>flavor</span>:<span style=color:#bbb>
-</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>description</span>:<span style=color:#bbb> </span>Instance flavor to build.<span style=color:#bbb>
-</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>type</span>:<span style=color:#bbb> </span>string<span style=color:#bbb>
-</span><span style=color:#bbb>    </span><span style=color:#228b22># Do you have a flavor named this already?</span><span style=color:#bbb>
-</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>default</span>:<span style=color:#bbb> </span>m1.small<span style=color:#bbb>
-</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>constraints</span>:<span style=color:#bbb>
-</span><span style=color:#bbb>      </span><span style=color:#228b22># only accept valid flavors for this parameter</span><span style=color:#bbb>
-</span><span style=color:#bbb>      </span>- <span style=color:#8b008b;font-weight:700>custom_constraint</span>:<span style=color:#bbb> </span>nova.flavor<span style=color:#bbb>
-</span><span style=color:#bbb>
-</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>resources</span>:<span style=color:#bbb>
-</span><span style=color:#bbb>  </span><span style=color:#228b22># create a resource named &#34;my_instance&#34;</span><span style=color:#bbb>
-</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>my_instance</span>:<span style=color:#bbb>
-</span><span style=color:#bbb>    </span><span style=color:#228b22># the my_instance resource is a server</span><span style=color:#bbb>
-</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>type</span>:<span style=color:#bbb> </span>OS::Nova::Server<span style=color:#bbb>
-</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>properties</span>:<span style=color:#bbb>
-</span><span style=color:#bbb>      </span><span style=color:#228b22># use the image parameter / variable defined above</span><span style=color:#bbb>
-</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>image</span>:<span style=color:#bbb> </span>{<span style=color:#bbb> </span><span style=color:#8b008b;font-weight:700>get_param</span>:<span style=color:#bbb> </span>image }<span style=color:#bbb>
-</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>flavor</span>:<span style=color:#bbb> </span>{<span style=color:#bbb> </span><span style=color:#8b008b;font-weight:700>get_param</span>:<span style=color:#bbb> </span>flavor }<span style=color:#bbb>
-</span><span style=color:#bbb>
-</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>outputs</span>:<span style=color:#bbb>
-</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb>
-</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>description</span>:<span style=color:#bbb> </span>The name of the server created in this stack.<span style=color:#bbb>
-</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>value</span>:<span style=color:#bbb> </span>{<span style=color:#bbb> </span><span style=color:#8b008b;font-weight:700>get_attr</span>:<span style=color:#bbb> </span>[<span style=color:#bbb> </span>my_instance, name ] }<span style=color:#bbb>
-</span></code></pre></div><h2 id=create-example-1-stack-with-defaults>Create Example-1 Stack with Defaults</h2>
-<p>Save that to a file called <code>example-1.yaml</code>. Edit the default flavor and image values to match what exists in your cloud.</p>
-<p>Now create a stack from the template. The command looks like this:</p>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ openstack stack create -t &lt;template_filename.yaml&gt; &lt;resultant_stack_name&gt;
-</code></pre></div><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ openstack stack create -t example-1.yaml example-1
-+---------------------+--------------------------------------+
-| Field               | Value                                |
-+---------------------+--------------------------------------+
-| id                  | 218fedd6-efdd-4c2b-ac82-7f15bf1c4235 |
-| stack_name          | example-1                            |
-| description         | Create a server instance             |
-| creation_time       | 2018-11-22T00:21:16Z                 |
-| updated_time        | None                                 |
-| stack_status        | CREATE_IN_PROGRESS                   |
-| stack_status_reason | Stack CREATE started                 |
-+---------------------+--------------------------------------+
-</code></pre></div><p>Wait a minute or two, and then list the stack and see what outputs it can show us.</p>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ openstack stack list
-+--------------------------------------+------------+-----------------+----------------------+--------------+
-| ID                                   | Stack Name | Stack Status    | Creation Time        | Updated Time |
-+--------------------------------------+------------+-----------------+----------------------+--------------+
-| 218fedd6-efdd-4c2b-ac82-7f15bf1c4235 | example-1  | CREATE_COMPLETE | 2018-11-22T00:21:16Z | None         |
-+--------------------------------------+------------+-----------------+----------------------+--------------+
-
-$ openstack stack output list example-1
-+------------+-----------------------------------------------+
-| output_key | description                                   |
-+------------+-----------------------------------------------+
-| name       | The name of the server created in this stack. |
-+------------+-----------------------------------------------+
-</code></pre></div><p>That looks familiar, what does it contain?</p>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ openstack stack output show example-1 name
-+--------------+-----------------------------------------------+
-| Field        | Value                                         |
-+--------------+-----------------------------------------------+
-| description  | The name of the server created in this stack. |
-| output_key   | name                                          |
-| output_value | example-1-my_instance-omfgcgk3w7nd            |
-+--------------+-----------------------------------------------+
-</code></pre></div><p>There is the name of the server we just created! How about something more to the point for use in a script.</p>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ openstack stack output show example-1 name -f value -c output_value
-example-1-my_instance-omfgcgk3w7nd 
-</code></pre></div><p>Take a look at the whole stack.</p>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ openstack stack show example-1
-+-----------------------+-------------------------------------------------------------------------------------------------------------------------------------+
-| Field                 | Value                                                                                                                               |
-+-----------------------+-------------------------------------------------------------------------------------------------------------------------------------+
-| id                    | 218fedd6-efdd-4c2b-ac82-7f15bf1c4235                                                                                                |
-| stack_name            | example-1                                                                                                                           |
-| description           | Create a server instance                                                                                                            |
-| creation_time         | 2018-11-22T00:21:16Z                                                                                                                |
-| updated_time          | None                                                                                                                                |
-| stack_status          | CREATE_COMPLETE                                                                                                                     |
-| stack_status_reason   | Stack CREATE completed successfully                                                                                                 |
-| parameters            | OS::project_id: 1686c505946841259bfda1f1c206456d                                                                                    |
-|                       | OS::stack_id: 218fedd6-efdd-4c2b-ac82-7f15bf1c4235                                                                                  |
-|                       | OS::stack_name: example-1                                                                                                           |
-|                       | flavor: m1.small                                                                                                                    |
-|                       | image: cirros-0.4.0.raw                                                                                                             |
-|                       |                                                                                                                                     |
-| outputs               | - description: The name of the server created in this stack.                                                                        |
-|                       |   output_key: name                                                                                                                  |
-|                       |   output_value: example-1-my_instance-omfgcgk3w7nd                                                                                  |
-|                       |                                                                                                                                     |
-| links                 | - href: https://openstack.example.com:13004/v1/1686c505946841259bfda1f1c206456d/stacks/example-1/218fedd6-efdd-4c2b-ac82-7f15bf1c4235|
-|                       |   rel: self                                                                                                                         |
-|                       |                                                                                                                                     |
-| parent                | None                                                                                                                                |
-| disable_rollback      | True                                                                                                                                |
-| deletion_time         | None                                                                                                                                |
-| stack_user_project_id | 4b22b80f4a1843f7a90b13e54375b4d5                                                                                                    |
-| capabilities          | []                                                                                                                                  |
-| notification_topics   | []                                                                                                                                  |
-| tags                  | None                                                                                                                                |
-| timeout_mins          | None                                                                                                                                |
-| stack_owner           | None                                                                                                                                |
-+-----------------------+-------------------------------------------------------------------------------------------------------------------------------------+
-</code></pre></div><p>And now at the server it created. Notice that it attached to a network I had already created, named <em>provider192</em>.</p>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ openstack server show example-1-my_instance-omfgcgk3w7nd
-+-----------------------------+----------------------------------------------------------+
-| Field                       | Value                                                    |
-+-----------------------------+----------------------------------------------------------+
-| OS-DCF:diskConfig           | MANUAL                                                   |
-| OS-EXT-AZ:availability_zone | nova                                                     |
-| OS-EXT-STS:power_state      | Running                                                  |
-| OS-EXT-STS:task_state       | None                                                     |
-| OS-EXT-STS:vm_state         | active                                                   |
-| OS-SRV-USG:launched_at      | 2018-11-22T00:21:31.000000                               |
-| OS-SRV-USG:terminated_at    | None                                                     |
-| accessIPv4                  |                                                          |
-| accessIPv6                  |                                                          |
-| addresses                   | <span style=color:#00688b>provider192</span>=192.0.2.14                                   |
-| config_drive                |                                                          |
-| created                     | 2018-11-22T00:21:22Z                                     |
-| flavor                      | m1.small (af20508a-5986-4bf3-9e9f-33ca598e1563)          |
-| hostId                      | f1e7461e138a94335e579cb81cd95933fc3879b263a3109281d203ba |
-| id                          | ce6e7e7a-f091-4fe8-bde0-b0ae3d3664d7                     |
-| image                       | cirros-0.4.0.raw (a034ee47-4642-4d21-9b08-11774808a822)  |
-| key_name                    | None                                                     |
-| name                        | example-1-my_instance-omfgcgk3w7nd                       |
-| progress                    | <span style=color:#b452cd>0</span>                                                        |
-| project_id                  | 1686c505946841259bfda1f1c206456d                         |
-| properties                  |                                                          |
-| security_groups             | <span style=color:#00688b>name</span>=<span style=color:#cd5555>&#39;default&#39;</span>                                           |
-| status                      | ACTIVE                                                   |
-| updated                     | 2018-11-22T00:21:31Z                                     |
-| user_id                     | e2041d2848be40f6b6fb86709b260ae1                         |
-| volumes_attached            |                                                          |
-+-----------------------------+----------------------------------------------------------+
-</code></pre></div><p>Throw away this stack. This will delete the stack and any resources it created, such as the <code>example-1-my_instance-omfgcgk3w7nd</code> server.</p>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ openstack stack delete example-1 --yes
-</code></pre></div><h2 id=create-example-1-stack-with-supplied-parameters>Create Example-1 Stack with Supplied Parameters</h2>
-<p>Let&rsquo;s see how to pass in parameter values and demonstrate the effect of the <a href=https://docs.openstack.org/heat/latest/template_guide/hot_spec.html#custom-constraint>custom constraint</a> we placed on the flavor parameter.</p>
-<p>We know there is a parameter named <code>flavor</code> we can provide a value to override the default value when we create a stack from our template.</p>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#228b22># flawed example</span>
-$ openstack stack create -t example-1.yaml --parameter <span style=color:#00688b>flavor</span>=nonexistant example-fail
-ERROR: Parameter <span style=color:#cd5555>&#39;flavor&#39;</span> is invalid: Error validating value <span style=color:#cd5555>&#39;nonexistant&#39;</span>: No Flavor matching {<span style=color:#cd5555>&#39;name&#39;</span>: u<span style=color:#cd5555>&#39;nonexistant&#39;</span>}. (HTTP 404)
-</code></pre></div><p>Since the flavor was not found, our stack was not created. In truth, without that custom constraint a similar error would have been produced.</p>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#228b22># flawed example with custom constraint removed</span>
-$ openstack stack create -t example-1.yaml --parameter <span style=color:#00688b>flavor</span>=nonexistant example-fail
-ERROR: Property error: : resources.my_instance.properties.flavor: : Error validating value <span style=color:#cd5555>&#39;nonexistant&#39;</span>: No Flavor matching {<span style=color:#cd5555>&#39;name&#39;</span>: u<span style=color:#cd5555>&#39;nonexistant&#39;</span>}. (HTTP 404)
-</code></pre></div><p>Of course if you pass the name of a flavor that exists in your cloud there will be no error.</p>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#228b22># example with custom constraint removed</span>
-$ openstack stack create -t example-1.yaml --parameter <span style=color:#00688b>flavor</span>=m1.large example-1
-</code></pre></div><h2 id=create-example-1-stack-with-environment-file>Create Example-1 Stack with Environment File</h2>
-<p>Instead of passing the parameters on the command line you can also use what is called an environment file. An environment file should include a <code>parameter_defaults</code> section containing the parameters it will define and the values to supply. For example, this will provide a new value for the <code>flavor</code> parameter when coupled with our <code>example-1.yaml</code> template.</p>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#228b22># file: environment-1.yaml</span><span style=color:#bbb>
-</span><span style=color:#bbb>
-</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>parameter_defaults</span>:<span style=color:#bbb>
-</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>flavor</span>:<span style=color:#bbb> </span>m1.medium<span style=color:#bbb>
-</span></code></pre></div><p>Make sure the stack is gone and then recreate it with the above environment file.</p>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ openstack stack delete example-1 --yes
-$ openstack stack create -t example-1.yaml -e environment-1.yaml example-1
-+---------------------+--------------------------------------+
-| Field               | Value                                |
-+---------------------+--------------------------------------+
-| id                  | 06fbdce6-5ac5-49b0-be54-7766fd1afdef |
-| stack_name          | example-1                            |
-| description         | Create a server instance             |
-| creation_time       | 2018-11-22T01:48:03Z                 |
-| updated_time        | None                                 |
-| stack_status        | CREATE_IN_PROGRESS                   |
-| stack_status_reason | Stack CREATE started                 |
-+---------------------+--------------------------------------+
-</code></pre></div><p>See what resources the stack created.</p>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ openstack stack resource list example-1
-+---------------+--------------------------------------+------------------+-----------------+----------------------+
-| resource_name | physical_resource_id                 | resource_type    | resource_status | updated_time         |
-+---------------+--------------------------------------+------------------+-----------------+----------------------+
-| my_instance   | 90794a87-7db8-4220-a1c9-6f2e4b68429b | OS::Nova::Server | CREATE_COMPLETE | 2018-11-22T01:48:04Z |
-+---------------+--------------------------------------+------------------+-----------------+----------------------+
-</code></pre></div><p>Remember <code>my_instance</code> is the name of the Heat resource not the Nova server, but the physical_resource_id is the UUID of the server.</p>
-<p>What flavor is that server instance? Instead of the default <code>m1.small</code>, it should be <code>m1.medium</code> per our environment file.</p>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ openstack server show 90794a87-7db8-4220-a1c9-6f2e4b68429b -c flavor -c name
-+--------+--------------------------------------------------+
-| Field  | Value                                            |
-+--------+--------------------------------------------------+
-| flavor | m1.medium (fa4efbb9-6f43-4a29-aa1a-fa1069681ad6) |
-| name   | example-1-my_instance-c3pg4dyb5l6n               |
-+--------+--------------------------------------------------+
-</code></pre></div><p><strong>Bingo!</strong></p>
-<p>I hope this basic example of using Heat Orchestration Templates was informative.
-I&rsquo;ll try to follow up with some more comprehensive examples. Check back in a week or two!</p>
-<h1 id=see-also>See Also</h1>
-<p><strong>Some helpful blogs and documentation</strong></p>
-<ul>
-<li>Rackspace <a href=https://developer.rackspace.com/blog/openstack-orchestration-in-depth-part-1-introduction-to-heat/>OpenStack Orchestration In Depth, Part I: Introduction to Heat</a></li>
-<li><a href=http://docs.openstack.org/developer/heat/template_guide/openstack.html>OpenStack Resource Types</a></li>
-<li><a href=https://docs.openstack.org/newton/user-guide/cli-create-and-manage-stacks.html>OpenStack User Guide Create and Manage Stacks</a></li>
-<li><a href=http://docs.openstack.org/developer/heat/template_guide/hot_spec.html>HOT Template Specification</a></li>
-<li><a href=https://docs.openstack.org/heat/latest/template_guide/openstack.html>OpenStack Resource Types</a> - Go here when looking up resource parameters and outputs.</li>
-<li><a href=https://docs.openstack.org/tripleo-docs/latest/>TripleO Documentation</a></li>
-<li><a href=https://docs.openstack.org/heat/latest/template_guide/composition.html>Heat Template Composition</a></li>
-<li>Stratoscale <a href=https://www.stratoscale.com/blog/openstack/best-practices-openstack-heat-templates/>Best Practices for OpenStack Heat Templates</a></li>
-<li><a href=http://devops-pro-2016.armyofevilrobots.com/>DevOpsPro 2016</a> is a great tutorial by example!</li>
-<li><a href=http://yauuu.me/heat-101.html>Heat 101</a> by gchenuet</li>
-</ul>
-</div>
-<div id=comments>
-<div id=disqus_thread></div>
-<script type=application/javascript>var disqus_config=function(){};(function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById('disqus_thread').innerHTML='Disqus comments not available by default when the website is previewed locally.';return}var b=document,a=b.createElement('script');a.async=!0,a.src='//dlbewleygithubio.disqus.com/embed.js',a.setAttribute('data-timestamp',+new Date),(b.head||b.body).appendChild(a)})()</script>
-<noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript>
-<a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a>
-</div>
-</div>
-<div class=col-md-3>
-<div class="panel panel-default sidebar-menu">
-<div class=panel-heading>
-<h3 class=panel-title>Search</h3>
-</div>
-<div class=panel-body>
-<form action=//google.com/search method=get accept-charset=utf-8 role=search>
-<div class=input-group>
-<input type=search name=q class=form-control placeholder=Search>
+<i class="fas fa-align-justify"></i></button></div></div><div class="navbar-collapse collapse" id=navigation><ul class="nav navbar-nav navbar-right"><li class=dropdown><a href=/>Home</a></li><li class="dropdown active"><a href=/blog/>Blog</a></li><li class=dropdown><a href=/contact/>Contact</a></li></ul></div><div class="collapse clearfix" id=search><form class=navbar-form role=search><div class=input-group><input type=text class=form-control placeholder=Search>
+<span class=input-group-btn><button type=submit class="btn btn-template-main"><i class="fas fa-search"></i></button></span></div></form></div></div></div></header><style>.bar.background-image-fixed-banner{background:url(/img/banners/banner-2.jpg)50% 0 no-repeat;background-attachment:fixed;background-size:cover;padding:100px 5%;text-shadow:2px 3px 4px var(--primary-accent),0 0 1em var(--navbar-border-top)}</style><div><div class=container><div class=row><div class=col-md-12><section class="bar background-image-fixed-banner heading h2 color-white text-center"><h1>How to Create and Use OpenStack Heat Orchestration Templates Part 1</h1></section></div></div></div></div><div id=content><div class=container><div class=row><div class=col-md-9 id=blog-post><p class="text-muted text-uppercase mb-small text-right">November 21, 2018</p><div id=post-content><p>OpenStack enables automated creation of resources such as networks, routers, and servers using <a href=http://docs.openstack.org/developer/heat/template_guide/hot_spec.html>Heat</a> Orchestration Templates. If you are new to OpenStack and are using a <a href=https://docs.openstack.org/tripleo-docs/latest/>TripleO</a> based distribution you may have seen them up close and personal without knowing it. What follows is a very basic exploration of Heat.</p><p>Heat templates are written in YAML format, and you can quickly see from the documentation that a basic template will likely have 4 sections:</p><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=display:flex><span><span style=color:#228b22># templates will use features as of this release of OpenStack</span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>heat_template_version</span>:<span style=color:#bbb> </span>queens<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>  </span>...<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb></span><span style=color:#228b22># variables to inform the creation of resources to follow </span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>parameters</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>  </span>...<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb></span><span style=color:#228b22># the things the template will be creating</span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>resources</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>  </span>...<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb></span><span style=color:#228b22># information about the things that were created</span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>outputs</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>  </span>...<span style=color:#bbb>
+</span></span></span></code></pre></div><p>The <a href=https://docs.openstack.org/heat/latest/template_guide/hot_spec.html#heat-template-version>heat_template_version</a> specifies the features expected to be supported by the template to follow. You may see dated versions, but since Newton the release name is supported. I would use that if the template is not going to be used on a cloud older than that.</p><p>The <a href=https://docs.openstack.org/heat/latest/template_guide/hot_spec.html#parameters-section>parameters</a> section identifies any variables that will be used later in the template. This is where a place holder for a server name, or the flavor to use would be defined. Parameters can have a default value and miscellaneous constraints applied for validation.</p><p>Objects like a server instance are known as <a href=https://docs.openstack.org/heat/latest/template_guide/hot_spec.html#resources-section>resources</a>. Anything that the template will create or instantiate will be listed in the <code>resources</code> section and will be informed by the <code>parameters</code> section.</p><p>Once a template has been &ldquo;launched&rdquo; or fed to OpenStack it will create what is called a <code>stack</code> of all the resources requested. There are likely some obvious questions you want to ask about a stack like: <em>&ldquo;What is the name of the server I just created?&rdquo;</em> or <em>&ldquo;What is the IP of my server?&rdquo;</em>. The <code>outputs</code> section makes it easy to expose that information.</p><h1 id=simple-example-template>Simple Example Template</h1><p>Here is a template that will create a server and attach it to a network, but it assumes that a network exists. In my case I already have a network named <code>provider192</code>.</p><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=display:flex><span><span style=color:#228b22># file: example-1.yaml</span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb></span><span style=color:#228b22># i never plan to run on OpenStack &lt; Queens</span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>heat_template_version</span>:<span style=color:#bbb> </span>queens<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>description</span>:<span style=color:#bbb> </span>Create a server instance<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>parameters</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>  </span><span style=color:#228b22># define a variable named &#34;image&#34; to use later</span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>image</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>description</span>:<span style=color:#bbb> </span>Name of image from Glance to create an instance from.<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>type</span>:<span style=color:#bbb> </span>string<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>    </span><span style=color:#228b22># Do you have an image named this already?</span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>default</span>:<span style=color:#bbb> </span>cirros-0.4.0.raw<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>flavor</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>description</span>:<span style=color:#bbb> </span>Instance flavor to build.<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>type</span>:<span style=color:#bbb> </span>string<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>    </span><span style=color:#228b22># Do you have a flavor named this already?</span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>default</span>:<span style=color:#bbb> </span>m1.small<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>constraints</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>      </span><span style=color:#228b22># only accept valid flavors for this parameter</span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>      </span>- <span style=color:#8b008b;font-weight:700>custom_constraint</span>:<span style=color:#bbb> </span>nova.flavor<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>resources</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>  </span><span style=color:#228b22># create a resource named &#34;my_instance&#34;</span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>my_instance</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>    </span><span style=color:#228b22># the my_instance resource is a server</span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>type</span>:<span style=color:#bbb> </span>OS::Nova::Server<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>properties</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>      </span><span style=color:#228b22># use the image parameter / variable defined above</span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>image</span>:<span style=color:#bbb> </span>{<span style=color:#bbb> </span><span style=color:#8b008b;font-weight:700>get_param</span>:<span style=color:#bbb> </span>image }<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>flavor</span>:<span style=color:#bbb> </span>{<span style=color:#bbb> </span><span style=color:#8b008b;font-weight:700>get_param</span>:<span style=color:#bbb> </span>flavor }<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>outputs</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>description</span>:<span style=color:#bbb> </span>The name of the server created in this stack.<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>value</span>:<span style=color:#bbb> </span>{<span style=color:#bbb> </span><span style=color:#8b008b;font-weight:700>get_attr</span>:<span style=color:#bbb> </span>[<span style=color:#bbb> </span>my_instance, name ] }<span style=color:#bbb>
+</span></span></span></code></pre></div><h2 id=create-example-1-stack-with-defaults>Create Example-1 Stack with Defaults</h2><p>Save that to a file called <code>example-1.yaml</code>. Edit the default flavor and image values to match what exists in your cloud.</p><p>Now create a stack from the template. The command looks like this:</p><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>$ openstack stack create -t &lt;template_filename.yaml&gt; &lt;resultant_stack_name&gt;
+</span></span></code></pre></div><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>$ openstack stack create -t example-1.yaml example-1
+</span></span><span style=display:flex><span>+---------------------+--------------------------------------+
+</span></span><span style=display:flex><span>| Field               | Value                                |
+</span></span><span style=display:flex><span>+---------------------+--------------------------------------+
+</span></span><span style=display:flex><span>| id                  | 218fedd6-efdd-4c2b-ac82-7f15bf1c4235 |
+</span></span><span style=display:flex><span>| stack_name          | example-1                            |
+</span></span><span style=display:flex><span>| description         | Create a server instance             |
+</span></span><span style=display:flex><span>| creation_time       | 2018-11-22T00:21:16Z                 |
+</span></span><span style=display:flex><span>| updated_time        | None                                 |
+</span></span><span style=display:flex><span>| stack_status        | CREATE_IN_PROGRESS                   |
+</span></span><span style=display:flex><span>| stack_status_reason | Stack CREATE started                 |
+</span></span><span style=display:flex><span>+---------------------+--------------------------------------+
+</span></span></code></pre></div><p>Wait a minute or two, and then list the stack and see what outputs it can show us.</p><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>$ openstack stack list
+</span></span><span style=display:flex><span>+--------------------------------------+------------+-----------------+----------------------+--------------+
+</span></span><span style=display:flex><span>| ID                                   | Stack Name | Stack Status    | Creation Time        | Updated Time |
+</span></span><span style=display:flex><span>+--------------------------------------+------------+-----------------+----------------------+--------------+
+</span></span><span style=display:flex><span>| 218fedd6-efdd-4c2b-ac82-7f15bf1c4235 | example-1  | CREATE_COMPLETE | 2018-11-22T00:21:16Z | None         |
+</span></span><span style=display:flex><span>+--------------------------------------+------------+-----------------+----------------------+--------------+
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>$ openstack stack output list example-1
+</span></span><span style=display:flex><span>+------------+-----------------------------------------------+
+</span></span><span style=display:flex><span>| output_key | description                                   |
+</span></span><span style=display:flex><span>+------------+-----------------------------------------------+
+</span></span><span style=display:flex><span>| name       | The name of the server created in this stack. |
+</span></span><span style=display:flex><span>+------------+-----------------------------------------------+
+</span></span></code></pre></div><p>That looks familiar, what does it contain?</p><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>$ openstack stack output show example-1 name
+</span></span><span style=display:flex><span>+--------------+-----------------------------------------------+
+</span></span><span style=display:flex><span>| Field        | Value                                         |
+</span></span><span style=display:flex><span>+--------------+-----------------------------------------------+
+</span></span><span style=display:flex><span>| description  | The name of the server created in this stack. |
+</span></span><span style=display:flex><span>| output_key   | name                                          |
+</span></span><span style=display:flex><span>| output_value | example-1-my_instance-omfgcgk3w7nd            |
+</span></span><span style=display:flex><span>+--------------+-----------------------------------------------+
+</span></span></code></pre></div><p>There is the name of the server we just created! How about something more to the point for use in a script.</p><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>$ openstack stack output show example-1 name -f value -c output_value
+</span></span><span style=display:flex><span>example-1-my_instance-omfgcgk3w7nd 
+</span></span></code></pre></div><p>Take a look at the whole stack.</p><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>$ openstack stack show example-1
+</span></span><span style=display:flex><span>+-----------------------+-------------------------------------------------------------------------------------------------------------------------------------+
+</span></span><span style=display:flex><span>| Field                 | Value                                                                                                                               |
+</span></span><span style=display:flex><span>+-----------------------+-------------------------------------------------------------------------------------------------------------------------------------+
+</span></span><span style=display:flex><span>| id                    | 218fedd6-efdd-4c2b-ac82-7f15bf1c4235                                                                                                |
+</span></span><span style=display:flex><span>| stack_name            | example-1                                                                                                                           |
+</span></span><span style=display:flex><span>| description           | Create a server instance                                                                                                            |
+</span></span><span style=display:flex><span>| creation_time         | 2018-11-22T00:21:16Z                                                                                                                |
+</span></span><span style=display:flex><span>| updated_time          | None                                                                                                                                |
+</span></span><span style=display:flex><span>| stack_status          | CREATE_COMPLETE                                                                                                                     |
+</span></span><span style=display:flex><span>| stack_status_reason   | Stack CREATE completed successfully                                                                                                 |
+</span></span><span style=display:flex><span>| parameters            | OS::project_id: 1686c505946841259bfda1f1c206456d                                                                                    |
+</span></span><span style=display:flex><span>|                       | OS::stack_id: 218fedd6-efdd-4c2b-ac82-7f15bf1c4235                                                                                  |
+</span></span><span style=display:flex><span>|                       | OS::stack_name: example-1                                                                                                           |
+</span></span><span style=display:flex><span>|                       | flavor: m1.small                                                                                                                    |
+</span></span><span style=display:flex><span>|                       | image: cirros-0.4.0.raw                                                                                                             |
+</span></span><span style=display:flex><span>|                       |                                                                                                                                     |
+</span></span><span style=display:flex><span>| outputs               | - description: The name of the server created in this stack.                                                                        |
+</span></span><span style=display:flex><span>|                       |   output_key: name                                                                                                                  |
+</span></span><span style=display:flex><span>|                       |   output_value: example-1-my_instance-omfgcgk3w7nd                                                                                  |
+</span></span><span style=display:flex><span>|                       |                                                                                                                                     |
+</span></span><span style=display:flex><span>| links                 | - href: https://openstack.example.com:13004/v1/1686c505946841259bfda1f1c206456d/stacks/example-1/218fedd6-efdd-4c2b-ac82-7f15bf1c4235|
+</span></span><span style=display:flex><span>|                       |   rel: self                                                                                                                         |
+</span></span><span style=display:flex><span>|                       |                                                                                                                                     |
+</span></span><span style=display:flex><span>| parent                | None                                                                                                                                |
+</span></span><span style=display:flex><span>| disable_rollback      | True                                                                                                                                |
+</span></span><span style=display:flex><span>| deletion_time         | None                                                                                                                                |
+</span></span><span style=display:flex><span>| stack_user_project_id | 4b22b80f4a1843f7a90b13e54375b4d5                                                                                                    |
+</span></span><span style=display:flex><span>| capabilities          | []                                                                                                                                  |
+</span></span><span style=display:flex><span>| notification_topics   | []                                                                                                                                  |
+</span></span><span style=display:flex><span>| tags                  | None                                                                                                                                |
+</span></span><span style=display:flex><span>| timeout_mins          | None                                                                                                                                |
+</span></span><span style=display:flex><span>| stack_owner           | None                                                                                                                                |
+</span></span><span style=display:flex><span>+-----------------------+-------------------------------------------------------------------------------------------------------------------------------------+
+</span></span></code></pre></div><p>And now at the server it created. Notice that it attached to a network I had already created, named <em>provider192</em>.</p><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>$ openstack server show example-1-my_instance-omfgcgk3w7nd
+</span></span><span style=display:flex><span>+-----------------------------+----------------------------------------------------------+
+</span></span><span style=display:flex><span>| Field                       | Value                                                    |
+</span></span><span style=display:flex><span>+-----------------------------+----------------------------------------------------------+
+</span></span><span style=display:flex><span>| OS-DCF:diskConfig           | MANUAL                                                   |
+</span></span><span style=display:flex><span>| OS-EXT-AZ:availability_zone | nova                                                     |
+</span></span><span style=display:flex><span>| OS-EXT-STS:power_state      | Running                                                  |
+</span></span><span style=display:flex><span>| OS-EXT-STS:task_state       | None                                                     |
+</span></span><span style=display:flex><span>| OS-EXT-STS:vm_state         | active                                                   |
+</span></span><span style=display:flex><span>| OS-SRV-USG:launched_at      | 2018-11-22T00:21:31.000000                               |
+</span></span><span style=display:flex><span>| OS-SRV-USG:terminated_at    | None                                                     |
+</span></span><span style=display:flex><span>| accessIPv4                  |                                                          |
+</span></span><span style=display:flex><span>| accessIPv6                  |                                                          |
+</span></span><span style=display:flex><span>| addresses                   | <span style=color:#00688b>provider192</span>=192.0.2.14                                   |
+</span></span><span style=display:flex><span>| config_drive                |                                                          |
+</span></span><span style=display:flex><span>| created                     | 2018-11-22T00:21:22Z                                     |
+</span></span><span style=display:flex><span>| flavor                      | m1.small (af20508a-5986-4bf3-9e9f-33ca598e1563)          |
+</span></span><span style=display:flex><span>| hostId                      | f1e7461e138a94335e579cb81cd95933fc3879b263a3109281d203ba |
+</span></span><span style=display:flex><span>| id                          | ce6e7e7a-f091-4fe8-bde0-b0ae3d3664d7                     |
+</span></span><span style=display:flex><span>| image                       | cirros-0.4.0.raw (a034ee47-4642-4d21-9b08-11774808a822)  |
+</span></span><span style=display:flex><span>| key_name                    | None                                                     |
+</span></span><span style=display:flex><span>| name                        | example-1-my_instance-omfgcgk3w7nd                       |
+</span></span><span style=display:flex><span>| progress                    | <span style=color:#b452cd>0</span>                                                        |
+</span></span><span style=display:flex><span>| project_id                  | 1686c505946841259bfda1f1c206456d                         |
+</span></span><span style=display:flex><span>| properties                  |                                                          |
+</span></span><span style=display:flex><span>| security_groups             | <span style=color:#00688b>name</span>=<span style=color:#cd5555>&#39;default&#39;</span>                                           |
+</span></span><span style=display:flex><span>| status                      | ACTIVE                                                   |
+</span></span><span style=display:flex><span>| updated                     | 2018-11-22T00:21:31Z                                     |
+</span></span><span style=display:flex><span>| user_id                     | e2041d2848be40f6b6fb86709b260ae1                         |
+</span></span><span style=display:flex><span>| volumes_attached            |                                                          |
+</span></span><span style=display:flex><span>+-----------------------------+----------------------------------------------------------+
+</span></span></code></pre></div><p>Throw away this stack. This will delete the stack and any resources it created, such as the <code>example-1-my_instance-omfgcgk3w7nd</code> server.</p><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>$ openstack stack delete example-1 --yes
+</span></span></code></pre></div><h2 id=create-example-1-stack-with-supplied-parameters>Create Example-1 Stack with Supplied Parameters</h2><p>Let&rsquo;s see how to pass in parameter values and demonstrate the effect of the <a href=https://docs.openstack.org/heat/latest/template_guide/hot_spec.html#custom-constraint>custom constraint</a> we placed on the flavor parameter.</p><p>We know there is a parameter named <code>flavor</code> we can provide a value to override the default value when we create a stack from our template.</p><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#228b22># flawed example</span>
+</span></span><span style=display:flex><span>$ openstack stack create -t example-1.yaml --parameter <span style=color:#00688b>flavor</span>=nonexistant example-fail
+</span></span><span style=display:flex><span>ERROR: Parameter <span style=color:#cd5555>&#39;flavor&#39;</span> is invalid: Error validating value <span style=color:#cd5555>&#39;nonexistant&#39;</span>: No Flavor matching {<span style=color:#cd5555>&#39;name&#39;</span>: u<span style=color:#cd5555>&#39;nonexistant&#39;</span>}. (HTTP 404)
+</span></span></code></pre></div><p>Since the flavor was not found, our stack was not created. In truth, without that custom constraint a similar error would have been produced.</p><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#228b22># flawed example with custom constraint removed</span>
+</span></span><span style=display:flex><span>$ openstack stack create -t example-1.yaml --parameter <span style=color:#00688b>flavor</span>=nonexistant example-fail
+</span></span><span style=display:flex><span>ERROR: Property error: : resources.my_instance.properties.flavor: : Error validating value <span style=color:#cd5555>&#39;nonexistant&#39;</span>: No Flavor matching {<span style=color:#cd5555>&#39;name&#39;</span>: u<span style=color:#cd5555>&#39;nonexistant&#39;</span>}. (HTTP 404)
+</span></span></code></pre></div><p>Of course if you pass the name of a flavor that exists in your cloud there will be no error.</p><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#228b22># example with custom constraint removed</span>
+</span></span><span style=display:flex><span>$ openstack stack create -t example-1.yaml --parameter <span style=color:#00688b>flavor</span>=m1.large example-1
+</span></span></code></pre></div><h2 id=create-example-1-stack-with-environment-file>Create Example-1 Stack with Environment File</h2><p>Instead of passing the parameters on the command line you can also use what is called an environment file. An environment file should include a <code>parameter_defaults</code> section containing the parameters it will define and the values to supply. For example, this will provide a new value for the <code>flavor</code> parameter when coupled with our <code>example-1.yaml</code> template.</p><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=display:flex><span><span style=color:#228b22># file: environment-1.yaml</span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>parameter_defaults</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>flavor</span>:<span style=color:#bbb> </span>m1.medium<span style=color:#bbb>
+</span></span></span></code></pre></div><p>Make sure the stack is gone and then recreate it with the above environment file.</p><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>$ openstack stack delete example-1 --yes
+</span></span><span style=display:flex><span>$ openstack stack create -t example-1.yaml -e environment-1.yaml example-1
+</span></span><span style=display:flex><span>+---------------------+--------------------------------------+
+</span></span><span style=display:flex><span>| Field               | Value                                |
+</span></span><span style=display:flex><span>+---------------------+--------------------------------------+
+</span></span><span style=display:flex><span>| id                  | 06fbdce6-5ac5-49b0-be54-7766fd1afdef |
+</span></span><span style=display:flex><span>| stack_name          | example-1                            |
+</span></span><span style=display:flex><span>| description         | Create a server instance             |
+</span></span><span style=display:flex><span>| creation_time       | 2018-11-22T01:48:03Z                 |
+</span></span><span style=display:flex><span>| updated_time        | None                                 |
+</span></span><span style=display:flex><span>| stack_status        | CREATE_IN_PROGRESS                   |
+</span></span><span style=display:flex><span>| stack_status_reason | Stack CREATE started                 |
+</span></span><span style=display:flex><span>+---------------------+--------------------------------------+
+</span></span></code></pre></div><p>See what resources the stack created.</p><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>$ openstack stack resource list example-1
+</span></span><span style=display:flex><span>+---------------+--------------------------------------+------------------+-----------------+----------------------+
+</span></span><span style=display:flex><span>| resource_name | physical_resource_id                 | resource_type    | resource_status | updated_time         |
+</span></span><span style=display:flex><span>+---------------+--------------------------------------+------------------+-----------------+----------------------+
+</span></span><span style=display:flex><span>| my_instance   | 90794a87-7db8-4220-a1c9-6f2e4b68429b | OS::Nova::Server | CREATE_COMPLETE | 2018-11-22T01:48:04Z |
+</span></span><span style=display:flex><span>+---------------+--------------------------------------+------------------+-----------------+----------------------+
+</span></span></code></pre></div><p>Remember <code>my_instance</code> is the name of the Heat resource not the Nova server, but the physical_resource_id is the UUID of the server.</p><p>What flavor is that server instance? Instead of the default <code>m1.small</code>, it should be <code>m1.medium</code> per our environment file.</p><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>$ openstack server show 90794a87-7db8-4220-a1c9-6f2e4b68429b -c flavor -c name
+</span></span><span style=display:flex><span>+--------+--------------------------------------------------+
+</span></span><span style=display:flex><span>| Field  | Value                                            |
+</span></span><span style=display:flex><span>+--------+--------------------------------------------------+
+</span></span><span style=display:flex><span>| flavor | m1.medium (fa4efbb9-6f43-4a29-aa1a-fa1069681ad6) |
+</span></span><span style=display:flex><span>| name   | example-1-my_instance-c3pg4dyb5l6n               |
+</span></span><span style=display:flex><span>+--------+--------------------------------------------------+
+</span></span></code></pre></div><p><strong>Bingo!</strong></p><p>I hope this basic example of using Heat Orchestration Templates was informative.
+I&rsquo;ll try to follow up with some more comprehensive examples. Check back in a week or two!</p><h1 id=see-also>See Also</h1><p><strong>Some helpful blogs and documentation</strong></p><ul><li>Rackspace <a href=https://developer.rackspace.com/blog/openstack-orchestration-in-depth-part-1-introduction-to-heat/>OpenStack Orchestration In Depth, Part I: Introduction to Heat</a></li><li><a href=http://docs.openstack.org/developer/heat/template_guide/openstack.html>OpenStack Resource Types</a></li><li><a href=https://docs.openstack.org/newton/user-guide/cli-create-and-manage-stacks.html>OpenStack User Guide Create and Manage Stacks</a></li><li><a href=http://docs.openstack.org/developer/heat/template_guide/hot_spec.html>HOT Template Specification</a></li><li><a href=https://docs.openstack.org/heat/latest/template_guide/openstack.html>OpenStack Resource Types</a> - Go here when looking up resource parameters and outputs.</li><li><a href=https://docs.openstack.org/tripleo-docs/latest/>TripleO Documentation</a></li><li><a href=https://docs.openstack.org/heat/latest/template_guide/composition.html>Heat Template Composition</a></li><li>Stratoscale <a href=https://www.stratoscale.com/blog/openstack/best-practices-openstack-heat-templates/>Best Practices for OpenStack Heat Templates</a></li><li><a href=http://devops-pro-2016.armyofevilrobots.com/>DevOpsPro 2016</a> is a great tutorial by example!</li><li><a href=http://yauuu.me/heat-101.html>Heat 101</a> by gchenuet</li></ul></div><div id=comments><div id=disqus_thread></div><script type=application/javascript>window.disqus_config=function(){},function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById("disqus_thread").innerHTML="Disqus comments not available by default when the website is previewed locally.";return}var t=document,e=t.createElement("script");e.async=!0,e.src="//dlbewleygithubio.disqus.com/embed.js",e.setAttribute("data-timestamp",+new Date),(t.head||t.body).appendChild(e)}()</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript><a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a></div></div><div class=col-md-3><div class="panel panel-default sidebar-menu"><div class=panel-heading><h3 class=panel-title>Search</h3></div><div class=panel-body><form action=//google.com/search method=get accept-charset=utf-8 role=search><div class=input-group><input type=search name=q class=form-control placeholder=Search>
 <input type=hidden name=sitesearch value=http://guifreelife.com/>
-<span class=input-group-btn>
-<button type=submit class="btn btn-template-main"><i class="fas fa-search"></i></button>
-</span>
-</div>
-</form>
-</div>
-</div>
-<div class="panel sidebar-menu">
-<div class=panel-heading>
-<h3 class=panel-title>Tagged</h3>
-</div>
-<div class=panel-body>
-<ul class=tag-cloud>
-<li class=active>
-<a href=/tags/automation><i class="fas fa-tags"></i> automation</a>
-</li>
-<li class=active>
-<a href=/tags/heat><i class="fas fa-tags"></i> heat</a>
-</li>
-<li class=active>
-<a href=/tags/openstack><i class="fas fa-tags"></i> openstack</a>
-</li>
-</ul>
-</div>
-</div>
-<div class="panel sidebar-menu">
-<div class=panel-heading>
-<h3 class=panel-title>TOC</h3>
-</div>
-<div class=panel-body>
-<nav id=TableOfContents>
-<ul>
-<li><a href=#simple-example-template>Simple Example Template</a>
-<ul>
-<li><a href=#create-example-1-stack-with-defaults>Create Example-1 Stack with Defaults</a></li>
-<li><a href=#create-example-1-stack-with-supplied-parameters>Create Example-1 Stack with Supplied Parameters</a></li>
-<li><a href=#create-example-1-stack-with-environment-file>Create Example-1 Stack with Environment File</a></li>
-</ul>
-</li>
-<li><a href=#see-also>See Also</a></li>
-</ul>
-</nav>
-</div>
-</div>
-<div class="panel sidebar-menu">
-<div class=panel-heading>
-<h3 class=panel-title>Tags</h3>
-</div>
-<div class=panel-body>
-<ul class=tag-cloud>
-<li>
-<a href=/tags/AWS><i class="fas fa-tags"></i> AWS</a>
-</li>
-<li>
-<a href=/tags/CDK><i class="fas fa-tags"></i> CDK</a>
-</li>
-<li>
-<a href=/tags/OCP3><i class="fas fa-tags"></i> OCP3</a>
-</li>
-<li>
-<a href=/tags/OCP4><i class="fas fa-tags"></i> OCP4</a>
-</li>
-<li>
-<a href=/tags/RHACM><i class="fas fa-tags"></i> RHACM</a>
-</li>
-<li>
-<a href=/tags/RHACS><i class="fas fa-tags"></i> RHACS</a>
-</li>
-<li>
-<a href=/tags/RHEL><i class="fas fa-tags"></i> RHEL</a>
-</li>
-<li>
-<a href=/tags/ansible><i class="fas fa-tags"></i> ansible</a>
-</li>
-<li>
-<a href=/tags/automation><i class="fas fa-tags"></i> automation</a>
-</li>
-<li>
-<a href=/tags/azure><i class="fas fa-tags"></i> azure</a>
-</li>
-<li>
-<a href=/tags/debugging><i class="fas fa-tags"></i> debugging</a>
-</li>
-<li>
-<a href=/tags/docker><i class="fas fa-tags"></i> docker</a>
-</li>
-<li>
-<a href=/tags/draft><i class="fas fa-tags"></i> draft</a>
-</li>
-<li>
-<a href=/tags/etcd><i class="fas fa-tags"></i> etcd</a>
-</li>
-<li>
-<a href=/tags/git><i class="fas fa-tags"></i> git</a>
-</li>
-<li>
-<a href=/tags/haproxy><i class="fas fa-tags"></i> haproxy</a>
-</li>
-<li>
-<a href=/tags/heat><i class="fas fa-tags"></i> heat</a>
-</li>
-<li>
-<a href=/tags/hybrid-cloud><i class="fas fa-tags"></i> hybrid-cloud</a>
-</li>
-<li>
-<a href=/tags/install><i class="fas fa-tags"></i> install</a>
-</li>
-<li>
-<a href=/tags/kubernetes><i class="fas fa-tags"></i> kubernetes</a>
-</li>
-<li>
-<a href=/tags/mac><i class="fas fa-tags"></i> mac</a>
-</li>
-<li>
-<a href=/tags/metrics><i class="fas fa-tags"></i> metrics</a>
-</li>
-<li>
-<a href=/tags/migration><i class="fas fa-tags"></i> migration</a>
-</li>
-<li>
-<a href=/tags/monitoring><i class="fas fa-tags"></i> monitoring</a>
-</li>
-<li>
-<a href=/tags/networking><i class="fas fa-tags"></i> networking</a>
-</li>
-<li>
-<a href=/tags/openshift><i class="fas fa-tags"></i> openshift</a>
-</li>
-<li>
-<a href=/tags/openstack><i class="fas fa-tags"></i> openstack</a>
-</li>
-<li>
-<a href=/tags/operators><i class="fas fa-tags"></i> operators</a>
-</li>
-<li>
-<a href=/tags/prometheus><i class="fas fa-tags"></i> prometheus</a>
-</li>
-<li>
-<a href=/tags/python><i class="fas fa-tags"></i> python</a>
-</li>
-<li>
-<a href=/tags/router><i class="fas fa-tags"></i> router</a>
-</li>
-<li>
-<a href=/tags/security><i class="fas fa-tags"></i> security</a>
-</li>
-<li>
-<a href=/tags/ssl><i class="fas fa-tags"></i> ssl</a>
-</li>
-<li>
-<a href=/tags/stackrox><i class="fas fa-tags"></i> stackrox</a>
-</li>
-<li>
-<a href=/tags/storage><i class="fas fa-tags"></i> storage</a>
-</li>
-<li>
-<a href=/tags/troubleshooting><i class="fas fa-tags"></i> troubleshooting</a>
-</li>
-<li>
-<a href=/tags/upgrade><i class="fas fa-tags"></i> upgrade</a>
-</li>
-<li>
-<a href=/tags/vagrant><i class="fas fa-tags"></i> vagrant</a>
-</li>
-<li>
-<a href=/tags/virtualization><i class="fas fa-tags"></i> virtualization</a>
-</li>
-<li>
-<a href=/tags/webinar><i class="fas fa-tags"></i> webinar</a>
-</li>
-<li>
-<a href=/tags/windows><i class="fas fa-tags"></i> windows</a>
-</li>
-<li>
-<a href=/tags/zabbix><i class="fas fa-tags"></i> zabbix</a>
-</li>
-<li>
-<a href=/tags/zimbra><i class="fas fa-tags"></i> zimbra</a>
-</li>
-</ul>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<footer id=footer>
-<div class=container>
-<div class="col-md-4 col-sm-6">
-<h4>Share</h4>
-<i class="fab fa-2x fa-twitter" title="Share this on Twitter" onclick="window.open('http://twitter.com/home?status=http://guifreelife.com/blog/2018/11/21/OpenStack-Heat-Orchestration-Templates-Howto-Part-1/')"></i>
-<i class="fab fa-2x fa-facebook" title="Share this on Facebook" onclick="window.open('http://www.facebook.com/share.php?u=http://guifreelife.com/blog/2018/11/21/OpenStack-Heat-Orchestration-Templates-Howto-Part-1/')"></i>
-<i class="fab fa-2x fa-linkedin" title="Share this on Linkedin" onclick="window.open('https://www.linkedin.com/shareArticle?mini=true&url=http://guifreelife.com/blog/2018/11/21/OpenStack-Heat-Orchestration-Templates-Howto-Part-1/&title=&summary=&source=')"></i>
-<i class="fab fa-2x fa-google-plus" title="Share this on Google Currents" onclick="window.open('https://plus.google.com/share?url=http://guifreelife.com/blog/2018/11/21/OpenStack-Heat-Orchestration-Templates-Howto-Part-1/')"></i>
-<i class="fa fa-2x fa-envelope" title="Share this through Email" onclick="window.open('mailto:?&body=http://guifreelife.com/blog/2018/11/21/OpenStack-Heat-Orchestration-Templates-Howto-Part-1/')"></i>
-<h4>About us</h4>
-<p>GUI Free Life is the personal, technical blog of Dale Bewley. Comments and opinions are my own and not that of my employers.</p>
-<hr class="hidden-md hidden-lg hidden-sm">
-</div>
-<div class="col-md-4 col-sm-6">
-<h4>Recent posts</h4>
-<div class=blog-entries>
-<div class="item same-height-row clearfix">
-<div class="image same-height-always">
-<a href=http://guifreelife.com/blog/2023/09/22/Storing-OpenShift-Credentials-with-1Password/>
-<img src=/img/banners/mushroom-moss.jpg class=img-responsive alt="Storing OpenShift Credentials with 1Password">
-</a>
-</div>
-<div class="name same-height-always">
-<h5><a href=http://guifreelife.com/blog/2023/09/22/Storing-OpenShift-Credentials-with-1Password/>Storing OpenShift Credentials with 1Password</a></h5>
-</div>
-</div>
-<div class="item same-height-row clearfix">
-<div class="image same-height-always">
-<a href=http://guifreelife.com/blog/2023/04/06/Accessing-Ceph-CLI-with-OpenShift-Data-Foundation/>
-<img src=/images/uncovered-bumper.png class=img-responsive alt="Accessing the Ceph CLI with OpenShift Data Foundation">
-</a>
-</div>
-<div class="name same-height-always">
-<h5><a href=http://guifreelife.com/blog/2023/04/06/Accessing-Ceph-CLI-with-OpenShift-Data-Foundation/>Accessing the Ceph CLI with OpenShift Data Foundation</a></h5>
-</div>
-</div>
-<div class="item same-height-row clearfix">
-<div class="image same-height-always">
-<a href=http://guifreelife.com/blog/2023/03/09/Extracting-CA-Certs-From-Kubeconfig/>
-<img src=/img/banners/banner-buffy-xmas.png class=img-responsive alt="Extracting TLS CA Certificates from Kubeconfig File">
-</a>
-</div>
-<div class="name same-height-always">
-<h5><a href=http://guifreelife.com/blog/2023/03/09/Extracting-CA-Certs-From-Kubeconfig/>Extracting TLS CA Certificates from Kubeconfig File</a></h5>
-</div>
-</div>
-</div>
-<hr class="hidden-md hidden-lg">
-</div>
-<div class="col-md-4 col-sm-6">
-<h4>Contact</h4>
-<p class=text-uppercase><strong>Dale Bewley</strong>
-<br>Oakland
-<br>California
-<br>
-<strong>USA</strong>
-</p>
-<a href=/contact class="btn btn-small btn-template-main">Go to contact page</a>
-<hr class="hidden-md hidden-lg hidden-sm">
-</div>
-</div>
-</footer>
-<div id=copyright>
-<div class=container>
-<div class=col-md-12>
-<p class=pull-left>Copyright (c) 2021, Dale Bewley; all rights reserved.</p>
-<p class=pull-right>
-Template by <a href=https://bootstrapious.com/p/universal-business-e-commerce-template>Bootstrapious</a>.
-Ported to Hugo by <a href=https://github.com/devcows/hugo-universal-theme>DevCows</a>.
-</p>
-</div>
-</div>
-</div>
-</div>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-39TSW9349X"></script>
-<script>var doNotTrack=!1;if(!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date),gtag('config','G-39TSW9349X',{anonymize_ip:!1})}</script>
-<script src=//code.jquery.com/jquery-3.1.1.min.js integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin=anonymous></script>
+<span class=input-group-btn><button type=submit class="btn btn-template-main"><i class="fas fa-search"></i></button></span></div></form></div></div><div class="panel sidebar-menu"><div class=panel-heading><h3 class=panel-title>Tagged</h3></div><div class=panel-body><ul class=tag-cloud><li class=active><a href=/tags/automation><i class="fas fa-tags"></i> automation</a></li><li class=active><a href=/tags/heat><i class="fas fa-tags"></i> heat</a></li><li class=active><a href=/tags/openstack><i class="fas fa-tags"></i> openstack</a></li></ul></div></div><div class="panel sidebar-menu"><div class=panel-heading><h3 class=panel-title>TOC</h3></div><div class=panel-body><nav id=TableOfContents><ul><li><a href=#simple-example-template>Simple Example Template</a><ul><li><a href=#create-example-1-stack-with-defaults>Create Example-1 Stack with Defaults</a></li><li><a href=#create-example-1-stack-with-supplied-parameters>Create Example-1 Stack with Supplied Parameters</a></li><li><a href=#create-example-1-stack-with-environment-file>Create Example-1 Stack with Environment File</a></li></ul></li><li><a href=#see-also>See Also</a></li></ul></nav></div></div><div class="panel sidebar-menu"><div class=panel-heading><h3 class=panel-title>Tags</h3></div><div class=panel-body><ul class=tag-cloud><li><a href=/tags/AWS><i class="fas fa-tags"></i> AWS</a></li><li><a href=/tags/CDK><i class="fas fa-tags"></i> CDK</a></li><li><a href=/tags/OCP3><i class="fas fa-tags"></i> OCP3</a></li><li><a href=/tags/OCP4><i class="fas fa-tags"></i> OCP4</a></li><li><a href=/tags/RHACM><i class="fas fa-tags"></i> RHACM</a></li><li><a href=/tags/RHACS><i class="fas fa-tags"></i> RHACS</a></li><li><a href=/tags/RHEL><i class="fas fa-tags"></i> RHEL</a></li><li><a href=/tags/ansible><i class="fas fa-tags"></i> ansible</a></li><li><a href=/tags/automation><i class="fas fa-tags"></i> automation</a></li><li><a href=/tags/azure><i class="fas fa-tags"></i> azure</a></li><li><a href=/tags/debugging><i class="fas fa-tags"></i> debugging</a></li><li><a href=/tags/docker><i class="fas fa-tags"></i> docker</a></li><li><a href=/tags/draft><i class="fas fa-tags"></i> draft</a></li><li><a href=/tags/etcd><i class="fas fa-tags"></i> etcd</a></li><li><a href=/tags/git><i class="fas fa-tags"></i> git</a></li><li><a href=/tags/haproxy><i class="fas fa-tags"></i> haproxy</a></li><li><a href=/tags/heat><i class="fas fa-tags"></i> heat</a></li><li><a href=/tags/hybrid-cloud><i class="fas fa-tags"></i> hybrid-cloud</a></li><li><a href=/tags/install><i class="fas fa-tags"></i> install</a></li><li><a href=/tags/kubernetes><i class="fas fa-tags"></i> kubernetes</a></li><li><a href=/tags/mac><i class="fas fa-tags"></i> mac</a></li><li><a href=/tags/metrics><i class="fas fa-tags"></i> metrics</a></li><li><a href=/tags/migration><i class="fas fa-tags"></i> migration</a></li><li><a href=/tags/monitoring><i class="fas fa-tags"></i> monitoring</a></li><li><a href=/tags/networking><i class="fas fa-tags"></i> networking</a></li><li><a href=/tags/openshift><i class="fas fa-tags"></i> openshift</a></li><li><a href=/tags/openstack><i class="fas fa-tags"></i> openstack</a></li><li><a href=/tags/operators><i class="fas fa-tags"></i> operators</a></li><li><a href=/tags/prometheus><i class="fas fa-tags"></i> prometheus</a></li><li><a href=/tags/python><i class="fas fa-tags"></i> python</a></li><li><a href=/tags/router><i class="fas fa-tags"></i> router</a></li><li><a href=/tags/security><i class="fas fa-tags"></i> security</a></li><li><a href=/tags/ssl><i class="fas fa-tags"></i> ssl</a></li><li><a href=/tags/stackrox><i class="fas fa-tags"></i> stackrox</a></li><li><a href=/tags/storage><i class="fas fa-tags"></i> storage</a></li><li><a href=/tags/troubleshooting><i class="fas fa-tags"></i> troubleshooting</a></li><li><a href=/tags/upgrade><i class="fas fa-tags"></i> upgrade</a></li><li><a href=/tags/vagrant><i class="fas fa-tags"></i> vagrant</a></li><li><a href=/tags/virtualization><i class="fas fa-tags"></i> virtualization</a></li><li><a href=/tags/webinar><i class="fas fa-tags"></i> webinar</a></li><li><a href=/tags/windows><i class="fas fa-tags"></i> windows</a></li><li><a href=/tags/zabbix><i class="fas fa-tags"></i> zabbix</a></li><li><a href=/tags/zimbra><i class="fas fa-tags"></i> zimbra</a></li></ul></div></div></div></div></div></div><footer id=footer><div class=container><div class="col-md-4 col-sm-6"><h4>Share</h4><i class="fab fa-2x fa-twitter" title="Share this on Twitter" onclick='window.open("http://twitter.com/home?status=http://guifreelife.com/blog/2018/11/21/OpenStack-Heat-Orchestration-Templates-Howto-Part-1/")'></i>
+<i class="fab fa-2x fa-facebook" title="Share this on Facebook" onclick='window.open("http://www.facebook.com/share.php?u=http://guifreelife.com/blog/2018/11/21/OpenStack-Heat-Orchestration-Templates-Howto-Part-1/")'></i>
+<i class="fab fa-2x fa-linkedin" title="Share this on Linkedin" onclick='window.open("https://www.linkedin.com/shareArticle?mini=true&url=http://guifreelife.com/blog/2018/11/21/OpenStack-Heat-Orchestration-Templates-Howto-Part-1/&title=&summary=&source=")'></i>
+<i class="fab fa-2x fa-google-plus" title="Share this on Google Currents" onclick='window.open("https://plus.google.com/share?url=http://guifreelife.com/blog/2018/11/21/OpenStack-Heat-Orchestration-Templates-Howto-Part-1/")'></i>
+<i class="fa fa-2x fa-envelope" title="Share this through Email" onclick='window.open("mailto:?&body=http://guifreelife.com/blog/2018/11/21/OpenStack-Heat-Orchestration-Templates-Howto-Part-1/")'></i><h4>About us</h4><p>GUI Free Life is the personal, technical blog of Dale Bewley. Comments and opinions are my own and not that of my employers.</p><hr class="hidden-md hidden-lg hidden-sm"></div><div class="col-md-4 col-sm-6"><h4>Recent posts</h4><div class=blog-entries><div class="item same-height-row clearfix"><div class="image same-height-always"><a href=http://guifreelife.com/blog/2024/03/11/Placing-Open-Cluster-Management-Policies-on-Kubernetes/><img src=/images/DALL%c2%b7E%202024-01-30%2014.28.24%20-%20A%20whimsical%20scene%20featuring%20a%20traffic%20cop%20standing%20on%20a%20cloud,%20energetically%20directing%20a%20chaotic%20stream%20of%20various%20floating%20documents%20-%20papers,%20folder.png class=img-responsive alt="Using Placements to Apply Open Cluster Management Policies to Kubernetes Clusters"></a></div><div class="name same-height-always"><h5><a href=http://guifreelife.com/blog/2024/03/11/Placing-Open-Cluster-Management-Policies-on-Kubernetes/>Using Placements to Apply Open Cluster Management Policies to Kubernetes Clusters</a></h5></div></div><div class="item same-height-row clearfix"><div class="image same-height-always"><a href=http://guifreelife.com/blog/2023/09/22/Storing-OpenShift-Credentials-with-1Password/><img src=/img/banners/mushroom-moss.jpg class=img-responsive alt="Storing OpenShift Credentials with 1Password"></a></div><div class="name same-height-always"><h5><a href=http://guifreelife.com/blog/2023/09/22/Storing-OpenShift-Credentials-with-1Password/>Storing OpenShift Credentials with 1Password</a></h5></div></div><div class="item same-height-row clearfix"><div class="image same-height-always"><a href=http://guifreelife.com/blog/2023/04/06/Accessing-Ceph-CLI-with-OpenShift-Data-Foundation/><img src=/images/uncovered-bumper.png class=img-responsive alt="Accessing the Ceph CLI with OpenShift Data Foundation"></a></div><div class="name same-height-always"><h5><a href=http://guifreelife.com/blog/2023/04/06/Accessing-Ceph-CLI-with-OpenShift-Data-Foundation/>Accessing the Ceph CLI with OpenShift Data Foundation</a></h5></div></div></div><hr class="hidden-md hidden-lg"></div><div class="col-md-4 col-sm-6"><h4>Contact</h4><p class=text-uppercase><strong>Dale Bewley</strong><br>Oakland<br>California<br><strong>USA</strong></p><a href=/contact class="btn btn-small btn-template-main">Go to contact page</a><hr class="hidden-md hidden-lg hidden-sm"></div></div></footer><div id=copyright><div class=container><div class=col-md-12><p class=pull-left>Copyright (c) 2021, Dale Bewley; all rights reserved.</p><p class=pull-right>Template by <a href=https://bootstrapious.com/p/universal-business-e-commerce-template>Bootstrapious</a>.
+Ported to Hugo by <a href=https://github.com/devcows/hugo-universal-theme>DevCows</a>.</p></div></div></div></div><script async src="https://www.googletagmanager.com/gtag/js?id=G-39TSW9349X"></script>
+<script>var doNotTrack=!1;if(!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","G-39TSW9349X",{anonymize_ip:!1})}</script><script src=//code.jquery.com/jquery-3.1.1.min.js integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin=anonymous></script>
 <script src=//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js integrity=sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa crossorigin=anonymous></script>
 <script src=//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js></script>
 <script src=//cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/jquery.waypoints.min.js></script>
@@ -630,6 +211,4 @@ Ported to Hugo by <a href=https://github.com/devcows/hugo-universal-theme>DevCow
 <script src=/js/hpneo.gmaps.js></script>
 <script src=/js/gmaps.init.js></script>
 <script src=/js/front.js></script>
-<script src=/js/owl.carousel.min.js></script>
-</body>
-</html>
+<script src=/js/owl.carousel.min.js></script></body></html>

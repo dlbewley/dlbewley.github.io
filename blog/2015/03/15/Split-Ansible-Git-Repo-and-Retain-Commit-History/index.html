@@ -1,577 +1,131 @@
-<!doctype html><html lang=en-us>
-<head>
-<meta charset=utf-8>
-<meta name=robots content="all,follow">
-<meta name=googlebot content="index,follow,snippet,archive">
-<meta name=viewport content="width=device-width,initial-scale=1">
-<title>Split an Ansible Git Repo and Retain the Commit History | GUI Free Life</title>
-<meta name=author content="Dale Bewley">
-<meta name=keywords content="bewley,guifreelife,ansible,automation,git">
-<meta name=description content="GUI Free Life, by Dale Bewley covers Kubernetes, Linux, Networking, OpenShift and more">
-<meta name=generator content="Hugo 0.91.2">
-<link href="//fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,500,700,800" rel=stylesheet type=text/css>
-<link rel=stylesheet href=//use.fontawesome.com/releases/v5.11.2/css/all.css>
-<link rel=stylesheet href=//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css integrity=sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u crossorigin=anonymous>
-<link href=/css/animate.css rel=stylesheet>
-<link href=/css/style.turquoise.css rel=stylesheet id=theme-stylesheet>
-<link href=/css/custom.css rel=stylesheet><!--[if lt IE 9]><script src=https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js></script>
-<script src=https://oss.maxcdn.com/respond/1.4.2/respond.min.js></script><![endif]-->
-<link rel="shortcut icon" href=/img/favicon.ico type=image/x-icon>
-<link rel=apple-touch-icon href=/img/apple-touch-icon.png>
-<link href=/css/owl.carousel.css rel=stylesheet>
-<link href=/css/owl.theme.css rel=stylesheet>
-<link rel=alternate href=http://guifreelife.com/index.xml type=application/rss+xml title="GUI Free Life">
-<meta property="og:locale" content="en_us">
-<meta property="og:site_name" content="GUI Free Life">
-<meta property="og:title" content="Split an Ansible Git Repo and Retain the Commit History">
-<meta property="og:type" content="article">
-<meta property="og:url" content="http://guifreelife.com/blog/2015/03/15/Split-Ansible-Git-Repo-and-Retain-Commit-History/">
-<meta property="og:description" content="GUI Free Life, by Dale Bewley covers Kubernetes, Linux, Networking, OpenShift and more">
-<meta property="og:image" content="http://guifreelife.com/img/banners/banner-43.jpg">
-<meta property="og:image:type" content="image/jpg">
-<meta property="og:image:width" content="1000">
-<meta property="og:image:height" content="750">
-<meta property="og:updated_time" content="2015-03-15T00:00:00Z">
-<meta property="article:tag" content="ansible">
-<meta property="article:tag" content="automation">
-<meta property="article:tag" content="git">
-<meta property="article:published_time" content="2015-03-15T00:00:00Z">
-<meta property="article:modified_time" content="2015-03-15T00:00:00Z">
-<meta name=twitter:card content="summary_large_image">
-<meta name=twitter:site content="@dlbewley">
-<meta name=twitter:title content="Split an Ansible Git Repo and Retain the Commit History">
-<meta name=twitter:image content="http://guifreelife.com/img/banners/banner-43.jpg">
-<meta name=twitter:description content="GUI Free Life, by Dale Bewley covers Kubernetes, Linux, Networking, OpenShift and more">
-</head>
-<body>
-<div id=all>
-<header class=navbar-affixed-top data-spy=affix data-offset-top=62>
-<div class="navbar navbar-default yamm" role=navigation id=navbar>
-<div class=container>
-<div class=navbar-header>
-<a class="navbar-brand home" href=/>
-<img src=/img/logo.png alt="Split an Ansible Git Repo and Retain the Commit History logo" class="hidden-xs hidden-sm">
+<!doctype html><html lang=en-us><head><meta charset=utf-8><meta name=robots content="all,follow"><meta name=googlebot content="index,follow,snippet,archive"><meta name=viewport content="width=device-width,initial-scale=1"><title>Split an Ansible Git Repo and Retain the Commit History | GUI Free Life</title><meta name=author content="Dale Bewley"><meta name=keywords content="bewley,guifreelife,ansible,automation,git"><meta name=description content="GUI Free Life, by Dale Bewley covers Kubernetes, Linux, Networking, OpenShift and more"><meta name=generator content="Hugo 0.119.0"><link href='//fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,500,700,800' rel=stylesheet type=text/css><link rel=stylesheet href=//use.fontawesome.com/releases/v5.11.2/css/all.css><link rel=stylesheet href=//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css integrity=sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u crossorigin=anonymous><link href=/css/animate.css rel=stylesheet><link href=/css/style.turquoise.css rel=stylesheet id=theme-stylesheet><link href=/css/custom.css rel=stylesheet><!--[if lt IE 9]><script src=https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js></script>
+<script src=https://oss.maxcdn.com/respond/1.4.2/respond.min.js></script><![endif]--><link rel="shortcut icon" href=/img/favicon.ico type=image/x-icon><link rel=apple-touch-icon href=/img/apple-touch-icon.png><link href=/css/owl.carousel.css rel=stylesheet><link href=/css/owl.theme.css rel=stylesheet><link rel=alternate href=http://guifreelife.com/index.xml type=application/rss+xml title="GUI Free Life"><meta property="og:locale" content="en_us"><meta property="og:site_name" content="GUI Free Life"><meta property="og:title" content="Split an Ansible Git Repo and Retain the Commit History"><meta property="og:type" content="article"><meta property="og:url" content="http://guifreelife.com/blog/2015/03/15/Split-Ansible-Git-Repo-and-Retain-Commit-History/"><meta property="og:description" content="GUI Free Life, by Dale Bewley covers Kubernetes, Linux, Networking, OpenShift and more"><meta property="og:image" content="http://guifreelife.com/img/banners/banner-43.jpg"><meta property="og:image:type" content="image/jpg"><meta property="og:image:width" content="1000"><meta property="og:image:height" content="750"><meta property="og:updated_time" content="2015-03-15T00:00:00Z"><meta property="article:tag" content="ansible"><meta property="article:tag" content="automation"><meta property="article:tag" content="git"><meta property="article:published_time" content="2015-03-15T00:00:00Z"><meta property="article:modified_time" content="2015-03-15T00:00:00Z"><meta name=twitter:card content="summary_large_image"><meta name=twitter:site content="@dlbewley"><meta name=twitter:title content="Split an Ansible Git Repo and Retain the Commit History"><meta name=twitter:image content="http://guifreelife.com/img/banners/banner-43.jpg"><meta name=twitter:description content="GUI Free Life, by Dale Bewley covers Kubernetes, Linux, Networking, OpenShift and more"></head><body><div id=all><header class=navbar-affixed-top data-spy=affix data-offset-top=62><div class="navbar navbar-default yamm" role=navigation id=navbar><div class=container><div class=navbar-header><a class="navbar-brand home" href=/><img src=/img/logo.png alt="Split an Ansible Git Repo and Retain the Commit History logo" class="hidden-xs hidden-sm">
 <img src=/img/logo-small.png alt="Split an Ansible Git Repo and Retain the Commit History logo" class="visible-xs visible-sm">
-<span class=sr-only>Split an Ansible Git Repo and Retain the Commit History - go to homepage</span>
-</a>
-<div class=navbar-buttons>
-<button type=button class="navbar-toggle btn-template-main" data-toggle=collapse data-target=#navigation>
+<span class=sr-only>Split an Ansible Git Repo and Retain the Commit History - go to homepage</span></a><div class=navbar-buttons><button type=button class="navbar-toggle btn-template-main" data-toggle=collapse data-target=#navigation>
 <span class=sr-only>Toggle Navigation</span>
-<i class="fas fa-align-justify"></i>
-</button>
-</div>
-</div>
-<div class="navbar-collapse collapse" id=navigation>
-<ul class="nav navbar-nav navbar-right">
-<li class=dropdown>
-<a href=/>Home</a>
-</li>
-<li class="dropdown active">
-<a href=/blog/>Blog</a>
-</li>
-<li class=dropdown>
-<a href=/contact/>Contact</a>
-</li>
-</ul>
-</div>
-<div class="collapse clearfix" id=search>
-<form class=navbar-form role=search>
-<div class=input-group>
-<input type=text class=form-control placeholder=Search>
-<span class=input-group-btn>
-<button type=submit class="btn btn-template-main"><i class="fas fa-search"></i></button>
-</span>
-</div>
-</form>
-</div>
-</div>
-</div>
-</header>
-<style>.bar.background-image-fixed-banner{background:url(/img/banners/banner-43.jpg)50% 0 no-repeat;background-attachment:fixed;background-size:cover;padding:100px 5%;text-shadow:2px 3px 4px var(--primary-accent),0 0 1em var(--navbar-border-top)}</style>
-<div>
-<div class=container>
-<div class=row>
-<div class=col-md-12>
-<section class="bar background-image-fixed-banner heading h2 color-white text-center">
-<h1>Split an Ansible Git Repo and Retain the Commit History</h1>
-</section>
-</div>
-</div>
-</div>
-</div>
-<div id=content>
-<div class=container>
-<div class=row>
-<div class=col-md-9 id=blog-post>
-<p class="text-muted text-uppercase mb-small text-right">
-March 15, 2015
-</p>
-<div id=post-content>
-<p>Starting with a jumbled git repo of various <a href=http://www.ansible.com/>Ansible</a> roles, playbooks, inventories, group_vars, etc. I want to create a new repo out of a selection of the subdirectories and retain the commit history.</p>
-<p>I have an <code>ansible-test</code> repo with a tree that looks roughly like this:</p>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-text data-lang=text>.
-├── adhoc/
-│   ├── rolling-reboot.yml
-│   └── scripts/
-├── README.md
-└── runtime/
-    ├── roles/
-    │   ├── foo-role/
-    │   └── zimbra/
-    │       ├── ansible.cfg
-    │       ├── hosts
-    │       ├── tasks/
-    │       └── ...
-    ├── group_vars/
-    │   ├── foo-group
-    │   └── zimbra-prod
-    ├── hosts
-    ├── host_vars/
-    ├── library/
-    │   ├── foo-lib
-    │   ├── zmlocalconfig
-    │   └── zmprov
-    ├── foo.yml
-    └── zimbra-playbook.yml
-</code></pre></div><p>I want to split that so that the Zimbra role, it&rsquo;s playbook, and any <em>&lsquo;runtime&rsquo;</em> context like group_vars, and libraries are managed together in a new repo called <code>playbook-zimbra</code>.</p>
-<p>I poked around Google, and took more than inspiration from these pages:</p>
-<ul>
-<li><a href=http://ariya.ofilabs.com/2014/07/extracting-parts-of-git-repository-and-keeping-the-history.html>Extracting Parts of Git Repository and Keeping the History</a></li>
-<li>Stackoverflow <a href=http://stackoverflow.com/questions/920165/howto-extract-a-git-subdirectory-and-make-a-submodule-out-of-it>Howto extract a git subdirectory and make a submodule out of it?</a></li>
-<li><a href=https://github.com/git/git/blob/master/contrib/subtree/git-subtree.txt>git-subtree.txt</a></li>
-<li><a href=http://blogs.atlassian.com/2014/04/tear-apart-repository-git-way/>How to tear apart a repository: the Git way</a></li>
-</ul>
-<p>I then tried 2 options:</p>
-<ul>
-<li><a href=#option1>Option 1: Use git subtree - Split and Pull</a></li>
-<li><a href=#option2>Option 2: Use git filter-branch - Clone and Prune</a></li>
-</ul>
-<p></p>
-<h1 id=option-1-use-git-subtree---split-and-pull>Option 1: Use git subtree - Split and Pull</h1>
-<p>I tried doing a <code>git-subtree</code> split and that worked great for the first directory I split: <code>runtime/roles/zimbra</code>. One drawback is the files in <code>zimbra/</code> wind up in the root of the new repo instead of <code>roles/zimbra</code> as I want.</p>
-<p>I was only able to keep the commit history of the first branch I split, but when I split out the other directories (like <code>library/</code> and <code>group_vars/</code>) and pulled them into the new git repo the commit history was squashed. Maybe there&rsquo;s a way to make it work, but skip to <a href=#option2>option 2</a> to see what might be a better solution.</p>
-<ul>
-<li>With the orig repo in <code>~/src/ansible-test</code> I created a new clone in <code>~/src/testing/ansible-test</code></li>
-</ul>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>mkdir ~/src/testing
-<span style=color:#658b00>cd</span> ~/src/testing
-git clone ~/src/ansible-test 
-<span style=color:#658b00>cd</span> ~/src/testing/ansible-test
-</code></pre></div><ul>
-<li>Make branches holding the commits we care about</li>
-</ul>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>git subtree split --prefix=runtime/roles/zimbra  --branch=zimbra
-git subtree split --prefix=runtime/library       --branch=library
-git subtree split --prefix=runtime/group_vars    --branch=groupvars
-</code></pre></div><ul>
-<li>Create a new repo to pull these branches into</li>
-</ul>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#658b00>cd</span> ~/src/testing
-mkdir playbook-zimbra
-<span style=color:#658b00>cd</span> playbook-zimbra
-git init
-</code></pre></div><ul>
-<li>Pull in the branches and rebase the files into the subdir that was in the original repo. All these git moves feel very wrong.</li>
-</ul>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>git pull ~/src/testing/ansible-test zimbra
-mkdir -p roles/zimbra
-git add roles
-<span style=color:#8b008b;font-weight:700>for</span> f in <span style=color:#cd5555>\
-</span><span style=color:#cd5555></span>	README.md <span style=color:#cd5555>\
-</span><span style=color:#cd5555></span>	defaults <span style=color:#cd5555>\
-</span><span style=color:#cd5555></span>	files <span style=color:#cd5555>\
-</span><span style=color:#cd5555></span>	handlers <span style=color:#cd5555>\
-</span><span style=color:#cd5555></span>	meta <span style=color:#cd5555>\
-</span><span style=color:#cd5555></span>	tasks <span style=color:#cd5555>\
-</span><span style=color:#cd5555></span>	templates <span style=color:#cd5555>\
-</span><span style=color:#cd5555></span>	vars <span style=color:#cd5555>\
-</span><span style=color:#cd5555></span>	; <span style=color:#8b008b;font-weight:700>do</span>
-	git mv <span style=color:#00688b>$f</span> roles/zimbra
-<span style=color:#8b008b;font-weight:700>done</span>
-git commit -m <span style=color:#cd5555>&#39;restore dir lost in split&#39;</span>
-</code></pre></div><ul>
-<li>Continue merging in the other branches created by <code>git subtree</code>.</li>
-</ul>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>git co -b library
-
-git pull ~/src/testing/ansible-test library
-mkdir library
-git add library
-<span style=color:#8b008b;font-weight:700>for</span> f in <span style=color:#cd5555>\
-</span><span style=color:#cd5555></span>	zmprov <span style=color:#cd5555>\
-</span><span style=color:#cd5555></span>	zmlocalconfig <span style=color:#cd5555>\
-</span><span style=color:#cd5555></span>	; <span style=color:#8b008b;font-weight:700>do</span>
-	git mv <span style=color:#00688b>$f</span> library;
-<span style=color:#8b008b;font-weight:700>done</span>
-git commit -m <span style=color:#cd5555>&#39;restore dir lost in split&#39;</span>
-
-git pull ~/src/testing/ansible-test groupvars
-mkdir group_vars
-git add group_vars
-<span style=color:#8b008b;font-weight:700>for</span> f in <span style=color:#cd5555>\
-</span><span style=color:#cd5555></span>	zimbra-prod <span style=color:#cd5555>\
-</span><span style=color:#cd5555></span>	zimbra-test <span style=color:#cd5555>\
-</span><span style=color:#cd5555></span>	; <span style=color:#8b008b;font-weight:700>do</span>
-	git mv <span style=color:#00688b>$f</span> group_vars;
-<span style=color:#8b008b;font-weight:700>done</span>
-
-<span style=color:#228b22>#git rm foo-group</span>
-git rm trac*
-git commit -m <span style=color:#cd5555>&#39;restore dir lost in split&#39;</span>
-</code></pre></div><h2 id=clean-up-the-old-original-repo>Clean up the old original repo</h2>
-<p>Now back in the original <code>ansible-test</code> repo, let&rsquo;s get rid of the things we just split out to our new repo.</p>
-<ul>
-<li>Remove the temp branches</li>
-</ul>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#658b00>cd</span> ~/src/testing/ansible-test
-git branch -D zimbra
-git branch -D library
-git branch -D groupvars
-</code></pre></div><ul>
-<li>Remove the extracted directories. They are still in the commit history, which is fine, but we don&rsquo;t want any more commits on them.</li>
-</ul>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#658b00>cd</span> ~/src/testing/ansible-test
-git rm -rf library
-git rm -rf roles/zimbra
-git rm groupvars/zimbra-prod
-git rm groupvars/zimbra-test
-</code></pre></div><p></p>
-<h1 id=option-2-use-git-filter-branch---clone-and-prune>Option 2: Use git filter-branch - Clone and Prune</h1>
-<p>Instead of cherry pick the directorires I want, another option is to clone the repo and prune away what I don&rsquo;t want.</p>
-<ul>
-<li>With the orig repo in <code>~/src/ansible-test</code> I created a new clone in <code>~/src/testing/ansible-test</code></li>
-</ul>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>mkdir ~/src/testing
-<span style=color:#658b00>cd</span> ~/src/testing
-git clone ~/src/ansible-test 
-<span style=color:#658b00>cd</span> ~/src/testing/ansible-test
-</code></pre></div><ul>
-<li>The least common denominator directory in my old <code>ansible-test</code> repo is the <code>runtime/</code> directory. So, I&rsquo;ll start by doing a split there to a new branch called <code>runtime</code>.</li>
-</ul>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#658b00>cd</span> ~/src/testing/ansible-test
-git subtree split --prefix=runtime  --branch=runtime
-</code></pre></div><ul>
-<li>Create a new repo and pull in the runtime branch</li>
-</ul>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#658b00>cd</span> ~/src/testing
-mkdir playbook-zimbra
-<span style=color:#658b00>cd</span> playbook-zimbra
-git init
-git pull ~/src/testing/ansible-test runtime
-</code></pre></div><ul>
-<li>Now filter away the commits we don&rsquo;t want.</li>
-</ul>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>git filter-branch --tree-filter <span style=color:#cd5555>&#39;rm -rf roles/foo-role group_vars/foo-group library/foo-lib foo.yml&#39;</span> HEAD
-rm -rf .git/refs/original
-</code></pre></div><ul>
-<li>And finalize the location of the playbooks and ansible config.</li>
-</ul>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>git mv roles/zimbra/ansible.cfg .
-git mv roles/zimbra/hosts* .
-git mv roles/zimbra/*yml .
-git commit -m <span style=color:#cd5555>&#39;move playbook config out of role dir&#39;</span>
-</code></pre></div><ul>
-<li>Commit and push to origin out on github, gitlab, etc.</li>
-</ul>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>git remote add origin gitlab@gitlab:ansible/playbook-zimbra.git
-git push -u origin master
-git checkout -b develop
-git push -u origin develop
-</code></pre></div><h2 id=clean-up-the-old-original-repo-1>Clean up the old original repo</h2>
-<p>Now back in the original <code>ansible-test</code> repo, get rid of the things now in the <code>playbook-zimbra</code> repo.</p>
-<ul>
-<li>Remove the extracted directories. They are still in the commit history, which is fine, but we don&rsquo;t want any more commits on them.</li>
-</ul>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#658b00>cd</span> ~/src/testing/ansible-test/runtime
-git rm -rf library
-git rm -rf roles/zimbra
-git rm groupvars/zimbra-prod
-git rm groupvars/zimbra-test
-commit -m <span style=color:#cd5555>&#39;move to playbook-zimbra repo&#39;</span>
-</code></pre></div>
-</div>
-<div id=comments>
-<div id=disqus_thread></div>
-<script type=application/javascript>var disqus_config=function(){};(function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById('disqus_thread').innerHTML='Disqus comments not available by default when the website is previewed locally.';return}var b=document,a=b.createElement('script');a.async=!0,a.src='//dlbewleygithubio.disqus.com/embed.js',a.setAttribute('data-timestamp',+new Date),(b.head||b.body).appendChild(a)})()</script>
-<noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript>
-<a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a>
-</div>
-</div>
-<div class=col-md-3>
-<div class="panel panel-default sidebar-menu">
-<div class=panel-heading>
-<h3 class=panel-title>Search</h3>
-</div>
-<div class=panel-body>
-<form action=//google.com/search method=get accept-charset=utf-8 role=search>
-<div class=input-group>
-<input type=search name=q class=form-control placeholder=Search>
+<i class="fas fa-align-justify"></i></button></div></div><div class="navbar-collapse collapse" id=navigation><ul class="nav navbar-nav navbar-right"><li class=dropdown><a href=/>Home</a></li><li class="dropdown active"><a href=/blog/>Blog</a></li><li class=dropdown><a href=/contact/>Contact</a></li></ul></div><div class="collapse clearfix" id=search><form class=navbar-form role=search><div class=input-group><input type=text class=form-control placeholder=Search>
+<span class=input-group-btn><button type=submit class="btn btn-template-main"><i class="fas fa-search"></i></button></span></div></form></div></div></div></header><style>.bar.background-image-fixed-banner{background:url(/img/banners/banner-43.jpg)50% 0 no-repeat;background-attachment:fixed;background-size:cover;padding:100px 5%;text-shadow:2px 3px 4px var(--primary-accent),0 0 1em var(--navbar-border-top)}</style><div><div class=container><div class=row><div class=col-md-12><section class="bar background-image-fixed-banner heading h2 color-white text-center"><h1>Split an Ansible Git Repo and Retain the Commit History</h1></section></div></div></div></div><div id=content><div class=container><div class=row><div class=col-md-9 id=blog-post><p class="text-muted text-uppercase mb-small text-right">March 15, 2015</p><div id=post-content><p>Starting with a jumbled git repo of various <a href=http://www.ansible.com/>Ansible</a> roles, playbooks, inventories, group_vars, etc. I want to create a new repo out of a selection of the subdirectories and retain the commit history.</p><p>I have an <code>ansible-test</code> repo with a tree that looks roughly like this:</p><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-text data-lang=text><span style=display:flex><span>.
+</span></span><span style=display:flex><span>├── adhoc/
+</span></span><span style=display:flex><span>│   ├── rolling-reboot.yml
+</span></span><span style=display:flex><span>│   └── scripts/
+</span></span><span style=display:flex><span>├── README.md
+</span></span><span style=display:flex><span>└── runtime/
+</span></span><span style=display:flex><span>    ├── roles/
+</span></span><span style=display:flex><span>    │   ├── foo-role/
+</span></span><span style=display:flex><span>    │   └── zimbra/
+</span></span><span style=display:flex><span>    │       ├── ansible.cfg
+</span></span><span style=display:flex><span>    │       ├── hosts
+</span></span><span style=display:flex><span>    │       ├── tasks/
+</span></span><span style=display:flex><span>    │       └── ...
+</span></span><span style=display:flex><span>    ├── group_vars/
+</span></span><span style=display:flex><span>    │   ├── foo-group
+</span></span><span style=display:flex><span>    │   └── zimbra-prod
+</span></span><span style=display:flex><span>    ├── hosts
+</span></span><span style=display:flex><span>    ├── host_vars/
+</span></span><span style=display:flex><span>    ├── library/
+</span></span><span style=display:flex><span>    │   ├── foo-lib
+</span></span><span style=display:flex><span>    │   ├── zmlocalconfig
+</span></span><span style=display:flex><span>    │   └── zmprov
+</span></span><span style=display:flex><span>    ├── foo.yml
+</span></span><span style=display:flex><span>    └── zimbra-playbook.yml
+</span></span></code></pre></div><p>I want to split that so that the Zimbra role, it&rsquo;s playbook, and any <em>&lsquo;runtime&rsquo;</em> context like group_vars, and libraries are managed together in a new repo called <code>playbook-zimbra</code>.</p><p>I poked around Google, and took more than inspiration from these pages:</p><ul><li><a href=http://ariya.ofilabs.com/2014/07/extracting-parts-of-git-repository-and-keeping-the-history.html>Extracting Parts of Git Repository and Keeping the History</a></li><li>Stackoverflow <a href=http://stackoverflow.com/questions/920165/howto-extract-a-git-subdirectory-and-make-a-submodule-out-of-it>Howto extract a git subdirectory and make a submodule out of it?</a></li><li><a href=https://github.com/git/git/blob/master/contrib/subtree/git-subtree.txt>git-subtree.txt</a></li><li><a href=http://blogs.atlassian.com/2014/04/tear-apart-repository-git-way/>How to tear apart a repository: the Git way</a></li></ul><p>I then tried 2 options:</p><ul><li><a href=#option1>Option 1: Use git subtree - Split and Pull</a></li><li><a href=#option2>Option 2: Use git filter-branch - Clone and Prune</a></li></ul><p></p><h1 id=option-1-use-git-subtree---split-and-pull>Option 1: Use git subtree - Split and Pull</h1><p>I tried doing a <code>git-subtree</code> split and that worked great for the first directory I split: <code>runtime/roles/zimbra</code>. One drawback is the files in <code>zimbra/</code> wind up in the root of the new repo instead of <code>roles/zimbra</code> as I want.</p><p>I was only able to keep the commit history of the first branch I split, but when I split out the other directories (like <code>library/</code> and <code>group_vars/</code>) and pulled them into the new git repo the commit history was squashed. Maybe there&rsquo;s a way to make it work, but skip to <a href=#option2>option 2</a> to see what might be a better solution.</p><ul><li>With the orig repo in <code>~/src/ansible-test</code> I created a new clone in <code>~/src/testing/ansible-test</code></li></ul><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>mkdir ~/src/testing
+</span></span><span style=display:flex><span><span style=color:#658b00>cd</span> ~/src/testing
+</span></span><span style=display:flex><span>git clone ~/src/ansible-test 
+</span></span><span style=display:flex><span><span style=color:#658b00>cd</span> ~/src/testing/ansible-test
+</span></span></code></pre></div><ul><li>Make branches holding the commits we care about</li></ul><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>git subtree split --prefix=runtime/roles/zimbra  --branch=zimbra
+</span></span><span style=display:flex><span>git subtree split --prefix=runtime/library       --branch=library
+</span></span><span style=display:flex><span>git subtree split --prefix=runtime/group_vars    --branch=groupvars
+</span></span></code></pre></div><ul><li>Create a new repo to pull these branches into</li></ul><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#658b00>cd</span> ~/src/testing
+</span></span><span style=display:flex><span>mkdir playbook-zimbra
+</span></span><span style=display:flex><span><span style=color:#658b00>cd</span> playbook-zimbra
+</span></span><span style=display:flex><span>git init
+</span></span></code></pre></div><ul><li>Pull in the branches and rebase the files into the subdir that was in the original repo. All these git moves feel very wrong.</li></ul><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>git pull ~/src/testing/ansible-test zimbra
+</span></span><span style=display:flex><span>mkdir -p roles/zimbra
+</span></span><span style=display:flex><span>git add roles
+</span></span><span style=display:flex><span><span style=color:#8b008b;font-weight:700>for</span> f in <span style=color:#cd5555>\
+</span></span></span><span style=display:flex><span><span style=color:#cd5555></span>	README.md <span style=color:#cd5555>\
+</span></span></span><span style=display:flex><span><span style=color:#cd5555></span>	defaults <span style=color:#cd5555>\
+</span></span></span><span style=display:flex><span><span style=color:#cd5555></span>	files <span style=color:#cd5555>\
+</span></span></span><span style=display:flex><span><span style=color:#cd5555></span>	handlers <span style=color:#cd5555>\
+</span></span></span><span style=display:flex><span><span style=color:#cd5555></span>	meta <span style=color:#cd5555>\
+</span></span></span><span style=display:flex><span><span style=color:#cd5555></span>	tasks <span style=color:#cd5555>\
+</span></span></span><span style=display:flex><span><span style=color:#cd5555></span>	templates <span style=color:#cd5555>\
+</span></span></span><span style=display:flex><span><span style=color:#cd5555></span>	vars <span style=color:#cd5555>\
+</span></span></span><span style=display:flex><span><span style=color:#cd5555></span>	; <span style=color:#8b008b;font-weight:700>do</span>
+</span></span><span style=display:flex><span>	git mv <span style=color:#00688b>$f</span> roles/zimbra
+</span></span><span style=display:flex><span><span style=color:#8b008b;font-weight:700>done</span>
+</span></span><span style=display:flex><span>git commit -m <span style=color:#cd5555>&#39;restore dir lost in split&#39;</span>
+</span></span></code></pre></div><ul><li>Continue merging in the other branches created by <code>git subtree</code>.</li></ul><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>git co -b library
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>git pull ~/src/testing/ansible-test library
+</span></span><span style=display:flex><span>mkdir library
+</span></span><span style=display:flex><span>git add library
+</span></span><span style=display:flex><span><span style=color:#8b008b;font-weight:700>for</span> f in <span style=color:#cd5555>\
+</span></span></span><span style=display:flex><span><span style=color:#cd5555></span>	zmprov <span style=color:#cd5555>\
+</span></span></span><span style=display:flex><span><span style=color:#cd5555></span>	zmlocalconfig <span style=color:#cd5555>\
+</span></span></span><span style=display:flex><span><span style=color:#cd5555></span>	; <span style=color:#8b008b;font-weight:700>do</span>
+</span></span><span style=display:flex><span>	git mv <span style=color:#00688b>$f</span> library;
+</span></span><span style=display:flex><span><span style=color:#8b008b;font-weight:700>done</span>
+</span></span><span style=display:flex><span>git commit -m <span style=color:#cd5555>&#39;restore dir lost in split&#39;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>git pull ~/src/testing/ansible-test groupvars
+</span></span><span style=display:flex><span>mkdir group_vars
+</span></span><span style=display:flex><span>git add group_vars
+</span></span><span style=display:flex><span><span style=color:#8b008b;font-weight:700>for</span> f in <span style=color:#cd5555>\
+</span></span></span><span style=display:flex><span><span style=color:#cd5555></span>	zimbra-prod <span style=color:#cd5555>\
+</span></span></span><span style=display:flex><span><span style=color:#cd5555></span>	zimbra-test <span style=color:#cd5555>\
+</span></span></span><span style=display:flex><span><span style=color:#cd5555></span>	; <span style=color:#8b008b;font-weight:700>do</span>
+</span></span><span style=display:flex><span>	git mv <span style=color:#00688b>$f</span> group_vars;
+</span></span><span style=display:flex><span><span style=color:#8b008b;font-weight:700>done</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#228b22>#git rm foo-group</span>
+</span></span><span style=display:flex><span>git rm trac*
+</span></span><span style=display:flex><span>git commit -m <span style=color:#cd5555>&#39;restore dir lost in split&#39;</span>
+</span></span></code></pre></div><h2 id=clean-up-the-old-original-repo>Clean up the old original repo</h2><p>Now back in the original <code>ansible-test</code> repo, let&rsquo;s get rid of the things we just split out to our new repo.</p><ul><li>Remove the temp branches</li></ul><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#658b00>cd</span> ~/src/testing/ansible-test
+</span></span><span style=display:flex><span>git branch -D zimbra
+</span></span><span style=display:flex><span>git branch -D library
+</span></span><span style=display:flex><span>git branch -D groupvars
+</span></span></code></pre></div><ul><li>Remove the extracted directories. They are still in the commit history, which is fine, but we don&rsquo;t want any more commits on them.</li></ul><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#658b00>cd</span> ~/src/testing/ansible-test
+</span></span><span style=display:flex><span>git rm -rf library
+</span></span><span style=display:flex><span>git rm -rf roles/zimbra
+</span></span><span style=display:flex><span>git rm groupvars/zimbra-prod
+</span></span><span style=display:flex><span>git rm groupvars/zimbra-test
+</span></span></code></pre></div><p></p><h1 id=option-2-use-git-filter-branch---clone-and-prune>Option 2: Use git filter-branch - Clone and Prune</h1><p>Instead of cherry pick the directorires I want, another option is to clone the repo and prune away what I don&rsquo;t want.</p><ul><li>With the orig repo in <code>~/src/ansible-test</code> I created a new clone in <code>~/src/testing/ansible-test</code></li></ul><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>mkdir ~/src/testing
+</span></span><span style=display:flex><span><span style=color:#658b00>cd</span> ~/src/testing
+</span></span><span style=display:flex><span>git clone ~/src/ansible-test 
+</span></span><span style=display:flex><span><span style=color:#658b00>cd</span> ~/src/testing/ansible-test
+</span></span></code></pre></div><ul><li>The least common denominator directory in my old <code>ansible-test</code> repo is the <code>runtime/</code> directory. So, I&rsquo;ll start by doing a split there to a new branch called <code>runtime</code>.</li></ul><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#658b00>cd</span> ~/src/testing/ansible-test
+</span></span><span style=display:flex><span>git subtree split --prefix=runtime  --branch=runtime
+</span></span></code></pre></div><ul><li>Create a new repo and pull in the runtime branch</li></ul><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#658b00>cd</span> ~/src/testing
+</span></span><span style=display:flex><span>mkdir playbook-zimbra
+</span></span><span style=display:flex><span><span style=color:#658b00>cd</span> playbook-zimbra
+</span></span><span style=display:flex><span>git init
+</span></span><span style=display:flex><span>git pull ~/src/testing/ansible-test runtime
+</span></span></code></pre></div><ul><li>Now filter away the commits we don&rsquo;t want.</li></ul><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>git filter-branch --tree-filter <span style=color:#cd5555>&#39;rm -rf roles/foo-role group_vars/foo-group library/foo-lib foo.yml&#39;</span> HEAD
+</span></span><span style=display:flex><span>rm -rf .git/refs/original
+</span></span></code></pre></div><ul><li>And finalize the location of the playbooks and ansible config.</li></ul><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>git mv roles/zimbra/ansible.cfg .
+</span></span><span style=display:flex><span>git mv roles/zimbra/hosts* .
+</span></span><span style=display:flex><span>git mv roles/zimbra/*yml .
+</span></span><span style=display:flex><span>git commit -m <span style=color:#cd5555>&#39;move playbook config out of role dir&#39;</span>
+</span></span></code></pre></div><ul><li>Commit and push to origin out on github, gitlab, etc.</li></ul><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>git remote add origin gitlab@gitlab:ansible/playbook-zimbra.git
+</span></span><span style=display:flex><span>git push -u origin master
+</span></span><span style=display:flex><span>git checkout -b develop
+</span></span><span style=display:flex><span>git push -u origin develop
+</span></span></code></pre></div><h2 id=clean-up-the-old-original-repo-1>Clean up the old original repo</h2><p>Now back in the original <code>ansible-test</code> repo, get rid of the things now in the <code>playbook-zimbra</code> repo.</p><ul><li>Remove the extracted directories. They are still in the commit history, which is fine, but we don&rsquo;t want any more commits on them.</li></ul><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#658b00>cd</span> ~/src/testing/ansible-test/runtime
+</span></span><span style=display:flex><span>git rm -rf library
+</span></span><span style=display:flex><span>git rm -rf roles/zimbra
+</span></span><span style=display:flex><span>git rm groupvars/zimbra-prod
+</span></span><span style=display:flex><span>git rm groupvars/zimbra-test
+</span></span><span style=display:flex><span>commit -m <span style=color:#cd5555>&#39;move to playbook-zimbra repo&#39;</span>
+</span></span></code></pre></div></div><div id=comments><div id=disqus_thread></div><script type=application/javascript>window.disqus_config=function(){},function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById("disqus_thread").innerHTML="Disqus comments not available by default when the website is previewed locally.";return}var t=document,e=t.createElement("script");e.async=!0,e.src="//dlbewleygithubio.disqus.com/embed.js",e.setAttribute("data-timestamp",+new Date),(t.head||t.body).appendChild(e)}()</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript><a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a></div></div><div class=col-md-3><div class="panel panel-default sidebar-menu"><div class=panel-heading><h3 class=panel-title>Search</h3></div><div class=panel-body><form action=//google.com/search method=get accept-charset=utf-8 role=search><div class=input-group><input type=search name=q class=form-control placeholder=Search>
 <input type=hidden name=sitesearch value=http://guifreelife.com/>
-<span class=input-group-btn>
-<button type=submit class="btn btn-template-main"><i class="fas fa-search"></i></button>
-</span>
-</div>
-</form>
-</div>
-</div>
-<div class="panel sidebar-menu">
-<div class=panel-heading>
-<h3 class=panel-title>Tagged</h3>
-</div>
-<div class=panel-body>
-<ul class=tag-cloud>
-<li class=active>
-<a href=/tags/ansible><i class="fas fa-tags"></i> ansible</a>
-</li>
-<li class=active>
-<a href=/tags/automation><i class="fas fa-tags"></i> automation</a>
-</li>
-<li class=active>
-<a href=/tags/git><i class="fas fa-tags"></i> git</a>
-</li>
-</ul>
-</div>
-</div>
-<div class="panel sidebar-menu">
-<div class=panel-heading>
-<h3 class=panel-title>TOC</h3>
-</div>
-<div class=panel-body>
-<nav id=TableOfContents>
-<ul>
-<li><a href=#option-1-use-git-subtree---split-and-pull>Option 1: Use git subtree - Split and Pull</a>
-<ul>
-<li><a href=#clean-up-the-old-original-repo>Clean up the old original repo</a></li>
-</ul>
-</li>
-<li><a href=#option-2-use-git-filter-branch---clone-and-prune>Option 2: Use git filter-branch - Clone and Prune</a>
-<ul>
-<li><a href=#clean-up-the-old-original-repo-1>Clean up the old original repo</a></li>
-</ul>
-</li>
-</ul>
-</nav>
-</div>
-</div>
-<div class="panel sidebar-menu">
-<div class=panel-heading>
-<h3 class=panel-title>Tags</h3>
-</div>
-<div class=panel-body>
-<ul class=tag-cloud>
-<li>
-<a href=/tags/AWS><i class="fas fa-tags"></i> AWS</a>
-</li>
-<li>
-<a href=/tags/CDK><i class="fas fa-tags"></i> CDK</a>
-</li>
-<li>
-<a href=/tags/OCP3><i class="fas fa-tags"></i> OCP3</a>
-</li>
-<li>
-<a href=/tags/OCP4><i class="fas fa-tags"></i> OCP4</a>
-</li>
-<li>
-<a href=/tags/RHACM><i class="fas fa-tags"></i> RHACM</a>
-</li>
-<li>
-<a href=/tags/RHACS><i class="fas fa-tags"></i> RHACS</a>
-</li>
-<li>
-<a href=/tags/RHEL><i class="fas fa-tags"></i> RHEL</a>
-</li>
-<li>
-<a href=/tags/ansible><i class="fas fa-tags"></i> ansible</a>
-</li>
-<li>
-<a href=/tags/automation><i class="fas fa-tags"></i> automation</a>
-</li>
-<li>
-<a href=/tags/azure><i class="fas fa-tags"></i> azure</a>
-</li>
-<li>
-<a href=/tags/debugging><i class="fas fa-tags"></i> debugging</a>
-</li>
-<li>
-<a href=/tags/docker><i class="fas fa-tags"></i> docker</a>
-</li>
-<li>
-<a href=/tags/draft><i class="fas fa-tags"></i> draft</a>
-</li>
-<li>
-<a href=/tags/etcd><i class="fas fa-tags"></i> etcd</a>
-</li>
-<li>
-<a href=/tags/git><i class="fas fa-tags"></i> git</a>
-</li>
-<li>
-<a href=/tags/haproxy><i class="fas fa-tags"></i> haproxy</a>
-</li>
-<li>
-<a href=/tags/heat><i class="fas fa-tags"></i> heat</a>
-</li>
-<li>
-<a href=/tags/hybrid-cloud><i class="fas fa-tags"></i> hybrid-cloud</a>
-</li>
-<li>
-<a href=/tags/install><i class="fas fa-tags"></i> install</a>
-</li>
-<li>
-<a href=/tags/kubernetes><i class="fas fa-tags"></i> kubernetes</a>
-</li>
-<li>
-<a href=/tags/mac><i class="fas fa-tags"></i> mac</a>
-</li>
-<li>
-<a href=/tags/metrics><i class="fas fa-tags"></i> metrics</a>
-</li>
-<li>
-<a href=/tags/migration><i class="fas fa-tags"></i> migration</a>
-</li>
-<li>
-<a href=/tags/monitoring><i class="fas fa-tags"></i> monitoring</a>
-</li>
-<li>
-<a href=/tags/networking><i class="fas fa-tags"></i> networking</a>
-</li>
-<li>
-<a href=/tags/openshift><i class="fas fa-tags"></i> openshift</a>
-</li>
-<li>
-<a href=/tags/openstack><i class="fas fa-tags"></i> openstack</a>
-</li>
-<li>
-<a href=/tags/operators><i class="fas fa-tags"></i> operators</a>
-</li>
-<li>
-<a href=/tags/prometheus><i class="fas fa-tags"></i> prometheus</a>
-</li>
-<li>
-<a href=/tags/python><i class="fas fa-tags"></i> python</a>
-</li>
-<li>
-<a href=/tags/router><i class="fas fa-tags"></i> router</a>
-</li>
-<li>
-<a href=/tags/security><i class="fas fa-tags"></i> security</a>
-</li>
-<li>
-<a href=/tags/ssl><i class="fas fa-tags"></i> ssl</a>
-</li>
-<li>
-<a href=/tags/stackrox><i class="fas fa-tags"></i> stackrox</a>
-</li>
-<li>
-<a href=/tags/storage><i class="fas fa-tags"></i> storage</a>
-</li>
-<li>
-<a href=/tags/troubleshooting><i class="fas fa-tags"></i> troubleshooting</a>
-</li>
-<li>
-<a href=/tags/upgrade><i class="fas fa-tags"></i> upgrade</a>
-</li>
-<li>
-<a href=/tags/vagrant><i class="fas fa-tags"></i> vagrant</a>
-</li>
-<li>
-<a href=/tags/virtualization><i class="fas fa-tags"></i> virtualization</a>
-</li>
-<li>
-<a href=/tags/webinar><i class="fas fa-tags"></i> webinar</a>
-</li>
-<li>
-<a href=/tags/windows><i class="fas fa-tags"></i> windows</a>
-</li>
-<li>
-<a href=/tags/zabbix><i class="fas fa-tags"></i> zabbix</a>
-</li>
-<li>
-<a href=/tags/zimbra><i class="fas fa-tags"></i> zimbra</a>
-</li>
-</ul>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<footer id=footer>
-<div class=container>
-<div class="col-md-4 col-sm-6">
-<h4>Share</h4>
-<i class="fab fa-2x fa-twitter" title="Share this on Twitter" onclick="window.open('http://twitter.com/home?status=http://guifreelife.com/blog/2015/03/15/Split-Ansible-Git-Repo-and-Retain-Commit-History/')"></i>
-<i class="fab fa-2x fa-facebook" title="Share this on Facebook" onclick="window.open('http://www.facebook.com/share.php?u=http://guifreelife.com/blog/2015/03/15/Split-Ansible-Git-Repo-and-Retain-Commit-History/')"></i>
-<i class="fab fa-2x fa-linkedin" title="Share this on Linkedin" onclick="window.open('https://www.linkedin.com/shareArticle?mini=true&url=http://guifreelife.com/blog/2015/03/15/Split-Ansible-Git-Repo-and-Retain-Commit-History/&title=&summary=&source=')"></i>
-<i class="fab fa-2x fa-google-plus" title="Share this on Google Currents" onclick="window.open('https://plus.google.com/share?url=http://guifreelife.com/blog/2015/03/15/Split-Ansible-Git-Repo-and-Retain-Commit-History/')"></i>
-<i class="fa fa-2x fa-envelope" title="Share this through Email" onclick="window.open('mailto:?&body=http://guifreelife.com/blog/2015/03/15/Split-Ansible-Git-Repo-and-Retain-Commit-History/')"></i>
-<h4>About us</h4>
-<p>GUI Free Life is the personal, technical blog of Dale Bewley. Comments and opinions are my own and not that of my employers.</p>
-<hr class="hidden-md hidden-lg hidden-sm">
-</div>
-<div class="col-md-4 col-sm-6">
-<h4>Recent posts</h4>
-<div class=blog-entries>
-<div class="item same-height-row clearfix">
-<div class="image same-height-always">
-<a href=http://guifreelife.com/blog/2023/09/22/Storing-OpenShift-Credentials-with-1Password/>
-<img src=/img/banners/mushroom-moss.jpg class=img-responsive alt="Storing OpenShift Credentials with 1Password">
-</a>
-</div>
-<div class="name same-height-always">
-<h5><a href=http://guifreelife.com/blog/2023/09/22/Storing-OpenShift-Credentials-with-1Password/>Storing OpenShift Credentials with 1Password</a></h5>
-</div>
-</div>
-<div class="item same-height-row clearfix">
-<div class="image same-height-always">
-<a href=http://guifreelife.com/blog/2023/04/06/Accessing-Ceph-CLI-with-OpenShift-Data-Foundation/>
-<img src=/images/uncovered-bumper.png class=img-responsive alt="Accessing the Ceph CLI with OpenShift Data Foundation">
-</a>
-</div>
-<div class="name same-height-always">
-<h5><a href=http://guifreelife.com/blog/2023/04/06/Accessing-Ceph-CLI-with-OpenShift-Data-Foundation/>Accessing the Ceph CLI with OpenShift Data Foundation</a></h5>
-</div>
-</div>
-<div class="item same-height-row clearfix">
-<div class="image same-height-always">
-<a href=http://guifreelife.com/blog/2023/03/09/Extracting-CA-Certs-From-Kubeconfig/>
-<img src=/img/banners/banner-buffy-xmas.png class=img-responsive alt="Extracting TLS CA Certificates from Kubeconfig File">
-</a>
-</div>
-<div class="name same-height-always">
-<h5><a href=http://guifreelife.com/blog/2023/03/09/Extracting-CA-Certs-From-Kubeconfig/>Extracting TLS CA Certificates from Kubeconfig File</a></h5>
-</div>
-</div>
-</div>
-<hr class="hidden-md hidden-lg">
-</div>
-<div class="col-md-4 col-sm-6">
-<h4>Contact</h4>
-<p class=text-uppercase><strong>Dale Bewley</strong>
-<br>Oakland
-<br>California
-<br>
-<strong>USA</strong>
-</p>
-<a href=/contact class="btn btn-small btn-template-main">Go to contact page</a>
-<hr class="hidden-md hidden-lg hidden-sm">
-</div>
-</div>
-</footer>
-<div id=copyright>
-<div class=container>
-<div class=col-md-12>
-<p class=pull-left>Copyright (c) 2021, Dale Bewley; all rights reserved.</p>
-<p class=pull-right>
-Template by <a href=https://bootstrapious.com/p/universal-business-e-commerce-template>Bootstrapious</a>.
-Ported to Hugo by <a href=https://github.com/devcows/hugo-universal-theme>DevCows</a>.
-</p>
-</div>
-</div>
-</div>
-</div>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-39TSW9349X"></script>
-<script>var doNotTrack=!1;if(!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date),gtag('config','G-39TSW9349X',{anonymize_ip:!1})}</script>
-<script src=//code.jquery.com/jquery-3.1.1.min.js integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin=anonymous></script>
+<span class=input-group-btn><button type=submit class="btn btn-template-main"><i class="fas fa-search"></i></button></span></div></form></div></div><div class="panel sidebar-menu"><div class=panel-heading><h3 class=panel-title>Tagged</h3></div><div class=panel-body><ul class=tag-cloud><li class=active><a href=/tags/ansible><i class="fas fa-tags"></i> ansible</a></li><li class=active><a href=/tags/automation><i class="fas fa-tags"></i> automation</a></li><li class=active><a href=/tags/git><i class="fas fa-tags"></i> git</a></li></ul></div></div><div class="panel sidebar-menu"><div class=panel-heading><h3 class=panel-title>TOC</h3></div><div class=panel-body><nav id=TableOfContents><ul><li><a href=#option-1-use-git-subtree---split-and-pull>Option 1: Use git subtree - Split and Pull</a><ul><li><a href=#clean-up-the-old-original-repo>Clean up the old original repo</a></li></ul></li><li><a href=#option-2-use-git-filter-branch---clone-and-prune>Option 2: Use git filter-branch - Clone and Prune</a><ul><li><a href=#clean-up-the-old-original-repo-1>Clean up the old original repo</a></li></ul></li></ul></nav></div></div><div class="panel sidebar-menu"><div class=panel-heading><h3 class=panel-title>Tags</h3></div><div class=panel-body><ul class=tag-cloud><li><a href=/tags/AWS><i class="fas fa-tags"></i> AWS</a></li><li><a href=/tags/CDK><i class="fas fa-tags"></i> CDK</a></li><li><a href=/tags/OCP3><i class="fas fa-tags"></i> OCP3</a></li><li><a href=/tags/OCP4><i class="fas fa-tags"></i> OCP4</a></li><li><a href=/tags/RHACM><i class="fas fa-tags"></i> RHACM</a></li><li><a href=/tags/RHACS><i class="fas fa-tags"></i> RHACS</a></li><li><a href=/tags/RHEL><i class="fas fa-tags"></i> RHEL</a></li><li><a href=/tags/ansible><i class="fas fa-tags"></i> ansible</a></li><li><a href=/tags/automation><i class="fas fa-tags"></i> automation</a></li><li><a href=/tags/azure><i class="fas fa-tags"></i> azure</a></li><li><a href=/tags/debugging><i class="fas fa-tags"></i> debugging</a></li><li><a href=/tags/docker><i class="fas fa-tags"></i> docker</a></li><li><a href=/tags/draft><i class="fas fa-tags"></i> draft</a></li><li><a href=/tags/etcd><i class="fas fa-tags"></i> etcd</a></li><li><a href=/tags/git><i class="fas fa-tags"></i> git</a></li><li><a href=/tags/haproxy><i class="fas fa-tags"></i> haproxy</a></li><li><a href=/tags/heat><i class="fas fa-tags"></i> heat</a></li><li><a href=/tags/hybrid-cloud><i class="fas fa-tags"></i> hybrid-cloud</a></li><li><a href=/tags/install><i class="fas fa-tags"></i> install</a></li><li><a href=/tags/kubernetes><i class="fas fa-tags"></i> kubernetes</a></li><li><a href=/tags/mac><i class="fas fa-tags"></i> mac</a></li><li><a href=/tags/metrics><i class="fas fa-tags"></i> metrics</a></li><li><a href=/tags/migration><i class="fas fa-tags"></i> migration</a></li><li><a href=/tags/monitoring><i class="fas fa-tags"></i> monitoring</a></li><li><a href=/tags/networking><i class="fas fa-tags"></i> networking</a></li><li><a href=/tags/openshift><i class="fas fa-tags"></i> openshift</a></li><li><a href=/tags/openstack><i class="fas fa-tags"></i> openstack</a></li><li><a href=/tags/operators><i class="fas fa-tags"></i> operators</a></li><li><a href=/tags/prometheus><i class="fas fa-tags"></i> prometheus</a></li><li><a href=/tags/python><i class="fas fa-tags"></i> python</a></li><li><a href=/tags/router><i class="fas fa-tags"></i> router</a></li><li><a href=/tags/security><i class="fas fa-tags"></i> security</a></li><li><a href=/tags/ssl><i class="fas fa-tags"></i> ssl</a></li><li><a href=/tags/stackrox><i class="fas fa-tags"></i> stackrox</a></li><li><a href=/tags/storage><i class="fas fa-tags"></i> storage</a></li><li><a href=/tags/troubleshooting><i class="fas fa-tags"></i> troubleshooting</a></li><li><a href=/tags/upgrade><i class="fas fa-tags"></i> upgrade</a></li><li><a href=/tags/vagrant><i class="fas fa-tags"></i> vagrant</a></li><li><a href=/tags/virtualization><i class="fas fa-tags"></i> virtualization</a></li><li><a href=/tags/webinar><i class="fas fa-tags"></i> webinar</a></li><li><a href=/tags/windows><i class="fas fa-tags"></i> windows</a></li><li><a href=/tags/zabbix><i class="fas fa-tags"></i> zabbix</a></li><li><a href=/tags/zimbra><i class="fas fa-tags"></i> zimbra</a></li></ul></div></div></div></div></div></div><footer id=footer><div class=container><div class="col-md-4 col-sm-6"><h4>Share</h4><i class="fab fa-2x fa-twitter" title="Share this on Twitter" onclick='window.open("http://twitter.com/home?status=http://guifreelife.com/blog/2015/03/15/Split-Ansible-Git-Repo-and-Retain-Commit-History/")'></i>
+<i class="fab fa-2x fa-facebook" title="Share this on Facebook" onclick='window.open("http://www.facebook.com/share.php?u=http://guifreelife.com/blog/2015/03/15/Split-Ansible-Git-Repo-and-Retain-Commit-History/")'></i>
+<i class="fab fa-2x fa-linkedin" title="Share this on Linkedin" onclick='window.open("https://www.linkedin.com/shareArticle?mini=true&url=http://guifreelife.com/blog/2015/03/15/Split-Ansible-Git-Repo-and-Retain-Commit-History/&title=&summary=&source=")'></i>
+<i class="fab fa-2x fa-google-plus" title="Share this on Google Currents" onclick='window.open("https://plus.google.com/share?url=http://guifreelife.com/blog/2015/03/15/Split-Ansible-Git-Repo-and-Retain-Commit-History/")'></i>
+<i class="fa fa-2x fa-envelope" title="Share this through Email" onclick='window.open("mailto:?&body=http://guifreelife.com/blog/2015/03/15/Split-Ansible-Git-Repo-and-Retain-Commit-History/")'></i><h4>About us</h4><p>GUI Free Life is the personal, technical blog of Dale Bewley. Comments and opinions are my own and not that of my employers.</p><hr class="hidden-md hidden-lg hidden-sm"></div><div class="col-md-4 col-sm-6"><h4>Recent posts</h4><div class=blog-entries><div class="item same-height-row clearfix"><div class="image same-height-always"><a href=http://guifreelife.com/blog/2024/03/11/Placing-Open-Cluster-Management-Policies-on-Kubernetes/><img src=/images/DALL%c2%b7E%202024-01-30%2014.28.24%20-%20A%20whimsical%20scene%20featuring%20a%20traffic%20cop%20standing%20on%20a%20cloud,%20energetically%20directing%20a%20chaotic%20stream%20of%20various%20floating%20documents%20-%20papers,%20folder.png class=img-responsive alt="Using Placements to Apply Open Cluster Management Policies to Kubernetes Clusters"></a></div><div class="name same-height-always"><h5><a href=http://guifreelife.com/blog/2024/03/11/Placing-Open-Cluster-Management-Policies-on-Kubernetes/>Using Placements to Apply Open Cluster Management Policies to Kubernetes Clusters</a></h5></div></div><div class="item same-height-row clearfix"><div class="image same-height-always"><a href=http://guifreelife.com/blog/2023/09/22/Storing-OpenShift-Credentials-with-1Password/><img src=/img/banners/mushroom-moss.jpg class=img-responsive alt="Storing OpenShift Credentials with 1Password"></a></div><div class="name same-height-always"><h5><a href=http://guifreelife.com/blog/2023/09/22/Storing-OpenShift-Credentials-with-1Password/>Storing OpenShift Credentials with 1Password</a></h5></div></div><div class="item same-height-row clearfix"><div class="image same-height-always"><a href=http://guifreelife.com/blog/2023/04/06/Accessing-Ceph-CLI-with-OpenShift-Data-Foundation/><img src=/images/uncovered-bumper.png class=img-responsive alt="Accessing the Ceph CLI with OpenShift Data Foundation"></a></div><div class="name same-height-always"><h5><a href=http://guifreelife.com/blog/2023/04/06/Accessing-Ceph-CLI-with-OpenShift-Data-Foundation/>Accessing the Ceph CLI with OpenShift Data Foundation</a></h5></div></div></div><hr class="hidden-md hidden-lg"></div><div class="col-md-4 col-sm-6"><h4>Contact</h4><p class=text-uppercase><strong>Dale Bewley</strong><br>Oakland<br>California<br><strong>USA</strong></p><a href=/contact class="btn btn-small btn-template-main">Go to contact page</a><hr class="hidden-md hidden-lg hidden-sm"></div></div></footer><div id=copyright><div class=container><div class=col-md-12><p class=pull-left>Copyright (c) 2021, Dale Bewley; all rights reserved.</p><p class=pull-right>Template by <a href=https://bootstrapious.com/p/universal-business-e-commerce-template>Bootstrapious</a>.
+Ported to Hugo by <a href=https://github.com/devcows/hugo-universal-theme>DevCows</a>.</p></div></div></div></div><script async src="https://www.googletagmanager.com/gtag/js?id=G-39TSW9349X"></script>
+<script>var doNotTrack=!1;if(!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","G-39TSW9349X",{anonymize_ip:!1})}</script><script src=//code.jquery.com/jquery-3.1.1.min.js integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin=anonymous></script>
 <script src=//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js integrity=sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa crossorigin=anonymous></script>
 <script src=//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js></script>
 <script src=//cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/jquery.waypoints.min.js></script>
@@ -581,6 +135,4 @@ Ported to Hugo by <a href=https://github.com/devcows/hugo-universal-theme>DevCow
 <script src=/js/hpneo.gmaps.js></script>
 <script src=/js/gmaps.init.js></script>
 <script src=/js/front.js></script>
-<script src=/js/owl.carousel.min.js></script>
-</body>
-</html>
+<script src=/js/owl.carousel.min.js></script></body></html>

@@ -1,600 +1,169 @@
-<!doctype html><html lang=en-us>
-<head>
-<meta charset=utf-8>
-<meta name=robots content="all,follow">
-<meta name=googlebot content="index,follow,snippet,archive">
-<meta name=viewport content="width=device-width,initial-scale=1">
-<title>Downgrade Etcd 3.3.11 to 3.2.22 for OpenShift Compatibility | GUI Free Life</title>
-<meta name=author content="Dale Bewley">
-<meta name=keywords content="bewley,guifreelife,etcd,openshift,OCP3">
-<meta name=description content="GUI Free Life, by Dale Bewley covers Kubernetes, Linux, Networking, OpenShift and more">
-<meta name=generator content="Hugo 0.91.2">
-<link href="//fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,500,700,800" rel=stylesheet type=text/css>
-<link rel=stylesheet href=//use.fontawesome.com/releases/v5.11.2/css/all.css>
-<link rel=stylesheet href=//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css integrity=sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u crossorigin=anonymous>
-<link href=/css/animate.css rel=stylesheet>
-<link href=/css/style.turquoise.css rel=stylesheet id=theme-stylesheet>
-<link href=/css/custom.css rel=stylesheet><!--[if lt IE 9]><script src=https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js></script>
-<script src=https://oss.maxcdn.com/respond/1.4.2/respond.min.js></script><![endif]-->
-<link rel="shortcut icon" href=/img/favicon.ico type=image/x-icon>
-<link rel=apple-touch-icon href=/img/apple-touch-icon.png>
-<link href=/css/owl.carousel.css rel=stylesheet>
-<link href=/css/owl.theme.css rel=stylesheet>
-<link rel=alternate href=http://guifreelife.com/index.xml type=application/rss+xml title="GUI Free Life">
-<meta property="og:locale" content="en_us">
-<meta property="og:site_name" content="GUI Free Life">
-<meta property="og:title" content="Downgrade Etcd 3.3.11 to 3.2.22 for OpenShift Compatibility">
-<meta property="og:type" content="article">
-<meta property="og:url" content="http://guifreelife.com/blog/2019/02/19/Downgrade-Etcd-for-OpenShift-Compatibility/">
-<meta property="og:description" content="GUI Free Life, by Dale Bewley covers Kubernetes, Linux, Networking, OpenShift and more">
-<meta property="og:image" content="http://guifreelife.com/img/banners/banner-27.jpg">
-<meta property="og:image:type" content="image/jpg">
-<meta property="og:image:width" content="1000">
-<meta property="og:image:height" content="750">
-<meta property="og:updated_time" content="2019-02-19T00:00:00Z">
-<meta property="article:tag" content="etcd">
-<meta property="article:tag" content="openshift">
-<meta property="article:tag" content="OCP3">
-<meta property="article:published_time" content="2019-02-19T00:00:00Z">
-<meta property="article:modified_time" content="2019-02-19T00:00:00Z">
-<meta name=twitter:card content="summary_large_image">
-<meta name=twitter:site content="@dlbewley">
-<meta name=twitter:title content="Downgrade Etcd 3.3.11 to 3.2.22 for OpenShift Compatibility">
-<meta name=twitter:image content="http://guifreelife.com/img/banners/banner-27.jpg">
-<meta name=twitter:description content="GUI Free Life, by Dale Bewley covers Kubernetes, Linux, Networking, OpenShift and more">
-</head>
-<body>
-<div id=all>
-<header class=navbar-affixed-top data-spy=affix data-offset-top=62>
-<div class="navbar navbar-default yamm" role=navigation id=navbar>
-<div class=container>
-<div class=navbar-header>
-<a class="navbar-brand home" href=/>
-<img src=/img/logo.png alt="Downgrade Etcd 3.3.11 to 3.2.22 for OpenShift Compatibility logo" class="hidden-xs hidden-sm">
+<!doctype html><html lang=en-us><head><meta charset=utf-8><meta name=robots content="all,follow"><meta name=googlebot content="index,follow,snippet,archive"><meta name=viewport content="width=device-width,initial-scale=1"><title>Downgrade Etcd 3.3.11 to 3.2.22 for OpenShift Compatibility | GUI Free Life</title><meta name=author content="Dale Bewley"><meta name=keywords content="bewley,guifreelife,etcd,openshift,OCP3"><meta name=description content="GUI Free Life, by Dale Bewley covers Kubernetes, Linux, Networking, OpenShift and more"><meta name=generator content="Hugo 0.119.0"><link href='//fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,500,700,800' rel=stylesheet type=text/css><link rel=stylesheet href=//use.fontawesome.com/releases/v5.11.2/css/all.css><link rel=stylesheet href=//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css integrity=sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u crossorigin=anonymous><link href=/css/animate.css rel=stylesheet><link href=/css/style.turquoise.css rel=stylesheet id=theme-stylesheet><link href=/css/custom.css rel=stylesheet><!--[if lt IE 9]><script src=https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js></script>
+<script src=https://oss.maxcdn.com/respond/1.4.2/respond.min.js></script><![endif]--><link rel="shortcut icon" href=/img/favicon.ico type=image/x-icon><link rel=apple-touch-icon href=/img/apple-touch-icon.png><link href=/css/owl.carousel.css rel=stylesheet><link href=/css/owl.theme.css rel=stylesheet><link rel=alternate href=http://guifreelife.com/index.xml type=application/rss+xml title="GUI Free Life"><meta property="og:locale" content="en_us"><meta property="og:site_name" content="GUI Free Life"><meta property="og:title" content="Downgrade Etcd 3.3.11 to 3.2.22 for OpenShift Compatibility"><meta property="og:type" content="article"><meta property="og:url" content="http://guifreelife.com/blog/2019/02/19/Downgrade-Etcd-for-OpenShift-Compatibility/"><meta property="og:description" content="GUI Free Life, by Dale Bewley covers Kubernetes, Linux, Networking, OpenShift and more"><meta property="og:image" content="http://guifreelife.com/img/banners/banner-27.jpg"><meta property="og:image:type" content="image/jpg"><meta property="og:image:width" content="1000"><meta property="og:image:height" content="750"><meta property="og:updated_time" content="2019-02-19T00:00:00Z"><meta property="article:tag" content="etcd"><meta property="article:tag" content="openshift"><meta property="article:tag" content="OCP3"><meta property="article:published_time" content="2019-02-19T00:00:00Z"><meta property="article:modified_time" content="2019-02-19T00:00:00Z"><meta name=twitter:card content="summary_large_image"><meta name=twitter:site content="@dlbewley"><meta name=twitter:title content="Downgrade Etcd 3.3.11 to 3.2.22 for OpenShift Compatibility"><meta name=twitter:image content="http://guifreelife.com/img/banners/banner-27.jpg"><meta name=twitter:description content="GUI Free Life, by Dale Bewley covers Kubernetes, Linux, Networking, OpenShift and more"></head><body><div id=all><header class=navbar-affixed-top data-spy=affix data-offset-top=62><div class="navbar navbar-default yamm" role=navigation id=navbar><div class=container><div class=navbar-header><a class="navbar-brand home" href=/><img src=/img/logo.png alt="Downgrade Etcd 3.3.11 to 3.2.22 for OpenShift Compatibility logo" class="hidden-xs hidden-sm">
 <img src=/img/logo-small.png alt="Downgrade Etcd 3.3.11 to 3.2.22 for OpenShift Compatibility logo" class="visible-xs visible-sm">
-<span class=sr-only>Downgrade Etcd 3.3.11 to 3.2.22 for OpenShift Compatibility - go to homepage</span>
-</a>
-<div class=navbar-buttons>
-<button type=button class="navbar-toggle btn-template-main" data-toggle=collapse data-target=#navigation>
+<span class=sr-only>Downgrade Etcd 3.3.11 to 3.2.22 for OpenShift Compatibility - go to homepage</span></a><div class=navbar-buttons><button type=button class="navbar-toggle btn-template-main" data-toggle=collapse data-target=#navigation>
 <span class=sr-only>Toggle Navigation</span>
-<i class="fas fa-align-justify"></i>
-</button>
-</div>
-</div>
-<div class="navbar-collapse collapse" id=navigation>
-<ul class="nav navbar-nav navbar-right">
-<li class=dropdown>
-<a href=/>Home</a>
-</li>
-<li class="dropdown active">
-<a href=/blog/>Blog</a>
-</li>
-<li class=dropdown>
-<a href=/contact/>Contact</a>
-</li>
-</ul>
-</div>
-<div class="collapse clearfix" id=search>
-<form class=navbar-form role=search>
-<div class=input-group>
-<input type=text class=form-control placeholder=Search>
-<span class=input-group-btn>
-<button type=submit class="btn btn-template-main"><i class="fas fa-search"></i></button>
-</span>
-</div>
-</form>
-</div>
-</div>
-</div>
-</header>
-<style>.bar.background-image-fixed-banner{background:url(/img/banners/banner-27.jpg)50% 0 no-repeat;background-attachment:fixed;background-size:cover;padding:100px 5%;text-shadow:2px 3px 4px var(--primary-accent),0 0 1em var(--navbar-border-top)}</style>
-<div>
-<div class=container>
-<div class=row>
-<div class=col-md-12>
-<section class="bar background-image-fixed-banner heading h2 color-white text-center">
-<h1>Downgrade Etcd 3.3.11 to 3.2.22 for OpenShift Compatibility</h1>
-</section>
-</div>
-</div>
-</div>
-</div>
-<div id=content>
-<div class=container>
-<div class=row>
-<div class=col-md-9 id=blog-post>
-<p class="text-muted text-uppercase mb-small text-right">
-February 19, 2019
-</p>
-<div id=post-content>
-<p>While I was working on <a href=http://guifreelife.com/blog/2019/02/08/Migration-of-Etcd-to-Masters-for-OpenShift-3.9-Upgrade-to-3.10>migrating etcd to my master nodes</a> I was bitten by an incompatible etcd v3.3.11 RPM made available via RHEL Server Extras repo. Before I got to my last master the RPM was no longer available, and the scaleup playbook failed. I became aware that 3.3.11 <a href=https://access.redhat.com/articles/2176281>is not compatible</a> and <a href=https://access.redhat.com/solutions/3885101>should not have been made available</a>.</p>
-<p>Unfortunately all members of my etcd cluster were already upgraded and the fix is to take down the cluster, downgrade etcd, and restore from snapshot. It would be great <a href="https://bugzilla.redhat.com/show_bug.cgi?id=1672518">if the etcd version was pinned</a> like Docker is.</p>
-<p>Here is more or less what I did. YMMV.</p>
-<p><strong>Assumptions:</strong></p>
-<ul>
-<li>You are running OCP 3.9 with non-containerized etcd</li>
-<li>You have multiple Master nodes</li>
-<li>You have dedicated Etcd nodes</li>
-<li>You are running RHEL, not Atomic nodes</li>
-<li>You upgraded etcd beyond 3.2.x</li>
-</ul>
-<h1 id=steps>Steps</h1>
-<ul>
-<li><input disabled type=checkbox> <strong>Get endpoint status</strong></li>
-</ul>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#1e889b>#!/bin/bash
-</span><span style=color:#1e889b></span>
-. /etc/etcd/etcd.conf
-. /root/playbook-openshift/openshift-env.sh
-
-<span style=color:#00688b>ENV</span>=<span style=color:#cd5555>${</span><span style=color:#00688b>OPENSHIFT_ENV</span><span style=color:#8b008b;font-weight:700>:-</span><span style=color:#00688b>test</span><span style=color:#cd5555>}</span>
-<span style=color:#00688b>FORMAT</span>=<span style=color:#cd5555>&#34;table&#34;</span>
-<span style=color:#228b22>#ENDPOINTS=&#34;https://ose-${ENV}-etcd-01.example.com:2379,https://ose-${ENV}-etcd-02.example.com:2379,https://ose-${ENV}-etcd-03.example.com:2379&#34;</span>
-
-<span style=color:#00688b>ALL_ENDPOINTS</span>=<span style=color:#cd5555>`</span><span style=color:#00688b>ETCDCTL_API</span>=<span style=color:#b452cd>3</span> etcdctl <span style=color:#cd5555>\
-</span><span style=color:#cd5555></span>        --cert <span style=color:#cd5555>${</span><span style=color:#00688b>ETCD_PEER_CERT_FILE</span><span style=color:#cd5555>}</span> <span style=color:#cd5555>\
-</span><span style=color:#cd5555></span>        --key <span style=color:#cd5555>${</span><span style=color:#00688b>ETCD_PEER_KEY_FILE</span><span style=color:#cd5555>}</span> <span style=color:#cd5555>\
-</span><span style=color:#cd5555></span>        --cacert <span style=color:#cd5555>${</span><span style=color:#00688b>ETCD_PEER_TRUSTED_CA_FILE</span><span style=color:#8b008b;font-weight:700>:-</span><span style=color:#00688b>$ETCD_PEER_CA_FILE</span><span style=color:#cd5555>}</span> <span style=color:#cd5555>\
-</span><span style=color:#cd5555></span>        --endpoints <span style=color:#cd5555>&#34;</span><span style=color:#00688b>$ETCD_ADVERTISE_CLIENT_URLS</span><span style=color:#cd5555>&#34;</span> <span style=color:#cd5555>\
-</span><span style=color:#cd5555></span>        --write-out=fields <span style=color:#cd5555>\
-</span><span style=color:#cd5555></span>        member list | awk <span style=color:#cd5555>&#39;/ClientURL/{printf &#34;%s%s&#34;,sep,$3; sep=&#34;,&#34;}&#39;</span><span style=color:#cd5555>`</span>
-
-<span style=color:#00688b>ETCDCTL_API</span>=<span style=color:#b452cd>3</span> etcdctl <span style=color:#cd5555>\
-</span><span style=color:#cd5555></span>    --cert <span style=color:#cd5555>${</span><span style=color:#00688b>ETCD_PEER_CERT_FILE</span><span style=color:#cd5555>}</span> <span style=color:#cd5555>\
-</span><span style=color:#cd5555></span>    --key <span style=color:#cd5555>${</span><span style=color:#00688b>ETCD_PEER_KEY_FILE</span><span style=color:#cd5555>}</span> <span style=color:#cd5555>\
-</span><span style=color:#cd5555></span>    --cacert <span style=color:#cd5555>${</span><span style=color:#00688b>ETCD_PEER_TRUSTED_CA_FILE</span><span style=color:#8b008b;font-weight:700>:-</span><span style=color:#00688b>$ETCD_PEER_CA_FILE</span><span style=color:#cd5555>}</span> <span style=color:#cd5555>\
-</span><span style=color:#cd5555></span>    --endpoints <span style=color:#cd5555>&#34;</span><span style=color:#00688b>$ALL_ENDPOINTS</span><span style=color:#cd5555>&#34;</span> <span style=color:#cd5555>\
-</span><span style=color:#cd5555></span>    --write-out <span style=color:#cd5555>&#34;</span><span style=color:#00688b>$FORMAT</span><span style=color:#cd5555>&#34;</span> <span style=color:#cd5555>\
-</span><span style=color:#cd5555></span>    endpoint status
-</code></pre></div><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-plain data-lang=plain>[root@ose-test-etcd-01 bin]# ./etcd-status
-+--------------------------+------------------+---------+---------+-----------+-----------+------------+
-|          ENDPOINT        |        ID        | VERSION | DB SIZE | IS LEADER | RAFT TERM | RAFT INDEX |
-+--------------------------+------------------+---------+---------+-----------+-----------+------------+
-| https://192.0.2.242:2379 | 3cc657644e2e1080 |  3.3.11 |   61 MB |      true |      6997 |  493115674 |
-| https://192.0.2.243:2379 | 669fc09764815697 |  3.3.11 |   61 MB |     false |      6997 |  493115674 |
-| https://192.0.2.250:2379 | 8268d3895839030d |  3.3.11 |   61 MB |     false |      6997 |  493115674 |
-| https://192.0.2.241:2379 | dd1f136e71579ace |  3.3.11 |   61 MB |     false |      6997 |  493115674 |
-| https://192.0.2.251:2379 | eafa4cc2f9510e7b |  3.3.11 |   61 MB |     false |      6997 |  493115675 |
-+-----------------------------+------------------+---------+---------+-----------+-----------+------------+
-</code></pre></div><ul>
-<li><input disabled type=checkbox> <strong>Create etcd snapshot backup.</strong></li>
-</ul>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#228b22># https://access.redhat.com/solutions/1981013#comment-1257931</span>
-<span style=color:#00688b>BACKUP_DIR</span>=<span style=color:#cd5555>&#34;/var/backup/etcd/</span><span style=color:#8b008b;font-weight:700>$(</span>date +%Y%m%d%H%M<span style=color:#8b008b;font-weight:700>)</span><span style=color:#cd5555>&#34;</span>
-mkdir -p <span style=color:#cd5555>${</span><span style=color:#00688b>BACKUP_DIR</span><span style=color:#cd5555>}</span>/snap
-
-<span style=color:#00688b>ETCD3</span>=<span style=color:#cd5555>&#34;etcdctl --cert </span><span style=color:#cd5555>${</span><span style=color:#00688b>ETCD_PEER_CERT_FILE</span><span style=color:#cd5555>}</span><span style=color:#cd5555> --key </span><span style=color:#cd5555>${</span><span style=color:#00688b>ETCD_PEER_KEY_FILE</span><span style=color:#cd5555>}</span><span style=color:#cd5555> \
-</span><span style=color:#cd5555>        --cacert </span><span style=color:#cd5555>${</span><span style=color:#00688b>ETCD_PEER_TRUSTED_CA_FILE</span><span style=color:#8b008b;font-weight:700>:-</span><span style=color:#00688b>$ETCD_PEER_CA_FILE</span><span style=color:#cd5555>}</span><span style=color:#cd5555> --endpoints </span><span style=color:#cd5555>${</span><span style=color:#00688b>ETCD_ADVERTISE_CLIENT_URLS</span><span style=color:#cd5555>}</span><span style=color:#cd5555>&#34;</span>
-
-<span style=color:#00688b>ETCDCTL_API</span>=<span style=color:#b452cd>3</span> <span style=color:#00688b>$ETCD3</span> <span style=color:#cd5555>\
-</span><span style=color:#cd5555></span>    snapshot save <span style=color:#cd5555>${</span><span style=color:#00688b>BACKUP_DIR</span><span style=color:#cd5555>}</span>/snap/db
-</code></pre></div><blockquote>
-<p>Snapshot saved at /var/backup/etcd/20190219/snap/db</p>
-</blockquote>
-<ul>
-<li><input disabled type=checkbox> <strong>Copy db for some reason. Just cuz</strong></li>
-</ul>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>[root@ose-test-etcd-01 bin]<span style=color:#228b22># cp -p /var/lib/etcd/member/snap/db /tmp/db</span>
-</code></pre></div><ul>
-<li><input disabled type=checkbox> <strong>Distribute saved snapshot <code>/var/backup/etcd/20190219/snap/db</code> to all etcd nodes</strong></li>
-</ul>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml>- <span style=color:#8b008b;font-weight:700>hosts</span>:<span style=color:#bbb> </span>etcd<span style=color:#bbb>
-</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>vars</span>:<span style=color:#bbb>
-</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>etcd_backup</span>:<span style=color:#bbb> </span>/var/backup/etcd/20190219/snap/db<span style=color:#bbb>
-</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>etcd_backup_copy</span>:<span style=color:#bbb> </span><span style=color:#b452cd>20190219.</span>snap.db<span style=color:#bbb>
-</span><span style=color:#bbb>
-</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>tasks</span>:<span style=color:#bbb>
-</span><span style=color:#bbb></span><span style=color:#228b22>#   - name: create snapshot backup</span><span style=color:#bbb>
-</span><span style=color:#bbb></span><span style=color:#228b22>#     script:</span><span style=color:#bbb>
-</span><span style=color:#bbb></span><span style=color:#228b22>#       name: bin/etcd-backup</span><span style=color:#bbb>
-</span><span style=color:#bbb></span><span style=color:#228b22>#     delegate_to: ose-test-etcd-01.example.com</span><span style=color:#bbb>
-</span><span style=color:#bbb>
-</span><span style=color:#bbb>  </span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>download etcd backup from node 1<span style=color:#bbb>
-</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>fetch</span>:<span style=color:#bbb>
-</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>src</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;{{ etcd_backup }}&#34;</span><span style=color:#bbb>
-</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>dest</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;./tmp/{{ etcd_backup_copy }}&#34;</span><span style=color:#bbb>
-</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>flat</span>:<span style=color:#bbb> </span><span style=color:#8b008b;font-weight:700>true</span><span style=color:#bbb>
-</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>delegate_to</span>:<span style=color:#bbb> </span>ose-test-etcd-01.example.com<span style=color:#bbb>
-</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>run_once</span>:<span style=color:#bbb> </span><span style=color:#8b008b;font-weight:700>true</span><span style=color:#bbb>
-</span><span style=color:#bbb>
-</span><span style=color:#bbb>  </span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>distribute etcd backup to all nodes<span style=color:#bbb>
-</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>copy</span>:<span style=color:#bbb>
-</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>src</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;./tmp/{{ etcd_backup_copy }}&#34;</span><span style=color:#bbb>
-</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>dest</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;/tmp/{{ etcd_backup_copy }}&#34;</span><span style=color:#bbb>
-</span></code></pre></div><ul>
-<li><input disabled type=checkbox> <strong>Stop etcd on all nodes and rm old data</strong></li>
-</ul>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>ansible etcd -m service -a <span style=color:#cd5555>&#39;name=etcd state=stopped&#39;</span>
-ansible etcd -m shell -a <span style=color:#cd5555>&#39;mv /var/lib/etcd{,.deleted}&#39;</span>
-</code></pre></div><ul>
-<li><input disabled type=checkbox> <strong>Downgrade etcd to supported version</strong></li>
-</ul>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>ansible etcd -m yum -a <span style=color:#cd5555>&#39;name=etcd-3.2.22 allow_downgrade=yes&#39;</span>
-ansible etcd -m file -a <span style=color:#cd5555>&#39;dest=/var/lib/etcd state=absent&#39;</span>
-</code></pre></div><ul>
-<li><input disabled type=checkbox> <strong>Confirm the version</strong></li>
-</ul>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-plain data-lang=plain>[root@ose-test-master-01 playbook-openshift]# ansible etcd -m command -a &#39;rpm -q etcd&#39; -o
-ose-test-etcd-01.example.com | SUCCESS | rc=0 | (stdout) etcd-3.2.22-1.el7.x86_64
-ose-test-etcd-03.example.com | SUCCESS | rc=0 | (stdout) etcd-3.2.22-1.el7.x86_64
-ose-test-etcd-02.example.com | SUCCESS | rc=0 | (stdout) etcd-3.2.22-1.el7.x86_64
-ose-test-master-02.example.com | SUCCESS | rc=0 | (stdout) etcd-3.2.22-1.el7.x86_64
-ose-test-master-01.example.com | SUCCESS | rc=0 | (stdout) etcd-3.2.22-1.el7.x86_64
-</code></pre></div><ul>
-<li><input disabled type=checkbox> <strong>Recover from snapshot on each node</strong></li>
-</ul>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#1e889b>#!/bin/bash -x
-</span><span style=color:#1e889b></span><span style=color:#658b00>source</span> /etc/etcd/etcd.conf
-
-<span style=color:#228b22># not all etcd nodes will have all members listed in etcd.conf if you used the scaleup playbook</span>
-<span style=color:#00688b>ETCD_INITIAL_CLUSTER</span>=ose-test-etcd-02.example.com=https://192.0.2.242:2380,ose-test-etcd-03.example.com=https://192.0.2.243:2380,ose-test-master-02.example.com=https://192.0.2.250:2380,ose-test-etcd-01.example.com=https://192.0.2.241:2380,ose-test-master-01.example.com=https://192.0.2.251:2380
-
-<span style=color:#00688b>ETCDCTL_API</span>=<span style=color:#b452cd>3</span> etcdctl snapshot restore /tmp/20190219.snap.db <span style=color:#cd5555>\
-</span><span style=color:#cd5555></span>    --name <span style=color:#00688b>$ETCD_NAME</span> <span style=color:#cd5555>\
-</span><span style=color:#cd5555></span>    --initial-cluster <span style=color:#00688b>$ETCD_INITIAL_CLUSTER</span> <span style=color:#cd5555>\
-</span><span style=color:#cd5555></span>    --initial-cluster-token <span style=color:#00688b>$ETCD_INITIAL_CLUSTER_TOKEN</span> <span style=color:#cd5555>\
-</span><span style=color:#cd5555></span>    --initial-advertise-peer-urls <span style=color:#00688b>$ETCD_INITIAL_ADVERTISE_PEER_URLS</span> <span style=color:#cd5555>\
-</span><span style=color:#cd5555></span>    --data-dir /var/lib/etcd
-</code></pre></div><blockquote>
-<p>eg: ose-test-etcd-01</p>
-</blockquote>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>  [root@ose-test-etcd-01 ~]<span style=color:#228b22># ./restore-etcd.sh</span>
-  + . /etc/etcd/etcd.conf
-  ++ <span style=color:#00688b>ETCD_NAME</span>=ose-test-etcd-01.example.com
-  ++ <span style=color:#00688b>ETCD_LISTEN_PEER_URLS</span>=https://192.0.2.241:2380
-  ++ <span style=color:#00688b>ETCD_DATA_DIR</span>=/var/lib/etcd/
-  ++ <span style=color:#00688b>ETCD_HEARTBEAT_INTERVAL</span>=<span style=color:#b452cd>500</span>
-  ++ <span style=color:#00688b>ETCD_ELECTION_TIMEOUT</span>=<span style=color:#b452cd>2500</span>
-  ++ <span style=color:#00688b>ETCD_LISTEN_CLIENT_URLS</span>=https://192.0.2.241:2379
-  ++ <span style=color:#00688b>ETCD_INITIAL_ADVERTISE_PEER_URLS</span>=https://192.0.2.241:2380
-  ++ <span style=color:#00688b>ETCD_INITIAL_CLUSTER</span>=ose-test-etcd-01.example.com=https://192.0.2.241:2380,ose-test-etcd-02.example.com=https://192.0.2.242:2380,ose-test-etcd-03.example.com=https://192.0.2.243:$
-  <span style=color:#b452cd>380</span>
-  ++ <span style=color:#00688b>ETCD_INITIAL_CLUSTER_STATE</span>=new
-  ++ <span style=color:#00688b>ETCD_INITIAL_CLUSTER_TOKEN</span>=etcd-cluster-1
-  ++ <span style=color:#00688b>ETCD_ADVERTISE_CLIENT_URLS</span>=https://192.0.2.241:2379
-  ++ <span style=color:#00688b>ETCD_CA_FILE</span>=/etc/etcd/ca.crt
-  ++ <span style=color:#00688b>ETCD_CERT_FILE</span>=/etc/etcd/server.crt
-  ++ <span style=color:#00688b>ETCD_KEY_FILE</span>=/etc/etcd/server.key
-  ++ <span style=color:#00688b>ETCD_PEER_CA_FILE</span>=/etc/etcd/ca.crt
-  ++ <span style=color:#00688b>ETCD_PEER_CERT_FILE</span>=/etc/etcd/peer.crt
-  ++ <span style=color:#00688b>ETCD_PEER_KEY_FILE</span>=/etc/etcd/peer.key
-  + <span style=color:#00688b>ETCD_INITIAL_CLUSTER</span>=ose-test-etcd-02.example.com=https://192.0.2.242:2380,ose-test-etcd-03.example.com=https://192.0.2.243:2380,ose-test-master-02.example.com=https://192.0.2.250$
-  2380,ose-test-etcd-01.example.com=https://192.0.2.241:2380,ose-test-master-01.example.com=https://192.0.2.251:2380
-  + <span style=color:#00688b>SNAPSHOT</span>=/tmp/20190219.snap.db/20190219.snap.db
-  + <span style=color:#00688b>ETCDCTL_API</span>=<span style=color:#b452cd>3</span>
-  + etcdctl snapshot restore /tmp/20190219.snap.db/20190219.snap.db --name ose-test-etcd-01.example.com --initial-cluster ose-test-etcd-02.example.com=https://192.0.2.242:2380,ose-
-  test-etcd-03.example.com=https://192.0.2.243:2380,ose-test-master-02.example.com=https://192.0.2.250:2380,ose-test-etcd-01.example.com=https://192.0.2.241:2380,ose-test-master-01.pix
-  ar.com=https://192.0.2.251:2380 --initial-cluster-token etcd-cluster-1 --initial-advertise-peer-urls https://192.0.2.241:2380 --data-dir /var/lib/etcd
-  2019-02-19 11:33:09.696902 I | mvcc: restore compact to <span style=color:#b452cd>196581339</span>
-  2019-02-19 11:33:09.723669 I | etcdserver/membership: added member 3beb6ea7fc78a5f7 [https://192.0.2.251:2380] to cluster f09fa88ac65802b7
-  2019-02-19 11:33:09.723698 I | etcdserver/membership: added member c80ffa9b8823e61d [https://192.0.2.250:2380] to cluster f09fa88ac65802b7
-  2019-02-19 11:33:09.723709 I | etcdserver/membership: added member dd1f136e71579ace [https://192.0.2.241:2380] to cluster f09fa88ac65802b7
-  2019-02-19 11:33:09.723719 I | etcdserver/membership: added member f54da589b60c16be [https://192.0.2.243:2380] to cluster f09fa88ac65802b7
-  2019-02-19 11:33:09.723732 I | etcdserver/membership: added member f573d8d196b92c82 [https://192.0.2.242:2380] to cluster f09fa88ac65802b7
-</code></pre></div><ul>
-<li>
-<p><input disabled type=checkbox> <strong>Repeat above restore on all etcd nodes</strong></p>
-</li>
-<li>
-<p><input disabled type=checkbox> <strong>Fix etcd permissions</strong></p>
-</li>
-</ul>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>ansible etcd -m <span style=color:#658b00>command</span> -a <span style=color:#cd5555>&#39;chown etcd:etcd -R /var/lib/etcd&#39;</span>
-ansible etcd -m <span style=color:#658b00>command</span> -a <span style=color:#cd5555>&#39;restorecon -Rv /var/lib/etcd&#39;</span>
-</code></pre></div><ul>
-<li><input disabled type=checkbox> <strong>Start etcd and check status.</strong></li>
-</ul>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>ansible etcd -m service -a <span style=color:#cd5555>&#39;name=etcd state=started&#39;</span>
-</code></pre></div><blockquote>
-<p>eg:</p>
-</blockquote>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>[root@ose-test-etcd-01 bin]<span style=color:#228b22># ./etcd-status</span>
-+--------------------------+------------------+---------+---------+-----------+-----------+------------+
-|          ENDPOINT        |        ID        | VERSION | DB SIZE | IS LEADER | RAFT TERM | RAFT INDEX |
-+--------------------------+------------------+---------+---------+-----------+-----------+------------+
-| https://192.0.2.251:2379 | 3beb6ea7fc78a5f7 |  3.2.22 |   <span style=color:#b452cd>61</span> MB |     <span style=color:#658b00>false</span> |        <span style=color:#b452cd>15</span> |      <span style=color:#b452cd>11113</span> |
-| https://192.0.2.250:2379 | c80ffa9b8823e61d |  3.2.22 |   <span style=color:#b452cd>61</span> MB |     <span style=color:#658b00>false</span> |        <span style=color:#b452cd>15</span> |      <span style=color:#b452cd>11113</span> |
-| https://192.0.2.241:2379 | dd1f136e71579ace |  3.2.22 |   <span style=color:#b452cd>61</span> MB |      <span style=color:#658b00>true</span> |        <span style=color:#b452cd>15</span> |      <span style=color:#b452cd>11113</span> |
-| https://192.0.2.243:2379 | f54da589b60c16be |  3.2.22 |   <span style=color:#b452cd>61</span> MB |     <span style=color:#658b00>false</span> |        <span style=color:#b452cd>15</span> |      <span style=color:#b452cd>11113</span> |
-| https://192.0.2.242:2379 | f573d8d196b92c82 |  3.2.22 |   <span style=color:#b452cd>61</span> MB |     <span style=color:#658b00>false</span> |        <span style=color:#b452cd>15</span> |      <span style=color:#b452cd>11113</span> |
-+--------------------------+------------------+---------+---------+-----------+-----------+------------+
-</code></pre></div><ul>
-<li><input disabled type=checkbox> <strong>Restart master api</strong></li>
-</ul>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>ansible masters -m service -a <span style=color:#cd5555>&#39;name=atomic-openshift-master-api state=restarted&#39;</span>
-</code></pre></div><ul>
-<li><input disabled type=checkbox> <strong>I messed up and had to start over, so here&rsquo;s a more compact summary of restore using the same snapshot.</strong></li>
-</ul>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>ansible etcd -m service -a <span style=color:#cd5555>&#39;name=etcd state=stopped&#39;</span>
-ansible etcd -m file -a <span style=color:#cd5555>&#39;dest=/var/lib/etcd state=absent&#39;</span>
-ansible etcd -m copy -a <span style=color:#cd5555>&#39;src=bin/restore-etcd.sh dest=/root/restore-etcd.sh mode=0755&#39;</span>
-
-<span style=color:#228b22># login to each node, starting with etcd01 where ETCD_INITIAL_CLUSTER_STATE=new and run restore</span>
-/root/restore-etcd.sh
-
-<span style=color:#228b22># fix perms</span>
-ansible etcd -m <span style=color:#658b00>command</span> -a <span style=color:#cd5555>&#39;chown etcd:etcd -R /var/lib/etcd&#39;</span>
-ansible etcd -m <span style=color:#658b00>command</span> -a <span style=color:#cd5555>&#39;restorecon -Rv /var/lib/etcd&#39;</span>
-<span style=color:#228b22># start etcd</span>
-ansible etcd -m service -a <span style=color:#cd5555>&#39;name=etcd state=started&#39;</span>
-<span style=color:#228b22># check that the state from each node matches</span>
-ansible etcd -m script -a <span style=color:#cd5555>&#39;bin/etcd-status&#39;</span>
-ansible masters -m service -a <span style=color:#cd5555>&#39;name=atomic-openshift-master-api state=restarted&#39;</span>
-</code></pre></div>
-</div>
-<div id=comments>
-<div id=disqus_thread></div>
-<script type=application/javascript>var disqus_config=function(){};(function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById('disqus_thread').innerHTML='Disqus comments not available by default when the website is previewed locally.';return}var b=document,a=b.createElement('script');a.async=!0,a.src='//dlbewleygithubio.disqus.com/embed.js',a.setAttribute('data-timestamp',+new Date),(b.head||b.body).appendChild(a)})()</script>
-<noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript>
-<a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a>
-</div>
-</div>
-<div class=col-md-3>
-<div class="panel panel-default sidebar-menu">
-<div class=panel-heading>
-<h3 class=panel-title>Search</h3>
-</div>
-<div class=panel-body>
-<form action=//google.com/search method=get accept-charset=utf-8 role=search>
-<div class=input-group>
-<input type=search name=q class=form-control placeholder=Search>
+<i class="fas fa-align-justify"></i></button></div></div><div class="navbar-collapse collapse" id=navigation><ul class="nav navbar-nav navbar-right"><li class=dropdown><a href=/>Home</a></li><li class="dropdown active"><a href=/blog/>Blog</a></li><li class=dropdown><a href=/contact/>Contact</a></li></ul></div><div class="collapse clearfix" id=search><form class=navbar-form role=search><div class=input-group><input type=text class=form-control placeholder=Search>
+<span class=input-group-btn><button type=submit class="btn btn-template-main"><i class="fas fa-search"></i></button></span></div></form></div></div></div></header><style>.bar.background-image-fixed-banner{background:url(/img/banners/banner-27.jpg)50% 0 no-repeat;background-attachment:fixed;background-size:cover;padding:100px 5%;text-shadow:2px 3px 4px var(--primary-accent),0 0 1em var(--navbar-border-top)}</style><div><div class=container><div class=row><div class=col-md-12><section class="bar background-image-fixed-banner heading h2 color-white text-center"><h1>Downgrade Etcd 3.3.11 to 3.2.22 for OpenShift Compatibility</h1></section></div></div></div></div><div id=content><div class=container><div class=row><div class=col-md-9 id=blog-post><p class="text-muted text-uppercase mb-small text-right">February 19, 2019</p><div id=post-content><p>While I was working on <a href=http://guifreelife.com/blog/2019/02/08/Migration-of-Etcd-to-Masters-for-OpenShift-3.9-Upgrade-to-3.10>migrating etcd to my master nodes</a> I was bitten by an incompatible etcd v3.3.11 RPM made available via RHEL Server Extras repo. Before I got to my last master the RPM was no longer available, and the scaleup playbook failed. I became aware that 3.3.11 <a href=https://access.redhat.com/articles/2176281>is not compatible</a> and <a href=https://access.redhat.com/solutions/3885101>should not have been made available</a>.</p><p>Unfortunately all members of my etcd cluster were already upgraded and the fix is to take down the cluster, downgrade etcd, and restore from snapshot. It would be great <a href="https://bugzilla.redhat.com/show_bug.cgi?id=1672518">if the etcd version was pinned</a> like Docker is.</p><p>Here is more or less what I did. YMMV.</p><p><strong>Assumptions:</strong></p><ul><li>You are running OCP 3.9 with non-containerized etcd</li><li>You have multiple Master nodes</li><li>You have dedicated Etcd nodes</li><li>You are running RHEL, not Atomic nodes</li><li>You upgraded etcd beyond 3.2.x</li></ul><h1 id=steps>Steps</h1><ul><li><input disabled type=checkbox> <strong>Get endpoint status</strong></li></ul><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#1e889b>#!/bin/bash
+</span></span></span><span style=display:flex><span><span style=color:#1e889b></span>
+</span></span><span style=display:flex><span>. /etc/etcd/etcd.conf
+</span></span><span style=display:flex><span>. /root/playbook-openshift/openshift-env.sh
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#00688b>ENV</span>=<span style=color:#cd5555>${</span><span style=color:#00688b>OPENSHIFT_ENV</span><span style=color:#8b008b;font-weight:700>:-</span><span style=color:#00688b>test</span><span style=color:#cd5555>}</span>
+</span></span><span style=display:flex><span><span style=color:#00688b>FORMAT</span>=<span style=color:#cd5555>&#34;table&#34;</span>
+</span></span><span style=display:flex><span><span style=color:#228b22>#ENDPOINTS=&#34;https://ose-${ENV}-etcd-01.example.com:2379,https://ose-${ENV}-etcd-02.example.com:2379,https://ose-${ENV}-etcd-03.example.com:2379&#34;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#00688b>ALL_ENDPOINTS</span>=<span style=color:#cd5555>`</span><span style=color:#00688b>ETCDCTL_API</span>=<span style=color:#b452cd>3</span> etcdctl <span style=color:#cd5555>\
+</span></span></span><span style=display:flex><span><span style=color:#cd5555></span>        --cert <span style=color:#cd5555>${</span><span style=color:#00688b>ETCD_PEER_CERT_FILE</span><span style=color:#cd5555>}</span> <span style=color:#cd5555>\
+</span></span></span><span style=display:flex><span><span style=color:#cd5555></span>        --key <span style=color:#cd5555>${</span><span style=color:#00688b>ETCD_PEER_KEY_FILE</span><span style=color:#cd5555>}</span> <span style=color:#cd5555>\
+</span></span></span><span style=display:flex><span><span style=color:#cd5555></span>        --cacert <span style=color:#cd5555>${</span><span style=color:#00688b>ETCD_PEER_TRUSTED_CA_FILE</span><span style=color:#8b008b;font-weight:700>:-</span><span style=color:#00688b>$ETCD_PEER_CA_FILE</span><span style=color:#cd5555>}</span> <span style=color:#cd5555>\
+</span></span></span><span style=display:flex><span><span style=color:#cd5555></span>        --endpoints <span style=color:#cd5555>&#34;</span><span style=color:#00688b>$ETCD_ADVERTISE_CLIENT_URLS</span><span style=color:#cd5555>&#34;</span> <span style=color:#cd5555>\
+</span></span></span><span style=display:flex><span><span style=color:#cd5555></span>        --write-out=fields <span style=color:#cd5555>\
+</span></span></span><span style=display:flex><span><span style=color:#cd5555></span>        member list | awk <span style=color:#cd5555>&#39;/ClientURL/{printf &#34;%s%s&#34;,sep,$3; sep=&#34;,&#34;}&#39;</span><span style=color:#cd5555>`</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#00688b>ETCDCTL_API</span>=<span style=color:#b452cd>3</span> etcdctl <span style=color:#cd5555>\
+</span></span></span><span style=display:flex><span><span style=color:#cd5555></span>    --cert <span style=color:#cd5555>${</span><span style=color:#00688b>ETCD_PEER_CERT_FILE</span><span style=color:#cd5555>}</span> <span style=color:#cd5555>\
+</span></span></span><span style=display:flex><span><span style=color:#cd5555></span>    --key <span style=color:#cd5555>${</span><span style=color:#00688b>ETCD_PEER_KEY_FILE</span><span style=color:#cd5555>}</span> <span style=color:#cd5555>\
+</span></span></span><span style=display:flex><span><span style=color:#cd5555></span>    --cacert <span style=color:#cd5555>${</span><span style=color:#00688b>ETCD_PEER_TRUSTED_CA_FILE</span><span style=color:#8b008b;font-weight:700>:-</span><span style=color:#00688b>$ETCD_PEER_CA_FILE</span><span style=color:#cd5555>}</span> <span style=color:#cd5555>\
+</span></span></span><span style=display:flex><span><span style=color:#cd5555></span>    --endpoints <span style=color:#cd5555>&#34;</span><span style=color:#00688b>$ALL_ENDPOINTS</span><span style=color:#cd5555>&#34;</span> <span style=color:#cd5555>\
+</span></span></span><span style=display:flex><span><span style=color:#cd5555></span>    --write-out <span style=color:#cd5555>&#34;</span><span style=color:#00688b>$FORMAT</span><span style=color:#cd5555>&#34;</span> <span style=color:#cd5555>\
+</span></span></span><span style=display:flex><span><span style=color:#cd5555></span>    endpoint status
+</span></span></code></pre></div><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-plain data-lang=plain><span style=display:flex><span>[root@ose-test-etcd-01 bin]# ./etcd-status
+</span></span><span style=display:flex><span>+--------------------------+------------------+---------+---------+-----------+-----------+------------+
+</span></span><span style=display:flex><span>|          ENDPOINT        |        ID        | VERSION | DB SIZE | IS LEADER | RAFT TERM | RAFT INDEX |
+</span></span><span style=display:flex><span>+--------------------------+------------------+---------+---------+-----------+-----------+------------+
+</span></span><span style=display:flex><span>| https://192.0.2.242:2379 | 3cc657644e2e1080 |  3.3.11 |   61 MB |      true |      6997 |  493115674 |
+</span></span><span style=display:flex><span>| https://192.0.2.243:2379 | 669fc09764815697 |  3.3.11 |   61 MB |     false |      6997 |  493115674 |
+</span></span><span style=display:flex><span>| https://192.0.2.250:2379 | 8268d3895839030d |  3.3.11 |   61 MB |     false |      6997 |  493115674 |
+</span></span><span style=display:flex><span>| https://192.0.2.241:2379 | dd1f136e71579ace |  3.3.11 |   61 MB |     false |      6997 |  493115674 |
+</span></span><span style=display:flex><span>| https://192.0.2.251:2379 | eafa4cc2f9510e7b |  3.3.11 |   61 MB |     false |      6997 |  493115675 |
+</span></span><span style=display:flex><span>+-----------------------------+------------------+---------+---------+-----------+-----------+------------+
+</span></span></code></pre></div><ul><li><input disabled type=checkbox> <strong>Create etcd snapshot backup.</strong></li></ul><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#228b22># https://access.redhat.com/solutions/1981013#comment-1257931</span>
+</span></span><span style=display:flex><span><span style=color:#00688b>BACKUP_DIR</span>=<span style=color:#cd5555>&#34;/var/backup/etcd/</span><span style=color:#8b008b;font-weight:700>$(</span>date +%Y%m%d%H%M<span style=color:#8b008b;font-weight:700>)</span><span style=color:#cd5555>&#34;</span>
+</span></span><span style=display:flex><span>mkdir -p <span style=color:#cd5555>${</span><span style=color:#00688b>BACKUP_DIR</span><span style=color:#cd5555>}</span>/snap
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#00688b>ETCD3</span>=<span style=color:#cd5555>&#34;etcdctl --cert </span><span style=color:#cd5555>${</span><span style=color:#00688b>ETCD_PEER_CERT_FILE</span><span style=color:#cd5555>}</span><span style=color:#cd5555> --key </span><span style=color:#cd5555>${</span><span style=color:#00688b>ETCD_PEER_KEY_FILE</span><span style=color:#cd5555>}</span><span style=color:#cd5555> \
+</span></span></span><span style=display:flex><span><span style=color:#cd5555>        --cacert </span><span style=color:#cd5555>${</span><span style=color:#00688b>ETCD_PEER_TRUSTED_CA_FILE</span><span style=color:#8b008b;font-weight:700>:-</span><span style=color:#00688b>$ETCD_PEER_CA_FILE</span><span style=color:#cd5555>}</span><span style=color:#cd5555> --endpoints </span><span style=color:#cd5555>${</span><span style=color:#00688b>ETCD_ADVERTISE_CLIENT_URLS</span><span style=color:#cd5555>}</span><span style=color:#cd5555>&#34;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#00688b>ETCDCTL_API</span>=<span style=color:#b452cd>3</span> <span style=color:#00688b>$ETCD3</span> <span style=color:#cd5555>\
+</span></span></span><span style=display:flex><span><span style=color:#cd5555></span>    snapshot save <span style=color:#cd5555>${</span><span style=color:#00688b>BACKUP_DIR</span><span style=color:#cd5555>}</span>/snap/db
+</span></span></code></pre></div><blockquote><p>Snapshot saved at /var/backup/etcd/20190219/snap/db</p></blockquote><ul><li><input disabled type=checkbox> <strong>Copy db for some reason. Just cuz</strong></li></ul><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>[root@ose-test-etcd-01 bin]<span style=color:#228b22># cp -p /var/lib/etcd/member/snap/db /tmp/db</span>
+</span></span></code></pre></div><ul><li><input disabled type=checkbox> <strong>Distribute saved snapshot <code>/var/backup/etcd/20190219/snap/db</code> to all etcd nodes</strong></li></ul><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=display:flex><span>- <span style=color:#8b008b;font-weight:700>hosts</span>:<span style=color:#bbb> </span>etcd<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>vars</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>etcd_backup</span>:<span style=color:#bbb> </span>/var/backup/etcd/20190219/snap/db<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>etcd_backup_copy</span>:<span style=color:#bbb> </span><span style=color:#b452cd>20190219.</span>snap.db<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>tasks</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb></span><span style=color:#228b22>#   - name: create snapshot backup</span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb></span><span style=color:#228b22>#     script:</span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb></span><span style=color:#228b22>#       name: bin/etcd-backup</span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb></span><span style=color:#228b22>#     delegate_to: ose-test-etcd-01.example.com</span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>  </span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>download etcd backup from node 1<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>fetch</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>src</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;{{ etcd_backup }}&#34;</span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>dest</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;./tmp/{{ etcd_backup_copy }}&#34;</span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>flat</span>:<span style=color:#bbb> </span><span style=color:#8b008b;font-weight:700>true</span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>delegate_to</span>:<span style=color:#bbb> </span>ose-test-etcd-01.example.com<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>run_once</span>:<span style=color:#bbb> </span><span style=color:#8b008b;font-weight:700>true</span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>  </span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>distribute etcd backup to all nodes<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>copy</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>src</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;./tmp/{{ etcd_backup_copy }}&#34;</span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>dest</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;/tmp/{{ etcd_backup_copy }}&#34;</span><span style=color:#bbb>
+</span></span></span></code></pre></div><ul><li><input disabled type=checkbox> <strong>Stop etcd on all nodes and rm old data</strong></li></ul><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>ansible etcd -m service -a <span style=color:#cd5555>&#39;name=etcd state=stopped&#39;</span>
+</span></span><span style=display:flex><span>ansible etcd -m shell -a <span style=color:#cd5555>&#39;mv /var/lib/etcd{,.deleted}&#39;</span>
+</span></span></code></pre></div><ul><li><input disabled type=checkbox> <strong>Downgrade etcd to supported version</strong></li></ul><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>ansible etcd -m yum -a <span style=color:#cd5555>&#39;name=etcd-3.2.22 allow_downgrade=yes&#39;</span>
+</span></span><span style=display:flex><span>ansible etcd -m file -a <span style=color:#cd5555>&#39;dest=/var/lib/etcd state=absent&#39;</span>
+</span></span></code></pre></div><ul><li><input disabled type=checkbox> <strong>Confirm the version</strong></li></ul><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-plain data-lang=plain><span style=display:flex><span>[root@ose-test-master-01 playbook-openshift]# ansible etcd -m command -a &#39;rpm -q etcd&#39; -o
+</span></span><span style=display:flex><span>ose-test-etcd-01.example.com | SUCCESS | rc=0 | (stdout) etcd-3.2.22-1.el7.x86_64
+</span></span><span style=display:flex><span>ose-test-etcd-03.example.com | SUCCESS | rc=0 | (stdout) etcd-3.2.22-1.el7.x86_64
+</span></span><span style=display:flex><span>ose-test-etcd-02.example.com | SUCCESS | rc=0 | (stdout) etcd-3.2.22-1.el7.x86_64
+</span></span><span style=display:flex><span>ose-test-master-02.example.com | SUCCESS | rc=0 | (stdout) etcd-3.2.22-1.el7.x86_64
+</span></span><span style=display:flex><span>ose-test-master-01.example.com | SUCCESS | rc=0 | (stdout) etcd-3.2.22-1.el7.x86_64
+</span></span></code></pre></div><ul><li><input disabled type=checkbox> <strong>Recover from snapshot on each node</strong></li></ul><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#1e889b>#!/bin/bash -x
+</span></span></span><span style=display:flex><span><span style=color:#1e889b></span><span style=color:#658b00>source</span> /etc/etcd/etcd.conf
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#228b22># not all etcd nodes will have all members listed in etcd.conf if you used the scaleup playbook</span>
+</span></span><span style=display:flex><span><span style=color:#00688b>ETCD_INITIAL_CLUSTER</span>=ose-test-etcd-02.example.com=https://192.0.2.242:2380,ose-test-etcd-03.example.com=https://192.0.2.243:2380,ose-test-master-02.example.com=https://192.0.2.250:2380,ose-test-etcd-01.example.com=https://192.0.2.241:2380,ose-test-master-01.example.com=https://192.0.2.251:2380
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#00688b>ETCDCTL_API</span>=<span style=color:#b452cd>3</span> etcdctl snapshot restore /tmp/20190219.snap.db <span style=color:#cd5555>\
+</span></span></span><span style=display:flex><span><span style=color:#cd5555></span>    --name <span style=color:#00688b>$ETCD_NAME</span> <span style=color:#cd5555>\
+</span></span></span><span style=display:flex><span><span style=color:#cd5555></span>    --initial-cluster <span style=color:#00688b>$ETCD_INITIAL_CLUSTER</span> <span style=color:#cd5555>\
+</span></span></span><span style=display:flex><span><span style=color:#cd5555></span>    --initial-cluster-token <span style=color:#00688b>$ETCD_INITIAL_CLUSTER_TOKEN</span> <span style=color:#cd5555>\
+</span></span></span><span style=display:flex><span><span style=color:#cd5555></span>    --initial-advertise-peer-urls <span style=color:#00688b>$ETCD_INITIAL_ADVERTISE_PEER_URLS</span> <span style=color:#cd5555>\
+</span></span></span><span style=display:flex><span><span style=color:#cd5555></span>    --data-dir /var/lib/etcd
+</span></span></code></pre></div><blockquote><p>eg: ose-test-etcd-01</p></blockquote><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>  [root@ose-test-etcd-01 ~]<span style=color:#228b22># ./restore-etcd.sh</span>
+</span></span><span style=display:flex><span>  + . /etc/etcd/etcd.conf
+</span></span><span style=display:flex><span>  ++ <span style=color:#00688b>ETCD_NAME</span>=ose-test-etcd-01.example.com
+</span></span><span style=display:flex><span>  ++ <span style=color:#00688b>ETCD_LISTEN_PEER_URLS</span>=https://192.0.2.241:2380
+</span></span><span style=display:flex><span>  ++ <span style=color:#00688b>ETCD_DATA_DIR</span>=/var/lib/etcd/
+</span></span><span style=display:flex><span>  ++ <span style=color:#00688b>ETCD_HEARTBEAT_INTERVAL</span>=<span style=color:#b452cd>500</span>
+</span></span><span style=display:flex><span>  ++ <span style=color:#00688b>ETCD_ELECTION_TIMEOUT</span>=<span style=color:#b452cd>2500</span>
+</span></span><span style=display:flex><span>  ++ <span style=color:#00688b>ETCD_LISTEN_CLIENT_URLS</span>=https://192.0.2.241:2379
+</span></span><span style=display:flex><span>  ++ <span style=color:#00688b>ETCD_INITIAL_ADVERTISE_PEER_URLS</span>=https://192.0.2.241:2380
+</span></span><span style=display:flex><span>  ++ <span style=color:#00688b>ETCD_INITIAL_CLUSTER</span>=ose-test-etcd-01.example.com=https://192.0.2.241:2380,ose-test-etcd-02.example.com=https://192.0.2.242:2380,ose-test-etcd-03.example.com=https://192.0.2.243:$
+</span></span><span style=display:flex><span>  <span style=color:#b452cd>380</span>
+</span></span><span style=display:flex><span>  ++ <span style=color:#00688b>ETCD_INITIAL_CLUSTER_STATE</span>=new
+</span></span><span style=display:flex><span>  ++ <span style=color:#00688b>ETCD_INITIAL_CLUSTER_TOKEN</span>=etcd-cluster-1
+</span></span><span style=display:flex><span>  ++ <span style=color:#00688b>ETCD_ADVERTISE_CLIENT_URLS</span>=https://192.0.2.241:2379
+</span></span><span style=display:flex><span>  ++ <span style=color:#00688b>ETCD_CA_FILE</span>=/etc/etcd/ca.crt
+</span></span><span style=display:flex><span>  ++ <span style=color:#00688b>ETCD_CERT_FILE</span>=/etc/etcd/server.crt
+</span></span><span style=display:flex><span>  ++ <span style=color:#00688b>ETCD_KEY_FILE</span>=/etc/etcd/server.key
+</span></span><span style=display:flex><span>  ++ <span style=color:#00688b>ETCD_PEER_CA_FILE</span>=/etc/etcd/ca.crt
+</span></span><span style=display:flex><span>  ++ <span style=color:#00688b>ETCD_PEER_CERT_FILE</span>=/etc/etcd/peer.crt
+</span></span><span style=display:flex><span>  ++ <span style=color:#00688b>ETCD_PEER_KEY_FILE</span>=/etc/etcd/peer.key
+</span></span><span style=display:flex><span>  + <span style=color:#00688b>ETCD_INITIAL_CLUSTER</span>=ose-test-etcd-02.example.com=https://192.0.2.242:2380,ose-test-etcd-03.example.com=https://192.0.2.243:2380,ose-test-master-02.example.com=https://192.0.2.250$
+</span></span><span style=display:flex><span>  2380,ose-test-etcd-01.example.com=https://192.0.2.241:2380,ose-test-master-01.example.com=https://192.0.2.251:2380
+</span></span><span style=display:flex><span>  + <span style=color:#00688b>SNAPSHOT</span>=/tmp/20190219.snap.db/20190219.snap.db
+</span></span><span style=display:flex><span>  + <span style=color:#00688b>ETCDCTL_API</span>=<span style=color:#b452cd>3</span>
+</span></span><span style=display:flex><span>  + etcdctl snapshot restore /tmp/20190219.snap.db/20190219.snap.db --name ose-test-etcd-01.example.com --initial-cluster ose-test-etcd-02.example.com=https://192.0.2.242:2380,ose-
+</span></span><span style=display:flex><span>  test-etcd-03.example.com=https://192.0.2.243:2380,ose-test-master-02.example.com=https://192.0.2.250:2380,ose-test-etcd-01.example.com=https://192.0.2.241:2380,ose-test-master-01.pix
+</span></span><span style=display:flex><span>  ar.com=https://192.0.2.251:2380 --initial-cluster-token etcd-cluster-1 --initial-advertise-peer-urls https://192.0.2.241:2380 --data-dir /var/lib/etcd
+</span></span><span style=display:flex><span>  2019-02-19 11:33:09.696902 I | mvcc: restore compact to <span style=color:#b452cd>196581339</span>
+</span></span><span style=display:flex><span>  2019-02-19 11:33:09.723669 I | etcdserver/membership: added member 3beb6ea7fc78a5f7 [https://192.0.2.251:2380] to cluster f09fa88ac65802b7
+</span></span><span style=display:flex><span>  2019-02-19 11:33:09.723698 I | etcdserver/membership: added member c80ffa9b8823e61d [https://192.0.2.250:2380] to cluster f09fa88ac65802b7
+</span></span><span style=display:flex><span>  2019-02-19 11:33:09.723709 I | etcdserver/membership: added member dd1f136e71579ace [https://192.0.2.241:2380] to cluster f09fa88ac65802b7
+</span></span><span style=display:flex><span>  2019-02-19 11:33:09.723719 I | etcdserver/membership: added member f54da589b60c16be [https://192.0.2.243:2380] to cluster f09fa88ac65802b7
+</span></span><span style=display:flex><span>  2019-02-19 11:33:09.723732 I | etcdserver/membership: added member f573d8d196b92c82 [https://192.0.2.242:2380] to cluster f09fa88ac65802b7
+</span></span></code></pre></div><ul><li><p><input disabled type=checkbox> <strong>Repeat above restore on all etcd nodes</strong></p></li><li><p><input disabled type=checkbox> <strong>Fix etcd permissions</strong></p></li></ul><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>ansible etcd -m <span style=color:#658b00>command</span> -a <span style=color:#cd5555>&#39;chown etcd:etcd -R /var/lib/etcd&#39;</span>
+</span></span><span style=display:flex><span>ansible etcd -m <span style=color:#658b00>command</span> -a <span style=color:#cd5555>&#39;restorecon -Rv /var/lib/etcd&#39;</span>
+</span></span></code></pre></div><ul><li><input disabled type=checkbox> <strong>Start etcd and check status.</strong></li></ul><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>ansible etcd -m service -a <span style=color:#cd5555>&#39;name=etcd state=started&#39;</span>
+</span></span></code></pre></div><blockquote><p>eg:</p></blockquote><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>[root@ose-test-etcd-01 bin]<span style=color:#228b22># ./etcd-status</span>
+</span></span><span style=display:flex><span>+--------------------------+------------------+---------+---------+-----------+-----------+------------+
+</span></span><span style=display:flex><span>|          ENDPOINT        |        ID        | VERSION | DB SIZE | IS LEADER | RAFT TERM | RAFT INDEX |
+</span></span><span style=display:flex><span>+--------------------------+------------------+---------+---------+-----------+-----------+------------+
+</span></span><span style=display:flex><span>| https://192.0.2.251:2379 | 3beb6ea7fc78a5f7 |  3.2.22 |   <span style=color:#b452cd>61</span> MB |     <span style=color:#658b00>false</span> |        <span style=color:#b452cd>15</span> |      <span style=color:#b452cd>11113</span> |
+</span></span><span style=display:flex><span>| https://192.0.2.250:2379 | c80ffa9b8823e61d |  3.2.22 |   <span style=color:#b452cd>61</span> MB |     <span style=color:#658b00>false</span> |        <span style=color:#b452cd>15</span> |      <span style=color:#b452cd>11113</span> |
+</span></span><span style=display:flex><span>| https://192.0.2.241:2379 | dd1f136e71579ace |  3.2.22 |   <span style=color:#b452cd>61</span> MB |      <span style=color:#658b00>true</span> |        <span style=color:#b452cd>15</span> |      <span style=color:#b452cd>11113</span> |
+</span></span><span style=display:flex><span>| https://192.0.2.243:2379 | f54da589b60c16be |  3.2.22 |   <span style=color:#b452cd>61</span> MB |     <span style=color:#658b00>false</span> |        <span style=color:#b452cd>15</span> |      <span style=color:#b452cd>11113</span> |
+</span></span><span style=display:flex><span>| https://192.0.2.242:2379 | f573d8d196b92c82 |  3.2.22 |   <span style=color:#b452cd>61</span> MB |     <span style=color:#658b00>false</span> |        <span style=color:#b452cd>15</span> |      <span style=color:#b452cd>11113</span> |
+</span></span><span style=display:flex><span>+--------------------------+------------------+---------+---------+-----------+-----------+------------+
+</span></span></code></pre></div><ul><li><input disabled type=checkbox> <strong>Restart master api</strong></li></ul><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>ansible masters -m service -a <span style=color:#cd5555>&#39;name=atomic-openshift-master-api state=restarted&#39;</span>
+</span></span></code></pre></div><ul><li><input disabled type=checkbox> <strong>I messed up and had to start over, so here&rsquo;s a more compact summary of restore using the same snapshot.</strong></li></ul><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>ansible etcd -m service -a <span style=color:#cd5555>&#39;name=etcd state=stopped&#39;</span>
+</span></span><span style=display:flex><span>ansible etcd -m file -a <span style=color:#cd5555>&#39;dest=/var/lib/etcd state=absent&#39;</span>
+</span></span><span style=display:flex><span>ansible etcd -m copy -a <span style=color:#cd5555>&#39;src=bin/restore-etcd.sh dest=/root/restore-etcd.sh mode=0755&#39;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#228b22># login to each node, starting with etcd01 where ETCD_INITIAL_CLUSTER_STATE=new and run restore</span>
+</span></span><span style=display:flex><span>/root/restore-etcd.sh
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#228b22># fix perms</span>
+</span></span><span style=display:flex><span>ansible etcd -m <span style=color:#658b00>command</span> -a <span style=color:#cd5555>&#39;chown etcd:etcd -R /var/lib/etcd&#39;</span>
+</span></span><span style=display:flex><span>ansible etcd -m <span style=color:#658b00>command</span> -a <span style=color:#cd5555>&#39;restorecon -Rv /var/lib/etcd&#39;</span>
+</span></span><span style=display:flex><span><span style=color:#228b22># start etcd</span>
+</span></span><span style=display:flex><span>ansible etcd -m service -a <span style=color:#cd5555>&#39;name=etcd state=started&#39;</span>
+</span></span><span style=display:flex><span><span style=color:#228b22># check that the state from each node matches</span>
+</span></span><span style=display:flex><span>ansible etcd -m script -a <span style=color:#cd5555>&#39;bin/etcd-status&#39;</span>
+</span></span><span style=display:flex><span>ansible masters -m service -a <span style=color:#cd5555>&#39;name=atomic-openshift-master-api state=restarted&#39;</span>
+</span></span></code></pre></div></div><div id=comments><div id=disqus_thread></div><script type=application/javascript>window.disqus_config=function(){},function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById("disqus_thread").innerHTML="Disqus comments not available by default when the website is previewed locally.";return}var t=document,e=t.createElement("script");e.async=!0,e.src="//dlbewleygithubio.disqus.com/embed.js",e.setAttribute("data-timestamp",+new Date),(t.head||t.body).appendChild(e)}()</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript><a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a></div></div><div class=col-md-3><div class="panel panel-default sidebar-menu"><div class=panel-heading><h3 class=panel-title>Search</h3></div><div class=panel-body><form action=//google.com/search method=get accept-charset=utf-8 role=search><div class=input-group><input type=search name=q class=form-control placeholder=Search>
 <input type=hidden name=sitesearch value=http://guifreelife.com/>
-<span class=input-group-btn>
-<button type=submit class="btn btn-template-main"><i class="fas fa-search"></i></button>
-</span>
-</div>
-</form>
-</div>
-</div>
-<div class="panel sidebar-menu">
-<div class=panel-heading>
-<h3 class=panel-title>Tagged</h3>
-</div>
-<div class=panel-body>
-<ul class=tag-cloud>
-<li class=active>
-<a href=/tags/etcd><i class="fas fa-tags"></i> etcd</a>
-</li>
-<li class=active>
-<a href=/tags/openshift><i class="fas fa-tags"></i> openshift</a>
-</li>
-<li class=active>
-<a href=/tags/OCP3><i class="fas fa-tags"></i> OCP3</a>
-</li>
-</ul>
-</div>
-</div>
-<div class="panel sidebar-menu">
-<div class=panel-heading>
-<h3 class=panel-title>TOC</h3>
-</div>
-<div class=panel-body>
-<nav id=TableOfContents>
-<ul>
-<li><a href=#steps>Steps</a></li>
-</ul>
-</nav>
-</div>
-</div>
-<div class="panel sidebar-menu">
-<div class=panel-heading>
-<h3 class=panel-title>Tags</h3>
-</div>
-<div class=panel-body>
-<ul class=tag-cloud>
-<li>
-<a href=/tags/AWS><i class="fas fa-tags"></i> AWS</a>
-</li>
-<li>
-<a href=/tags/CDK><i class="fas fa-tags"></i> CDK</a>
-</li>
-<li>
-<a href=/tags/OCP3><i class="fas fa-tags"></i> OCP3</a>
-</li>
-<li>
-<a href=/tags/OCP4><i class="fas fa-tags"></i> OCP4</a>
-</li>
-<li>
-<a href=/tags/RHACM><i class="fas fa-tags"></i> RHACM</a>
-</li>
-<li>
-<a href=/tags/RHACS><i class="fas fa-tags"></i> RHACS</a>
-</li>
-<li>
-<a href=/tags/RHEL><i class="fas fa-tags"></i> RHEL</a>
-</li>
-<li>
-<a href=/tags/ansible><i class="fas fa-tags"></i> ansible</a>
-</li>
-<li>
-<a href=/tags/automation><i class="fas fa-tags"></i> automation</a>
-</li>
-<li>
-<a href=/tags/azure><i class="fas fa-tags"></i> azure</a>
-</li>
-<li>
-<a href=/tags/debugging><i class="fas fa-tags"></i> debugging</a>
-</li>
-<li>
-<a href=/tags/docker><i class="fas fa-tags"></i> docker</a>
-</li>
-<li>
-<a href=/tags/draft><i class="fas fa-tags"></i> draft</a>
-</li>
-<li>
-<a href=/tags/etcd><i class="fas fa-tags"></i> etcd</a>
-</li>
-<li>
-<a href=/tags/git><i class="fas fa-tags"></i> git</a>
-</li>
-<li>
-<a href=/tags/haproxy><i class="fas fa-tags"></i> haproxy</a>
-</li>
-<li>
-<a href=/tags/heat><i class="fas fa-tags"></i> heat</a>
-</li>
-<li>
-<a href=/tags/hybrid-cloud><i class="fas fa-tags"></i> hybrid-cloud</a>
-</li>
-<li>
-<a href=/tags/install><i class="fas fa-tags"></i> install</a>
-</li>
-<li>
-<a href=/tags/kubernetes><i class="fas fa-tags"></i> kubernetes</a>
-</li>
-<li>
-<a href=/tags/mac><i class="fas fa-tags"></i> mac</a>
-</li>
-<li>
-<a href=/tags/metrics><i class="fas fa-tags"></i> metrics</a>
-</li>
-<li>
-<a href=/tags/migration><i class="fas fa-tags"></i> migration</a>
-</li>
-<li>
-<a href=/tags/monitoring><i class="fas fa-tags"></i> monitoring</a>
-</li>
-<li>
-<a href=/tags/networking><i class="fas fa-tags"></i> networking</a>
-</li>
-<li>
-<a href=/tags/openshift><i class="fas fa-tags"></i> openshift</a>
-</li>
-<li>
-<a href=/tags/openstack><i class="fas fa-tags"></i> openstack</a>
-</li>
-<li>
-<a href=/tags/operators><i class="fas fa-tags"></i> operators</a>
-</li>
-<li>
-<a href=/tags/prometheus><i class="fas fa-tags"></i> prometheus</a>
-</li>
-<li>
-<a href=/tags/python><i class="fas fa-tags"></i> python</a>
-</li>
-<li>
-<a href=/tags/router><i class="fas fa-tags"></i> router</a>
-</li>
-<li>
-<a href=/tags/security><i class="fas fa-tags"></i> security</a>
-</li>
-<li>
-<a href=/tags/ssl><i class="fas fa-tags"></i> ssl</a>
-</li>
-<li>
-<a href=/tags/stackrox><i class="fas fa-tags"></i> stackrox</a>
-</li>
-<li>
-<a href=/tags/storage><i class="fas fa-tags"></i> storage</a>
-</li>
-<li>
-<a href=/tags/troubleshooting><i class="fas fa-tags"></i> troubleshooting</a>
-</li>
-<li>
-<a href=/tags/upgrade><i class="fas fa-tags"></i> upgrade</a>
-</li>
-<li>
-<a href=/tags/vagrant><i class="fas fa-tags"></i> vagrant</a>
-</li>
-<li>
-<a href=/tags/virtualization><i class="fas fa-tags"></i> virtualization</a>
-</li>
-<li>
-<a href=/tags/webinar><i class="fas fa-tags"></i> webinar</a>
-</li>
-<li>
-<a href=/tags/windows><i class="fas fa-tags"></i> windows</a>
-</li>
-<li>
-<a href=/tags/zabbix><i class="fas fa-tags"></i> zabbix</a>
-</li>
-<li>
-<a href=/tags/zimbra><i class="fas fa-tags"></i> zimbra</a>
-</li>
-</ul>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<footer id=footer>
-<div class=container>
-<div class="col-md-4 col-sm-6">
-<h4>Share</h4>
-<i class="fab fa-2x fa-twitter" title="Share this on Twitter" onclick="window.open('http://twitter.com/home?status=http://guifreelife.com/blog/2019/02/19/Downgrade-Etcd-for-OpenShift-Compatibility/')"></i>
-<i class="fab fa-2x fa-facebook" title="Share this on Facebook" onclick="window.open('http://www.facebook.com/share.php?u=http://guifreelife.com/blog/2019/02/19/Downgrade-Etcd-for-OpenShift-Compatibility/')"></i>
-<i class="fab fa-2x fa-linkedin" title="Share this on Linkedin" onclick="window.open('https://www.linkedin.com/shareArticle?mini=true&url=http://guifreelife.com/blog/2019/02/19/Downgrade-Etcd-for-OpenShift-Compatibility/&title=&summary=&source=')"></i>
-<i class="fab fa-2x fa-google-plus" title="Share this on Google Currents" onclick="window.open('https://plus.google.com/share?url=http://guifreelife.com/blog/2019/02/19/Downgrade-Etcd-for-OpenShift-Compatibility/')"></i>
-<i class="fa fa-2x fa-envelope" title="Share this through Email" onclick="window.open('mailto:?&body=http://guifreelife.com/blog/2019/02/19/Downgrade-Etcd-for-OpenShift-Compatibility/')"></i>
-<h4>About us</h4>
-<p>GUI Free Life is the personal, technical blog of Dale Bewley. Comments and opinions are my own and not that of my employers.</p>
-<hr class="hidden-md hidden-lg hidden-sm">
-</div>
-<div class="col-md-4 col-sm-6">
-<h4>Recent posts</h4>
-<div class=blog-entries>
-<div class="item same-height-row clearfix">
-<div class="image same-height-always">
-<a href=http://guifreelife.com/blog/2023/09/22/Storing-OpenShift-Credentials-with-1Password/>
-<img src=/img/banners/mushroom-moss.jpg class=img-responsive alt="Storing OpenShift Credentials with 1Password">
-</a>
-</div>
-<div class="name same-height-always">
-<h5><a href=http://guifreelife.com/blog/2023/09/22/Storing-OpenShift-Credentials-with-1Password/>Storing OpenShift Credentials with 1Password</a></h5>
-</div>
-</div>
-<div class="item same-height-row clearfix">
-<div class="image same-height-always">
-<a href=http://guifreelife.com/blog/2023/04/06/Accessing-Ceph-CLI-with-OpenShift-Data-Foundation/>
-<img src=/images/uncovered-bumper.png class=img-responsive alt="Accessing the Ceph CLI with OpenShift Data Foundation">
-</a>
-</div>
-<div class="name same-height-always">
-<h5><a href=http://guifreelife.com/blog/2023/04/06/Accessing-Ceph-CLI-with-OpenShift-Data-Foundation/>Accessing the Ceph CLI with OpenShift Data Foundation</a></h5>
-</div>
-</div>
-<div class="item same-height-row clearfix">
-<div class="image same-height-always">
-<a href=http://guifreelife.com/blog/2023/03/09/Extracting-CA-Certs-From-Kubeconfig/>
-<img src=/img/banners/banner-buffy-xmas.png class=img-responsive alt="Extracting TLS CA Certificates from Kubeconfig File">
-</a>
-</div>
-<div class="name same-height-always">
-<h5><a href=http://guifreelife.com/blog/2023/03/09/Extracting-CA-Certs-From-Kubeconfig/>Extracting TLS CA Certificates from Kubeconfig File</a></h5>
-</div>
-</div>
-</div>
-<hr class="hidden-md hidden-lg">
-</div>
-<div class="col-md-4 col-sm-6">
-<h4>Contact</h4>
-<p class=text-uppercase><strong>Dale Bewley</strong>
-<br>Oakland
-<br>California
-<br>
-<strong>USA</strong>
-</p>
-<a href=/contact class="btn btn-small btn-template-main">Go to contact page</a>
-<hr class="hidden-md hidden-lg hidden-sm">
-</div>
-</div>
-</footer>
-<div id=copyright>
-<div class=container>
-<div class=col-md-12>
-<p class=pull-left>Copyright (c) 2021, Dale Bewley; all rights reserved.</p>
-<p class=pull-right>
-Template by <a href=https://bootstrapious.com/p/universal-business-e-commerce-template>Bootstrapious</a>.
-Ported to Hugo by <a href=https://github.com/devcows/hugo-universal-theme>DevCows</a>.
-</p>
-</div>
-</div>
-</div>
-</div>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-39TSW9349X"></script>
-<script>var doNotTrack=!1;if(!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date),gtag('config','G-39TSW9349X',{anonymize_ip:!1})}</script>
-<script src=//code.jquery.com/jquery-3.1.1.min.js integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin=anonymous></script>
+<span class=input-group-btn><button type=submit class="btn btn-template-main"><i class="fas fa-search"></i></button></span></div></form></div></div><div class="panel sidebar-menu"><div class=panel-heading><h3 class=panel-title>Tagged</h3></div><div class=panel-body><ul class=tag-cloud><li class=active><a href=/tags/etcd><i class="fas fa-tags"></i> etcd</a></li><li class=active><a href=/tags/openshift><i class="fas fa-tags"></i> openshift</a></li><li class=active><a href=/tags/OCP3><i class="fas fa-tags"></i> OCP3</a></li></ul></div></div><div class="panel sidebar-menu"><div class=panel-heading><h3 class=panel-title>TOC</h3></div><div class=panel-body><nav id=TableOfContents><ul><li><a href=#steps>Steps</a></li></ul></nav></div></div><div class="panel sidebar-menu"><div class=panel-heading><h3 class=panel-title>Tags</h3></div><div class=panel-body><ul class=tag-cloud><li><a href=/tags/AWS><i class="fas fa-tags"></i> AWS</a></li><li><a href=/tags/CDK><i class="fas fa-tags"></i> CDK</a></li><li><a href=/tags/OCP3><i class="fas fa-tags"></i> OCP3</a></li><li><a href=/tags/OCP4><i class="fas fa-tags"></i> OCP4</a></li><li><a href=/tags/RHACM><i class="fas fa-tags"></i> RHACM</a></li><li><a href=/tags/RHACS><i class="fas fa-tags"></i> RHACS</a></li><li><a href=/tags/RHEL><i class="fas fa-tags"></i> RHEL</a></li><li><a href=/tags/ansible><i class="fas fa-tags"></i> ansible</a></li><li><a href=/tags/automation><i class="fas fa-tags"></i> automation</a></li><li><a href=/tags/azure><i class="fas fa-tags"></i> azure</a></li><li><a href=/tags/debugging><i class="fas fa-tags"></i> debugging</a></li><li><a href=/tags/docker><i class="fas fa-tags"></i> docker</a></li><li><a href=/tags/draft><i class="fas fa-tags"></i> draft</a></li><li><a href=/tags/etcd><i class="fas fa-tags"></i> etcd</a></li><li><a href=/tags/git><i class="fas fa-tags"></i> git</a></li><li><a href=/tags/haproxy><i class="fas fa-tags"></i> haproxy</a></li><li><a href=/tags/heat><i class="fas fa-tags"></i> heat</a></li><li><a href=/tags/hybrid-cloud><i class="fas fa-tags"></i> hybrid-cloud</a></li><li><a href=/tags/install><i class="fas fa-tags"></i> install</a></li><li><a href=/tags/kubernetes><i class="fas fa-tags"></i> kubernetes</a></li><li><a href=/tags/mac><i class="fas fa-tags"></i> mac</a></li><li><a href=/tags/metrics><i class="fas fa-tags"></i> metrics</a></li><li><a href=/tags/migration><i class="fas fa-tags"></i> migration</a></li><li><a href=/tags/monitoring><i class="fas fa-tags"></i> monitoring</a></li><li><a href=/tags/networking><i class="fas fa-tags"></i> networking</a></li><li><a href=/tags/openshift><i class="fas fa-tags"></i> openshift</a></li><li><a href=/tags/openstack><i class="fas fa-tags"></i> openstack</a></li><li><a href=/tags/operators><i class="fas fa-tags"></i> operators</a></li><li><a href=/tags/prometheus><i class="fas fa-tags"></i> prometheus</a></li><li><a href=/tags/python><i class="fas fa-tags"></i> python</a></li><li><a href=/tags/router><i class="fas fa-tags"></i> router</a></li><li><a href=/tags/security><i class="fas fa-tags"></i> security</a></li><li><a href=/tags/ssl><i class="fas fa-tags"></i> ssl</a></li><li><a href=/tags/stackrox><i class="fas fa-tags"></i> stackrox</a></li><li><a href=/tags/storage><i class="fas fa-tags"></i> storage</a></li><li><a href=/tags/troubleshooting><i class="fas fa-tags"></i> troubleshooting</a></li><li><a href=/tags/upgrade><i class="fas fa-tags"></i> upgrade</a></li><li><a href=/tags/vagrant><i class="fas fa-tags"></i> vagrant</a></li><li><a href=/tags/virtualization><i class="fas fa-tags"></i> virtualization</a></li><li><a href=/tags/webinar><i class="fas fa-tags"></i> webinar</a></li><li><a href=/tags/windows><i class="fas fa-tags"></i> windows</a></li><li><a href=/tags/zabbix><i class="fas fa-tags"></i> zabbix</a></li><li><a href=/tags/zimbra><i class="fas fa-tags"></i> zimbra</a></li></ul></div></div></div></div></div></div><footer id=footer><div class=container><div class="col-md-4 col-sm-6"><h4>Share</h4><i class="fab fa-2x fa-twitter" title="Share this on Twitter" onclick='window.open("http://twitter.com/home?status=http://guifreelife.com/blog/2019/02/19/Downgrade-Etcd-for-OpenShift-Compatibility/")'></i>
+<i class="fab fa-2x fa-facebook" title="Share this on Facebook" onclick='window.open("http://www.facebook.com/share.php?u=http://guifreelife.com/blog/2019/02/19/Downgrade-Etcd-for-OpenShift-Compatibility/")'></i>
+<i class="fab fa-2x fa-linkedin" title="Share this on Linkedin" onclick='window.open("https://www.linkedin.com/shareArticle?mini=true&url=http://guifreelife.com/blog/2019/02/19/Downgrade-Etcd-for-OpenShift-Compatibility/&title=&summary=&source=")'></i>
+<i class="fab fa-2x fa-google-plus" title="Share this on Google Currents" onclick='window.open("https://plus.google.com/share?url=http://guifreelife.com/blog/2019/02/19/Downgrade-Etcd-for-OpenShift-Compatibility/")'></i>
+<i class="fa fa-2x fa-envelope" title="Share this through Email" onclick='window.open("mailto:?&body=http://guifreelife.com/blog/2019/02/19/Downgrade-Etcd-for-OpenShift-Compatibility/")'></i><h4>About us</h4><p>GUI Free Life is the personal, technical blog of Dale Bewley. Comments and opinions are my own and not that of my employers.</p><hr class="hidden-md hidden-lg hidden-sm"></div><div class="col-md-4 col-sm-6"><h4>Recent posts</h4><div class=blog-entries><div class="item same-height-row clearfix"><div class="image same-height-always"><a href=http://guifreelife.com/blog/2024/03/11/Placing-Open-Cluster-Management-Policies-on-Kubernetes/><img src=/images/DALL%c2%b7E%202024-01-30%2014.28.24%20-%20A%20whimsical%20scene%20featuring%20a%20traffic%20cop%20standing%20on%20a%20cloud,%20energetically%20directing%20a%20chaotic%20stream%20of%20various%20floating%20documents%20-%20papers,%20folder.png class=img-responsive alt="Using Placements to Apply Open Cluster Management Policies to Kubernetes Clusters"></a></div><div class="name same-height-always"><h5><a href=http://guifreelife.com/blog/2024/03/11/Placing-Open-Cluster-Management-Policies-on-Kubernetes/>Using Placements to Apply Open Cluster Management Policies to Kubernetes Clusters</a></h5></div></div><div class="item same-height-row clearfix"><div class="image same-height-always"><a href=http://guifreelife.com/blog/2023/09/22/Storing-OpenShift-Credentials-with-1Password/><img src=/img/banners/mushroom-moss.jpg class=img-responsive alt="Storing OpenShift Credentials with 1Password"></a></div><div class="name same-height-always"><h5><a href=http://guifreelife.com/blog/2023/09/22/Storing-OpenShift-Credentials-with-1Password/>Storing OpenShift Credentials with 1Password</a></h5></div></div><div class="item same-height-row clearfix"><div class="image same-height-always"><a href=http://guifreelife.com/blog/2023/04/06/Accessing-Ceph-CLI-with-OpenShift-Data-Foundation/><img src=/images/uncovered-bumper.png class=img-responsive alt="Accessing the Ceph CLI with OpenShift Data Foundation"></a></div><div class="name same-height-always"><h5><a href=http://guifreelife.com/blog/2023/04/06/Accessing-Ceph-CLI-with-OpenShift-Data-Foundation/>Accessing the Ceph CLI with OpenShift Data Foundation</a></h5></div></div></div><hr class="hidden-md hidden-lg"></div><div class="col-md-4 col-sm-6"><h4>Contact</h4><p class=text-uppercase><strong>Dale Bewley</strong><br>Oakland<br>California<br><strong>USA</strong></p><a href=/contact class="btn btn-small btn-template-main">Go to contact page</a><hr class="hidden-md hidden-lg hidden-sm"></div></div></footer><div id=copyright><div class=container><div class=col-md-12><p class=pull-left>Copyright (c) 2021, Dale Bewley; all rights reserved.</p><p class=pull-right>Template by <a href=https://bootstrapious.com/p/universal-business-e-commerce-template>Bootstrapious</a>.
+Ported to Hugo by <a href=https://github.com/devcows/hugo-universal-theme>DevCows</a>.</p></div></div></div></div><script async src="https://www.googletagmanager.com/gtag/js?id=G-39TSW9349X"></script>
+<script>var doNotTrack=!1;if(!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","G-39TSW9349X",{anonymize_ip:!1})}</script><script src=//code.jquery.com/jquery-3.1.1.min.js integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin=anonymous></script>
 <script src=//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js integrity=sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa crossorigin=anonymous></script>
 <script src=//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js></script>
 <script src=//cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/jquery.waypoints.min.js></script>
@@ -604,6 +173,4 @@ Ported to Hugo by <a href=https://github.com/devcows/hugo-universal-theme>DevCow
 <script src=/js/hpneo.gmaps.js></script>
 <script src=/js/gmaps.init.js></script>
 <script src=/js/front.js></script>
-<script src=/js/owl.carousel.min.js></script>
-</body>
-</html>
+<script src=/js/owl.carousel.min.js></script></body></html>

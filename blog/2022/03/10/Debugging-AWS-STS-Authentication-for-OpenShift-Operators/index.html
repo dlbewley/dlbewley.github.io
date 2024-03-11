@@ -1,661 +1,155 @@
-<!doctype html><html lang=en-us>
-<head>
-<meta charset=utf-8>
-<meta name=robots content="all,follow">
-<meta name=googlebot content="index,follow,snippet,archive">
-<meta name=viewport content="width=device-width,initial-scale=1">
-<title>Debugging AWS STS Authentication for OpenShift Operators | GUI Free Life</title>
-<meta name=author content="Dale Bewley">
-<meta name=keywords content="bewley,guifreelife,AWS,openshift,OCP4,operators,debugging">
-<meta name=description content="How to debug authentication and authorization of OpenShift pods which use fine grained AWS IAM roles in combination with AWS STS, secure token service.">
-<meta name=generator content="Hugo 0.91.2">
-<link href="//fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,500,700,800" rel=stylesheet type=text/css>
-<link rel=stylesheet href=//use.fontawesome.com/releases/v5.11.2/css/all.css>
-<link rel=stylesheet href=//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css integrity=sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u crossorigin=anonymous>
-<link href=/css/animate.css rel=stylesheet>
-<link href=/css/style.turquoise.css rel=stylesheet id=theme-stylesheet>
-<link href=/css/custom.css rel=stylesheet><!--[if lt IE 9]><script src=https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js></script>
-<script src=https://oss.maxcdn.com/respond/1.4.2/respond.min.js></script><![endif]-->
-<link rel="shortcut icon" href=/img/favicon.ico type=image/x-icon>
-<link rel=apple-touch-icon href=/img/apple-touch-icon.png>
-<link href=/css/owl.carousel.css rel=stylesheet>
-<link href=/css/owl.theme.css rel=stylesheet>
-<link rel=alternate href=http://guifreelife.com/index.xml type=application/rss+xml title="GUI Free Life">
-<meta property="og:locale" content="en_us">
-<meta property="og:site_name" content="GUI Free Life">
-<meta property="og:title" content="Debugging AWS STS Authentication for OpenShift Operators">
-<meta property="og:type" content="article">
-<meta property="og:url" content="http://guifreelife.com/blog/2022/03/10/Debugging-AWS-STS-Authentication-for-OpenShift-Operators/">
-<meta property="og:description" content="How to debug authentication and authorization of OpenShift pods which use fine grained AWS IAM roles in combination with AWS STS, secure token service.">
-<meta property="og:image" content="http://guifreelife.com/images/debug-sts-banner.jpg">
-<meta property="og:image:type" content="image/jpg">
-<meta property="og:image:width" content="500">
-<meta property="og:image:height" content="200">
-<meta property="og:updated_time" content="2022-03-10T00:00:00Z">
-<meta property="article:tag" content="AWS">
-<meta property="article:tag" content="openshift">
-<meta property="article:tag" content="OCP4">
-<meta property="article:tag" content="operators">
-<meta property="article:tag" content="debugging">
-<meta property="article:published_time" content="2022-03-10T00:00:00Z">
-<meta property="article:modified_time" content="2022-03-10T00:00:00Z">
-<meta name=twitter:card content="summary_large_image">
-<meta name=twitter:site content="@dlbewley">
-<meta name=twitter:title content="Debugging AWS STS Authentication for OpenShift Operators">
-<meta name=twitter:image content="http://guifreelife.com/images/debug-sts-banner.jpg">
-<meta name=twitter:description content="How to debug authentication and authorization of OpenShift pods which use fine grained AWS IAM roles in combination with AWS STS, secure token service.">
-</head>
-<body>
-<div id=all>
-<header class=navbar-affixed-top data-spy=affix data-offset-top=62>
-<div class="navbar navbar-default yamm" role=navigation id=navbar>
-<div class=container>
-<div class=navbar-header>
-<a class="navbar-brand home" href=/>
-<img src=/img/logo.png alt="Debugging AWS STS Authentication for OpenShift Operators logo" class="hidden-xs hidden-sm">
+<!doctype html><html lang=en-us><head><meta charset=utf-8><meta name=robots content="all,follow"><meta name=googlebot content="index,follow,snippet,archive"><meta name=viewport content="width=device-width,initial-scale=1"><title>Debugging AWS STS Authentication for OpenShift Operators | GUI Free Life</title><meta name=author content="Dale Bewley"><meta name=keywords content="bewley,guifreelife,AWS,openshift,OCP4,operators,debugging"><meta name=description content="How to debug authentication and authorization of OpenShift pods which use fine grained AWS IAM roles in combination with AWS STS, secure token service."><meta name=generator content="Hugo 0.119.0"><link href='//fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,500,700,800' rel=stylesheet type=text/css><link rel=stylesheet href=//use.fontawesome.com/releases/v5.11.2/css/all.css><link rel=stylesheet href=//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css integrity=sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u crossorigin=anonymous><link href=/css/animate.css rel=stylesheet><link href=/css/style.turquoise.css rel=stylesheet id=theme-stylesheet><link href=/css/custom.css rel=stylesheet><!--[if lt IE 9]><script src=https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js></script>
+<script src=https://oss.maxcdn.com/respond/1.4.2/respond.min.js></script><![endif]--><link rel="shortcut icon" href=/img/favicon.ico type=image/x-icon><link rel=apple-touch-icon href=/img/apple-touch-icon.png><link href=/css/owl.carousel.css rel=stylesheet><link href=/css/owl.theme.css rel=stylesheet><link rel=alternate href=http://guifreelife.com/index.xml type=application/rss+xml title="GUI Free Life"><meta property="og:locale" content="en_us"><meta property="og:site_name" content="GUI Free Life"><meta property="og:title" content="Debugging AWS STS Authentication for OpenShift Operators"><meta property="og:type" content="article"><meta property="og:url" content="http://guifreelife.com/blog/2022/03/10/Debugging-AWS-STS-Authentication-for-OpenShift-Operators/"><meta property="og:description" content="How to debug authentication and authorization of OpenShift pods which use fine grained AWS IAM roles in combination with AWS STS, secure token service."><meta property="og:image" content="http://guifreelife.com/images/debug-sts-banner.jpg"><meta property="og:image:type" content="image/jpg"><meta property="og:image:width" content="500"><meta property="og:image:height" content="200"><meta property="og:updated_time" content="2022-03-10T00:00:00Z"><meta property="article:tag" content="AWS"><meta property="article:tag" content="openshift"><meta property="article:tag" content="OCP4"><meta property="article:tag" content="operators"><meta property="article:tag" content="debugging"><meta property="article:published_time" content="2022-03-10T00:00:00Z"><meta property="article:modified_time" content="2022-03-10T00:00:00Z"><meta name=twitter:card content="summary_large_image"><meta name=twitter:site content="@dlbewley"><meta name=twitter:title content="Debugging AWS STS Authentication for OpenShift Operators"><meta name=twitter:image content="http://guifreelife.com/images/debug-sts-banner.jpg"><meta name=twitter:description content="How to debug authentication and authorization of OpenShift pods which use fine grained AWS IAM roles in combination with AWS STS, secure token service."></head><body><div id=all><header class=navbar-affixed-top data-spy=affix data-offset-top=62><div class="navbar navbar-default yamm" role=navigation id=navbar><div class=container><div class=navbar-header><a class="navbar-brand home" href=/><img src=/img/logo.png alt="Debugging AWS STS Authentication for OpenShift Operators logo" class="hidden-xs hidden-sm">
 <img src=/img/logo-small.png alt="Debugging AWS STS Authentication for OpenShift Operators logo" class="visible-xs visible-sm">
-<span class=sr-only>Debugging AWS STS Authentication for OpenShift Operators - go to homepage</span>
-</a>
-<div class=navbar-buttons>
-<button type=button class="navbar-toggle btn-template-main" data-toggle=collapse data-target=#navigation>
+<span class=sr-only>Debugging AWS STS Authentication for OpenShift Operators - go to homepage</span></a><div class=navbar-buttons><button type=button class="navbar-toggle btn-template-main" data-toggle=collapse data-target=#navigation>
 <span class=sr-only>Toggle Navigation</span>
-<i class="fas fa-align-justify"></i>
-</button>
-</div>
-</div>
-<div class="navbar-collapse collapse" id=navigation>
-<ul class="nav navbar-nav navbar-right">
-<li class=dropdown>
-<a href=/>Home</a>
-</li>
-<li class="dropdown active">
-<a href=/blog/>Blog</a>
-</li>
-<li class=dropdown>
-<a href=/contact/>Contact</a>
-</li>
-</ul>
-</div>
-<div class="collapse clearfix" id=search>
-<form class=navbar-form role=search>
-<div class=input-group>
-<input type=text class=form-control placeholder=Search>
-<span class=input-group-btn>
-<button type=submit class="btn btn-template-main"><i class="fas fa-search"></i></button>
-</span>
-</div>
-</form>
-</div>
-</div>
-</div>
-</header>
-<style>.bar.background-image-fixed-banner{background:url(/images/debug-sts-banner.jpg)50% 0 no-repeat;background-attachment:fixed;background-size:cover;padding:100px 5%;text-shadow:2px 3px 4px var(--primary-accent),0 0 1em var(--navbar-border-top)}</style>
-<div>
-<div class=container>
-<div class=row>
-<div class=col-md-12>
-<section class="bar background-image-fixed-banner heading h2 color-white text-center">
-<h1>Debugging AWS STS Authentication for OpenShift Operators</h1>
-</section>
-</div>
-</div>
-</div>
-</div>
-<div id=content>
-<div class=container>
-<div class=row>
-<div class=col-md-9 id=blog-post>
-<p class="text-muted text-uppercase mb-small text-right">
-March 10, 2022
-</p>
-<div id=post-content>
-<p>OpenShift supports granular AWS permissions for pods running cluster operators or even user applications. This enhances security by providing only the necessary privileges and nothing more. This post explores debugging authN and authZ of pods attempting to use fine grained IAM roles in combination with AWS secure token service.</p>
-<h1 id=what-is-sts-authentication>What is STS Authentication?</h1>
-<p>First some background on what <a href=https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp.html title="Temporary security credentials in IAM">Secure Token Service (STS)</a> is, and why it is a best practice.</p>
-<p>The typical method of programmatic authentication to AWS uses long lived <a href=https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html title="Managing access keys for IAM users">credentials</a> in the form of any <code>aws_access_key_id</code> and an associated <code>aws_secret_access_key</code>. If those 2 items were to be accidentally leaked, it&rsquo;s game over for your AWS bill.</p>
-<p>STS adds an ephemeral third factor in <code>aws_session_token</code>. This token will expire after a period of time, so it must be regenerated on a regular basis. In this case, these tokens are validated and refreshed by interacting with an OpenID Connect <a href=https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers.html title="Identity providers and federation">Identity Provider</a> created for use by OpenShift.</p>
-<p>OpenShift <a href=https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/#service-account-token-volume-projection title="Service Account Token Volume Projection">projects</a> these 3 factors into a pod which may then use them to authenticate and assume an IAM role appropriately authorized for the relevant AWS services.</p>
-<blockquote>
-<p>📓 <strong>OpenShift STS Authentication Process</strong>
-<figure><a href=https://docs.openshift.com/container-platform/latest/authentication/managing_cloud_provider_credentials/cco-mode-sts.html><img src=/images/sts-authn-flow.png width=100%></a><figcaption>
-<p>
-<a href=https://docs.openshift.com/container-platform/latest/authentication/managing_cloud_provider_credentials/cco-mode-sts.html>STS authentication flow</a></p>
-</figcaption>
-</figure>
-</p>
-</blockquote>
-<p>Let&rsquo;s explore this more deeply by looking an example where this process may not be working properly.</p>
-<h1 id=degraded-ingress-cluster-operator>Degraded Ingress Cluster Operator</h1>
-<p>Multiple operators interact with STS to assume fine grained roles, but we&rsquo;ll focus on the <a href=https://docs.openshift.com/container-platform/4.10/networking/ingress-operator.html title="OpenShift Container Platform Ingress Operator">Ingress operator</a>.</p>
-<p>In this example, the Ingress cluster operator status is <em>Degraded</em>. The last message indicates the controller could not find the wildcard DNS (<code>*.apps</code>) entry in Route53. Normally the Ingress operator will be the device to create this record, but it can&rsquo;t even search for it for some reason.</p>
-<pre tabindex=0><code>$ oc get co ingress
+<i class="fas fa-align-justify"></i></button></div></div><div class="navbar-collapse collapse" id=navigation><ul class="nav navbar-nav navbar-right"><li class=dropdown><a href=/>Home</a></li><li class="dropdown active"><a href=/blog/>Blog</a></li><li class=dropdown><a href=/contact/>Contact</a></li></ul></div><div class="collapse clearfix" id=search><form class=navbar-form role=search><div class=input-group><input type=text class=form-control placeholder=Search>
+<span class=input-group-btn><button type=submit class="btn btn-template-main"><i class="fas fa-search"></i></button></span></div></form></div></div></div></header><style>.bar.background-image-fixed-banner{background:url(/images/debug-sts-banner.jpg)50% 0 no-repeat;background-attachment:fixed;background-size:cover;padding:100px 5%;text-shadow:2px 3px 4px var(--primary-accent),0 0 1em var(--navbar-border-top)}</style><div><div class=container><div class=row><div class=col-md-12><section class="bar background-image-fixed-banner heading h2 color-white text-center"><h1>Debugging AWS STS Authentication for OpenShift Operators</h1></section></div></div></div></div><div id=content><div class=container><div class=row><div class=col-md-9 id=blog-post><p class="text-muted text-uppercase mb-small text-right">March 10, 2022</p><div id=post-content><p>OpenShift supports granular AWS permissions for pods running cluster operators or even user applications. This enhances security by providing only the necessary privileges and nothing more. This post explores debugging authN and authZ of pods attempting to use fine grained IAM roles in combination with AWS secure token service.</p><h1 id=what-is-sts-authentication>What is STS Authentication?</h1><p>First some background on what <a href=https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp.html title="Temporary security credentials in IAM">Secure Token Service (STS)</a> is, and why it is a best practice.</p><p>The typical method of programmatic authentication to AWS uses long lived <a href=https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html title="Managing access keys for IAM users">credentials</a> in the form of any <code>aws_access_key_id</code> and an associated <code>aws_secret_access_key</code>. If those 2 items were to be accidentally leaked, it&rsquo;s game over for your AWS bill.</p><p>STS adds an ephemeral third factor in <code>aws_session_token</code>. This token will expire after a period of time, so it must be regenerated on a regular basis. In this case, these tokens are validated and refreshed by interacting with an OpenID Connect <a href=https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers.html title="Identity providers and federation">Identity Provider</a> created for use by OpenShift.</p><p>OpenShift <a href=https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/#service-account-token-volume-projection title="Service Account Token Volume Projection">projects</a> these 3 factors into a pod which may then use them to authenticate and assume an IAM role appropriately authorized for the relevant AWS services.</p><blockquote><p>📓 <strong>OpenShift STS Authentication Process</strong><figure><a href=https://docs.openshift.com/container-platform/latest/authentication/managing_cloud_provider_credentials/cco-mode-sts.html><img src=/images/sts-authn-flow.png width=100%></a><figcaption><p><a href=https://docs.openshift.com/container-platform/latest/authentication/managing_cloud_provider_credentials/cco-mode-sts.html>STS authentication flow</a></p></figcaption></figure></p></blockquote><p>Let&rsquo;s explore this more deeply by looking an example where this process may not be working properly.</p><h1 id=degraded-ingress-cluster-operator>Degraded Ingress Cluster Operator</h1><p>Multiple operators interact with STS to assume fine grained roles, but we&rsquo;ll focus on the <a href=https://docs.openshift.com/container-platform/4.10/networking/ingress-operator.html title="OpenShift Container Platform Ingress Operator">Ingress operator</a>.</p><p>In this example, the Ingress cluster operator status is <em>Degraded</em>. The last message indicates the controller could not find the wildcard DNS (<code>*.apps</code>) entry in Route53. Normally the Ingress operator will be the device to create this record, but it can&rsquo;t even search for it for some reason.</p><pre tabindex=0><code>$ oc get co ingress
 NAME                                       VERSION   AVAILABLE   PROGRESSING   DEGRADED   SINCE   MESSAGE
 ingress                                              False       True          True       18h     ...\n\n
 
- The &quot;default&quot; ingress controller reports Available=False: IngressControllerUnavailable: One or more status conditions indicate unavailable: DNSReady=False (NoZones: The record isn't present in any zones.)
-</code></pre><h1 id=debugging-operator-sts-authentication>Debugging Operator STS Authentication</h1>
-<p>The Ingress operator needs to authenticate to interact with Route53 service. To do so it seeks to assume a role that was provisioned by the <a href=https://github.com/openshift/cloud-credential-operator title="Cloud Credential Operator">cloud-credential-operator</a>, <code>ccoctl</code>, or <a href=https://docs.openshift.com/container-platform/4.7/authentication/managing_cloud_provider_credentials/cco-mode-sts.html title="Configuring Cloud Credential Operator with STS v4.7 docs include greater detail">by hand</a>.</p>
-<p>This role is named in a secret along with the location of a secret token signed by a key trused by the OpenID Connect Provider you configured in AWS IAM.</p>
-<p>Start by describing the cluster operator (<code>oc describe co ingress</code>) but more importantly, check the logs of the ingress operator pod.</p>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc logs -n openshift-ingress-operator deployment/ingress-operator -c ingress-operator
-</code></pre></div><blockquote>
-<p>2022-02-25T17:08:36.019Z ERROR operator.init.controller-runtime.manager.controller.dns_controller controller/controller.go:253 Reconciler error {&ldquo;name&rdquo;: &ldquo;default-wildcard&rdquo;, &ldquo;namespace&rdquo;: &ldquo;openshift-ingress-operator&rdquo;, &ldquo;error&rdquo;:
+ The &#34;default&#34; ingress controller reports Available=False: IngressControllerUnavailable: One or more status conditions indicate unavailable: DNSReady=False (NoZones: The record isn&#39;t present in any zones.)
+</code></pre><h1 id=debugging-operator-sts-authentication>Debugging Operator STS Authentication</h1><p>The Ingress operator needs to authenticate to interact with Route53 service. To do so it seeks to assume a role that was provisioned by the <a href=https://github.com/openshift/cloud-credential-operator title="Cloud Credential Operator">cloud-credential-operator</a>, <code>ccoctl</code>, or <a href=https://docs.openshift.com/container-platform/4.7/authentication/managing_cloud_provider_credentials/cco-mode-sts.html title="Configuring Cloud Credential Operator with STS v4.7 docs include greater detail">by hand</a>.</p><p>This role is named in a secret along with the location of a secret token signed by a key trused by the OpenID Connect Provider you configured in AWS IAM.</p><p>Start by describing the cluster operator (<code>oc describe co ingress</code>) but more importantly, check the logs of the ingress operator pod.</p><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>$ oc logs -n openshift-ingress-operator deployment/ingress-operator -c ingress-operator
+</span></span></code></pre></div><blockquote><p>2022-02-25T17:08:36.019Z ERROR operator.init.controller-runtime.manager.controller.dns_controller controller/controller.go:253 Reconciler error {&ldquo;name&rdquo;: &ldquo;default-wildcard&rdquo;, &ldquo;namespace&rdquo;: &ldquo;openshift-ingress-operator&rdquo;, &ldquo;error&rdquo;:
 failed to create DNS provider: failed to create AWS DNS manager: failed to validate aws provider service endpoints: [failed to list route53 hosted zones: <strong>WebIdentityErr: failed to retrieve credentials caused by: InvalidIdentityToken: Couldn&rsquo;t retrieve verification key from your identity provider, please reference AssumeRoleWithWebIdentity documentation for requirements</strong>
-status code: 400, request id: 6aa3127f-e9b8-44e1-87e6-a739746f0370, &mldr;</p>
-</blockquote>
-<p>It appears the token was not verified.</p>
-<h1 id=mapping-the-operator-to-a-role>Mapping the Operator to a Role</h1>
-<p><strong>Is STS authentication and &ldquo;assume role with web identity&rdquo; working?</strong></p>
-<p>The ingress operator pod should be assuming a unique role from AWS that is more fine grained than the instance profile used by the node. In this way the pod has only the premissions it requires to interact with Route53 and ELB APIs.</p>
-<blockquote>
-<p>📓 <strong>Try to reproduce this failure by replicating what the pod is doing.</strong></p>
-<p>After copying the token you can use the <code>aws sts assume-role-with-web-identity</code> command to test with.</p>
-</blockquote>
-<p>First, gather some details from the pod&rsquo;s context. Spefically the role to be assumed, and the token to authenticate with.</p>
-<h2 id=cloud-credentials-secret>Cloud-credentials Secret</h2>
-<p>The <code>cloud-credentials</code> secret holds the <a href=https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html title="Amazon Resource Name">ARN</a> of the role which the pod should assume once authenticated, and the location of the token used to authenticate with. That token will be <a href=https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/#service-account-token-volume-projection title="Service Account Token Volume Projection">automatically</a> available.</p>
-<blockquote>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc -n openshift-ingress-operator extract secret/cloud-credentials --to=-
-<span style=color:#228b22># credentials</span>
-[default]
-<span style=color:#00688b>role_arn</span> = arn:aws:iam::1234567890:role/ocp-oidc-openshift-ingress-operator-cloud-credentials
-<span style=color:#00688b>web_identity_token_file</span> = /var/run/secrets/openshift/serviceaccount/token
-</code></pre></div><p><strong>Role ARN</strong></p>
-<p>The <code>role_arn</code> refers to the IAM role which may have been created by the <code>cloud-crendential-operator</code> or other means.</p>
-<p>Save this value to <code>$ROLE_ARN</code>.</p>
-<p><strong>JWT Token</strong></p>
-<p>The <code>web_identity_token_file</code> identifies the projected volume mount holding the JWT used to authenticate.</p>
-<p>Download a copy of this file and save the path to <code>$TOKEN</code></p>
-</blockquote>
-<h2 id=viewing-the-contents-of-the-role>Viewing the Contents of the Role</h2>
-<p>Before moving on let&rsquo;s pause and understand a bit more about the IAM role the operator seeks to assume.</p>
-<p>The definition of the IAM role used by an operator will be derived from the <code>CredentialsRequest</code> resources bundled with the operator.</p>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ <span style=color:#00688b>RELEASE_IMAGE</span>=quay.io/openshift-release-dev/ocp-release:4.9.21-x86_64
-$ mkdir -p credrequests
-$ oc adm release extract <span style=color:#cd5555>\
-</span><span style=color:#cd5555></span>    --credentials-requests --cloud=aws <span style=color:#cd5555>\
-</span><span style=color:#cd5555></span>    --to=credrequests/ <span style=color:#00688b>$RELEASE_IMAGE</span>
-
-$ cat credrequests/0000_50_cluster-ingress-operator_00-ingress-credentials-request.yaml
-</code></pre></div><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#8b008b;font-weight:700>apiVersion</span>:<span style=color:#bbb> </span>cloudcredential.openshift.io/v1<span style=color:#bbb>
-</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>kind</span>:<span style=color:#bbb> </span>CredentialsRequest<span style=color:#bbb>
-</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>metadata</span>:<span style=color:#bbb>
-</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>annotations</span>:<span style=color:#bbb>
-</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>include.release.openshift.io/ibm-cloud-managed</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;true&#34;</span><span style=color:#bbb>
-</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>include.release.openshift.io/self-managed-high-availability</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;true&#34;</span><span style=color:#bbb>
-</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>include.release.openshift.io/single-node-developer</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;true&#34;</span><span style=color:#bbb>
-</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>labels</span>:<span style=color:#bbb>
-</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>controller-tools.k8s.io</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;1.0&#34;</span><span style=color:#bbb>
-</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>openshift-ingress<span style=color:#bbb>
-</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>namespace</span>:<span style=color:#bbb> </span>openshift-cloud-credential-operator<span style=color:#bbb>
-</span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>spec</span>:<span style=color:#bbb>
-</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>providerSpec</span>:<span style=color:#bbb>
-</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>apiVersion</span>:<span style=color:#bbb> </span>cloudcredential.openshift.io/v1<span style=color:#bbb>
-</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>kind</span>:<span style=color:#bbb> </span>AWSProviderSpec<span style=color:#bbb>
-</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>statementEntries</span>:<span style=color:#bbb>
-</span><span style=color:#bbb>    </span>- <span style=color:#8b008b;font-weight:700>action</span>:<span style=color:#bbb>
-</span><span style=color:#bbb>      </span>- elasticloadbalancing:DescribeLoadBalancers<span style=color:#bbb>
-</span><span style=color:#bbb>      </span>- route53:ListHostedZones<span style=color:#bbb>
-</span><span style=color:#bbb>      </span>- route53:ChangeResourceRecordSets<span style=color:#bbb>
-</span><span style=color:#bbb>      </span>- tag:GetResources<span style=color:#bbb>
-</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>effect</span>:<span style=color:#bbb> </span>Allow<span style=color:#bbb>
-</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>resource</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#39;*&#39;</span><span style=color:#bbb>
-</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>secretRef</span>:<span style=color:#bbb>
-</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>cloud-credentials<span style=color:#bbb>
-</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>namespace</span>:<span style=color:#bbb> </span>openshift-ingress-operator<span style=color:#bbb>
-</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>serviceAccountNames</span>:<span style=color:#bbb>
-</span><span style=color:#bbb>  </span>- ingress-operator<span style=color:#bbb>
-</span></code></pre></div><h1 id=examining-the-json-web-token>Examining the JSON Web Token</h1>
-<p>The <a href=https://datatracker.ietf.org/doc/html/rfc7519 title="JSON Web Token">JWT</a> or JSON Web Token which contains <strong>3 fields</strong> delimited by a &ldquo;<strong>.</strong>&rdquo;.</p>
-<ol>
-<li>Key ID which should match the IDP Key ID. <em>Confirm this in the OIDC provider config</em></li>
-<li>Token Issuer and OpenShift service account name</li>
-<li>Cryptographic Signature</li>
-</ol>
-<p>Note the key ID (<code>kid</code>)</p>
-<blockquote>
-<p><strong>Field 1</strong></p>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ <span style=color:#658b00>export</span> <span style=color:#00688b>TOKEN</span>=/tmp/token
-$ oc  -n openshift-ingress-operator -c ingress-operator <span style=color:#cd5555>\
-</span><span style=color:#cd5555></span>       rsh deployment/ingress-operator <span style=color:#cd5555>\
-</span><span style=color:#cd5555></span>       cat /var/run/secrets/openshift/serviceaccount/token &gt; <span style=color:#00688b>$TOKEN</span>
-
-$ cat <span style=color:#00688b>$TOKEN</span> | awk -F. <span style=color:#cd5555>&#39;{ print $1 }&#39;</span> | base64 -d | jq
-</code></pre></div><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-json data-lang=json>{
-  <span style=color:#8b008b;font-weight:700>&#34;alg&#34;</span>: <span style=color:#cd5555>&#34;RS256&#34;</span>,
-  <span style=color:#8b008b;font-weight:700>&#34;kid&#34;</span>: <span style=color:#cd5555>&#34;TrJph8YY31qgQcN_KTaQspV7dY6Uks1BynN3YsoxJ5s&#34;</span>
-}
-</code></pre></div></blockquote>
-<p>In the 2nd field we want to note the audience (<code>aud</code>), the issuer (<code>iss</code>), and the service account name (<code>serviceaccount</code>) scoped by namespace.</p>
-<blockquote>
-<p><strong>Field 2</strong></p>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ cat <span style=color:#00688b>$TOKEN</span> | awk -F. <span style=color:#cd5555>&#39;{ print $2 }&#39;</span> | base64 -d | jq
-</code></pre></div><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-json data-lang=json>{
-  <span style=color:#8b008b;font-weight:700>&#34;aud&#34;</span>: [
-    <span style=color:#cd5555>&#34;openshift&#34;</span>
-  ],
-  <span style=color:#8b008b;font-weight:700>&#34;exp&#34;</span>: <span style=color:#b452cd>1642528257</span>,
-  <span style=color:#8b008b;font-weight:700>&#34;iat&#34;</span>: <span style=color:#b452cd>1642524657</span>,
-  <span style=color:#8b008b;font-weight:700>&#34;iss&#34;</span>: <span style=color:#cd5555>&#34;https://ocp-oidc-oidc.s3.us-west-2.amazonaws.com&#34;</span>,
-  <span style=color:#8b008b;font-weight:700>&#34;kubernetes.io&#34;</span>: {
-    <span style=color:#8b008b;font-weight:700>&#34;namespace&#34;</span>: <span style=color:#cd5555>&#34;openshift-ingress-operator&#34;</span>,
-    <span style=color:#8b008b;font-weight:700>&#34;pod&#34;</span>: {
-      <span style=color:#8b008b;font-weight:700>&#34;name&#34;</span>: <span style=color:#cd5555>&#34;ingress-operator-5b8c4b8d8b-8kb8b&#34;</span>,
-      <span style=color:#8b008b;font-weight:700>&#34;uid&#34;</span>: <span style=color:#cd5555>&#34;cf9ee1e6-387f-445d-b8c0-90f40ad8a174&#34;</span>
-    },
-    <span style=color:#8b008b;font-weight:700>&#34;serviceaccount&#34;</span>: {
-      <span style=color:#8b008b;font-weight:700>&#34;name&#34;</span>: <span style=color:#cd5555>&#34;ingress-operator&#34;</span>,
-      <span style=color:#8b008b;font-weight:700>&#34;uid&#34;</span>: <span style=color:#cd5555>&#34;38313504-2c4c-4d1b-92a9-c7db391a8a59&#34;</span>
-    }
-  },
-  <span style=color:#8b008b;font-weight:700>&#34;nbf&#34;</span>: <span style=color:#b452cd>1642524657</span>,
-  <span style=color:#8b008b;font-weight:700>&#34;sub&#34;</span>: <span style=color:#cd5555>&#34;system:serviceaccount:openshift-ingress-operator:ingress-operator&#34;</span>
-}
-</code></pre></div></blockquote>
-<blockquote>
-<p><strong>Field 3</strong>
-<em>Not relevant today.</em></p>
-</blockquote>
-<h2 id=verify-the-jwt-values>Verify the JWT Values</h2>
-<p>Confirm the key is recognized and the resources are publicly accessible.</p>
-<p><strong>Is the Key used to generate the token recognized by the OIDC provider in AWS?</strong></p>
-<p>You may verify the Key ID in the <a href=https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers_create_oidc.html title="Creating OpenID Connect (OIDC) identity providers">AWS OIDC provider resource</a> with the <code>kid</code> in field 1 of the token.</p>
-<h2 id=verify-openid-connect-idp-reachability>Verify OpenID Connect IDP Reachability</h2>
-<p><strong>Can you reach the IDP issuer&rsquo;s openid-configuration?</strong></p>
-<p>The configuration file MUST be publicly reachable for OIDC to function as Amazon makes the call to this resource on your behalf. <em>This must succeed on and off VPC!</em></p>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#00688b>ISSUER</span>=<span style=color:#8b008b;font-weight:700>$(</span>cat <span style=color:#00688b>$TOKEN</span> | awk -F. <span style=color:#cd5555>&#39;{ print $2 }&#39;</span> | base64 -d| jq -r .iss<span style=color:#8b008b;font-weight:700>)</span>
-<span style=color:#228b22># try this from a pod and from your laptop</span>
-curl -s <span style=color:#00688b>$ISSUER</span>/.well-known/openid-configuration || <span style=color:#658b00>echo</span> <span style=color:#cd5555>&#34;Failure&#34;</span>
-</code></pre></div><p><strong>Can you reach the IDP issuer&rsquo;s public keys?</strong></p>
-<p>The keys MUST be publicly reachable for OIDC to function as Amazon makes the call to this resource on your behalf. <em>This must succeed on and off VPC!</em></p>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#00688b>KEYS</span>=<span style=color:#8b008b;font-weight:700>$(</span>curl -s <span style=color:#00688b>$ISSUER</span>/.well-known/openid-configuration | jq -r .jwks_uri<span style=color:#8b008b;font-weight:700>)</span>
-<span style=color:#228b22># try this from a pod and from your laptop</span>
-curl -s <span style=color:#00688b>$KEYS</span> || <span style=color:#658b00>echo</span> <span style=color:#cd5555>&#34;Failure&#34;</span>
-</code></pre></div><h1 id=testing-authentication-with-the-token>Testing Authentication with the Token</h1>
-<p>Use the token to attempt to the assume the role.</p>
-<p><strong>First confirm you are authenitcated to AWS normally.</strong></p>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ aws sts get-caller-identity
-{
-    <span style=color:#cd5555>&#34;UserId&#34;</span>: <span style=color:#cd5555>&#34;AROATPFFJRK73QH4YHANK:i-07d6dbc1345299a43&#34;</span>,
-    <span style=color:#cd5555>&#34;Account&#34;</span>: <span style=color:#cd5555>&#34;1234567890&#34;</span>,
-    <span style=color:#cd5555>&#34;Arn&#34;</span>: <span style=color:#cd5555>&#34;arn:aws:sts::1234567890:assumed-role/managed-roles-ocp-BastionInstanceRole-X15RKXKW1US9/i-07d6dbc1345299a43&#34;</span>
-}
-</code></pre></div><p><strong>Can you &ldquo;assume role with web identity&rdquo; using this token?</strong></p>
-<p>Copy the token to your a host where the aws CLI is configured and available. Then do what the pod is trying to do.</p>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#228b22># Remember role_arn and token location here:</span>
-<span style=color:#228b22>#  oc -n openshift-ingress-operator extract secret/cloud-credentials --to=-</span>
-<span style=color:#658b00>echo</span> <span style=color:#00688b>$ROLE_ARN</span>
-arn:aws:iam::1234567890:role/ocp-oidc-cf-openshift-ingress-operator-cloud-credentials
-<span style=color:#658b00>echo</span> <span style=color:#00688b>$TOKEN</span>
-/tmp/token
-
-aws sts assume-role-with-web-identity <span style=color:#cd5555>\
-</span><span style=color:#cd5555></span>    --duration-seconds <span style=color:#b452cd>900</span> <span style=color:#cd5555>\
-</span><span style=color:#cd5555></span>    --role-session-name <span style=color:#cd5555>&#34;assumeroletest&#34;</span> <span style=color:#cd5555>\
-</span><span style=color:#cd5555></span>    --role-arn <span style=color:#cd5555>&#34;</span><span style=color:#00688b>$ROLE_ARN</span><span style=color:#cd5555>&#34;</span> <span style=color:#cd5555>\
-</span><span style=color:#cd5555></span>    --web-identity-token <span style=color:#cd5555>&#34;</span><span style=color:#8b008b;font-weight:700>$(</span>cat <span style=color:#00688b>$TOKEN</span><span style=color:#8b008b;font-weight:700>)</span><span style=color:#cd5555>&#34;</span>
-</code></pre></div><p>You should get back a block of JSON for success</p>
-<blockquote>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-json data-lang=json>{
-    <span style=color:#8b008b;font-weight:700>&#34;Credentials&#34;</span>: {
-        <span style=color:#8b008b;font-weight:700>&#34;AccessKeyId&#34;</span>: <span style=color:#cd5555>&#34;ASIAT...............&#34;</span>,
-        <span style=color:#8b008b;font-weight:700>&#34;SecretAccessKey&#34;</span>: <span style=color:#cd5555>&#34;cgp/a/ziU.......&#34;</span>,
-        <span style=color:#8b008b;font-weight:700>&#34;SessionToken&#34;</span>: <span style=color:#cd5555>&#34;IQoJb3JpZ2luX2VjE..&#34;</span>,
-        <span style=color:#8b008b;font-weight:700>&#34;Expiration&#34;</span>: <span style=color:#cd5555>&#34;2022-02-25T22:09:33+00:00&#34;</span>
-    },
-    <span style=color:#8b008b;font-weight:700>&#34;SubjectFromWebIdentityToken&#34;</span>: <span style=color:#cd5555>&#34;system:serviceaccount:openshift-ingress-operator:ingress-operator&#34;</span>,
-    <span style=color:#8b008b;font-weight:700>&#34;AssumedRoleUser&#34;</span>: {
-        <span style=color:#8b008b;font-weight:700>&#34;AssumedRoleId&#34;</span>: <span style=color:#cd5555>&#34;AROATPFFJRK72IHENLQ7D:assumeroletest&#34;</span>,
-        <span style=color:#8b008b;font-weight:700>&#34;Arn&#34;</span>: <span style=color:#cd5555>&#34;arn:aws:sts::1234567890:assumed-role/ocp-oidc-cf-openshift-ingress-operator-cloud-credentials/assumeroletest&#34;</span>
-    },
-    <span style=color:#8b008b;font-weight:700>&#34;Provider&#34;</span>: <span style=color:#cd5555>&#34;arn:aws:iam::1234567890:oidc-provider/ocp-oidc-oidc.s3.us-west-2.amazonaws.com&#34;</span>,
-    <span style=color:#8b008b;font-weight:700>&#34;Audience&#34;</span>: <span style=color:#cd5555>&#34;openshift&#34;</span>
-}
-</code></pre></div></blockquote>
-<p>If you see an error like this, your pod can not authenticate or isn&rsquo;t authorized to assume the role.</p>
-<blockquote>
-<p>An error occurred (InvalidIdentityToken) when calling the AssumeRoleWithWebIdentity operation: Couldn&rsquo;t retrieve verification key from your identity provider, please reference AssumeRoleWithWebIdentity documentation for requirements</p>
-</blockquote>
-<h1 id=possible-failures>Possible Failures</h1>
-<ul>
-<li>Are the openid-configuration and the keys publicly reachable by https? Remember this does not HAVE to be S3. If your S3 may only be private then you could use Cloudfront to expose the bucket.</li>
-<li>Is the key id in the token the same as configured in the OIDC IDP?</li>
-<li>Is the openid-configuration pointing to the right URL for the keys?</li>
-<li>Is the audience in the token the same as configured in the OIDC IDP? The identity provider should have &lsquo;sts.amazonaws.com&rsquo; and &lsquo;openshift&rsquo; audiences.</li>
-<li>Was <code>credentialsMode</code> set to <em>manual</em> at OpenShift install time?</li>
-<li>Does the token service account match the trust relationship on the role? Notice the namespace and service account names</li>
-</ul>
-<blockquote>
-<p><strong>IAM Role Trust Relationship</strong> Note service account in the condition</p>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-json data-lang=json>{
-    <span style=color:#8b008b;font-weight:700>&#34;Version&#34;</span>: <span style=color:#cd5555>&#34;2012-10-17&#34;</span>,
-    <span style=color:#8b008b;font-weight:700>&#34;Statement&#34;</span>: [
-        {
-            <span style=color:#8b008b;font-weight:700>&#34;Effect&#34;</span>: <span style=color:#cd5555>&#34;Allow&#34;</span>,
-            <span style=color:#8b008b;font-weight:700>&#34;Principal&#34;</span>: {
-                <span style=color:#8b008b;font-weight:700>&#34;Federated&#34;</span>: <span style=color:#cd5555>&#34;arn:aws:iam::1234567890:oidc-provider/ocp-oidc-oidc.s3.us-west-2.amazonaws.com&#34;</span>
-            },
-            <span style=color:#8b008b;font-weight:700>&#34;Action&#34;</span>: <span style=color:#cd5555>&#34;sts:AssumeRoleWithWebIdentity&#34;</span>,
-            <span style=color:#8b008b;font-weight:700>&#34;Condition&#34;</span>: {
-                <span style=color:#8b008b;font-weight:700>&#34;StringEquals&#34;</span>: {
-                    <span style=color:#8b008b;font-weight:700>&#34;ocp-oidc-oidc.s3.us-west-2.amazonaws.com:sub&#34;</span>: <span style=color:#cd5555>&#34;system:serviceaccount:openshift-ingress-operator:ingress-operator&#34;</span>
-                }
-            }
-        }
-    ]
-}
-</code></pre></div></blockquote>
-<h1 id=references>References</h1>
-<ul>
-<li><a href=https://cloud.redhat.com/blog/fine-grained-iam-roles-for-openshift-applications title="Fine Grained IAM Roles for OpenShift Applications">Fine Grained IAM Roles for OpenShift Applications</a> <em>Red Hat</em></li>
-<li><a href=https://datatracker.ietf.org/doc/html/rfc7519 title="JSON Web Token">JSON Web Token</a> <em>IETF</em></li>
-<li><a href=https://blog.mikesir87.io/2020/09/eks-pod-identity-webhook-deep-dive/ title="EKS Pod Identity Webhook Deep-Dive">EKS Pod Identity Webhook Deep-Dive</a> <em>Mikesir87</em></li>
-<li><a href=https://github.com/openshift/cloud-credential-operator title="Cloud Credential Operator">Cloud Credential Operator</a> <em>Github</em></li>
-<li><a href=https://docs.openshift.com/container-platform/latest/authentication/managing_cloud_provider_credentials/cco-mode-sts.html title="Configuring Cloud Credential Operator with STS">Configuring OpenShift Cloud Crendential Operator</a>, See <a href=https://docs.openshift.com/container-platform/4.7/authentication/managing_cloud_provider_credentials/cco-mode-sts.html title="Configuring Cloud Credential Operator with STS v4.7 docs include greater detail">v4.7 docs</a> for greater detail that is automated by <code>ccoctl</code> in later versions</li>
-<li><a href=https://aws.amazon.com/blogs/opensource/introducing-fine-grained-iam-roles-service-accounts/ title="Introducing fine-grained IAM roles for service accounts">Introducing fine-grained IAM roles for service accounts</a> <em>AWS</em></li>
-<li><a href=https://docs.aws.amazon.com/eks/latest/userguide/iam-roles-for-service-accounts-technical-overview.html title="IAM roles for service accounts">IAM roles for EKS service accounts</a> <em>AWS</em></li>
-<li><a href=https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp.html title="Temporary security credentials in IAM">Temporary security credentials in IAM</a> <em>AWS</em></li>
-<li><a href=https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html title="Managing access keys for IAM users">Managing access keys for IAM users</a> <em>AWS</em></li>
-<li><a href=https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers.html title="Identity providers and federation">Creating OpenID Connect (OIDC) identity providers</a> <em>AWS</em></li>
-<li><a href=https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/#service-account-token-volume-projection title="Service Account Token Volume Projection">Service Account Token Volume Projection</a> <em>Kubernetes</em></li>
-</ul>
-</div>
-<div id=comments>
-<div id=disqus_thread></div>
-<script type=application/javascript>var disqus_config=function(){};(function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById('disqus_thread').innerHTML='Disqus comments not available by default when the website is previewed locally.';return}var b=document,a=b.createElement('script');a.async=!0,a.src='//dlbewleygithubio.disqus.com/embed.js',a.setAttribute('data-timestamp',+new Date),(b.head||b.body).appendChild(a)})()</script>
-<noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript>
-<a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a>
-</div>
-</div>
-<div class=col-md-3>
-<div class="panel panel-default sidebar-menu">
-<div class=panel-heading>
-<h3 class=panel-title>Search</h3>
-</div>
-<div class=panel-body>
-<form action=//google.com/search method=get accept-charset=utf-8 role=search>
-<div class=input-group>
-<input type=search name=q class=form-control placeholder=Search>
+status code: 400, request id: 6aa3127f-e9b8-44e1-87e6-a739746f0370, &mldr;</p></blockquote><p>It appears the token was not verified.</p><h1 id=mapping-the-operator-to-a-role>Mapping the Operator to a Role</h1><p><strong>Is STS authentication and &ldquo;assume role with web identity&rdquo; working?</strong></p><p>The ingress operator pod should be assuming a unique role from AWS that is more fine grained than the instance profile used by the node. In this way the pod has only the premissions it requires to interact with Route53 and ELB APIs.</p><blockquote><p>📓 <strong>Try to reproduce this failure by replicating what the pod is doing.</strong></p><p>After copying the token you can use the <code>aws sts assume-role-with-web-identity</code> command to test with.</p></blockquote><p>First, gather some details from the pod&rsquo;s context. Spefically the role to be assumed, and the token to authenticate with.</p><h2 id=cloud-credentials-secret>Cloud-credentials Secret</h2><p>The <code>cloud-credentials</code> secret holds the <a href=https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html title="Amazon Resource Name">ARN</a> of the role which the pod should assume once authenticated, and the location of the token used to authenticate with. That token will be <a href=https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/#service-account-token-volume-projection title="Service Account Token Volume Projection">automatically</a> available.</p><blockquote><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>$ oc -n openshift-ingress-operator extract secret/cloud-credentials --to=-
+</span></span><span style=display:flex><span><span style=color:#228b22># credentials</span>
+</span></span><span style=display:flex><span>[default]
+</span></span><span style=display:flex><span><span style=color:#00688b>role_arn</span> = arn:aws:iam::1234567890:role/ocp-oidc-openshift-ingress-operator-cloud-credentials
+</span></span><span style=display:flex><span><span style=color:#00688b>web_identity_token_file</span> = /var/run/secrets/openshift/serviceaccount/token
+</span></span></code></pre></div><p><strong>Role ARN</strong></p><p>The <code>role_arn</code> refers to the IAM role which may have been created by the <code>cloud-crendential-operator</code> or other means.</p><p>Save this value to <code>$ROLE_ARN</code>.</p><p><strong>JWT Token</strong></p><p>The <code>web_identity_token_file</code> identifies the projected volume mount holding the JWT used to authenticate.</p><p>Download a copy of this file and save the path to <code>$TOKEN</code></p></blockquote><h2 id=viewing-the-contents-of-the-role>Viewing the Contents of the Role</h2><p>Before moving on let&rsquo;s pause and understand a bit more about the IAM role the operator seeks to assume.</p><p>The definition of the IAM role used by an operator will be derived from the <code>CredentialsRequest</code> resources bundled with the operator.</p><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>$ <span style=color:#00688b>RELEASE_IMAGE</span>=quay.io/openshift-release-dev/ocp-release:4.9.21-x86_64
+</span></span><span style=display:flex><span>$ mkdir -p credrequests
+</span></span><span style=display:flex><span>$ oc adm release extract <span style=color:#cd5555>\
+</span></span></span><span style=display:flex><span><span style=color:#cd5555></span>    --credentials-requests --cloud=aws <span style=color:#cd5555>\
+</span></span></span><span style=display:flex><span><span style=color:#cd5555></span>    --to=credrequests/ <span style=color:#00688b>$RELEASE_IMAGE</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>$ cat credrequests/0000_50_cluster-ingress-operator_00-ingress-credentials-request.yaml
+</span></span></code></pre></div><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=display:flex><span><span style=color:#8b008b;font-weight:700>apiVersion</span>:<span style=color:#bbb> </span>cloudcredential.openshift.io/v1<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>kind</span>:<span style=color:#bbb> </span>CredentialsRequest<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>metadata</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>annotations</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>include.release.openshift.io/ibm-cloud-managed</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;true&#34;</span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>include.release.openshift.io/self-managed-high-availability</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;true&#34;</span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>include.release.openshift.io/single-node-developer</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;true&#34;</span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>labels</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>controller-tools.k8s.io</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;1.0&#34;</span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>openshift-ingress<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>namespace</span>:<span style=color:#bbb> </span>openshift-cloud-credential-operator<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb></span><span style=color:#8b008b;font-weight:700>spec</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>providerSpec</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>apiVersion</span>:<span style=color:#bbb> </span>cloudcredential.openshift.io/v1<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>kind</span>:<span style=color:#bbb> </span>AWSProviderSpec<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>statementEntries</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>    </span>- <span style=color:#8b008b;font-weight:700>action</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>      </span>- elasticloadbalancing:DescribeLoadBalancers<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>      </span>- route53:ListHostedZones<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>      </span>- route53:ChangeResourceRecordSets<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>      </span>- tag:GetResources<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>effect</span>:<span style=color:#bbb> </span>Allow<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>resource</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#39;*&#39;</span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>secretRef</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>cloud-credentials<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>namespace</span>:<span style=color:#bbb> </span>openshift-ingress-operator<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>serviceAccountNames</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>  </span>- ingress-operator<span style=color:#bbb>
+</span></span></span></code></pre></div><h1 id=examining-the-json-web-token>Examining the JSON Web Token</h1><p>The <a href=https://datatracker.ietf.org/doc/html/rfc7519 title="JSON Web Token">JWT</a> or JSON Web Token which contains <strong>3 fields</strong> delimited by a &ldquo;<strong>.</strong>&rdquo;.</p><ol><li>Key ID which should match the IDP Key ID. <em>Confirm this in the OIDC provider config</em></li><li>Token Issuer and OpenShift service account name</li><li>Cryptographic Signature</li></ol><p>Note the key ID (<code>kid</code>)</p><blockquote><p><strong>Field 1</strong></p><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>$ <span style=color:#658b00>export</span> <span style=color:#00688b>TOKEN</span>=/tmp/token
+</span></span><span style=display:flex><span>$ oc  -n openshift-ingress-operator -c ingress-operator <span style=color:#cd5555>\
+</span></span></span><span style=display:flex><span><span style=color:#cd5555></span>       rsh deployment/ingress-operator <span style=color:#cd5555>\
+</span></span></span><span style=display:flex><span><span style=color:#cd5555></span>       cat /var/run/secrets/openshift/serviceaccount/token &gt; <span style=color:#00688b>$TOKEN</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>$ cat <span style=color:#00688b>$TOKEN</span> | awk -F. <span style=color:#cd5555>&#39;{ print $1 }&#39;</span> | base64 -d | jq
+</span></span></code></pre></div><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-json data-lang=json><span style=display:flex><span>{
+</span></span><span style=display:flex><span>  <span style=color:#8b008b;font-weight:700>&#34;alg&#34;</span>: <span style=color:#cd5555>&#34;RS256&#34;</span>,
+</span></span><span style=display:flex><span>  <span style=color:#8b008b;font-weight:700>&#34;kid&#34;</span>: <span style=color:#cd5555>&#34;TrJph8YY31qgQcN_KTaQspV7dY6Uks1BynN3YsoxJ5s&#34;</span>
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div></blockquote><p>In the 2nd field we want to note the audience (<code>aud</code>), the issuer (<code>iss</code>), and the service account name (<code>serviceaccount</code>) scoped by namespace.</p><blockquote><p><strong>Field 2</strong></p><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>$ cat <span style=color:#00688b>$TOKEN</span> | awk -F. <span style=color:#cd5555>&#39;{ print $2 }&#39;</span> | base64 -d | jq
+</span></span></code></pre></div><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-json data-lang=json><span style=display:flex><span>{
+</span></span><span style=display:flex><span>  <span style=color:#8b008b;font-weight:700>&#34;aud&#34;</span>: [
+</span></span><span style=display:flex><span>    <span style=color:#cd5555>&#34;openshift&#34;</span>
+</span></span><span style=display:flex><span>  ],
+</span></span><span style=display:flex><span>  <span style=color:#8b008b;font-weight:700>&#34;exp&#34;</span>: <span style=color:#b452cd>1642528257</span>,
+</span></span><span style=display:flex><span>  <span style=color:#8b008b;font-weight:700>&#34;iat&#34;</span>: <span style=color:#b452cd>1642524657</span>,
+</span></span><span style=display:flex><span>  <span style=color:#8b008b;font-weight:700>&#34;iss&#34;</span>: <span style=color:#cd5555>&#34;https://ocp-oidc-oidc.s3.us-west-2.amazonaws.com&#34;</span>,
+</span></span><span style=display:flex><span>  <span style=color:#8b008b;font-weight:700>&#34;kubernetes.io&#34;</span>: {
+</span></span><span style=display:flex><span>    <span style=color:#8b008b;font-weight:700>&#34;namespace&#34;</span>: <span style=color:#cd5555>&#34;openshift-ingress-operator&#34;</span>,
+</span></span><span style=display:flex><span>    <span style=color:#8b008b;font-weight:700>&#34;pod&#34;</span>: {
+</span></span><span style=display:flex><span>      <span style=color:#8b008b;font-weight:700>&#34;name&#34;</span>: <span style=color:#cd5555>&#34;ingress-operator-5b8c4b8d8b-8kb8b&#34;</span>,
+</span></span><span style=display:flex><span>      <span style=color:#8b008b;font-weight:700>&#34;uid&#34;</span>: <span style=color:#cd5555>&#34;cf9ee1e6-387f-445d-b8c0-90f40ad8a174&#34;</span>
+</span></span><span style=display:flex><span>    },
+</span></span><span style=display:flex><span>    <span style=color:#8b008b;font-weight:700>&#34;serviceaccount&#34;</span>: {
+</span></span><span style=display:flex><span>      <span style=color:#8b008b;font-weight:700>&#34;name&#34;</span>: <span style=color:#cd5555>&#34;ingress-operator&#34;</span>,
+</span></span><span style=display:flex><span>      <span style=color:#8b008b;font-weight:700>&#34;uid&#34;</span>: <span style=color:#cd5555>&#34;38313504-2c4c-4d1b-92a9-c7db391a8a59&#34;</span>
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>  },
+</span></span><span style=display:flex><span>  <span style=color:#8b008b;font-weight:700>&#34;nbf&#34;</span>: <span style=color:#b452cd>1642524657</span>,
+</span></span><span style=display:flex><span>  <span style=color:#8b008b;font-weight:700>&#34;sub&#34;</span>: <span style=color:#cd5555>&#34;system:serviceaccount:openshift-ingress-operator:ingress-operator&#34;</span>
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div></blockquote><blockquote><p><strong>Field 3</strong>
+<em>Not relevant today.</em></p></blockquote><h2 id=verify-the-jwt-values>Verify the JWT Values</h2><p>Confirm the key is recognized and the resources are publicly accessible.</p><p><strong>Is the Key used to generate the token recognized by the OIDC provider in AWS?</strong></p><p>You may verify the Key ID in the <a href=https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers_create_oidc.html title="Creating OpenID Connect (OIDC) identity providers">AWS OIDC provider resource</a> with the <code>kid</code> in field 1 of the token.</p><h2 id=verify-openid-connect-idp-reachability>Verify OpenID Connect IDP Reachability</h2><p><strong>Can you reach the IDP issuer&rsquo;s openid-configuration?</strong></p><p>The configuration file MUST be publicly reachable for OIDC to function as Amazon makes the call to this resource on your behalf. <em>This must succeed on and off VPC!</em></p><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#00688b>ISSUER</span>=<span style=color:#8b008b;font-weight:700>$(</span>cat <span style=color:#00688b>$TOKEN</span> | awk -F. <span style=color:#cd5555>&#39;{ print $2 }&#39;</span> | base64 -d| jq -r .iss<span style=color:#8b008b;font-weight:700>)</span>
+</span></span><span style=display:flex><span><span style=color:#228b22># try this from a pod and from your laptop</span>
+</span></span><span style=display:flex><span>curl -s <span style=color:#00688b>$ISSUER</span>/.well-known/openid-configuration || <span style=color:#658b00>echo</span> <span style=color:#cd5555>&#34;Failure&#34;</span>
+</span></span></code></pre></div><p><strong>Can you reach the IDP issuer&rsquo;s public keys?</strong></p><p>The keys MUST be publicly reachable for OIDC to function as Amazon makes the call to this resource on your behalf. <em>This must succeed on and off VPC!</em></p><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#00688b>KEYS</span>=<span style=color:#8b008b;font-weight:700>$(</span>curl -s <span style=color:#00688b>$ISSUER</span>/.well-known/openid-configuration | jq -r .jwks_uri<span style=color:#8b008b;font-weight:700>)</span>
+</span></span><span style=display:flex><span><span style=color:#228b22># try this from a pod and from your laptop</span>
+</span></span><span style=display:flex><span>curl -s <span style=color:#00688b>$KEYS</span> || <span style=color:#658b00>echo</span> <span style=color:#cd5555>&#34;Failure&#34;</span>
+</span></span></code></pre></div><h1 id=testing-authentication-with-the-token>Testing Authentication with the Token</h1><p>Use the token to attempt to the assume the role.</p><p><strong>First confirm you are authenitcated to AWS normally.</strong></p><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>$ aws sts get-caller-identity
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#cd5555>&#34;UserId&#34;</span>: <span style=color:#cd5555>&#34;AROATPFFJRK73QH4YHANK:i-07d6dbc1345299a43&#34;</span>,
+</span></span><span style=display:flex><span>    <span style=color:#cd5555>&#34;Account&#34;</span>: <span style=color:#cd5555>&#34;1234567890&#34;</span>,
+</span></span><span style=display:flex><span>    <span style=color:#cd5555>&#34;Arn&#34;</span>: <span style=color:#cd5555>&#34;arn:aws:sts::1234567890:assumed-role/managed-roles-ocp-BastionInstanceRole-X15RKXKW1US9/i-07d6dbc1345299a43&#34;</span>
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p><strong>Can you &ldquo;assume role with web identity&rdquo; using this token?</strong></p><p>Copy the token to your a host where the aws CLI is configured and available. Then do what the pod is trying to do.</p><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#228b22># Remember role_arn and token location here:</span>
+</span></span><span style=display:flex><span><span style=color:#228b22>#  oc -n openshift-ingress-operator extract secret/cloud-credentials --to=-</span>
+</span></span><span style=display:flex><span><span style=color:#658b00>echo</span> <span style=color:#00688b>$ROLE_ARN</span>
+</span></span><span style=display:flex><span>arn:aws:iam::1234567890:role/ocp-oidc-cf-openshift-ingress-operator-cloud-credentials
+</span></span><span style=display:flex><span><span style=color:#658b00>echo</span> <span style=color:#00688b>$TOKEN</span>
+</span></span><span style=display:flex><span>/tmp/token
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>aws sts assume-role-with-web-identity <span style=color:#cd5555>\
+</span></span></span><span style=display:flex><span><span style=color:#cd5555></span>    --duration-seconds <span style=color:#b452cd>900</span> <span style=color:#cd5555>\
+</span></span></span><span style=display:flex><span><span style=color:#cd5555></span>    --role-session-name <span style=color:#cd5555>&#34;assumeroletest&#34;</span> <span style=color:#cd5555>\
+</span></span></span><span style=display:flex><span><span style=color:#cd5555></span>    --role-arn <span style=color:#cd5555>&#34;</span><span style=color:#00688b>$ROLE_ARN</span><span style=color:#cd5555>&#34;</span> <span style=color:#cd5555>\
+</span></span></span><span style=display:flex><span><span style=color:#cd5555></span>    --web-identity-token <span style=color:#cd5555>&#34;</span><span style=color:#8b008b;font-weight:700>$(</span>cat <span style=color:#00688b>$TOKEN</span><span style=color:#8b008b;font-weight:700>)</span><span style=color:#cd5555>&#34;</span>
+</span></span></code></pre></div><p>You should get back a block of JSON for success</p><blockquote><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-json data-lang=json><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#8b008b;font-weight:700>&#34;Credentials&#34;</span>: {
+</span></span><span style=display:flex><span>        <span style=color:#8b008b;font-weight:700>&#34;AccessKeyId&#34;</span>: <span style=color:#cd5555>&#34;ASIAT...............&#34;</span>,
+</span></span><span style=display:flex><span>        <span style=color:#8b008b;font-weight:700>&#34;SecretAccessKey&#34;</span>: <span style=color:#cd5555>&#34;cgp/a/ziU.......&#34;</span>,
+</span></span><span style=display:flex><span>        <span style=color:#8b008b;font-weight:700>&#34;SessionToken&#34;</span>: <span style=color:#cd5555>&#34;IQoJb3JpZ2luX2VjE..&#34;</span>,
+</span></span><span style=display:flex><span>        <span style=color:#8b008b;font-weight:700>&#34;Expiration&#34;</span>: <span style=color:#cd5555>&#34;2022-02-25T22:09:33+00:00&#34;</span>
+</span></span><span style=display:flex><span>    },
+</span></span><span style=display:flex><span>    <span style=color:#8b008b;font-weight:700>&#34;SubjectFromWebIdentityToken&#34;</span>: <span style=color:#cd5555>&#34;system:serviceaccount:openshift-ingress-operator:ingress-operator&#34;</span>,
+</span></span><span style=display:flex><span>    <span style=color:#8b008b;font-weight:700>&#34;AssumedRoleUser&#34;</span>: {
+</span></span><span style=display:flex><span>        <span style=color:#8b008b;font-weight:700>&#34;AssumedRoleId&#34;</span>: <span style=color:#cd5555>&#34;AROATPFFJRK72IHENLQ7D:assumeroletest&#34;</span>,
+</span></span><span style=display:flex><span>        <span style=color:#8b008b;font-weight:700>&#34;Arn&#34;</span>: <span style=color:#cd5555>&#34;arn:aws:sts::1234567890:assumed-role/ocp-oidc-cf-openshift-ingress-operator-cloud-credentials/assumeroletest&#34;</span>
+</span></span><span style=display:flex><span>    },
+</span></span><span style=display:flex><span>    <span style=color:#8b008b;font-weight:700>&#34;Provider&#34;</span>: <span style=color:#cd5555>&#34;arn:aws:iam::1234567890:oidc-provider/ocp-oidc-oidc.s3.us-west-2.amazonaws.com&#34;</span>,
+</span></span><span style=display:flex><span>    <span style=color:#8b008b;font-weight:700>&#34;Audience&#34;</span>: <span style=color:#cd5555>&#34;openshift&#34;</span>
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div></blockquote><p>If you see an error like this, your pod can not authenticate or isn&rsquo;t authorized to assume the role.</p><blockquote><p>An error occurred (InvalidIdentityToken) when calling the AssumeRoleWithWebIdentity operation: Couldn&rsquo;t retrieve verification key from your identity provider, please reference AssumeRoleWithWebIdentity documentation for requirements</p></blockquote><h1 id=possible-failures>Possible Failures</h1><ul><li>Are the openid-configuration and the keys publicly reachable by https? Remember this does not HAVE to be S3. If your S3 may only be private then you could use Cloudfront to expose the bucket.</li><li>Is the key id in the token the same as configured in the OIDC IDP?</li><li>Is the openid-configuration pointing to the right URL for the keys?</li><li>Is the audience in the token the same as configured in the OIDC IDP? The identity provider should have &lsquo;sts.amazonaws.com&rsquo; and &lsquo;openshift&rsquo; audiences.</li><li>Was <code>credentialsMode</code> set to <em>manual</em> at OpenShift install time?</li><li>Does the token service account match the trust relationship on the role? Notice the namespace and service account names</li></ul><blockquote><p><strong>IAM Role Trust Relationship</strong> Note service account in the condition</p><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-json data-lang=json><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#8b008b;font-weight:700>&#34;Version&#34;</span>: <span style=color:#cd5555>&#34;2012-10-17&#34;</span>,
+</span></span><span style=display:flex><span>    <span style=color:#8b008b;font-weight:700>&#34;Statement&#34;</span>: [
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            <span style=color:#8b008b;font-weight:700>&#34;Effect&#34;</span>: <span style=color:#cd5555>&#34;Allow&#34;</span>,
+</span></span><span style=display:flex><span>            <span style=color:#8b008b;font-weight:700>&#34;Principal&#34;</span>: {
+</span></span><span style=display:flex><span>                <span style=color:#8b008b;font-weight:700>&#34;Federated&#34;</span>: <span style=color:#cd5555>&#34;arn:aws:iam::1234567890:oidc-provider/ocp-oidc-oidc.s3.us-west-2.amazonaws.com&#34;</span>
+</span></span><span style=display:flex><span>            },
+</span></span><span style=display:flex><span>            <span style=color:#8b008b;font-weight:700>&#34;Action&#34;</span>: <span style=color:#cd5555>&#34;sts:AssumeRoleWithWebIdentity&#34;</span>,
+</span></span><span style=display:flex><span>            <span style=color:#8b008b;font-weight:700>&#34;Condition&#34;</span>: {
+</span></span><span style=display:flex><span>                <span style=color:#8b008b;font-weight:700>&#34;StringEquals&#34;</span>: {
+</span></span><span style=display:flex><span>                    <span style=color:#8b008b;font-weight:700>&#34;ocp-oidc-oidc.s3.us-west-2.amazonaws.com:sub&#34;</span>: <span style=color:#cd5555>&#34;system:serviceaccount:openshift-ingress-operator:ingress-operator&#34;</span>
+</span></span><span style=display:flex><span>                }
+</span></span><span style=display:flex><span>            }
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>    ]
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div></blockquote><h1 id=references>References</h1><ul><li><a href=https://cloud.redhat.com/blog/fine-grained-iam-roles-for-openshift-applications title="Fine Grained IAM Roles for OpenShift Applications">Fine Grained IAM Roles for OpenShift Applications</a> <em>Red Hat</em></li><li><a href=https://datatracker.ietf.org/doc/html/rfc7519 title="JSON Web Token">JSON Web Token</a> <em>IETF</em></li><li><a href=https://blog.mikesir87.io/2020/09/eks-pod-identity-webhook-deep-dive/ title="EKS Pod Identity Webhook Deep-Dive">EKS Pod Identity Webhook Deep-Dive</a> <em>Mikesir87</em></li><li><a href=https://github.com/openshift/cloud-credential-operator title="Cloud Credential Operator">Cloud Credential Operator</a> <em>Github</em></li><li><a href=https://docs.openshift.com/container-platform/latest/authentication/managing_cloud_provider_credentials/cco-mode-sts.html title="Configuring Cloud Credential Operator with STS">Configuring OpenShift Cloud Crendential Operator</a>, See <a href=https://docs.openshift.com/container-platform/4.7/authentication/managing_cloud_provider_credentials/cco-mode-sts.html title="Configuring Cloud Credential Operator with STS v4.7 docs include greater detail">v4.7 docs</a> for greater detail that is automated by <code>ccoctl</code> in later versions</li><li><a href=https://aws.amazon.com/blogs/opensource/introducing-fine-grained-iam-roles-service-accounts/ title="Introducing fine-grained IAM roles for service accounts">Introducing fine-grained IAM roles for service accounts</a> <em>AWS</em></li><li><a href=https://docs.aws.amazon.com/eks/latest/userguide/iam-roles-for-service-accounts-technical-overview.html title="IAM roles for service accounts">IAM roles for EKS service accounts</a> <em>AWS</em></li><li><a href=https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp.html title="Temporary security credentials in IAM">Temporary security credentials in IAM</a> <em>AWS</em></li><li><a href=https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html title="Managing access keys for IAM users">Managing access keys for IAM users</a> <em>AWS</em></li><li><a href=https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers.html title="Identity providers and federation">Creating OpenID Connect (OIDC) identity providers</a> <em>AWS</em></li><li><a href=https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/#service-account-token-volume-projection title="Service Account Token Volume Projection">Service Account Token Volume Projection</a> <em>Kubernetes</em></li></ul></div><div id=comments><div id=disqus_thread></div><script type=application/javascript>window.disqus_config=function(){},function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById("disqus_thread").innerHTML="Disqus comments not available by default when the website is previewed locally.";return}var t=document,e=t.createElement("script");e.async=!0,e.src="//dlbewleygithubio.disqus.com/embed.js",e.setAttribute("data-timestamp",+new Date),(t.head||t.body).appendChild(e)}()</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript><a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a></div></div><div class=col-md-3><div class="panel panel-default sidebar-menu"><div class=panel-heading><h3 class=panel-title>Search</h3></div><div class=panel-body><form action=//google.com/search method=get accept-charset=utf-8 role=search><div class=input-group><input type=search name=q class=form-control placeholder=Search>
 <input type=hidden name=sitesearch value=http://guifreelife.com/>
-<span class=input-group-btn>
-<button type=submit class="btn btn-template-main"><i class="fas fa-search"></i></button>
-</span>
-</div>
-</form>
-</div>
-</div>
-<div class="panel sidebar-menu">
-<div class=panel-heading>
-<h3 class=panel-title>Tagged</h3>
-</div>
-<div class=panel-body>
-<ul class=tag-cloud>
-<li class=active>
-<a href=/tags/AWS><i class="fas fa-tags"></i> AWS</a>
-</li>
-<li class=active>
-<a href=/tags/openshift><i class="fas fa-tags"></i> openshift</a>
-</li>
-<li class=active>
-<a href=/tags/OCP4><i class="fas fa-tags"></i> OCP4</a>
-</li>
-<li class=active>
-<a href=/tags/operators><i class="fas fa-tags"></i> operators</a>
-</li>
-<li class=active>
-<a href=/tags/debugging><i class="fas fa-tags"></i> debugging</a>
-</li>
-</ul>
-</div>
-</div>
-<div class="panel sidebar-menu">
-<div class=panel-heading>
-<h3 class=panel-title>TOC</h3>
-</div>
-<div class=panel-body>
-<nav id=TableOfContents>
-<ul>
-<li><a href=#what-is-sts-authentication>What is STS Authentication?</a></li>
-<li><a href=#degraded-ingress-cluster-operator>Degraded Ingress Cluster Operator</a></li>
-<li><a href=#debugging-operator-sts-authentication>Debugging Operator STS Authentication</a></li>
-<li><a href=#mapping-the-operator-to-a-role>Mapping the Operator to a Role</a>
-<ul>
-<li><a href=#cloud-credentials-secret>Cloud-credentials Secret</a></li>
-<li><a href=#viewing-the-contents-of-the-role>Viewing the Contents of the Role</a></li>
-</ul>
-</li>
-<li><a href=#examining-the-json-web-token>Examining the JSON Web Token</a>
-<ul>
-<li><a href=#verify-the-jwt-values>Verify the JWT Values</a></li>
-<li><a href=#verify-openid-connect-idp-reachability>Verify OpenID Connect IDP Reachability</a></li>
-</ul>
-</li>
-<li><a href=#testing-authentication-with-the-token>Testing Authentication with the Token</a></li>
-<li><a href=#possible-failures>Possible Failures</a></li>
-<li><a href=#references>References</a></li>
-</ul>
-</nav>
-</div>
-</div>
-<div class="panel sidebar-menu">
-<div class=panel-heading>
-<h3 class=panel-title>Tags</h3>
-</div>
-<div class=panel-body>
-<ul class=tag-cloud>
-<li>
-<a href=/tags/AWS><i class="fas fa-tags"></i> AWS</a>
-</li>
-<li>
-<a href=/tags/CDK><i class="fas fa-tags"></i> CDK</a>
-</li>
-<li>
-<a href=/tags/OCP3><i class="fas fa-tags"></i> OCP3</a>
-</li>
-<li>
-<a href=/tags/OCP4><i class="fas fa-tags"></i> OCP4</a>
-</li>
-<li>
-<a href=/tags/RHACM><i class="fas fa-tags"></i> RHACM</a>
-</li>
-<li>
-<a href=/tags/RHACS><i class="fas fa-tags"></i> RHACS</a>
-</li>
-<li>
-<a href=/tags/RHEL><i class="fas fa-tags"></i> RHEL</a>
-</li>
-<li>
-<a href=/tags/ansible><i class="fas fa-tags"></i> ansible</a>
-</li>
-<li>
-<a href=/tags/automation><i class="fas fa-tags"></i> automation</a>
-</li>
-<li>
-<a href=/tags/azure><i class="fas fa-tags"></i> azure</a>
-</li>
-<li>
-<a href=/tags/debugging><i class="fas fa-tags"></i> debugging</a>
-</li>
-<li>
-<a href=/tags/docker><i class="fas fa-tags"></i> docker</a>
-</li>
-<li>
-<a href=/tags/draft><i class="fas fa-tags"></i> draft</a>
-</li>
-<li>
-<a href=/tags/etcd><i class="fas fa-tags"></i> etcd</a>
-</li>
-<li>
-<a href=/tags/git><i class="fas fa-tags"></i> git</a>
-</li>
-<li>
-<a href=/tags/haproxy><i class="fas fa-tags"></i> haproxy</a>
-</li>
-<li>
-<a href=/tags/heat><i class="fas fa-tags"></i> heat</a>
-</li>
-<li>
-<a href=/tags/hybrid-cloud><i class="fas fa-tags"></i> hybrid-cloud</a>
-</li>
-<li>
-<a href=/tags/install><i class="fas fa-tags"></i> install</a>
-</li>
-<li>
-<a href=/tags/kubernetes><i class="fas fa-tags"></i> kubernetes</a>
-</li>
-<li>
-<a href=/tags/mac><i class="fas fa-tags"></i> mac</a>
-</li>
-<li>
-<a href=/tags/metrics><i class="fas fa-tags"></i> metrics</a>
-</li>
-<li>
-<a href=/tags/migration><i class="fas fa-tags"></i> migration</a>
-</li>
-<li>
-<a href=/tags/monitoring><i class="fas fa-tags"></i> monitoring</a>
-</li>
-<li>
-<a href=/tags/networking><i class="fas fa-tags"></i> networking</a>
-</li>
-<li>
-<a href=/tags/openshift><i class="fas fa-tags"></i> openshift</a>
-</li>
-<li>
-<a href=/tags/openstack><i class="fas fa-tags"></i> openstack</a>
-</li>
-<li>
-<a href=/tags/operators><i class="fas fa-tags"></i> operators</a>
-</li>
-<li>
-<a href=/tags/prometheus><i class="fas fa-tags"></i> prometheus</a>
-</li>
-<li>
-<a href=/tags/python><i class="fas fa-tags"></i> python</a>
-</li>
-<li>
-<a href=/tags/router><i class="fas fa-tags"></i> router</a>
-</li>
-<li>
-<a href=/tags/security><i class="fas fa-tags"></i> security</a>
-</li>
-<li>
-<a href=/tags/ssl><i class="fas fa-tags"></i> ssl</a>
-</li>
-<li>
-<a href=/tags/stackrox><i class="fas fa-tags"></i> stackrox</a>
-</li>
-<li>
-<a href=/tags/storage><i class="fas fa-tags"></i> storage</a>
-</li>
-<li>
-<a href=/tags/troubleshooting><i class="fas fa-tags"></i> troubleshooting</a>
-</li>
-<li>
-<a href=/tags/upgrade><i class="fas fa-tags"></i> upgrade</a>
-</li>
-<li>
-<a href=/tags/vagrant><i class="fas fa-tags"></i> vagrant</a>
-</li>
-<li>
-<a href=/tags/virtualization><i class="fas fa-tags"></i> virtualization</a>
-</li>
-<li>
-<a href=/tags/webinar><i class="fas fa-tags"></i> webinar</a>
-</li>
-<li>
-<a href=/tags/windows><i class="fas fa-tags"></i> windows</a>
-</li>
-<li>
-<a href=/tags/zabbix><i class="fas fa-tags"></i> zabbix</a>
-</li>
-<li>
-<a href=/tags/zimbra><i class="fas fa-tags"></i> zimbra</a>
-</li>
-</ul>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<footer id=footer>
-<div class=container>
-<div class="col-md-4 col-sm-6">
-<h4>Share</h4>
-<i class="fab fa-2x fa-twitter" title="Share this on Twitter" onclick="window.open('http://twitter.com/home?status=http://guifreelife.com/blog/2022/03/10/Debugging-AWS-STS-Authentication-for-OpenShift-Operators/')"></i>
-<i class="fab fa-2x fa-facebook" title="Share this on Facebook" onclick="window.open('http://www.facebook.com/share.php?u=http://guifreelife.com/blog/2022/03/10/Debugging-AWS-STS-Authentication-for-OpenShift-Operators/')"></i>
-<i class="fab fa-2x fa-linkedin" title="Share this on Linkedin" onclick="window.open('https://www.linkedin.com/shareArticle?mini=true&url=http://guifreelife.com/blog/2022/03/10/Debugging-AWS-STS-Authentication-for-OpenShift-Operators/&title=&summary=&source=')"></i>
-<i class="fab fa-2x fa-google-plus" title="Share this on Google Currents" onclick="window.open('https://plus.google.com/share?url=http://guifreelife.com/blog/2022/03/10/Debugging-AWS-STS-Authentication-for-OpenShift-Operators/')"></i>
-<i class="fa fa-2x fa-envelope" title="Share this through Email" onclick="window.open('mailto:?&body=http://guifreelife.com/blog/2022/03/10/Debugging-AWS-STS-Authentication-for-OpenShift-Operators/')"></i>
-<h4>About us</h4>
-<p>GUI Free Life is the personal, technical blog of Dale Bewley. Comments and opinions are my own and not that of my employers.</p>
-<hr class="hidden-md hidden-lg hidden-sm">
-</div>
-<div class="col-md-4 col-sm-6">
-<h4>Recent posts</h4>
-<div class=blog-entries>
-<div class="item same-height-row clearfix">
-<div class="image same-height-always">
-<a href=http://guifreelife.com/blog/2023/09/22/Storing-OpenShift-Credentials-with-1Password/>
-<img src=/img/banners/mushroom-moss.jpg class=img-responsive alt="Storing OpenShift Credentials with 1Password">
-</a>
-</div>
-<div class="name same-height-always">
-<h5><a href=http://guifreelife.com/blog/2023/09/22/Storing-OpenShift-Credentials-with-1Password/>Storing OpenShift Credentials with 1Password</a></h5>
-</div>
-</div>
-<div class="item same-height-row clearfix">
-<div class="image same-height-always">
-<a href=http://guifreelife.com/blog/2023/04/06/Accessing-Ceph-CLI-with-OpenShift-Data-Foundation/>
-<img src=/images/uncovered-bumper.png class=img-responsive alt="Accessing the Ceph CLI with OpenShift Data Foundation">
-</a>
-</div>
-<div class="name same-height-always">
-<h5><a href=http://guifreelife.com/blog/2023/04/06/Accessing-Ceph-CLI-with-OpenShift-Data-Foundation/>Accessing the Ceph CLI with OpenShift Data Foundation</a></h5>
-</div>
-</div>
-<div class="item same-height-row clearfix">
-<div class="image same-height-always">
-<a href=http://guifreelife.com/blog/2023/03/09/Extracting-CA-Certs-From-Kubeconfig/>
-<img src=/img/banners/banner-buffy-xmas.png class=img-responsive alt="Extracting TLS CA Certificates from Kubeconfig File">
-</a>
-</div>
-<div class="name same-height-always">
-<h5><a href=http://guifreelife.com/blog/2023/03/09/Extracting-CA-Certs-From-Kubeconfig/>Extracting TLS CA Certificates from Kubeconfig File</a></h5>
-</div>
-</div>
-</div>
-<hr class="hidden-md hidden-lg">
-</div>
-<div class="col-md-4 col-sm-6">
-<h4>Contact</h4>
-<p class=text-uppercase><strong>Dale Bewley</strong>
-<br>Oakland
-<br>California
-<br>
-<strong>USA</strong>
-</p>
-<a href=/contact class="btn btn-small btn-template-main">Go to contact page</a>
-<hr class="hidden-md hidden-lg hidden-sm">
-</div>
-</div>
-</footer>
-<div id=copyright>
-<div class=container>
-<div class=col-md-12>
-<p class=pull-left>Copyright (c) 2021, Dale Bewley; all rights reserved.</p>
-<p class=pull-right>
-Template by <a href=https://bootstrapious.com/p/universal-business-e-commerce-template>Bootstrapious</a>.
-Ported to Hugo by <a href=https://github.com/devcows/hugo-universal-theme>DevCows</a>.
-</p>
-</div>
-</div>
-</div>
-</div>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-39TSW9349X"></script>
-<script>var doNotTrack=!1;if(!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date),gtag('config','G-39TSW9349X',{anonymize_ip:!1})}</script>
-<script src=//code.jquery.com/jquery-3.1.1.min.js integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin=anonymous></script>
+<span class=input-group-btn><button type=submit class="btn btn-template-main"><i class="fas fa-search"></i></button></span></div></form></div></div><div class="panel sidebar-menu"><div class=panel-heading><h3 class=panel-title>Tagged</h3></div><div class=panel-body><ul class=tag-cloud><li class=active><a href=/tags/AWS><i class="fas fa-tags"></i> AWS</a></li><li class=active><a href=/tags/openshift><i class="fas fa-tags"></i> openshift</a></li><li class=active><a href=/tags/OCP4><i class="fas fa-tags"></i> OCP4</a></li><li class=active><a href=/tags/operators><i class="fas fa-tags"></i> operators</a></li><li class=active><a href=/tags/debugging><i class="fas fa-tags"></i> debugging</a></li></ul></div></div><div class="panel sidebar-menu"><div class=panel-heading><h3 class=panel-title>TOC</h3></div><div class=panel-body><nav id=TableOfContents><ul><li><a href=#what-is-sts-authentication>What is STS Authentication?</a></li><li><a href=#degraded-ingress-cluster-operator>Degraded Ingress Cluster Operator</a></li><li><a href=#debugging-operator-sts-authentication>Debugging Operator STS Authentication</a></li><li><a href=#mapping-the-operator-to-a-role>Mapping the Operator to a Role</a><ul><li><a href=#cloud-credentials-secret>Cloud-credentials Secret</a></li><li><a href=#viewing-the-contents-of-the-role>Viewing the Contents of the Role</a></li></ul></li><li><a href=#examining-the-json-web-token>Examining the JSON Web Token</a><ul><li><a href=#verify-the-jwt-values>Verify the JWT Values</a></li><li><a href=#verify-openid-connect-idp-reachability>Verify OpenID Connect IDP Reachability</a></li></ul></li><li><a href=#testing-authentication-with-the-token>Testing Authentication with the Token</a></li><li><a href=#possible-failures>Possible Failures</a></li><li><a href=#references>References</a></li></ul></nav></div></div><div class="panel sidebar-menu"><div class=panel-heading><h3 class=panel-title>Tags</h3></div><div class=panel-body><ul class=tag-cloud><li><a href=/tags/AWS><i class="fas fa-tags"></i> AWS</a></li><li><a href=/tags/CDK><i class="fas fa-tags"></i> CDK</a></li><li><a href=/tags/OCP3><i class="fas fa-tags"></i> OCP3</a></li><li><a href=/tags/OCP4><i class="fas fa-tags"></i> OCP4</a></li><li><a href=/tags/RHACM><i class="fas fa-tags"></i> RHACM</a></li><li><a href=/tags/RHACS><i class="fas fa-tags"></i> RHACS</a></li><li><a href=/tags/RHEL><i class="fas fa-tags"></i> RHEL</a></li><li><a href=/tags/ansible><i class="fas fa-tags"></i> ansible</a></li><li><a href=/tags/automation><i class="fas fa-tags"></i> automation</a></li><li><a href=/tags/azure><i class="fas fa-tags"></i> azure</a></li><li><a href=/tags/debugging><i class="fas fa-tags"></i> debugging</a></li><li><a href=/tags/docker><i class="fas fa-tags"></i> docker</a></li><li><a href=/tags/draft><i class="fas fa-tags"></i> draft</a></li><li><a href=/tags/etcd><i class="fas fa-tags"></i> etcd</a></li><li><a href=/tags/git><i class="fas fa-tags"></i> git</a></li><li><a href=/tags/haproxy><i class="fas fa-tags"></i> haproxy</a></li><li><a href=/tags/heat><i class="fas fa-tags"></i> heat</a></li><li><a href=/tags/hybrid-cloud><i class="fas fa-tags"></i> hybrid-cloud</a></li><li><a href=/tags/install><i class="fas fa-tags"></i> install</a></li><li><a href=/tags/kubernetes><i class="fas fa-tags"></i> kubernetes</a></li><li><a href=/tags/mac><i class="fas fa-tags"></i> mac</a></li><li><a href=/tags/metrics><i class="fas fa-tags"></i> metrics</a></li><li><a href=/tags/migration><i class="fas fa-tags"></i> migration</a></li><li><a href=/tags/monitoring><i class="fas fa-tags"></i> monitoring</a></li><li><a href=/tags/networking><i class="fas fa-tags"></i> networking</a></li><li><a href=/tags/openshift><i class="fas fa-tags"></i> openshift</a></li><li><a href=/tags/openstack><i class="fas fa-tags"></i> openstack</a></li><li><a href=/tags/operators><i class="fas fa-tags"></i> operators</a></li><li><a href=/tags/prometheus><i class="fas fa-tags"></i> prometheus</a></li><li><a href=/tags/python><i class="fas fa-tags"></i> python</a></li><li><a href=/tags/router><i class="fas fa-tags"></i> router</a></li><li><a href=/tags/security><i class="fas fa-tags"></i> security</a></li><li><a href=/tags/ssl><i class="fas fa-tags"></i> ssl</a></li><li><a href=/tags/stackrox><i class="fas fa-tags"></i> stackrox</a></li><li><a href=/tags/storage><i class="fas fa-tags"></i> storage</a></li><li><a href=/tags/troubleshooting><i class="fas fa-tags"></i> troubleshooting</a></li><li><a href=/tags/upgrade><i class="fas fa-tags"></i> upgrade</a></li><li><a href=/tags/vagrant><i class="fas fa-tags"></i> vagrant</a></li><li><a href=/tags/virtualization><i class="fas fa-tags"></i> virtualization</a></li><li><a href=/tags/webinar><i class="fas fa-tags"></i> webinar</a></li><li><a href=/tags/windows><i class="fas fa-tags"></i> windows</a></li><li><a href=/tags/zabbix><i class="fas fa-tags"></i> zabbix</a></li><li><a href=/tags/zimbra><i class="fas fa-tags"></i> zimbra</a></li></ul></div></div></div></div></div></div><footer id=footer><div class=container><div class="col-md-4 col-sm-6"><h4>Share</h4><i class="fab fa-2x fa-twitter" title="Share this on Twitter" onclick='window.open("http://twitter.com/home?status=http://guifreelife.com/blog/2022/03/10/Debugging-AWS-STS-Authentication-for-OpenShift-Operators/")'></i>
+<i class="fab fa-2x fa-facebook" title="Share this on Facebook" onclick='window.open("http://www.facebook.com/share.php?u=http://guifreelife.com/blog/2022/03/10/Debugging-AWS-STS-Authentication-for-OpenShift-Operators/")'></i>
+<i class="fab fa-2x fa-linkedin" title="Share this on Linkedin" onclick='window.open("https://www.linkedin.com/shareArticle?mini=true&url=http://guifreelife.com/blog/2022/03/10/Debugging-AWS-STS-Authentication-for-OpenShift-Operators/&title=&summary=&source=")'></i>
+<i class="fab fa-2x fa-google-plus" title="Share this on Google Currents" onclick='window.open("https://plus.google.com/share?url=http://guifreelife.com/blog/2022/03/10/Debugging-AWS-STS-Authentication-for-OpenShift-Operators/")'></i>
+<i class="fa fa-2x fa-envelope" title="Share this through Email" onclick='window.open("mailto:?&body=http://guifreelife.com/blog/2022/03/10/Debugging-AWS-STS-Authentication-for-OpenShift-Operators/")'></i><h4>About us</h4><p>GUI Free Life is the personal, technical blog of Dale Bewley. Comments and opinions are my own and not that of my employers.</p><hr class="hidden-md hidden-lg hidden-sm"></div><div class="col-md-4 col-sm-6"><h4>Recent posts</h4><div class=blog-entries><div class="item same-height-row clearfix"><div class="image same-height-always"><a href=http://guifreelife.com/blog/2024/03/11/Placing-Open-Cluster-Management-Policies-on-Kubernetes/><img src=/images/DALL%c2%b7E%202024-01-30%2014.28.24%20-%20A%20whimsical%20scene%20featuring%20a%20traffic%20cop%20standing%20on%20a%20cloud,%20energetically%20directing%20a%20chaotic%20stream%20of%20various%20floating%20documents%20-%20papers,%20folder.png class=img-responsive alt="Using Placements to Apply Open Cluster Management Policies to Kubernetes Clusters"></a></div><div class="name same-height-always"><h5><a href=http://guifreelife.com/blog/2024/03/11/Placing-Open-Cluster-Management-Policies-on-Kubernetes/>Using Placements to Apply Open Cluster Management Policies to Kubernetes Clusters</a></h5></div></div><div class="item same-height-row clearfix"><div class="image same-height-always"><a href=http://guifreelife.com/blog/2023/09/22/Storing-OpenShift-Credentials-with-1Password/><img src=/img/banners/mushroom-moss.jpg class=img-responsive alt="Storing OpenShift Credentials with 1Password"></a></div><div class="name same-height-always"><h5><a href=http://guifreelife.com/blog/2023/09/22/Storing-OpenShift-Credentials-with-1Password/>Storing OpenShift Credentials with 1Password</a></h5></div></div><div class="item same-height-row clearfix"><div class="image same-height-always"><a href=http://guifreelife.com/blog/2023/04/06/Accessing-Ceph-CLI-with-OpenShift-Data-Foundation/><img src=/images/uncovered-bumper.png class=img-responsive alt="Accessing the Ceph CLI with OpenShift Data Foundation"></a></div><div class="name same-height-always"><h5><a href=http://guifreelife.com/blog/2023/04/06/Accessing-Ceph-CLI-with-OpenShift-Data-Foundation/>Accessing the Ceph CLI with OpenShift Data Foundation</a></h5></div></div></div><hr class="hidden-md hidden-lg"></div><div class="col-md-4 col-sm-6"><h4>Contact</h4><p class=text-uppercase><strong>Dale Bewley</strong><br>Oakland<br>California<br><strong>USA</strong></p><a href=/contact class="btn btn-small btn-template-main">Go to contact page</a><hr class="hidden-md hidden-lg hidden-sm"></div></div></footer><div id=copyright><div class=container><div class=col-md-12><p class=pull-left>Copyright (c) 2021, Dale Bewley; all rights reserved.</p><p class=pull-right>Template by <a href=https://bootstrapious.com/p/universal-business-e-commerce-template>Bootstrapious</a>.
+Ported to Hugo by <a href=https://github.com/devcows/hugo-universal-theme>DevCows</a>.</p></div></div></div></div><script async src="https://www.googletagmanager.com/gtag/js?id=G-39TSW9349X"></script>
+<script>var doNotTrack=!1;if(!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","G-39TSW9349X",{anonymize_ip:!1})}</script><script src=//code.jquery.com/jquery-3.1.1.min.js integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin=anonymous></script>
 <script src=//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js integrity=sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa crossorigin=anonymous></script>
 <script src=//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js></script>
 <script src=//cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/jquery.waypoints.min.js></script>
@@ -665,6 +159,4 @@ Ported to Hugo by <a href=https://github.com/devcows/hugo-universal-theme>DevCow
 <script src=/js/hpneo.gmaps.js></script>
 <script src=/js/gmaps.init.js></script>
 <script src=/js/front.js></script>
-<script src=/js/owl.carousel.min.js></script>
-</body>
-</html>
+<script src=/js/owl.carousel.min.js></script></body></html>

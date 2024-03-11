@@ -1,595 +1,122 @@
-<!doctype html><html lang=en-us>
-<head>
-<meta charset=utf-8>
-<meta name=robots content="all,follow">
-<meta name=googlebot content="index,follow,snippet,archive">
-<meta name=viewport content="width=device-width,initial-scale=1">
-<title>Migration of Etcd to Masters for OpenShift 3.9 to 3.10 Upgrade | GUI Free Life</title>
-<meta name=author content="Dale Bewley">
-<meta name=keywords content="bewley,guifreelife,etcd,openshift,OCP3,migration,upgrade">
-<meta name=description content="GUI Free Life, by Dale Bewley covers Kubernetes, Linux, Networking, OpenShift and more">
-<meta name=generator content="Hugo 0.91.2">
-<link href="//fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,500,700,800" rel=stylesheet type=text/css>
-<link rel=stylesheet href=//use.fontawesome.com/releases/v5.11.2/css/all.css>
-<link rel=stylesheet href=//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css integrity=sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u crossorigin=anonymous>
-<link href=/css/animate.css rel=stylesheet>
-<link href=/css/style.turquoise.css rel=stylesheet id=theme-stylesheet>
-<link href=/css/custom.css rel=stylesheet><!--[if lt IE 9]><script src=https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js></script>
-<script src=https://oss.maxcdn.com/respond/1.4.2/respond.min.js></script><![endif]-->
-<link rel="shortcut icon" href=/img/favicon.ico type=image/x-icon>
-<link rel=apple-touch-icon href=/img/apple-touch-icon.png>
-<link href=/css/owl.carousel.css rel=stylesheet>
-<link href=/css/owl.theme.css rel=stylesheet>
-<link rel=alternate href=http://guifreelife.com/index.xml type=application/rss+xml title="GUI Free Life">
-<meta property="og:locale" content="en_us">
-<meta property="og:site_name" content="GUI Free Life">
-<meta property="og:title" content="Migration of Etcd to Masters for OpenShift 3.9 to 3.10 Upgrade">
-<meta property="og:type" content="article">
-<meta property="og:url" content="http://guifreelife.com/blog/2019/02/08/Migration-of-Etcd-to-Masters-for-OpenShift-3.9-Upgrade-to-3.10/">
-<meta property="og:description" content="GUI Free Life, by Dale Bewley covers Kubernetes, Linux, Networking, OpenShift and more">
-<meta property="og:image" content="http://guifreelife.com/img/banners/banner-9.jpg">
-<meta property="og:image:type" content="image/jpg">
-<meta property="og:image:width" content="1000">
-<meta property="og:image:height" content="750">
-<meta property="og:updated_time" content="2019-02-08T00:00:00Z">
-<meta property="article:tag" content="etcd">
-<meta property="article:tag" content="openshift">
-<meta property="article:tag" content="OCP3">
-<meta property="article:tag" content="migration">
-<meta property="article:tag" content="upgrade">
-<meta property="article:published_time" content="2019-02-08T00:00:00Z">
-<meta property="article:modified_time" content="2019-02-08T00:00:00Z">
-<meta name=twitter:card content="summary_large_image">
-<meta name=twitter:site content="@dlbewley">
-<meta name=twitter:title content="Migration of Etcd to Masters for OpenShift 3.9 to 3.10 Upgrade">
-<meta name=twitter:image content="http://guifreelife.com/img/banners/banner-9.jpg">
-<meta name=twitter:description content="GUI Free Life, by Dale Bewley covers Kubernetes, Linux, Networking, OpenShift and more">
-</head>
-<body>
-<div id=all>
-<header class=navbar-affixed-top data-spy=affix data-offset-top=62>
-<div class="navbar navbar-default yamm" role=navigation id=navbar>
-<div class=container>
-<div class=navbar-header>
-<a class="navbar-brand home" href=/>
-<img src=/img/logo.png alt="Migration of Etcd to Masters for OpenShift 3.9 to 3.10 Upgrade logo" class="hidden-xs hidden-sm">
+<!doctype html><html lang=en-us><head><meta charset=utf-8><meta name=robots content="all,follow"><meta name=googlebot content="index,follow,snippet,archive"><meta name=viewport content="width=device-width,initial-scale=1"><title>Migration of Etcd to Masters for OpenShift 3.9 to 3.10 Upgrade | GUI Free Life</title><meta name=author content="Dale Bewley"><meta name=keywords content="bewley,guifreelife,etcd,openshift,OCP3,migration,upgrade"><meta name=description content="GUI Free Life, by Dale Bewley covers Kubernetes, Linux, Networking, OpenShift and more"><meta name=generator content="Hugo 0.119.0"><link href='//fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,500,700,800' rel=stylesheet type=text/css><link rel=stylesheet href=//use.fontawesome.com/releases/v5.11.2/css/all.css><link rel=stylesheet href=//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css integrity=sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u crossorigin=anonymous><link href=/css/animate.css rel=stylesheet><link href=/css/style.turquoise.css rel=stylesheet id=theme-stylesheet><link href=/css/custom.css rel=stylesheet><!--[if lt IE 9]><script src=https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js></script>
+<script src=https://oss.maxcdn.com/respond/1.4.2/respond.min.js></script><![endif]--><link rel="shortcut icon" href=/img/favicon.ico type=image/x-icon><link rel=apple-touch-icon href=/img/apple-touch-icon.png><link href=/css/owl.carousel.css rel=stylesheet><link href=/css/owl.theme.css rel=stylesheet><link rel=alternate href=http://guifreelife.com/index.xml type=application/rss+xml title="GUI Free Life"><meta property="og:locale" content="en_us"><meta property="og:site_name" content="GUI Free Life"><meta property="og:title" content="Migration of Etcd to Masters for OpenShift 3.9 to 3.10 Upgrade"><meta property="og:type" content="article"><meta property="og:url" content="http://guifreelife.com/blog/2019/02/08/Migration-of-Etcd-to-Masters-for-OpenShift-3.9-Upgrade-to-3.10/"><meta property="og:description" content="GUI Free Life, by Dale Bewley covers Kubernetes, Linux, Networking, OpenShift and more"><meta property="og:image" content="http://guifreelife.com/img/banners/banner-9.jpg"><meta property="og:image:type" content="image/jpg"><meta property="og:image:width" content="1000"><meta property="og:image:height" content="750"><meta property="og:updated_time" content="2019-02-08T00:00:00Z"><meta property="article:tag" content="etcd"><meta property="article:tag" content="openshift"><meta property="article:tag" content="OCP3"><meta property="article:tag" content="migration"><meta property="article:tag" content="upgrade"><meta property="article:published_time" content="2019-02-08T00:00:00Z"><meta property="article:modified_time" content="2019-02-08T00:00:00Z"><meta name=twitter:card content="summary_large_image"><meta name=twitter:site content="@dlbewley"><meta name=twitter:title content="Migration of Etcd to Masters for OpenShift 3.9 to 3.10 Upgrade"><meta name=twitter:image content="http://guifreelife.com/img/banners/banner-9.jpg"><meta name=twitter:description content="GUI Free Life, by Dale Bewley covers Kubernetes, Linux, Networking, OpenShift and more"></head><body><div id=all><header class=navbar-affixed-top data-spy=affix data-offset-top=62><div class="navbar navbar-default yamm" role=navigation id=navbar><div class=container><div class=navbar-header><a class="navbar-brand home" href=/><img src=/img/logo.png alt="Migration of Etcd to Masters for OpenShift 3.9 to 3.10 Upgrade logo" class="hidden-xs hidden-sm">
 <img src=/img/logo-small.png alt="Migration of Etcd to Masters for OpenShift 3.9 to 3.10 Upgrade logo" class="visible-xs visible-sm">
-<span class=sr-only>Migration of Etcd to Masters for OpenShift 3.9 to 3.10 Upgrade - go to homepage</span>
-</a>
-<div class=navbar-buttons>
-<button type=button class="navbar-toggle btn-template-main" data-toggle=collapse data-target=#navigation>
+<span class=sr-only>Migration of Etcd to Masters for OpenShift 3.9 to 3.10 Upgrade - go to homepage</span></a><div class=navbar-buttons><button type=button class="navbar-toggle btn-template-main" data-toggle=collapse data-target=#navigation>
 <span class=sr-only>Toggle Navigation</span>
-<i class="fas fa-align-justify"></i>
-</button>
-</div>
-</div>
-<div class="navbar-collapse collapse" id=navigation>
-<ul class="nav navbar-nav navbar-right">
-<li class=dropdown>
-<a href=/>Home</a>
-</li>
-<li class="dropdown active">
-<a href=/blog/>Blog</a>
-</li>
-<li class=dropdown>
-<a href=/contact/>Contact</a>
-</li>
-</ul>
-</div>
-<div class="collapse clearfix" id=search>
-<form class=navbar-form role=search>
-<div class=input-group>
-<input type=text class=form-control placeholder=Search>
-<span class=input-group-btn>
-<button type=submit class="btn btn-template-main"><i class="fas fa-search"></i></button>
-</span>
-</div>
-</form>
-</div>
-</div>
-</div>
-</header>
-<style>.bar.background-image-fixed-banner{background:url(/img/banners/banner-9.jpg)50% 0 no-repeat;background-attachment:fixed;background-size:cover;padding:100px 5%;text-shadow:2px 3px 4px var(--primary-accent),0 0 1em var(--navbar-border-top)}</style>
-<div>
-<div class=container>
-<div class=row>
-<div class=col-md-12>
-<section class="bar background-image-fixed-banner heading h2 color-white text-center">
-<h1>Migration of Etcd to Masters for OpenShift 3.9 to 3.10 Upgrade</h1>
-</section>
-</div>
-</div>
-</div>
-</div>
-<div id=content>
-<div class=container>
-<div class=row>
-<div class=col-md-9 id=blog-post>
-<p class="text-muted text-uppercase mb-small text-right">
-February 8, 2019
-</p>
-<div id=post-content>
-<p>As of OpenShift Container Platform 3.10 etcd is expected to run in <a href=https://docs.openshift.com/container-platform/3.10/release_notes/ocp_3_10_release_notes.html#ocp-310-control-plane-changes>static pods</a> on the master nodes in the control plane. You may have a deployed an HA cluster with dedicated etcd nodes managed with systemd. How do you migrate the this new architecture?</p>
-<p><strong>Assumptions:</strong></p>
-<ul>
-<li>You are running OCP 3.9</li>
-<li>You have multiple Master nodes</li>
-<li>You have dedicated Etcd nodes</li>
-<li>You are running RHEL, not Atomic nodes</li>
-</ul>
-<p><strong>Outline:</strong></p>
-<ul>
-<li>Backup etcd</li>
-<li>Scale up Etcd cluster to include Master nodes</li>
-<li>Configure Openshift Masters to ignore the old Etcd nodes</li>
-<li>Scale down etcd cluster to remove old Etcd nodes</li>
-</ul>
-<h1 id=detailed-steps>Detailed Steps</h1>
-<p>Follow along in this document <a href=https://docs.openshift.com/container-platform/3.9/admin_guide/assembly_replace-etcd-member.html>https://docs.openshift.com/container-platform/3.9/admin_guide/assembly_replace-etcd-member.html</a>
-You may find <a href=http://guifreelife.com/blog/2019/02/08/Etcd-Shortcut-With-Peer-Auth>some etcd aliases handy</a> before proceeding.</p>
-<ul>
-<li>
-<p><input disabled type=checkbox> <strong>Create an <code>new_etcd</code> ansible group in your inventory file.</strong></p>
-</li>
-<li>
-<p><input disabled type=checkbox> <strong>Add the first Master node to this <code>new_etcd</code> group for testing.</strong></p>
-</li>
-<li>
-<p><input disabled type=checkbox> <strong>Add <code>new_etcd</code> group as a child to the <code>OSEv3</code> ansible group.</strong></p>
-</li>
-<li>
-<p><input disabled type=checkbox> <strong>Confirm your cluster health on the first etcd server.</strong></p>
-</li>
-</ul>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#1e889b>#!/bin/bash
-</span><span style=color:#1e889b></span>
-. /etc/etcd/etcd.conf
-
-<span style=color:#00688b>ENV</span>=<span style=color:#cd5555>${</span><span style=color:#00688b>OPENSHIFT_ENV</span><span style=color:#8b008b;font-weight:700>:-</span><span style=color:#00688b>test</span><span style=color:#cd5555>}</span>
-<span style=color:#00688b>ENDPOINTS</span>=<span style=color:#cd5555>&#34;https://ose-</span><span style=color:#cd5555>${</span><span style=color:#00688b>ENV</span><span style=color:#cd5555>}</span><span style=color:#cd5555>-etcd-01.example.com:2379,https://ose-</span><span style=color:#cd5555>${</span><span style=color:#00688b>ENV</span><span style=color:#cd5555>}</span><span style=color:#cd5555>-etcd-02.example.com:2379,https://ose-</span><span style=color:#cd5555>${</span><span style=color:#00688b>ENV</span><span style=color:#cd5555>}</span><span style=color:#cd5555>-etcd-03.example.com:2379&#34;</span>
-
-<span style=color:#00688b>ETCDCTL_API</span>=<span style=color:#b452cd>3</span> etcdctl <span style=color:#cd5555>\
-</span><span style=color:#cd5555></span>    --cert <span style=color:#cd5555>${</span><span style=color:#00688b>ETCD_PEER_CERT_FILE</span><span style=color:#cd5555>}</span> <span style=color:#cd5555>\
-</span><span style=color:#cd5555></span>    --key <span style=color:#cd5555>${</span><span style=color:#00688b>ETCD_PEER_KEY_FILE</span><span style=color:#cd5555>}</span> <span style=color:#cd5555>\
-</span><span style=color:#cd5555></span>    --cacert <span style=color:#cd5555>${</span><span style=color:#00688b>ETCD_PEER_TRUSTED_CA_FILE</span><span style=color:#8b008b;font-weight:700>:-</span><span style=color:#00688b>$ETCD_PEER_CA_FILE</span><span style=color:#cd5555>}</span> <span style=color:#cd5555>\
-</span><span style=color:#cd5555></span>    --endpoints <span style=color:#cd5555>&#34;</span><span style=color:#00688b>$ENDPOINTS</span><span style=color:#cd5555>&#34;</span> <span style=color:#cd5555>\
-</span><span style=color:#cd5555></span>    endpoint health
-</code></pre></div><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-plain data-lang=plain>[root@ose-test-etcd-01 bin]# ./etcd-health
-https://ose-test-etcd-01.example.com:2379 is healthy: successfully committed proposal: took = 2.41743ms
-https://ose-test-etcd-03.example.com:2379 is healthy: successfully committed proposal: took = 2.363286ms
-https://ose-test-etcd-02.example.com:2379 is healthy: successfully committed proposal: took = 2.213456ms
-</code></pre></div><ul>
-<li><input disabled type=checkbox> <strong><a href=https://docs.openshift.com/container-platform/3.9/day_two_guide/environment_backup.html#backing-up-etcd_environment-backup>Create a backup of your etcd</a> data and configuration.</strong></li>
-</ul>
-<blockquote>
-<p>Because of the <a href=https://docs.openshift.com/container-platform/3.7/upgrading/migrating_etcd.html>migration during the upgrade</a> to 3.7, I am assuming I do not need to back up v2 data. That is <a href=https://lists.openshift.redhat.com/openshift-archives/users/2019-February/msg00010.html>somewhat TBD</a>, however.</p>
-</blockquote>
-<ul>
-<li><a href=https://lists.openshift.redhat.com/openshift-archives/users/2019-February/msg00029.html>OpenShift-Users mailing list post</a></li>
-<li><a href="https://bugzilla.redhat.com/show_bug.cgi?id=1579304">BZ 1579304</a></li>
-<li><a href="https://bugzilla.redhat.com/show_bug.cgi?id=1656397">BZ 1656397</a></li>
-</ul>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#1e889b>#!/bin/bash
-</span><span style=color:#1e889b></span><span style=color:#228b22># https://docs.openshift.com/container-platform/latest/admin_guide/backup_restore.html</span>
-<span style=color:#228b22># https://access.redhat.com/solutions/1981013#comment-1257931</span>
-
-. /etc/etcd/etcd.conf
-
-<span style=color:#00688b>ETCD3</span>=<span style=color:#cd5555>&#34;etcdctl --cert </span><span style=color:#cd5555>${</span><span style=color:#00688b>ETCD_PEER_CERT_FILE</span><span style=color:#cd5555>}</span><span style=color:#cd5555> \
-</span><span style=color:#cd5555>  --key </span><span style=color:#cd5555>${</span><span style=color:#00688b>ETCD_PEER_KEY_FILE</span><span style=color:#cd5555>}</span><span style=color:#cd5555> \
-</span><span style=color:#cd5555>  --cacert </span><span style=color:#cd5555>${</span><span style=color:#00688b>ETCD_PEER_TRUSTED_CA_FILE</span><span style=color:#8b008b;font-weight:700>:-</span><span style=color:#00688b>$ETCD_PEER_CA_FILE</span><span style=color:#cd5555>}</span><span style=color:#cd5555> \
-</span><span style=color:#cd5555>  --endpoints </span><span style=color:#cd5555>${</span><span style=color:#00688b>ETCD_ADVERTISE_CLIENT_URLS</span><span style=color:#cd5555>}</span><span style=color:#cd5555>&#34;</span>
-
-<span style=color:#00688b>BACKUP_DIR</span>=<span style=color:#cd5555>&#34;/var/backup/etcd/</span><span style=color:#8b008b;font-weight:700>$(</span>date +%Y%m%d%H%M<span style=color:#8b008b;font-weight:700>)</span><span style=color:#cd5555>&#34;</span>
-mkdir -p <span style=color:#cd5555>${</span><span style=color:#00688b>BACKUP_DIR</span><span style=color:#cd5555>}</span>/snap
-cp -rp /etc/etcd <span style=color:#cd5555>&#34;</span><span style=color:#cd5555>${</span><span style=color:#00688b>BACKUP_DIR</span><span style=color:#cd5555>}</span><span style=color:#cd5555>/&#34;</span>
-cp -p <span style=color:#00688b>$0</span> <span style=color:#cd5555>&#34;</span><span style=color:#cd5555>${</span><span style=color:#00688b>BACKUP_DIR</span><span style=color:#cd5555>}</span><span style=color:#cd5555>/&#34;</span>
-
-<span style=color:#00688b>ETCDCTL_API</span>=<span style=color:#b452cd>3</span> <span style=color:#00688b>$ETCD3</span> <span style=color:#cd5555>\
-</span><span style=color:#cd5555></span>        snapshot save <span style=color:#cd5555>${</span><span style=color:#00688b>BACKUP_DIR</span><span style=color:#cd5555>}</span>/snap/db
-
-<span style=color:#228b22># Restore:</span>
-<span style=color:#228b22># . ${BACKUP_DIR}/etcd/etcd.conf</span>
-<span style=color:#228b22># ETCDCTL_API=3 $ETCD3 \</span>
-<span style=color:#228b22>#    --name $ETCD_NAME \</span>
-<span style=color:#228b22>#    --initial-cluster $ETCD_INITIAL_CLUSTER \</span>
-<span style=color:#228b22>#    --initial-cluster-token $ETCD_INITIAL_CLUSTER_TOKEN \</span>
-<span style=color:#228b22>#    --initial-advertise-peer-urls $ETCD_INITIAL_ADVERTISE_PEER_URLS \</span>
-<span style=color:#228b22>#    snapshot restore ${BACKUP_DIR}/snap/db</span>
-</code></pre></div><ul>
-<li><input disabled type=checkbox> <strong>Run the <a href=https://github.com/openshift/openshift-ansible/blob/release-3.9/playbooks/openshift-etcd/scaleup.yml>etcd scaleup playbook</a></strong></li>
-</ul>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#1e889b>#!/bin/bash
-</span><span style=color:#1e889b></span><span style=color:#228b22># https://docs.openshift.com/container-platform/3.9/admin_guide/assembly_replace-etcd-member.html</span>
-<span style=color:#00688b>PLAYBOOK</span>=/usr/share/ansible/openshift-ansible/playbooks/openshift-etcd/scaleup.yml
-
-ansible-playbook -vvv <span style=color:#cd5555>\
-</span><span style=color:#cd5555></span>        -i hosts <span style=color:#cd5555>&#34;</span><span style=color:#00688b>$PLAYBOOK</span><span style=color:#cd5555>&#34;</span> <span style=color:#cd5555>\
-</span><span style=color:#cd5555></span>        | tee <span style=color:#8b008b;font-weight:700>$(</span>date +%Y%m%d-%H%M<span style=color:#8b008b;font-weight:700>)</span>-etcd-scaleup.log
-</code></pre></div><blockquote>
-<p>In my case I found etcd had been accidentally started by hand with a default config file which listened on localhost. The config file was <a href=https://github.com/openshift/openshift-ansible/blob/release-3.9/roles/etcd/tasks/main.yml#L119>modified by the etcd role</a> and the restart etcd handler was notified, but it was skipped. This caused the <a href=https://github.com/openshift/openshift-ansible/blob/release-3.9/playbooks/openshift-etcd/private/scaleup.yml#L51>etcd cluster status check task</a> to timeout, and subsequent steps in the playbook to fail.</p>
-<p>After restarting etcd at 18:43 the cluster reports as healthy, and I re-ran the playbook successfully.</p>
-</blockquote>
-<p>After the playbook has been run successfuly it can be seen that the master node has been added as an etcd endpoint in <code>/etc/origin/master/master-config.yaml</code> on every master node.</p>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#8b008b;font-weight:700>etcdClientInfo</span>:<span style=color:#bbb>
-</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>ca</span>:<span style=color:#bbb> </span>master.etcd-ca.crt<span style=color:#bbb>
-</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>certFile</span>:<span style=color:#bbb> </span>master.etcd-client.crt<span style=color:#bbb>
-</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>keyFile</span>:<span style=color:#bbb> </span>master.etcd-client.key<span style=color:#bbb>
-</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>urls</span>:<span style=color:#bbb>
-</span><span style=color:#bbb>  </span>- https://ose-test-etcd-01.example.com:2379<span style=color:#bbb>
-</span><span style=color:#bbb>  </span>- https://ose-test-etcd-02.example.com:2379<span style=color:#bbb>
-</span><span style=color:#bbb>  </span>- https://ose-test-etcd-03.example.com:2379<span style=color:#bbb>
-</span><span style=color:#bbb>  </span>- https://ose-test-master-01.example.com:2379<span style=color:#bbb>
-</span></code></pre></div><ul>
-<li>
-<p><input disabled type=checkbox> <strong>This master is done. Move this first master from the <code>new_etcd</code> to the <code>etcd</code> ansible group.</strong> <em>Leave it in any other groups it is already a member of of course.</em></p>
-</li>
-<li>
-<p><input disabled type=checkbox> <strong>Remove old <code>ose-test-etcd-03</code> node from the <code>etcd</code> ansible group.</strong></p>
-</li>
-<li>
-<p><input disabled type=checkbox> <strong>Update the <code>master-config.yaml</code> to include only the hosts remaining in the <code>etcd</code> ansible group and restart api service.</strong></p>
-</li>
-</ul>
-<p>I considered the <a href=https://github.com/openshift/openshift-ansible/blob/release-3.9/roles/lib_utils/library/modify_yaml.py><code>modify_yaml</code></a> but after noticing it inserted some <code>nulls</code> and converted some doule quotes to single quotes, I was happy to find the <a href=https://github.com/openshift/openshift-ansible/blob/release-3.9/roles/lib_utils/library/yedit.py><code>yedit</code></a> module.</p>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#008b45;text-decoration:underline>---</span><span style=color:#bbb>
-</span><span style=color:#bbb></span><span style=color:#228b22># playbook to replace currently configured master etcd URLs with</span><span style=color:#bbb>
-</span><span style=color:#bbb></span><span style=color:#228b22># the hosts found in ansible etcd group</span><span style=color:#bbb>
-</span><span style=color:#bbb></span>- <span style=color:#8b008b;font-weight:700>hosts</span>:<span style=color:#bbb> </span>masters<span style=color:#bbb>
-</span><span style=color:#bbb>
-</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>vars</span>:<span style=color:#bbb>
-</span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>openshift_master_fire_handlers</span>:<span style=color:#bbb> </span><span style=color:#8b008b;font-weight:700>true</span><span style=color:#bbb>
-</span><span style=color:#bbb>
-</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>roles</span>:<span style=color:#bbb>
-</span><span style=color:#bbb>    </span><span style=color:#228b22># https://github.com/openshift/openshift-ansible/tree/release-3.9/roles/lib_utils/library</span><span style=color:#bbb>
-</span><span style=color:#bbb>    </span>- lib_utils<span style=color:#bbb>
-</span><span style=color:#bbb>    </span>- openshift_facts<span style=color:#bbb>
-</span><span style=color:#bbb>
-</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>tasks</span>:<span style=color:#bbb>
-</span><span style=color:#bbb>
-</span><span style=color:#bbb>    </span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>Gather Cluster facts<span style=color:#bbb>
-</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>openshift_facts</span>:<span style=color:#bbb>
-</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>role</span>:<span style=color:#bbb> </span>common<span style=color:#bbb>
-</span><span style=color:#bbb>
-</span><span style=color:#bbb>    </span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>Derive etcd url list<span style=color:#bbb>
-</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>set_fact</span>:<span style=color:#bbb>
-</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>openshift_master_etcd_urls</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;{{ groups[&#39;etcd&#39;] | lib_utils_oo_etcd_host_urls(l_use_ssl, openshift_master_etcd_port) }}&#34;</span><span style=color:#bbb>
-</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>vars</span>:<span style=color:#bbb>
-</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>l_use_ssl</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;{{ openshift_master_etcd_use_ssl | default(True) | bool}}&#34;</span><span style=color:#bbb>
-</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>openshift_master_etcd_port</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;{{ etcd_client_port | default(&#39;2379&#39;) }}&#34;</span><span style=color:#bbb>
-</span><span style=color:#bbb>
-</span><span style=color:#bbb>    </span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>Configure ectcd url list<span style=color:#bbb>
-</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>yedit</span>:<span style=color:#bbb>
-</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>src</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;{{ openshift.common.config_base }}/master/master-config.yaml&#34;</span><span style=color:#bbb>
-</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>key</span>:<span style=color:#bbb> </span>etcdClientInfo.urls<span style=color:#bbb>
-</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>value</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;{{ openshift_master_etcd_urls }}&#34;</span><span style=color:#bbb>
-</span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>backup</span>:<span style=color:#bbb> </span><span style=color:#8b008b;font-weight:700>yes</span><span style=color:#bbb>
-</span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>notify</span>:<span style=color:#bbb> </span>restart master api<span style=color:#bbb>
-</span><span style=color:#bbb>
-</span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>handlers</span>:<span style=color:#bbb>
-</span><span style=color:#bbb>    </span><span style=color:#228b22># https://github.com/openshift/openshift-ansible/blob/release-3.9/roles/openshift_master/handlers/main.yml</span><span style=color:#bbb>
-</span><span style=color:#bbb>    </span>- <span style=color:#8b008b;font-weight:700>import_tasks</span>:<span style=color:#bbb> </span>/usr/share/ansible/openshift-ansible/roles/openshift_master/handlers/main.yml<span style=color:#bbb>
-</span></code></pre></div><ul>
-<li>
-<p><input disabled type=checkbox> <strong>Verify OpenShift operation</strong></p>
-</li>
-<li>
-<p><input disabled type=checkbox> <strong>Remove old <code>ose-test-etcd-03</code> node from etcd cluster.</strong></p>
-<p>{% highlight plain %}{% raw %}
+<i class="fas fa-align-justify"></i></button></div></div><div class="navbar-collapse collapse" id=navigation><ul class="nav navbar-nav navbar-right"><li class=dropdown><a href=/>Home</a></li><li class="dropdown active"><a href=/blog/>Blog</a></li><li class=dropdown><a href=/contact/>Contact</a></li></ul></div><div class="collapse clearfix" id=search><form class=navbar-form role=search><div class=input-group><input type=text class=form-control placeholder=Search>
+<span class=input-group-btn><button type=submit class="btn btn-template-main"><i class="fas fa-search"></i></button></span></div></form></div></div></div></header><style>.bar.background-image-fixed-banner{background:url(/img/banners/banner-9.jpg)50% 0 no-repeat;background-attachment:fixed;background-size:cover;padding:100px 5%;text-shadow:2px 3px 4px var(--primary-accent),0 0 1em var(--navbar-border-top)}</style><div><div class=container><div class=row><div class=col-md-12><section class="bar background-image-fixed-banner heading h2 color-white text-center"><h1>Migration of Etcd to Masters for OpenShift 3.9 to 3.10 Upgrade</h1></section></div></div></div></div><div id=content><div class=container><div class=row><div class=col-md-9 id=blog-post><p class="text-muted text-uppercase mb-small text-right">February 8, 2019</p><div id=post-content><p>As of OpenShift Container Platform 3.10 etcd is expected to run in <a href=https://docs.openshift.com/container-platform/3.10/release_notes/ocp_3_10_release_notes.html#ocp-310-control-plane-changes>static pods</a> on the master nodes in the control plane. You may have a deployed an HA cluster with dedicated etcd nodes managed with systemd. How do you migrate the this new architecture?</p><p><strong>Assumptions:</strong></p><ul><li>You are running OCP 3.9</li><li>You have multiple Master nodes</li><li>You have dedicated Etcd nodes</li><li>You are running RHEL, not Atomic nodes</li></ul><p><strong>Outline:</strong></p><ul><li>Backup etcd</li><li>Scale up Etcd cluster to include Master nodes</li><li>Configure Openshift Masters to ignore the old Etcd nodes</li><li>Scale down etcd cluster to remove old Etcd nodes</li></ul><h1 id=detailed-steps>Detailed Steps</h1><p>Follow along in this document <a href=https://docs.openshift.com/container-platform/3.9/admin_guide/assembly_replace-etcd-member.html>https://docs.openshift.com/container-platform/3.9/admin_guide/assembly_replace-etcd-member.html</a>
+You may find <a href=http://guifreelife.com/blog/2019/02/08/Etcd-Shortcut-With-Peer-Auth>some etcd aliases handy</a> before proceeding.</p><ul><li><p><input disabled type=checkbox> <strong>Create an <code>new_etcd</code> ansible group in your inventory file.</strong></p></li><li><p><input disabled type=checkbox> <strong>Add the first Master node to this <code>new_etcd</code> group for testing.</strong></p></li><li><p><input disabled type=checkbox> <strong>Add <code>new_etcd</code> group as a child to the <code>OSEv3</code> ansible group.</strong></p></li><li><p><input disabled type=checkbox> <strong>Confirm your cluster health on the first etcd server.</strong></p></li></ul><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#1e889b>#!/bin/bash
+</span></span></span><span style=display:flex><span><span style=color:#1e889b></span>
+</span></span><span style=display:flex><span>. /etc/etcd/etcd.conf
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#00688b>ENV</span>=<span style=color:#cd5555>${</span><span style=color:#00688b>OPENSHIFT_ENV</span><span style=color:#8b008b;font-weight:700>:-</span><span style=color:#00688b>test</span><span style=color:#cd5555>}</span>
+</span></span><span style=display:flex><span><span style=color:#00688b>ENDPOINTS</span>=<span style=color:#cd5555>&#34;https://ose-</span><span style=color:#cd5555>${</span><span style=color:#00688b>ENV</span><span style=color:#cd5555>}</span><span style=color:#cd5555>-etcd-01.example.com:2379,https://ose-</span><span style=color:#cd5555>${</span><span style=color:#00688b>ENV</span><span style=color:#cd5555>}</span><span style=color:#cd5555>-etcd-02.example.com:2379,https://ose-</span><span style=color:#cd5555>${</span><span style=color:#00688b>ENV</span><span style=color:#cd5555>}</span><span style=color:#cd5555>-etcd-03.example.com:2379&#34;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#00688b>ETCDCTL_API</span>=<span style=color:#b452cd>3</span> etcdctl <span style=color:#cd5555>\
+</span></span></span><span style=display:flex><span><span style=color:#cd5555></span>    --cert <span style=color:#cd5555>${</span><span style=color:#00688b>ETCD_PEER_CERT_FILE</span><span style=color:#cd5555>}</span> <span style=color:#cd5555>\
+</span></span></span><span style=display:flex><span><span style=color:#cd5555></span>    --key <span style=color:#cd5555>${</span><span style=color:#00688b>ETCD_PEER_KEY_FILE</span><span style=color:#cd5555>}</span> <span style=color:#cd5555>\
+</span></span></span><span style=display:flex><span><span style=color:#cd5555></span>    --cacert <span style=color:#cd5555>${</span><span style=color:#00688b>ETCD_PEER_TRUSTED_CA_FILE</span><span style=color:#8b008b;font-weight:700>:-</span><span style=color:#00688b>$ETCD_PEER_CA_FILE</span><span style=color:#cd5555>}</span> <span style=color:#cd5555>\
+</span></span></span><span style=display:flex><span><span style=color:#cd5555></span>    --endpoints <span style=color:#cd5555>&#34;</span><span style=color:#00688b>$ENDPOINTS</span><span style=color:#cd5555>&#34;</span> <span style=color:#cd5555>\
+</span></span></span><span style=display:flex><span><span style=color:#cd5555></span>    endpoint health
+</span></span></code></pre></div><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-plain data-lang=plain><span style=display:flex><span>[root@ose-test-etcd-01 bin]# ./etcd-health
+</span></span><span style=display:flex><span>https://ose-test-etcd-01.example.com:2379 is healthy: successfully committed proposal: took = 2.41743ms
+</span></span><span style=display:flex><span>https://ose-test-etcd-03.example.com:2379 is healthy: successfully committed proposal: took = 2.363286ms
+</span></span><span style=display:flex><span>https://ose-test-etcd-02.example.com:2379 is healthy: successfully committed proposal: took = 2.213456ms
+</span></span></code></pre></div><ul><li><input disabled type=checkbox> <strong><a href=https://docs.openshift.com/container-platform/3.9/day_two_guide/environment_backup.html#backing-up-etcd_environment-backup>Create a backup of your etcd</a> data and configuration.</strong></li></ul><blockquote><p>Because of the <a href=https://docs.openshift.com/container-platform/3.7/upgrading/migrating_etcd.html>migration during the upgrade</a> to 3.7, I am assuming I do not need to back up v2 data. That is <a href=https://lists.openshift.redhat.com/openshift-archives/users/2019-February/msg00010.html>somewhat TBD</a>, however.</p></blockquote><ul><li><a href=https://lists.openshift.redhat.com/openshift-archives/users/2019-February/msg00029.html>OpenShift-Users mailing list post</a></li><li><a href="https://bugzilla.redhat.com/show_bug.cgi?id=1579304">BZ 1579304</a></li><li><a href="https://bugzilla.redhat.com/show_bug.cgi?id=1656397">BZ 1656397</a></li></ul><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#1e889b>#!/bin/bash
+</span></span></span><span style=display:flex><span><span style=color:#1e889b></span><span style=color:#228b22># https://docs.openshift.com/container-platform/latest/admin_guide/backup_restore.html</span>
+</span></span><span style=display:flex><span><span style=color:#228b22># https://access.redhat.com/solutions/1981013#comment-1257931</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>. /etc/etcd/etcd.conf
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#00688b>ETCD3</span>=<span style=color:#cd5555>&#34;etcdctl --cert </span><span style=color:#cd5555>${</span><span style=color:#00688b>ETCD_PEER_CERT_FILE</span><span style=color:#cd5555>}</span><span style=color:#cd5555> \
+</span></span></span><span style=display:flex><span><span style=color:#cd5555>  --key </span><span style=color:#cd5555>${</span><span style=color:#00688b>ETCD_PEER_KEY_FILE</span><span style=color:#cd5555>}</span><span style=color:#cd5555> \
+</span></span></span><span style=display:flex><span><span style=color:#cd5555>  --cacert </span><span style=color:#cd5555>${</span><span style=color:#00688b>ETCD_PEER_TRUSTED_CA_FILE</span><span style=color:#8b008b;font-weight:700>:-</span><span style=color:#00688b>$ETCD_PEER_CA_FILE</span><span style=color:#cd5555>}</span><span style=color:#cd5555> \
+</span></span></span><span style=display:flex><span><span style=color:#cd5555>  --endpoints </span><span style=color:#cd5555>${</span><span style=color:#00688b>ETCD_ADVERTISE_CLIENT_URLS</span><span style=color:#cd5555>}</span><span style=color:#cd5555>&#34;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#00688b>BACKUP_DIR</span>=<span style=color:#cd5555>&#34;/var/backup/etcd/</span><span style=color:#8b008b;font-weight:700>$(</span>date +%Y%m%d%H%M<span style=color:#8b008b;font-weight:700>)</span><span style=color:#cd5555>&#34;</span>
+</span></span><span style=display:flex><span>mkdir -p <span style=color:#cd5555>${</span><span style=color:#00688b>BACKUP_DIR</span><span style=color:#cd5555>}</span>/snap
+</span></span><span style=display:flex><span>cp -rp /etc/etcd <span style=color:#cd5555>&#34;</span><span style=color:#cd5555>${</span><span style=color:#00688b>BACKUP_DIR</span><span style=color:#cd5555>}</span><span style=color:#cd5555>/&#34;</span>
+</span></span><span style=display:flex><span>cp -p <span style=color:#00688b>$0</span> <span style=color:#cd5555>&#34;</span><span style=color:#cd5555>${</span><span style=color:#00688b>BACKUP_DIR</span><span style=color:#cd5555>}</span><span style=color:#cd5555>/&#34;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#00688b>ETCDCTL_API</span>=<span style=color:#b452cd>3</span> <span style=color:#00688b>$ETCD3</span> <span style=color:#cd5555>\
+</span></span></span><span style=display:flex><span><span style=color:#cd5555></span>        snapshot save <span style=color:#cd5555>${</span><span style=color:#00688b>BACKUP_DIR</span><span style=color:#cd5555>}</span>/snap/db
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#228b22># Restore:</span>
+</span></span><span style=display:flex><span><span style=color:#228b22># . ${BACKUP_DIR}/etcd/etcd.conf</span>
+</span></span><span style=display:flex><span><span style=color:#228b22># ETCDCTL_API=3 $ETCD3 \</span>
+</span></span><span style=display:flex><span><span style=color:#228b22>#    --name $ETCD_NAME \</span>
+</span></span><span style=display:flex><span><span style=color:#228b22>#    --initial-cluster $ETCD_INITIAL_CLUSTER \</span>
+</span></span><span style=display:flex><span><span style=color:#228b22>#    --initial-cluster-token $ETCD_INITIAL_CLUSTER_TOKEN \</span>
+</span></span><span style=display:flex><span><span style=color:#228b22>#    --initial-advertise-peer-urls $ETCD_INITIAL_ADVERTISE_PEER_URLS \</span>
+</span></span><span style=display:flex><span><span style=color:#228b22>#    snapshot restore ${BACKUP_DIR}/snap/db</span>
+</span></span></code></pre></div><ul><li><input disabled type=checkbox> <strong>Run the <a href=https://github.com/openshift/openshift-ansible/blob/release-3.9/playbooks/openshift-etcd/scaleup.yml>etcd scaleup playbook</a></strong></li></ul><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#1e889b>#!/bin/bash
+</span></span></span><span style=display:flex><span><span style=color:#1e889b></span><span style=color:#228b22># https://docs.openshift.com/container-platform/3.9/admin_guide/assembly_replace-etcd-member.html</span>
+</span></span><span style=display:flex><span><span style=color:#00688b>PLAYBOOK</span>=/usr/share/ansible/openshift-ansible/playbooks/openshift-etcd/scaleup.yml
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>ansible-playbook -vvv <span style=color:#cd5555>\
+</span></span></span><span style=display:flex><span><span style=color:#cd5555></span>        -i hosts <span style=color:#cd5555>&#34;</span><span style=color:#00688b>$PLAYBOOK</span><span style=color:#cd5555>&#34;</span> <span style=color:#cd5555>\
+</span></span></span><span style=display:flex><span><span style=color:#cd5555></span>        | tee <span style=color:#8b008b;font-weight:700>$(</span>date +%Y%m%d-%H%M<span style=color:#8b008b;font-weight:700>)</span>-etcd-scaleup.log
+</span></span></code></pre></div><blockquote><p>In my case I found etcd had been accidentally started by hand with a default config file which listened on localhost. The config file was <a href=https://github.com/openshift/openshift-ansible/blob/release-3.9/roles/etcd/tasks/main.yml#L119>modified by the etcd role</a> and the restart etcd handler was notified, but it was skipped. This caused the <a href=https://github.com/openshift/openshift-ansible/blob/release-3.9/playbooks/openshift-etcd/private/scaleup.yml#L51>etcd cluster status check task</a> to timeout, and subsequent steps in the playbook to fail.</p><p>After restarting etcd at 18:43 the cluster reports as healthy, and I re-ran the playbook successfully.</p></blockquote><p>After the playbook has been run successfuly it can be seen that the master node has been added as an etcd endpoint in <code>/etc/origin/master/master-config.yaml</code> on every master node.</p><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=display:flex><span><span style=color:#8b008b;font-weight:700>etcdClientInfo</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>ca</span>:<span style=color:#bbb> </span>master.etcd-ca.crt<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>certFile</span>:<span style=color:#bbb> </span>master.etcd-client.crt<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>keyFile</span>:<span style=color:#bbb> </span>master.etcd-client.key<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>urls</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>  </span>- https://ose-test-etcd-01.example.com:2379<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>  </span>- https://ose-test-etcd-02.example.com:2379<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>  </span>- https://ose-test-etcd-03.example.com:2379<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>  </span>- https://ose-test-master-01.example.com:2379<span style=color:#bbb>
+</span></span></span></code></pre></div><ul><li><p><input disabled type=checkbox> <strong>This master is done. Move this first master from the <code>new_etcd</code> to the <code>etcd</code> ansible group.</strong> <em>Leave it in any other groups it is already a member of of course.</em></p></li><li><p><input disabled type=checkbox> <strong>Remove old <code>ose-test-etcd-03</code> node from the <code>etcd</code> ansible group.</strong></p></li><li><p><input disabled type=checkbox> <strong>Update the <code>master-config.yaml</code> to include only the hosts remaining in the <code>etcd</code> ansible group and restart api service.</strong></p></li></ul><p>I considered the <a href=https://github.com/openshift/openshift-ansible/blob/release-3.9/roles/lib_utils/library/modify_yaml.py><code>modify_yaml</code></a> but after noticing it inserted some <code>nulls</code> and converted some doule quotes to single quotes, I was happy to find the <a href=https://github.com/openshift/openshift-ansible/blob/release-3.9/roles/lib_utils/library/yedit.py><code>yedit</code></a> module.</p><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=display:flex><span><span style=color:#008b45;text-decoration:underline>---</span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb></span><span style=color:#228b22># playbook to replace currently configured master etcd URLs with</span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb></span><span style=color:#228b22># the hosts found in ansible etcd group</span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb></span>- <span style=color:#8b008b;font-weight:700>hosts</span>:<span style=color:#bbb> </span>masters<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>vars</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>    </span><span style=color:#8b008b;font-weight:700>openshift_master_fire_handlers</span>:<span style=color:#bbb> </span><span style=color:#8b008b;font-weight:700>true</span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>roles</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>    </span><span style=color:#228b22># https://github.com/openshift/openshift-ansible/tree/release-3.9/roles/lib_utils/library</span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>    </span>- lib_utils<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>    </span>- openshift_facts<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>tasks</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>    </span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>Gather Cluster facts<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>openshift_facts</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>role</span>:<span style=color:#bbb> </span>common<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>    </span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>Derive etcd url list<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>set_fact</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>openshift_master_etcd_urls</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;{{ groups[&#39;etcd&#39;] | lib_utils_oo_etcd_host_urls(l_use_ssl, openshift_master_etcd_port) }}&#34;</span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>vars</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>l_use_ssl</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;{{ openshift_master_etcd_use_ssl | default(True) | bool}}&#34;</span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>openshift_master_etcd_port</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;{{ etcd_client_port | default(&#39;2379&#39;) }}&#34;</span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>    </span>- <span style=color:#8b008b;font-weight:700>name</span>:<span style=color:#bbb> </span>Configure ectcd url list<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>yedit</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>src</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;{{ openshift.common.config_base }}/master/master-config.yaml&#34;</span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>key</span>:<span style=color:#bbb> </span>etcdClientInfo.urls<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>value</span>:<span style=color:#bbb> </span><span style=color:#cd5555>&#34;{{ openshift_master_etcd_urls }}&#34;</span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>        </span><span style=color:#8b008b;font-weight:700>backup</span>:<span style=color:#bbb> </span><span style=color:#8b008b;font-weight:700>yes</span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>      </span><span style=color:#8b008b;font-weight:700>notify</span>:<span style=color:#bbb> </span>restart master api<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>  </span><span style=color:#8b008b;font-weight:700>handlers</span>:<span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>    </span><span style=color:#228b22># https://github.com/openshift/openshift-ansible/blob/release-3.9/roles/openshift_master/handlers/main.yml</span><span style=color:#bbb>
+</span></span></span><span style=display:flex><span><span style=color:#bbb>    </span>- <span style=color:#8b008b;font-weight:700>import_tasks</span>:<span style=color:#bbb> </span>/usr/share/ansible/openshift-ansible/roles/openshift_master/handlers/main.yml<span style=color:#bbb>
+</span></span></span></code></pre></div><ul><li><p><input disabled type=checkbox> <strong>Verify OpenShift operation</strong></p></li><li><p><input disabled type=checkbox> <strong>Remove old <code>ose-test-etcd-03</code> node from etcd cluster.</strong></p><p>{% highlight plain %}{% raw %}
 [root@ose-test-master-01 etcd]# etcdctl3 member list
 3cc657644e2e1080, started, ose-test-etcd-02.example.com, https://192.0.2.242:2380, https://192.0.2.242:2379
 669fc09764815697, started, ose-test-etcd-03.example.com, https://192.0.2.243:2380, https://192.0.2.243:2379
 dd1f136e71579ace, started, ose-test-etcd-01.example.com, https://192.0.2.241:2380, https://192.0.2.241:2379
-eafa4cc2f9510e7b, started, ose-test-master-01.example.com, https://192.0.2.251:2380, https://192.0.2.251:2379</p>
-<p>[root@ose-test-master-01 etcd]# etcdctl3 member remove 669fc09764815697
-{% endraw %}{% endhighlight %}</p>
-</li>
-<li>
-<p><input disabled type=checkbox> <strong>Repeat for Masters 2 and 3 and etcd nodes 2 and 1.</strong></p>
-</li>
-</ul>
-<p>You are now one step closer to OpenShift 3.10.</p>
-<p>At this point etcd should be running only on the 3 Master nodes and not on the old Etcd nodes. All the masters should know this, and you are one step closer to being able to upgrade to OpenShift 3.10.</p>
-<h1 id=problems>Problems</h1>
-<p><strong>Solved</strong></p>
-<ul>
-<li>As I mentioned I had accidentally started etcd with a default config and the scaleup playbook did not expect this condition.</li>
-</ul>
-<p><strong>Lingering</strong></p>
-<ul>
-<li>I scaled up 2 masters as etcd nodes which got etcd 3.3.11 installed. When I went to scale up the 3rd master soon after, suddenly the newest etcd RPM was 3.2.22 which is incompatible. In fact OpenShift is not certified to work with etcd 3.3. Etcd 3.3 should be excluded in <code>yum.conf</code> but it is not <a href="https://bugzilla.redhat.com/show_bug.cgi?id=1672518">BZ 1672518</a>! This KB points out a 3.2 etcd container image got a 3.3 etcd binary into it also! &ldquo;<a href=https://access.redhat.com/solutions/3885101>ETCD hosts were upgraded to version 3.3.11.</a>&rdquo;. Here is <a href=http://guifreelife.com/blog/2019/02/19/Downgrade-Etcd-for-OpenShift-Compatibility>what I did</a>.</li>
-</ul>
-<h1 id=see-also>See Also</h1>
-<ul>
-<li><a href=https://access.redhat.com/solutions/1981013>Backup and Restore in OpenShift Container Platform 3</a></li>
-<li><a href=https://docs.openshift.com/container-platform/3.9/admin_guide/assembly_replace-etcd-member.html>Replacing a failed etcd member</a></li>
-<li><a href=https://access.redhat.com/solutions/3631141>Known Issues when upgrading to OpenShift 3.10</a></li>
-<li><a href=https://github.com/canit00/role_cluster_config>Role for configuring master config</a></li>
-<li><a href=https://access.redhat.com/solutions/3885101>ETCD hosts were upgraded to version 3.3.11.</a></li>
-<li><a href="https://bugzilla.redhat.com/show_bug.cgi?id=1672518">Etcd 3.3 should be excluded but it is not BZ 1672518</a></li>
-</ul>
-</div>
-<div id=comments>
-<div id=disqus_thread></div>
-<script type=application/javascript>var disqus_config=function(){};(function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById('disqus_thread').innerHTML='Disqus comments not available by default when the website is previewed locally.';return}var b=document,a=b.createElement('script');a.async=!0,a.src='//dlbewleygithubio.disqus.com/embed.js',a.setAttribute('data-timestamp',+new Date),(b.head||b.body).appendChild(a)})()</script>
-<noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript>
-<a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a>
-</div>
-</div>
-<div class=col-md-3>
-<div class="panel panel-default sidebar-menu">
-<div class=panel-heading>
-<h3 class=panel-title>Search</h3>
-</div>
-<div class=panel-body>
-<form action=//google.com/search method=get accept-charset=utf-8 role=search>
-<div class=input-group>
-<input type=search name=q class=form-control placeholder=Search>
+eafa4cc2f9510e7b, started, ose-test-master-01.example.com, https://192.0.2.251:2380, https://192.0.2.251:2379</p><p>[root@ose-test-master-01 etcd]# etcdctl3 member remove 669fc09764815697
+{% endraw %}{% endhighlight %}</p></li><li><p><input disabled type=checkbox> <strong>Repeat for Masters 2 and 3 and etcd nodes 2 and 1.</strong></p></li></ul><p>You are now one step closer to OpenShift 3.10.</p><p>At this point etcd should be running only on the 3 Master nodes and not on the old Etcd nodes. All the masters should know this, and you are one step closer to being able to upgrade to OpenShift 3.10.</p><h1 id=problems>Problems</h1><p><strong>Solved</strong></p><ul><li>As I mentioned I had accidentally started etcd with a default config and the scaleup playbook did not expect this condition.</li></ul><p><strong>Lingering</strong></p><ul><li>I scaled up 2 masters as etcd nodes which got etcd 3.3.11 installed. When I went to scale up the 3rd master soon after, suddenly the newest etcd RPM was 3.2.22 which is incompatible. In fact OpenShift is not certified to work with etcd 3.3. Etcd 3.3 should be excluded in <code>yum.conf</code> but it is not <a href="https://bugzilla.redhat.com/show_bug.cgi?id=1672518">BZ 1672518</a>! This KB points out a 3.2 etcd container image got a 3.3 etcd binary into it also! &ldquo;<a href=https://access.redhat.com/solutions/3885101>ETCD hosts were upgraded to version 3.3.11.</a>&rdquo;. Here is <a href=http://guifreelife.com/blog/2019/02/19/Downgrade-Etcd-for-OpenShift-Compatibility>what I did</a>.</li></ul><h1 id=see-also>See Also</h1><ul><li><a href=https://access.redhat.com/solutions/1981013>Backup and Restore in OpenShift Container Platform 3</a></li><li><a href=https://docs.openshift.com/container-platform/3.9/admin_guide/assembly_replace-etcd-member.html>Replacing a failed etcd member</a></li><li><a href=https://access.redhat.com/solutions/3631141>Known Issues when upgrading to OpenShift 3.10</a></li><li><a href=https://github.com/canit00/role_cluster_config>Role for configuring master config</a></li><li><a href=https://access.redhat.com/solutions/3885101>ETCD hosts were upgraded to version 3.3.11.</a></li><li><a href="https://bugzilla.redhat.com/show_bug.cgi?id=1672518">Etcd 3.3 should be excluded but it is not BZ 1672518</a></li></ul></div><div id=comments><div id=disqus_thread></div><script type=application/javascript>window.disqus_config=function(){},function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById("disqus_thread").innerHTML="Disqus comments not available by default when the website is previewed locally.";return}var t=document,e=t.createElement("script");e.async=!0,e.src="//dlbewleygithubio.disqus.com/embed.js",e.setAttribute("data-timestamp",+new Date),(t.head||t.body).appendChild(e)}()</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript><a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a></div></div><div class=col-md-3><div class="panel panel-default sidebar-menu"><div class=panel-heading><h3 class=panel-title>Search</h3></div><div class=panel-body><form action=//google.com/search method=get accept-charset=utf-8 role=search><div class=input-group><input type=search name=q class=form-control placeholder=Search>
 <input type=hidden name=sitesearch value=http://guifreelife.com/>
-<span class=input-group-btn>
-<button type=submit class="btn btn-template-main"><i class="fas fa-search"></i></button>
-</span>
-</div>
-</form>
-</div>
-</div>
-<div class="panel sidebar-menu">
-<div class=panel-heading>
-<h3 class=panel-title>Tagged</h3>
-</div>
-<div class=panel-body>
-<ul class=tag-cloud>
-<li class=active>
-<a href=/tags/etcd><i class="fas fa-tags"></i> etcd</a>
-</li>
-<li class=active>
-<a href=/tags/openshift><i class="fas fa-tags"></i> openshift</a>
-</li>
-<li class=active>
-<a href=/tags/OCP3><i class="fas fa-tags"></i> OCP3</a>
-</li>
-<li class=active>
-<a href=/tags/migration><i class="fas fa-tags"></i> migration</a>
-</li>
-<li class=active>
-<a href=/tags/upgrade><i class="fas fa-tags"></i> upgrade</a>
-</li>
-</ul>
-</div>
-</div>
-<div class="panel sidebar-menu">
-<div class=panel-heading>
-<h3 class=panel-title>TOC</h3>
-</div>
-<div class=panel-body>
-<nav id=TableOfContents>
-<ul>
-<li><a href=#detailed-steps>Detailed Steps</a></li>
-<li><a href=#problems>Problems</a></li>
-<li><a href=#see-also>See Also</a></li>
-</ul>
-</nav>
-</div>
-</div>
-<div class="panel sidebar-menu">
-<div class=panel-heading>
-<h3 class=panel-title>Tags</h3>
-</div>
-<div class=panel-body>
-<ul class=tag-cloud>
-<li>
-<a href=/tags/AWS><i class="fas fa-tags"></i> AWS</a>
-</li>
-<li>
-<a href=/tags/CDK><i class="fas fa-tags"></i> CDK</a>
-</li>
-<li>
-<a href=/tags/OCP3><i class="fas fa-tags"></i> OCP3</a>
-</li>
-<li>
-<a href=/tags/OCP4><i class="fas fa-tags"></i> OCP4</a>
-</li>
-<li>
-<a href=/tags/RHACM><i class="fas fa-tags"></i> RHACM</a>
-</li>
-<li>
-<a href=/tags/RHACS><i class="fas fa-tags"></i> RHACS</a>
-</li>
-<li>
-<a href=/tags/RHEL><i class="fas fa-tags"></i> RHEL</a>
-</li>
-<li>
-<a href=/tags/ansible><i class="fas fa-tags"></i> ansible</a>
-</li>
-<li>
-<a href=/tags/automation><i class="fas fa-tags"></i> automation</a>
-</li>
-<li>
-<a href=/tags/azure><i class="fas fa-tags"></i> azure</a>
-</li>
-<li>
-<a href=/tags/debugging><i class="fas fa-tags"></i> debugging</a>
-</li>
-<li>
-<a href=/tags/docker><i class="fas fa-tags"></i> docker</a>
-</li>
-<li>
-<a href=/tags/draft><i class="fas fa-tags"></i> draft</a>
-</li>
-<li>
-<a href=/tags/etcd><i class="fas fa-tags"></i> etcd</a>
-</li>
-<li>
-<a href=/tags/git><i class="fas fa-tags"></i> git</a>
-</li>
-<li>
-<a href=/tags/haproxy><i class="fas fa-tags"></i> haproxy</a>
-</li>
-<li>
-<a href=/tags/heat><i class="fas fa-tags"></i> heat</a>
-</li>
-<li>
-<a href=/tags/hybrid-cloud><i class="fas fa-tags"></i> hybrid-cloud</a>
-</li>
-<li>
-<a href=/tags/install><i class="fas fa-tags"></i> install</a>
-</li>
-<li>
-<a href=/tags/kubernetes><i class="fas fa-tags"></i> kubernetes</a>
-</li>
-<li>
-<a href=/tags/mac><i class="fas fa-tags"></i> mac</a>
-</li>
-<li>
-<a href=/tags/metrics><i class="fas fa-tags"></i> metrics</a>
-</li>
-<li>
-<a href=/tags/migration><i class="fas fa-tags"></i> migration</a>
-</li>
-<li>
-<a href=/tags/monitoring><i class="fas fa-tags"></i> monitoring</a>
-</li>
-<li>
-<a href=/tags/networking><i class="fas fa-tags"></i> networking</a>
-</li>
-<li>
-<a href=/tags/openshift><i class="fas fa-tags"></i> openshift</a>
-</li>
-<li>
-<a href=/tags/openstack><i class="fas fa-tags"></i> openstack</a>
-</li>
-<li>
-<a href=/tags/operators><i class="fas fa-tags"></i> operators</a>
-</li>
-<li>
-<a href=/tags/prometheus><i class="fas fa-tags"></i> prometheus</a>
-</li>
-<li>
-<a href=/tags/python><i class="fas fa-tags"></i> python</a>
-</li>
-<li>
-<a href=/tags/router><i class="fas fa-tags"></i> router</a>
-</li>
-<li>
-<a href=/tags/security><i class="fas fa-tags"></i> security</a>
-</li>
-<li>
-<a href=/tags/ssl><i class="fas fa-tags"></i> ssl</a>
-</li>
-<li>
-<a href=/tags/stackrox><i class="fas fa-tags"></i> stackrox</a>
-</li>
-<li>
-<a href=/tags/storage><i class="fas fa-tags"></i> storage</a>
-</li>
-<li>
-<a href=/tags/troubleshooting><i class="fas fa-tags"></i> troubleshooting</a>
-</li>
-<li>
-<a href=/tags/upgrade><i class="fas fa-tags"></i> upgrade</a>
-</li>
-<li>
-<a href=/tags/vagrant><i class="fas fa-tags"></i> vagrant</a>
-</li>
-<li>
-<a href=/tags/virtualization><i class="fas fa-tags"></i> virtualization</a>
-</li>
-<li>
-<a href=/tags/webinar><i class="fas fa-tags"></i> webinar</a>
-</li>
-<li>
-<a href=/tags/windows><i class="fas fa-tags"></i> windows</a>
-</li>
-<li>
-<a href=/tags/zabbix><i class="fas fa-tags"></i> zabbix</a>
-</li>
-<li>
-<a href=/tags/zimbra><i class="fas fa-tags"></i> zimbra</a>
-</li>
-</ul>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<footer id=footer>
-<div class=container>
-<div class="col-md-4 col-sm-6">
-<h4>Share</h4>
-<i class="fab fa-2x fa-twitter" title="Share this on Twitter" onclick="window.open('http://twitter.com/home?status=http://guifreelife.com/blog/2019/02/08/Migration-of-Etcd-to-Masters-for-OpenShift-3.9-Upgrade-to-3.10/')"></i>
-<i class="fab fa-2x fa-facebook" title="Share this on Facebook" onclick="window.open('http://www.facebook.com/share.php?u=http://guifreelife.com/blog/2019/02/08/Migration-of-Etcd-to-Masters-for-OpenShift-3.9-Upgrade-to-3.10/')"></i>
-<i class="fab fa-2x fa-linkedin" title="Share this on Linkedin" onclick="window.open('https://www.linkedin.com/shareArticle?mini=true&url=http://guifreelife.com/blog/2019/02/08/Migration-of-Etcd-to-Masters-for-OpenShift-3.9-Upgrade-to-3.10/&title=&summary=&source=')"></i>
-<i class="fab fa-2x fa-google-plus" title="Share this on Google Currents" onclick="window.open('https://plus.google.com/share?url=http://guifreelife.com/blog/2019/02/08/Migration-of-Etcd-to-Masters-for-OpenShift-3.9-Upgrade-to-3.10/')"></i>
-<i class="fa fa-2x fa-envelope" title="Share this through Email" onclick="window.open('mailto:?&body=http://guifreelife.com/blog/2019/02/08/Migration-of-Etcd-to-Masters-for-OpenShift-3.9-Upgrade-to-3.10/')"></i>
-<h4>About us</h4>
-<p>GUI Free Life is the personal, technical blog of Dale Bewley. Comments and opinions are my own and not that of my employers.</p>
-<hr class="hidden-md hidden-lg hidden-sm">
-</div>
-<div class="col-md-4 col-sm-6">
-<h4>Recent posts</h4>
-<div class=blog-entries>
-<div class="item same-height-row clearfix">
-<div class="image same-height-always">
-<a href=http://guifreelife.com/blog/2023/09/22/Storing-OpenShift-Credentials-with-1Password/>
-<img src=/img/banners/mushroom-moss.jpg class=img-responsive alt="Storing OpenShift Credentials with 1Password">
-</a>
-</div>
-<div class="name same-height-always">
-<h5><a href=http://guifreelife.com/blog/2023/09/22/Storing-OpenShift-Credentials-with-1Password/>Storing OpenShift Credentials with 1Password</a></h5>
-</div>
-</div>
-<div class="item same-height-row clearfix">
-<div class="image same-height-always">
-<a href=http://guifreelife.com/blog/2023/04/06/Accessing-Ceph-CLI-with-OpenShift-Data-Foundation/>
-<img src=/images/uncovered-bumper.png class=img-responsive alt="Accessing the Ceph CLI with OpenShift Data Foundation">
-</a>
-</div>
-<div class="name same-height-always">
-<h5><a href=http://guifreelife.com/blog/2023/04/06/Accessing-Ceph-CLI-with-OpenShift-Data-Foundation/>Accessing the Ceph CLI with OpenShift Data Foundation</a></h5>
-</div>
-</div>
-<div class="item same-height-row clearfix">
-<div class="image same-height-always">
-<a href=http://guifreelife.com/blog/2023/03/09/Extracting-CA-Certs-From-Kubeconfig/>
-<img src=/img/banners/banner-buffy-xmas.png class=img-responsive alt="Extracting TLS CA Certificates from Kubeconfig File">
-</a>
-</div>
-<div class="name same-height-always">
-<h5><a href=http://guifreelife.com/blog/2023/03/09/Extracting-CA-Certs-From-Kubeconfig/>Extracting TLS CA Certificates from Kubeconfig File</a></h5>
-</div>
-</div>
-</div>
-<hr class="hidden-md hidden-lg">
-</div>
-<div class="col-md-4 col-sm-6">
-<h4>Contact</h4>
-<p class=text-uppercase><strong>Dale Bewley</strong>
-<br>Oakland
-<br>California
-<br>
-<strong>USA</strong>
-</p>
-<a href=/contact class="btn btn-small btn-template-main">Go to contact page</a>
-<hr class="hidden-md hidden-lg hidden-sm">
-</div>
-</div>
-</footer>
-<div id=copyright>
-<div class=container>
-<div class=col-md-12>
-<p class=pull-left>Copyright (c) 2021, Dale Bewley; all rights reserved.</p>
-<p class=pull-right>
-Template by <a href=https://bootstrapious.com/p/universal-business-e-commerce-template>Bootstrapious</a>.
-Ported to Hugo by <a href=https://github.com/devcows/hugo-universal-theme>DevCows</a>.
-</p>
-</div>
-</div>
-</div>
-</div>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-39TSW9349X"></script>
-<script>var doNotTrack=!1;if(!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date),gtag('config','G-39TSW9349X',{anonymize_ip:!1})}</script>
-<script src=//code.jquery.com/jquery-3.1.1.min.js integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin=anonymous></script>
+<span class=input-group-btn><button type=submit class="btn btn-template-main"><i class="fas fa-search"></i></button></span></div></form></div></div><div class="panel sidebar-menu"><div class=panel-heading><h3 class=panel-title>Tagged</h3></div><div class=panel-body><ul class=tag-cloud><li class=active><a href=/tags/etcd><i class="fas fa-tags"></i> etcd</a></li><li class=active><a href=/tags/openshift><i class="fas fa-tags"></i> openshift</a></li><li class=active><a href=/tags/OCP3><i class="fas fa-tags"></i> OCP3</a></li><li class=active><a href=/tags/migration><i class="fas fa-tags"></i> migration</a></li><li class=active><a href=/tags/upgrade><i class="fas fa-tags"></i> upgrade</a></li></ul></div></div><div class="panel sidebar-menu"><div class=panel-heading><h3 class=panel-title>TOC</h3></div><div class=panel-body><nav id=TableOfContents><ul><li><a href=#detailed-steps>Detailed Steps</a></li><li><a href=#problems>Problems</a></li><li><a href=#see-also>See Also</a></li></ul></nav></div></div><div class="panel sidebar-menu"><div class=panel-heading><h3 class=panel-title>Tags</h3></div><div class=panel-body><ul class=tag-cloud><li><a href=/tags/AWS><i class="fas fa-tags"></i> AWS</a></li><li><a href=/tags/CDK><i class="fas fa-tags"></i> CDK</a></li><li><a href=/tags/OCP3><i class="fas fa-tags"></i> OCP3</a></li><li><a href=/tags/OCP4><i class="fas fa-tags"></i> OCP4</a></li><li><a href=/tags/RHACM><i class="fas fa-tags"></i> RHACM</a></li><li><a href=/tags/RHACS><i class="fas fa-tags"></i> RHACS</a></li><li><a href=/tags/RHEL><i class="fas fa-tags"></i> RHEL</a></li><li><a href=/tags/ansible><i class="fas fa-tags"></i> ansible</a></li><li><a href=/tags/automation><i class="fas fa-tags"></i> automation</a></li><li><a href=/tags/azure><i class="fas fa-tags"></i> azure</a></li><li><a href=/tags/debugging><i class="fas fa-tags"></i> debugging</a></li><li><a href=/tags/docker><i class="fas fa-tags"></i> docker</a></li><li><a href=/tags/draft><i class="fas fa-tags"></i> draft</a></li><li><a href=/tags/etcd><i class="fas fa-tags"></i> etcd</a></li><li><a href=/tags/git><i class="fas fa-tags"></i> git</a></li><li><a href=/tags/haproxy><i class="fas fa-tags"></i> haproxy</a></li><li><a href=/tags/heat><i class="fas fa-tags"></i> heat</a></li><li><a href=/tags/hybrid-cloud><i class="fas fa-tags"></i> hybrid-cloud</a></li><li><a href=/tags/install><i class="fas fa-tags"></i> install</a></li><li><a href=/tags/kubernetes><i class="fas fa-tags"></i> kubernetes</a></li><li><a href=/tags/mac><i class="fas fa-tags"></i> mac</a></li><li><a href=/tags/metrics><i class="fas fa-tags"></i> metrics</a></li><li><a href=/tags/migration><i class="fas fa-tags"></i> migration</a></li><li><a href=/tags/monitoring><i class="fas fa-tags"></i> monitoring</a></li><li><a href=/tags/networking><i class="fas fa-tags"></i> networking</a></li><li><a href=/tags/openshift><i class="fas fa-tags"></i> openshift</a></li><li><a href=/tags/openstack><i class="fas fa-tags"></i> openstack</a></li><li><a href=/tags/operators><i class="fas fa-tags"></i> operators</a></li><li><a href=/tags/prometheus><i class="fas fa-tags"></i> prometheus</a></li><li><a href=/tags/python><i class="fas fa-tags"></i> python</a></li><li><a href=/tags/router><i class="fas fa-tags"></i> router</a></li><li><a href=/tags/security><i class="fas fa-tags"></i> security</a></li><li><a href=/tags/ssl><i class="fas fa-tags"></i> ssl</a></li><li><a href=/tags/stackrox><i class="fas fa-tags"></i> stackrox</a></li><li><a href=/tags/storage><i class="fas fa-tags"></i> storage</a></li><li><a href=/tags/troubleshooting><i class="fas fa-tags"></i> troubleshooting</a></li><li><a href=/tags/upgrade><i class="fas fa-tags"></i> upgrade</a></li><li><a href=/tags/vagrant><i class="fas fa-tags"></i> vagrant</a></li><li><a href=/tags/virtualization><i class="fas fa-tags"></i> virtualization</a></li><li><a href=/tags/webinar><i class="fas fa-tags"></i> webinar</a></li><li><a href=/tags/windows><i class="fas fa-tags"></i> windows</a></li><li><a href=/tags/zabbix><i class="fas fa-tags"></i> zabbix</a></li><li><a href=/tags/zimbra><i class="fas fa-tags"></i> zimbra</a></li></ul></div></div></div></div></div></div><footer id=footer><div class=container><div class="col-md-4 col-sm-6"><h4>Share</h4><i class="fab fa-2x fa-twitter" title="Share this on Twitter" onclick='window.open("http://twitter.com/home?status=http://guifreelife.com/blog/2019/02/08/Migration-of-Etcd-to-Masters-for-OpenShift-3.9-Upgrade-to-3.10/")'></i>
+<i class="fab fa-2x fa-facebook" title="Share this on Facebook" onclick='window.open("http://www.facebook.com/share.php?u=http://guifreelife.com/blog/2019/02/08/Migration-of-Etcd-to-Masters-for-OpenShift-3.9-Upgrade-to-3.10/")'></i>
+<i class="fab fa-2x fa-linkedin" title="Share this on Linkedin" onclick='window.open("https://www.linkedin.com/shareArticle?mini=true&url=http://guifreelife.com/blog/2019/02/08/Migration-of-Etcd-to-Masters-for-OpenShift-3.9-Upgrade-to-3.10/&title=&summary=&source=")'></i>
+<i class="fab fa-2x fa-google-plus" title="Share this on Google Currents" onclick='window.open("https://plus.google.com/share?url=http://guifreelife.com/blog/2019/02/08/Migration-of-Etcd-to-Masters-for-OpenShift-3.9-Upgrade-to-3.10/")'></i>
+<i class="fa fa-2x fa-envelope" title="Share this through Email" onclick='window.open("mailto:?&body=http://guifreelife.com/blog/2019/02/08/Migration-of-Etcd-to-Masters-for-OpenShift-3.9-Upgrade-to-3.10/")'></i><h4>About us</h4><p>GUI Free Life is the personal, technical blog of Dale Bewley. Comments and opinions are my own and not that of my employers.</p><hr class="hidden-md hidden-lg hidden-sm"></div><div class="col-md-4 col-sm-6"><h4>Recent posts</h4><div class=blog-entries><div class="item same-height-row clearfix"><div class="image same-height-always"><a href=http://guifreelife.com/blog/2024/03/11/Placing-Open-Cluster-Management-Policies-on-Kubernetes/><img src=/images/DALL%c2%b7E%202024-01-30%2014.28.24%20-%20A%20whimsical%20scene%20featuring%20a%20traffic%20cop%20standing%20on%20a%20cloud,%20energetically%20directing%20a%20chaotic%20stream%20of%20various%20floating%20documents%20-%20papers,%20folder.png class=img-responsive alt="Using Placements to Apply Open Cluster Management Policies to Kubernetes Clusters"></a></div><div class="name same-height-always"><h5><a href=http://guifreelife.com/blog/2024/03/11/Placing-Open-Cluster-Management-Policies-on-Kubernetes/>Using Placements to Apply Open Cluster Management Policies to Kubernetes Clusters</a></h5></div></div><div class="item same-height-row clearfix"><div class="image same-height-always"><a href=http://guifreelife.com/blog/2023/09/22/Storing-OpenShift-Credentials-with-1Password/><img src=/img/banners/mushroom-moss.jpg class=img-responsive alt="Storing OpenShift Credentials with 1Password"></a></div><div class="name same-height-always"><h5><a href=http://guifreelife.com/blog/2023/09/22/Storing-OpenShift-Credentials-with-1Password/>Storing OpenShift Credentials with 1Password</a></h5></div></div><div class="item same-height-row clearfix"><div class="image same-height-always"><a href=http://guifreelife.com/blog/2023/04/06/Accessing-Ceph-CLI-with-OpenShift-Data-Foundation/><img src=/images/uncovered-bumper.png class=img-responsive alt="Accessing the Ceph CLI with OpenShift Data Foundation"></a></div><div class="name same-height-always"><h5><a href=http://guifreelife.com/blog/2023/04/06/Accessing-Ceph-CLI-with-OpenShift-Data-Foundation/>Accessing the Ceph CLI with OpenShift Data Foundation</a></h5></div></div></div><hr class="hidden-md hidden-lg"></div><div class="col-md-4 col-sm-6"><h4>Contact</h4><p class=text-uppercase><strong>Dale Bewley</strong><br>Oakland<br>California<br><strong>USA</strong></p><a href=/contact class="btn btn-small btn-template-main">Go to contact page</a><hr class="hidden-md hidden-lg hidden-sm"></div></div></footer><div id=copyright><div class=container><div class=col-md-12><p class=pull-left>Copyright (c) 2021, Dale Bewley; all rights reserved.</p><p class=pull-right>Template by <a href=https://bootstrapious.com/p/universal-business-e-commerce-template>Bootstrapious</a>.
+Ported to Hugo by <a href=https://github.com/devcows/hugo-universal-theme>DevCows</a>.</p></div></div></div></div><script async src="https://www.googletagmanager.com/gtag/js?id=G-39TSW9349X"></script>
+<script>var doNotTrack=!1;if(!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","G-39TSW9349X",{anonymize_ip:!1})}</script><script src=//code.jquery.com/jquery-3.1.1.min.js integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin=anonymous></script>
 <script src=//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js integrity=sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa crossorigin=anonymous></script>
 <script src=//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js></script>
 <script src=//cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/jquery.waypoints.min.js></script>
@@ -599,6 +126,4 @@ Ported to Hugo by <a href=https://github.com/devcows/hugo-universal-theme>DevCow
 <script src=/js/hpneo.gmaps.js></script>
 <script src=/js/gmaps.init.js></script>
 <script src=/js/front.js></script>
-<script src=/js/owl.carousel.min.js></script>
-</body>
-</html>
+<script src=/js/owl.carousel.min.js></script></body></html>

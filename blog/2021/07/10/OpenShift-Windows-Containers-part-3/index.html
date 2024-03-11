@@ -1,169 +1,36 @@
-<!doctype html><html lang=en-us>
-<head>
-<meta charset=utf-8>
-<meta name=robots content="all,follow">
-<meta name=googlebot content="index,follow,snippet,archive">
-<meta name=viewport content="width=device-width,initial-scale=1">
-<title>Deploying a Cross-platform Windows and Linux Application to OpenShift | GUI Free Life</title>
-<meta name=author content="Dale Bewley">
-<meta name=keywords content="bewley,guifreelife,openshift,OCP4,operators,windows">
-<meta name=description content="GUI Free Life, by Dale Bewley covers Kubernetes, Linux, Networking, OpenShift and more">
-<meta name=generator content="Hugo 0.91.2">
-<link href="//fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,500,700,800" rel=stylesheet type=text/css>
-<link rel=stylesheet href=//use.fontawesome.com/releases/v5.11.2/css/all.css>
-<link rel=stylesheet href=//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css integrity=sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u crossorigin=anonymous>
-<link href=/css/animate.css rel=stylesheet>
-<link href=/css/style.turquoise.css rel=stylesheet id=theme-stylesheet>
-<link href=/css/custom.css rel=stylesheet><!--[if lt IE 9]><script src=https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js></script>
-<script src=https://oss.maxcdn.com/respond/1.4.2/respond.min.js></script><![endif]-->
-<link rel="shortcut icon" href=/img/favicon.ico type=image/x-icon>
-<link rel=apple-touch-icon href=/img/apple-touch-icon.png>
-<link href=/css/owl.carousel.css rel=stylesheet>
-<link href=/css/owl.theme.css rel=stylesheet>
-<link rel=alternate href=http://guifreelife.com/index.xml type=application/rss+xml title="GUI Free Life">
-<meta property="og:locale" content="en_us">
-<meta property="og:site_name" content="GUI Free Life">
-<meta property="og:title" content="Deploying a Cross-platform Windows and Linux Application to OpenShift">
-<meta property="og:type" content="article">
-<meta property="og:url" content="http://guifreelife.com/blog/2021/07/10/OpenShift-Windows-Containers-part-3/">
-<meta property="og:description" content="GUI Free Life, by Dale Bewley covers Kubernetes, Linux, Networking, OpenShift and more">
-<meta property="og:image" content="http://guifreelife.com/images/openshift-windows-app-topology-pretty.png">
-<meta property="og:image:type" content="image/png">
-<meta property="og:image:width" content="1552">
-<meta property="og:image:height" content="1012">
-<meta property="og:updated_time" content="2021-07-10T00:00:00Z">
-<meta property="article:tag" content="openshift">
-<meta property="article:tag" content="OCP4">
-<meta property="article:tag" content="operators">
-<meta property="article:tag" content="windows">
-<meta property="article:published_time" content="2021-07-10T00:00:00Z">
-<meta property="article:modified_time" content="2021-07-10T00:00:00Z">
-<meta name=twitter:card content="summary_large_image">
-<meta name=twitter:site content="@dlbewley">
-<meta name=twitter:title content="Deploying a Cross-platform Windows and Linux Application to OpenShift">
-<meta name=twitter:image content="http://guifreelife.com/images/openshift-windows-app-topology-pretty.png">
-<meta name=twitter:description content="GUI Free Life, by Dale Bewley covers Kubernetes, Linux, Networking, OpenShift and more">
-<link rel=stylesheet type=text/css href=/css/asciinema-player.css>
-<script src=/js/asciinema-player.js></script>
-</head>
-<body>
-<div id=all>
-<header class=navbar-affixed-top data-spy=affix data-offset-top=62>
-<div class="navbar navbar-default yamm" role=navigation id=navbar>
-<div class=container>
-<div class=navbar-header>
-<a class="navbar-brand home" href=/>
-<img src=/img/logo.png alt="Deploying a Cross-platform Windows and Linux Application to OpenShift logo" class="hidden-xs hidden-sm">
+<!doctype html><html lang=en-us><head><meta charset=utf-8><meta name=robots content="all,follow"><meta name=googlebot content="index,follow,snippet,archive"><meta name=viewport content="width=device-width,initial-scale=1"><title>Deploying a Cross-platform Windows and Linux Application to OpenShift | GUI Free Life</title><meta name=author content="Dale Bewley"><meta name=keywords content="bewley,guifreelife,openshift,OCP4,operators,windows"><meta name=description content="GUI Free Life, by Dale Bewley covers Kubernetes, Linux, Networking, OpenShift and more"><meta name=generator content="Hugo 0.119.0"><link href='//fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,500,700,800' rel=stylesheet type=text/css><link rel=stylesheet href=//use.fontawesome.com/releases/v5.11.2/css/all.css><link rel=stylesheet href=//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css integrity=sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u crossorigin=anonymous><link href=/css/animate.css rel=stylesheet><link href=/css/style.turquoise.css rel=stylesheet id=theme-stylesheet><link href=/css/custom.css rel=stylesheet><!--[if lt IE 9]><script src=https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js></script>
+<script src=https://oss.maxcdn.com/respond/1.4.2/respond.min.js></script><![endif]--><link rel="shortcut icon" href=/img/favicon.ico type=image/x-icon><link rel=apple-touch-icon href=/img/apple-touch-icon.png><link href=/css/owl.carousel.css rel=stylesheet><link href=/css/owl.theme.css rel=stylesheet><link rel=alternate href=http://guifreelife.com/index.xml type=application/rss+xml title="GUI Free Life"><meta property="og:locale" content="en_us"><meta property="og:site_name" content="GUI Free Life"><meta property="og:title" content="Deploying a Cross-platform Windows and Linux Application to OpenShift"><meta property="og:type" content="article"><meta property="og:url" content="http://guifreelife.com/blog/2021/07/10/OpenShift-Windows-Containers-part-3/"><meta property="og:description" content="GUI Free Life, by Dale Bewley covers Kubernetes, Linux, Networking, OpenShift and more"><meta property="og:image" content="http://guifreelife.com/images/openshift-windows-app-topology-pretty.png"><meta property="og:image:type" content="image/png"><meta property="og:image:width" content="1552"><meta property="og:image:height" content="1012"><meta property="og:updated_time" content="2021-07-10T00:00:00Z"><meta property="article:tag" content="openshift"><meta property="article:tag" content="OCP4"><meta property="article:tag" content="operators"><meta property="article:tag" content="windows"><meta property="article:published_time" content="2021-07-10T00:00:00Z"><meta property="article:modified_time" content="2021-07-10T00:00:00Z"><meta name=twitter:card content="summary_large_image"><meta name=twitter:site content="@dlbewley"><meta name=twitter:title content="Deploying a Cross-platform Windows and Linux Application to OpenShift"><meta name=twitter:image content="http://guifreelife.com/images/openshift-windows-app-topology-pretty.png"><meta name=twitter:description content="GUI Free Life, by Dale Bewley covers Kubernetes, Linux, Networking, OpenShift and more"><link rel=stylesheet type=text/css href=/css/asciinema-player.css><script src=/js/asciinema-player.js></script></head><body><div id=all><header class=navbar-affixed-top data-spy=affix data-offset-top=62><div class="navbar navbar-default yamm" role=navigation id=navbar><div class=container><div class=navbar-header><a class="navbar-brand home" href=/><img src=/img/logo.png alt="Deploying a Cross-platform Windows and Linux Application to OpenShift logo" class="hidden-xs hidden-sm">
 <img src=/img/logo-small.png alt="Deploying a Cross-platform Windows and Linux Application to OpenShift logo" class="visible-xs visible-sm">
-<span class=sr-only>Deploying a Cross-platform Windows and Linux Application to OpenShift - go to homepage</span>
-</a>
-<div class=navbar-buttons>
-<button type=button class="navbar-toggle btn-template-main" data-toggle=collapse data-target=#navigation>
+<span class=sr-only>Deploying a Cross-platform Windows and Linux Application to OpenShift - go to homepage</span></a><div class=navbar-buttons><button type=button class="navbar-toggle btn-template-main" data-toggle=collapse data-target=#navigation>
 <span class=sr-only>Toggle Navigation</span>
-<i class="fas fa-align-justify"></i>
-</button>
-</div>
-</div>
-<div class="navbar-collapse collapse" id=navigation>
-<ul class="nav navbar-nav navbar-right">
-<li class=dropdown>
-<a href=/>Home</a>
-</li>
-<li class="dropdown active">
-<a href=/blog/>Blog</a>
-</li>
-<li class=dropdown>
-<a href=/contact/>Contact</a>
-</li>
-</ul>
-</div>
-<div class="collapse clearfix" id=search>
-<form class=navbar-form role=search>
-<div class=input-group>
-<input type=text class=form-control placeholder=Search>
-<span class=input-group-btn>
-<button type=submit class="btn btn-template-main"><i class="fas fa-search"></i></button>
-</span>
-</div>
-</form>
-</div>
-</div>
-</div>
-</header>
-<style>.bar.background-image-fixed-banner{background:url(/images/openshift-windows-app-topology-pretty.png)50% 0 no-repeat;background-attachment:fixed;background-size:cover;padding:100px 5%;text-shadow:2px 3px 4px var(--primary-accent),0 0 1em var(--navbar-border-top)}</style>
-<div>
-<div class=container>
-<div class=row>
-<div class=col-md-12>
-<section class="bar background-image-fixed-banner heading h2 color-white text-center">
-<h1>Deploying a Cross-platform Windows and Linux Application to OpenShift</h1>
-</section>
-</div>
-</div>
-</div>
-</div>
-<div id=content>
-<div class=container>
-<div class=row>
-<div class=col-md-9 id=blog-post>
-<p class="text-muted text-uppercase mb-small text-right">
-July 10, 2021
-</p>
-<div id=post-content>
-<p>An application can sometimes require diverse components that span technology stacks. There may be a depency on a legacy component built for Windows which may not be suitable for deployment to Linux. The good news is it may still be suitable for deployment to Kubernetes. With a Windows node in your OpenShift cluster you can deploy cross-platform applications that can simultaneously leverage the strengths of Linux and Windows.</p>
-<blockquote>
-<p>📓 <em>This is part 3 of a 3 part series on OpenShift support for Windows containers.</em>
-<em>Parts: <a href=http://guifreelife.com/blog/2021/05/18/OpenShift-Windows-Containers-part-1/ title="Windows Containers Part 1">1</a>, <a href=http://guifreelife.com/blog/2021/06/03/OpenShift-Windows-Containers-part-2/ title="Windows Containers Part 2">2</a>, 3</em></p>
-</blockquote>
-<h1 id=windows-and-linux-living-in-harmony>Windows and Linux Living in Harmony</h1>
-<figure><a href=/images/openshift-windows-app-topology.png><img src=/images/openshift-windows-app-topology.png width=100%></a>
-</figure>
-<p>After <a href=http://guifreelife.com/blog/2021/06/03/OpenShift-Windows-Containers-part-2/ title="Windows Containers Part 2">enabling support for Windows nodes</a> in OpenShift, deploying an app to both Linux and Windows is as easy as TODO</p>
-<h1 id=deploying-the-netcandy-store-cross-platform-application>Deploying the NetCandy Store Cross-platform Application</h1>
-<p>We will deploy a sample application called <a href=https://github.com/redhat-developer-demos/helm-repo/tree/main/stable/netcandystore title="NetCandy Store Helm Chart">NetCandy Store</a> using a Helm chart.</p>
-<p>As input we will have to provide a few parameters including the Windows node name and the ssh key used by our operator. Let&rsquo;s define some environmental variables for later reference.</p>
-<p>We will use the same <a href=http://guifreelife.com/blog/2021/06/03/OpenShift-Windows-Containers-part-2/#providing-an-ssh-private-key>ssh key we gave</a> to the Windows Machine Config Operator as it is already trusted by the node. We need this for the image pre-pull job described below.</p>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ <span style=color:#658b00>export</span> <span style=color:#00688b>WSSH_KEY</span>=<span style=color:#8b008b;font-weight:700>$(</span><span style=color:#cd5555>\
-</span><span style=color:#cd5555></span>  oc get secret cloud-private-key -n openshift-windows-machine-config-operator <span style=color:#cd5555>\
-</span><span style=color:#cd5555></span>  -o <span style=color:#00688b>jsonpath</span>=<span style=color:#cd5555>&#39;{.data.private-key\.pem}&#39;</span><span style=color:#8b008b;font-weight:700>)</span>
-</code></pre></div><p>We also need to find the name of the Windows node to provide that as a Helm value.</p>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ <span style=color:#658b00>export</span> <span style=color:#00688b>WIN_NODE</span>=<span style=color:#8b008b;font-weight:700>$(</span><span style=color:#cd5555>\
-</span><span style=color:#cd5555></span>  oc get nodes -l kubernetes.io/os=windows <span style=color:#cd5555>\
-</span><span style=color:#cd5555></span>  -o <span style=color:#00688b>jsonpath</span>=<span style=color:#cd5555>&#39;{.items[0].metadata.name}&#39;</span><span style=color:#8b008b;font-weight:700>)</span>
-</code></pre></div><p>In this case the cluster is on Azure, and our Windows node administrator is called <code>capi</code> rather than the default <code>administrator</code>. Define another environmental variable for the ssh user.</p>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ <span style=color:#658b00>export</span> <span style=color:#00688b>WSSH_USER</span>=<span style=color:#cd5555>&#39;capi&#39;</span>
-</code></pre></div><p>Those are all the values we need for the Helm chart.
-Let&rsquo;s create a namespace with a descriptive name to install to.</p>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc new-project --display-name=<span style=color:#cd5555>&#34;Net Candy Store&#34;</span> netcandystore
-</code></pre></div><p>Next we will download the application <a href=http://people.redhat.com/chernand/netcandystore-1.0.1.tgz>http://people.redhat.com/chernand/netcandystore-1.0.1.tgz</a> to <code>$CLUSTER_DIR/day2</code>, and finally install it using the Helm chart inside the tarball.</p>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ curl -o <span style=color:#00688b>$CLUSTER_DIR</span>/day2/netcandystore-1.0.1.tgz <span style=color:#cd5555>\
-</span><span style=color:#cd5555></span>  http://people.redhat.com/chernand/netcandystore-1.0.1.tgz
-
-$ helm install ncs <span style=color:#cd5555>\
-</span><span style=color:#cd5555></span>  --namespace netcandystore <span style=color:#cd5555>\
-</span><span style=color:#cd5555></span>  --timeout=1200s <span style=color:#cd5555>\
-</span><span style=color:#cd5555></span>  --set ssh.username=<span style=color:#cd5555>${</span><span style=color:#00688b>WSSH_USER</span><span style=color:#8b008b;font-weight:700>:-</span><span style=color:#00688b>administrator</span><span style=color:#cd5555>}</span> <span style=color:#cd5555>\
-</span><span style=color:#cd5555></span>  --set ssh.hostkey=<span style=color:#cd5555>${</span><span style=color:#00688b>WSSH_KEY</span><span style=color:#cd5555>}</span> <span style=color:#cd5555>\
-</span><span style=color:#cd5555></span>  --set ssh.hostname=<span style=color:#cd5555>${</span><span style=color:#00688b>WIN_NODE</span><span style=color:#cd5555>}</span> <span style=color:#cd5555>\
-</span><span style=color:#cd5555></span>  <span style=color:#00688b>$CLUSTER_DIR</span>/day2/netcandystore-1.0.1.tgz
-</code></pre></div><p>We can list the chart to see it has been installed in our <em>netcandystore</em> namespace.</p>
-<pre tabindex=0><code>$ helm ls --namespace netcandystore
+<i class="fas fa-align-justify"></i></button></div></div><div class="navbar-collapse collapse" id=navigation><ul class="nav navbar-nav navbar-right"><li class=dropdown><a href=/>Home</a></li><li class="dropdown active"><a href=/blog/>Blog</a></li><li class=dropdown><a href=/contact/>Contact</a></li></ul></div><div class="collapse clearfix" id=search><form class=navbar-form role=search><div class=input-group><input type=text class=form-control placeholder=Search>
+<span class=input-group-btn><button type=submit class="btn btn-template-main"><i class="fas fa-search"></i></button></span></div></form></div></div></div></header><style>.bar.background-image-fixed-banner{background:url(/images/openshift-windows-app-topology-pretty.png)50% 0 no-repeat;background-attachment:fixed;background-size:cover;padding:100px 5%;text-shadow:2px 3px 4px var(--primary-accent),0 0 1em var(--navbar-border-top)}</style><div><div class=container><div class=row><div class=col-md-12><section class="bar background-image-fixed-banner heading h2 color-white text-center"><h1>Deploying a Cross-platform Windows and Linux Application to OpenShift</h1></section></div></div></div></div><div id=content><div class=container><div class=row><div class=col-md-9 id=blog-post><p class="text-muted text-uppercase mb-small text-right">July 10, 2021</p><div id=post-content><p>An application can sometimes require diverse components that span technology stacks. There may be a depency on a legacy component built for Windows which may not be suitable for deployment to Linux. The good news is it may still be suitable for deployment to Kubernetes. With a Windows node in your OpenShift cluster you can deploy cross-platform applications that can simultaneously leverage the strengths of Linux and Windows.</p><blockquote><p>📓 <em>This is part 3 of a 3 part series on OpenShift support for Windows containers.</em>
+<em>Parts: <a href=http://guifreelife.com/blog/2021/05/18/OpenShift-Windows-Containers-part-1/ title="Windows Containers Part 1">1</a>, <a href=http://guifreelife.com/blog/2021/06/03/OpenShift-Windows-Containers-part-2/ title="Windows Containers Part 2">2</a>, 3</em></p></blockquote><h1 id=windows-and-linux-living-in-harmony>Windows and Linux Living in Harmony</h1><figure><a href=/images/openshift-windows-app-topology.png><img src=/images/openshift-windows-app-topology.png width=100%></a></figure><p>After <a href=http://guifreelife.com/blog/2021/06/03/OpenShift-Windows-Containers-part-2/ title="Windows Containers Part 2">enabling support for Windows nodes</a> in OpenShift, deploying an app to both Linux and Windows is as easy as TODO</p><h1 id=deploying-the-netcandy-store-cross-platform-application>Deploying the NetCandy Store Cross-platform Application</h1><p>We will deploy a sample application called <a href=https://github.com/redhat-developer-demos/helm-repo/tree/main/stable/netcandystore title="NetCandy Store Helm Chart">NetCandy Store</a> using a Helm chart.</p><p>As input we will have to provide a few parameters including the Windows node name and the ssh key used by our operator. Let&rsquo;s define some environmental variables for later reference.</p><p>We will use the same <a href=http://guifreelife.com/blog/2021/06/03/OpenShift-Windows-Containers-part-2/#providing-an-ssh-private-key>ssh key we gave</a> to the Windows Machine Config Operator as it is already trusted by the node. We need this for the image pre-pull job described below.</p><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>$ <span style=color:#658b00>export</span> <span style=color:#00688b>WSSH_KEY</span>=<span style=color:#8b008b;font-weight:700>$(</span><span style=color:#cd5555>\
+</span></span></span><span style=display:flex><span><span style=color:#cd5555></span>  oc get secret cloud-private-key -n openshift-windows-machine-config-operator <span style=color:#cd5555>\
+</span></span></span><span style=display:flex><span><span style=color:#cd5555></span>  -o <span style=color:#00688b>jsonpath</span>=<span style=color:#cd5555>&#39;{.data.private-key\.pem}&#39;</span><span style=color:#8b008b;font-weight:700>)</span>
+</span></span></code></pre></div><p>We also need to find the name of the Windows node to provide that as a Helm value.</p><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>$ <span style=color:#658b00>export</span> <span style=color:#00688b>WIN_NODE</span>=<span style=color:#8b008b;font-weight:700>$(</span><span style=color:#cd5555>\
+</span></span></span><span style=display:flex><span><span style=color:#cd5555></span>  oc get nodes -l kubernetes.io/os=windows <span style=color:#cd5555>\
+</span></span></span><span style=display:flex><span><span style=color:#cd5555></span>  -o <span style=color:#00688b>jsonpath</span>=<span style=color:#cd5555>&#39;{.items[0].metadata.name}&#39;</span><span style=color:#8b008b;font-weight:700>)</span>
+</span></span></code></pre></div><p>In this case the cluster is on Azure, and our Windows node administrator is called <code>capi</code> rather than the default <code>administrator</code>. Define another environmental variable for the ssh user.</p><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>$ <span style=color:#658b00>export</span> <span style=color:#00688b>WSSH_USER</span>=<span style=color:#cd5555>&#39;capi&#39;</span>
+</span></span></code></pre></div><p>Those are all the values we need for the Helm chart.
+Let&rsquo;s create a namespace with a descriptive name to install to.</p><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>$ oc new-project --display-name=<span style=color:#cd5555>&#34;Net Candy Store&#34;</span> netcandystore
+</span></span></code></pre></div><p>Next we will download the application <a href=http://people.redhat.com/chernand/netcandystore-1.0.1.tgz>http://people.redhat.com/chernand/netcandystore-1.0.1.tgz</a> to <code>$CLUSTER_DIR/day2</code>, and finally install it using the Helm chart inside the tarball.</p><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>$ curl -o <span style=color:#00688b>$CLUSTER_DIR</span>/day2/netcandystore-1.0.1.tgz <span style=color:#cd5555>\
+</span></span></span><span style=display:flex><span><span style=color:#cd5555></span>  http://people.redhat.com/chernand/netcandystore-1.0.1.tgz
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>$ helm install ncs <span style=color:#cd5555>\
+</span></span></span><span style=display:flex><span><span style=color:#cd5555></span>  --namespace netcandystore <span style=color:#cd5555>\
+</span></span></span><span style=display:flex><span><span style=color:#cd5555></span>  --timeout=1200s <span style=color:#cd5555>\
+</span></span></span><span style=display:flex><span><span style=color:#cd5555></span>  --set ssh.username=<span style=color:#cd5555>${</span><span style=color:#00688b>WSSH_USER</span><span style=color:#8b008b;font-weight:700>:-</span><span style=color:#00688b>administrator</span><span style=color:#cd5555>}</span> <span style=color:#cd5555>\
+</span></span></span><span style=display:flex><span><span style=color:#cd5555></span>  --set ssh.hostkey=<span style=color:#cd5555>${</span><span style=color:#00688b>WSSH_KEY</span><span style=color:#cd5555>}</span> <span style=color:#cd5555>\
+</span></span></span><span style=display:flex><span><span style=color:#cd5555></span>  --set ssh.hostname=<span style=color:#cd5555>${</span><span style=color:#00688b>WIN_NODE</span><span style=color:#cd5555>}</span> <span style=color:#cd5555>\
+</span></span></span><span style=display:flex><span><span style=color:#cd5555></span>  <span style=color:#00688b>$CLUSTER_DIR</span>/day2/netcandystore-1.0.1.tgz
+</span></span></code></pre></div><p>We can list the chart to see it has been installed in our <em>netcandystore</em> namespace.</p><pre tabindex=0><code>$ helm ls --namespace netcandystore
 NAME    NAMESPACE       REVISION        UPDATED                                 STATUS          CHART                   APP VERSION
 ncs     netcandystore   1               2021-05-24 15:10:29.909948 -0700 PDT    deployed        netcandystore-1.0.1     3.1
-</code></pre><blockquote>
-<p>📺 <strong>Watch Demo:</strong> Deploying NetcandyStore app with Helm
-<p>
-<asciinema-player src=/casts/az-win-app-deploy.cast cols=640 rows=30 loop=false start-at=0 speed=1 poster=npt:0:33></asciinema-player>
-</p></p>
-</blockquote>
-<h2 id=speeding-up-application-launch-by-pre-pulling-images>Speeding Up Application Launch by Pre-pulling Images</h2>
-<p>As windows containers are large, this Helm Chart defines a job to pre-pull the netcandystore image. You can see it took nearly 10 minutes for this job to run in this instance.</p>
-<pre tabindex=0><code>$ oc get job/netcandystore-prepull-image
+</code></pre><blockquote><p>📺 <strong>Watch Demo:</strong> Deploying NetcandyStore app with Helm<p><asciinema-player src=/casts/az-win-app-deploy.cast cols=640 rows=30 loop=false start-at=0 speed=1 poster=npt:0:33></asciinema-player></p></p></blockquote><h2 id=speeding-up-application-launch-by-pre-pulling-images>Speeding Up Application Launch by Pre-pulling Images</h2><p>As windows containers are large, this Helm Chart defines a job to pre-pull the netcandystore image. You can see it took nearly 10 minutes for this job to run in this instance.</p><pre tabindex=0><code>$ oc get job/netcandystore-prepull-image
 NAME                          COMPLETIONS   DURATION   AGE
 netcandystore-prepull-image   1/1           9m43s      90m
-</code></pre><p>That 10 minute process is something you want to be done <em>before</em> trying to launch your application. Ideally this would execute ahead of time on every node where the app might run.</p>
-<p>Here is a look at that job definition. You can see in the <code>command</code> defnition it will ssh to the Windows node and issue a <code>docker pull</code> of the container image.</p>
-<pre tabindex=0><code>$ oc get job netcandystore-prepull-image -o yaml | yq e '.spec.template.spec.containers[]' -
+</code></pre><p>That 10 minute process is something you want to be done <em>before</em> trying to launch your application. Ideally this would execute ahead of time on every node where the app might run.</p><p>Here is a look at that job definition. You can see in the <code>command</code> defnition it will ssh to the Windows node and issue a <code>docker pull</code> of the container image.</p><pre tabindex=0><code>$ oc get job netcandystore-prepull-image -o yaml | yq e &#39;.spec.template.spec.containers[]&#39; -
 command:
   - /bin/bash
   - -c
@@ -188,8 +55,7 @@ volumeMounts:
   - mountPath: /tmp/ssh
     name: sshkey
     readOnly: true
-</code></pre><p>The application is comprised of 3 services. A MSSQL pod running on Linux will provide the database for the GetCategories service also running on Linux, and finally the NetcandyStore service that provides the front end of the application will run on Windows.</p>
-<pre tabindex=0><code>$ oc get services -n netcandystore
+</code></pre><p>The application is comprised of 3 services. A MSSQL pod running on Linux will provide the database for the GetCategories service also running on Linux, and finally the NetcandyStore service that provides the front end of the application will run on Windows.</p><pre tabindex=0><code>$ oc get services -n netcandystore
 NAME            TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
 getcategories   ClusterIP   172.30.104.36   &lt;none&gt;        8080/TCP   90m
 mssql           ClusterIP   172.30.78.137   &lt;none&gt;        1433/TCP   90m
@@ -202,8 +68,7 @@ NAME                             IP             NODE
 getcategories-58b98fbd48-bsc8z   10.128.2.139   win-tmk9g-worker-westus-x4gc6
 mssql-1-tsrjx                    10.131.0.27    win-tmk9g-worker-westus-wq4hg
 netcandystore-5b989b4bdd-x4pt9   10.132.0.2     winworker-g7tsk
-</code></pre><p>By describing the netcandystore pod running on Windows, you may notice that the <code>Container ID</code> begins with <em>docker</em> rather than <em>cri-o</em> and that the <code>Node-Selector</code> targetting <em>beta.kubernetes.io/os=windows</em>.</p>
-<pre tabindex=0><code>$ oc describe pod netcandystore-5b989b4bdd-x4pt9
+</code></pre><p>By describing the netcandystore pod running on Windows, you may notice that the <code>Container ID</code> begins with <em>docker</em> rather than <em>cri-o</em> and that the <code>Node-Selector</code> targetting <em>beta.kubernetes.io/os=windows</em>.</p><pre tabindex=0><code>$ oc describe pod netcandystore-5b989b4bdd-x4pt9
 Name:         netcandystore-5b989b4bdd-x4pt9
 Namespace:    netcandystore
 Priority:     0
@@ -254,375 +119,66 @@ Events:
   Type    Reason     Age   From               Message
   ----    ------     ----  ----               -------
   Normal  Scheduled  75m   default-scheduler  Successfully assigned netcandystore/netcandystore-5b989b4bdd-x4pt9 to winworker-g7tsk
-  Normal  Pulling    74m   kubelet            Pulling image &quot;quay.io/donschenck/netcandystore:2021mar8.1&quot;
-  Normal  Pulled     74m   kubelet            Successfully pulled image &quot;quay.io/donschenck/netcandystore:2021mar8.1&quot; in 937.999ms
+  Normal  Pulling    74m   kubelet            Pulling image &#34;quay.io/donschenck/netcandystore:2021mar8.1&#34;
+  Normal  Pulled     74m   kubelet            Successfully pulled image &#34;quay.io/donschenck/netcandystore:2021mar8.1&#34; in 937.999ms
   Normal  Created    74m   kubelet            Created container netcandystore
   Normal  Started    74m   kubelet            Started container netcandystore
-</code></pre><h2 id=exploring-containers-running-on-a-windows-node>Exploring Containers Running on a Windows Node</h2>
-<p>In <a href=http://guifreelife.com/blog/2021/06/03/OpenShift-Windows-Containers-part-2/ title="Windows Containers Part 2">part 2 of this series</a> we used ssh to login to the Windows node. Let&rsquo;s do that again.</p>
-<p>Begin by finding the IP address of the Windows node.</p>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc get nodes -l kubernetes.io/os=windows -o wide
-NAME              STATUS   ROLES    AGE     VERSION                       INTERNAL-IP   EXTERNAL-IP   OS-IMAGE                         KERNEL-VERSION    CONTAINER-RUNTIME
-winworker-g7tsk   Ready    worker   5h18m   v1.20.0-1030+cac2421340a449   10.0.32.6     &lt;none&gt;        Windows Server <span style=color:#b452cd>2019</span> Datacenter   10.0.17763.1935   docker://19.3.14
-</code></pre></div><p>Then after openning a remote shell to <a href=http://guifreelife.com/blog/2021/06/03/OpenShift-Windows-Containers-part-2/#deploying-a-bastion-pod-as-an-ssh-client>the bastion pod</a>, we can secure shell to the Windows node at <em>10.0.32.6</em>. This bastion pod includes a <code>/usr/local/bin/sshmd.sh</code> script to simplify the ssh command.</p>
-<blockquote>
-<p>📓 <strong>Azure Difference</strong></p>
-<p>Remember our Windows image on Azure uses <em>capi</em> rather than <em>administrator</em>, so provide that username when ssh&rsquo;ing into the node.</p>
-</blockquote>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ oc rsh -n openshift-windows-machine-config-operator deployment/winc-ssh
-
-sh-4.4$ sshcmd.sh 10.0.32.6 capi
-Could not create directory <span style=color:#cd5555>&#39;/.ssh&#39;</span>.
-Warning: Permanently added <span style=color:#cd5555>&#39;10.0.32.6&#39;</span> (ECDSA) to the list of known hosts.
-Windows PowerShell
-Copyright (C) Microsoft Corporation. All rights reserved.
-
-PS C:<span style=color:#cd5555>\U</span>sers<span style=color:#cd5555>\c</span>api&gt;
-</code></pre></div><p>Now we can use the docker command to see what containers are running locally.</p>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>PS C:<span style=color:#cd5555>\U</span>sers<span style=color:#cd5555>\c</span>api&gt; docker ps -a
-CONTAINER ID        IMAGE                                          COMMAND                   CREATED             STATUS              PORTS               NAMES
-3ae2156a70ed        quay.io/donschenck/netcandystore               <span style=color:#cd5555>&#34;C:\\ServiceMonitor.e…&#34;</span>   <span style=color:#b452cd>2</span> hours ago         Up <span style=color:#b452cd>2</span> hours                              k8s_netcandystore_netcandystore-5b989b4bdd-x4pt9_netcandystore_49c2f119-5ce8-4a75-aeee-5be53ac748c1_0
-3c5ee98c833c        mcr.microsoft.com/oss/kubernetes/pause:1.3.0   <span style=color:#cd5555>&#34;cmd /S /C pauseloop…&#34;</span>    <span style=color:#b452cd>2</span> hours ago         Up <span style=color:#b452cd>2</span> hours                              k8s_POD_netcandystore-5b989b4bdd-x4pt9_netcandystore_49c2f119-5ce8-4a75-aeee-5be53ac748c1_0
-</code></pre></div><p>By the way, I mentioned those images are large, but how big are they? Large. They are large.</p>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>PS C:<span style=color:#cd5555>\U</span>sers<span style=color:#cd5555>\c</span>api&gt; docker images
-REPOSITORY                               TAG              IMAGE ID          CREATED             SIZE
-mcr.microsoft.com/windows/servercore     ltsc2019         3a7f23e29bd7      <span style=color:#b452cd>2</span> weeks ago         5.28GB
-mcr.microsoft.com/windows                <span style=color:#b452cd>1809</span>             08b77c4924fc      <span style=color:#b452cd>2</span> weeks ago         14.3GB
-mcr.microsoft.com/windows/nanoserver     <span style=color:#b452cd>1809</span>             ad675c9cb2d5      <span style=color:#b452cd>2</span> weeks ago         252MB
-quay.io/donschenck/netcandystore         2021mar8.1       7e8c294b169d      <span style=color:#b452cd>2</span> months ago        8.09GB
-mcr.microsoft.com/oss/kubernetes/pause   1.3.0            e2b9b3d368da      <span style=color:#b452cd>15</span> months ago       256MB
-</code></pre></div><h2 id=exploring-the-openshift-developer-topology-view>Exploring the OpenShift Developer Topology View</h2>
-<p>Before we leave the CLI, let&rsquo;s take apply some metadata that will enable the developer view of the OpenShift console to provide some visual context.
-By applying <a href=https://kubernetes.io/docs/concepts/overview/working-with-objects/common-labels/ title="Kubernetes Recommended Labels">particular labels</a> and <a href=https://docs.openshift.com/container-platform/4.7/applications/application_life_cycle_management/odc-viewing-application-composition-using-topology-view.html#odc-labels-and-annotations-used-for-topology-view_viewing-application-composition-using-topology-view title="Topology Labels and Annotations">annotations</a> to our deployment resources we can enhance the visual representation of our application in the <a href=https://docs.openshift.com/container-platform/4.7/applications/application_life_cycle_management/odc-viewing-application-composition-using-topology-view.html title="OpenShift Application Topology View">topology view</a>.</p>
-<div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#228b22># this pod is on windows</span>
-$ oc label deployment/netcandystore <span style=color:#cd5555>\
-</span><span style=color:#cd5555></span>  app.kubernetes.io/name=windows --overwrite
-
-<span style=color:#228b22># it connects to a microservice</span>
-$ oc annotate deployment/netcandystore <span style=color:#cd5555>\
-</span><span style=color:#cd5555></span>  app.openshift.io/connects-to=<span style=color:#cd5555>&#39;[{&#34;apiVersion&#34;:&#34;apps/v1&#34;,&#34;kind&#34;:&#34;Deployment&#34;,&#34;name&#34;:&#34;getcategories&#34;}]&#39;</span>
-
-<span style=color:#228b22># skipping this, but FYI</span>
-<span style=color:#228b22>#app.openshift.io/vcs-uri=&lt;github-url&gt;</span>
-<span style=color:#228b22>#app.kubernetes.io/part-of=&lt;appname&gt;</span>
-
-<span style=color:#228b22># this pod is .Net core on linux</span>
-$ oc label deployment/getcategories <span style=color:#cd5555>\
-</span><span style=color:#cd5555></span>  app.kubernetes.io/name=dotnet --overwrite
-
-<span style=color:#228b22># it connects to a database</span>
-$ oc annotate deployment/getcategories <span style=color:#cd5555>\
-</span><span style=color:#cd5555></span>  app.openshift.io/connects-to=<span style=color:#cd5555>&#39;[{&#34;apiVersion&#34;:&#34;apps.openshift.io/v1&#34;,&#34;kind&#34;:&#34;DeploymentConfig&#34;,&#34;name&#34;:&#34;mssql&#34;}]&#39;</span>
-
-<span style=color:#228b22># this database is MS SQL</span>
-$ oc label deploymentconfig/mssql <span style=color:#cd5555>\
-</span><span style=color:#cd5555></span>  app.kubernetes.io/name=mssql --overwrite
-</code></pre></div><p>Here is the effect of those labels within the Topology View of Deployed App</p>
-<figure><a href=/images/openshift-windows-app-topology-pretty.png><img src=/images/openshift-windows-app-topology-pretty.png width=100%></a>
-</figure>
-<p>And finally, here is the finished product. The Netcandy Store front end application.</p>
-<figure><a href=/images/openshift-windows-app-netcandy.png><img src=/images/openshift-windows-app-netcandy.png width=100%></a>
-</figure>
-<h2 id=summary>Summary</h2>
-<p>OpenShift offers support for legacy Windows applications that may be suitable for containerization. Through a hybrid network configuration and a specialized machine configuration operator, both Linux and Windows workloads can work together in your OpenShift clusters.</p>
-<h3 id=references>References</h3>
-<ul>
-<li><a href=https://github.com/redhat-developer-demos/helm-repo/tree/main/stable/netcandystore title="NetCandy Store Helm Chart">NetCandy Store Helm Chart</a></li>
-<li><a href=https://www.openshift.com/learn/topics/windows-containers title="Windows Containers Tech Topic">OpenShift Tech Topic: Windows Containers</a></li>
-<li><a href=https://kubernetes.io/docs/concepts/overview/working-with-objects/common-labels/ title="Kubernetes Recommended Labels">Kubernetes Recommended Labels</a></li>
-<li><a href=https://docs.openshift.com/container-platform/4.7/applications/application_life_cycle_management/odc-viewing-application-composition-using-topology-view.html title="OpenShift Application Topology View">OpenShift Application Topology View</a></li>
-<li><a href=https://github.com/RedHatWorkshops/windows-containers-quickstart title="Windows Containers Quickstart Workshop">Windows Containers Quickstart Workshop</a></li>
-</ul>
-<p>Guide: <a href=http://people.redhat.com/chernand/windows-containers-quickstart/ns-deploy/>http://people.redhat.com/chernand/windows-containers-quickstart/ns-deploy/</a></p>
-</div>
-<div id=comments>
-<div id=disqus_thread></div>
-<script type=application/javascript>var disqus_config=function(){};(function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById('disqus_thread').innerHTML='Disqus comments not available by default when the website is previewed locally.';return}var b=document,a=b.createElement('script');a.async=!0,a.src='//dlbewleygithubio.disqus.com/embed.js',a.setAttribute('data-timestamp',+new Date),(b.head||b.body).appendChild(a)})()</script>
-<noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript>
-<a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a>
-</div>
-</div>
-<div class=col-md-3>
-<div class="panel panel-default sidebar-menu">
-<div class=panel-heading>
-<h3 class=panel-title>Search</h3>
-</div>
-<div class=panel-body>
-<form action=//google.com/search method=get accept-charset=utf-8 role=search>
-<div class=input-group>
-<input type=search name=q class=form-control placeholder=Search>
+</code></pre><h2 id=exploring-containers-running-on-a-windows-node>Exploring Containers Running on a Windows Node</h2><p>In <a href=http://guifreelife.com/blog/2021/06/03/OpenShift-Windows-Containers-part-2/ title="Windows Containers Part 2">part 2 of this series</a> we used ssh to login to the Windows node. Let&rsquo;s do that again.</p><p>Begin by finding the IP address of the Windows node.</p><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>$ oc get nodes -l kubernetes.io/os=windows -o wide
+</span></span><span style=display:flex><span>NAME              STATUS   ROLES    AGE     VERSION                       INTERNAL-IP   EXTERNAL-IP   OS-IMAGE                         KERNEL-VERSION    CONTAINER-RUNTIME
+</span></span><span style=display:flex><span>winworker-g7tsk   Ready    worker   5h18m   v1.20.0-1030+cac2421340a449   10.0.32.6     &lt;none&gt;        Windows Server <span style=color:#b452cd>2019</span> Datacenter   10.0.17763.1935   docker://19.3.14
+</span></span></code></pre></div><p>Then after openning a remote shell to <a href=http://guifreelife.com/blog/2021/06/03/OpenShift-Windows-Containers-part-2/#deploying-a-bastion-pod-as-an-ssh-client>the bastion pod</a>, we can secure shell to the Windows node at <em>10.0.32.6</em>. This bastion pod includes a <code>/usr/local/bin/sshmd.sh</code> script to simplify the ssh command.</p><blockquote><p>📓 <strong>Azure Difference</strong></p><p>Remember our Windows image on Azure uses <em>capi</em> rather than <em>administrator</em>, so provide that username when ssh&rsquo;ing into the node.</p></blockquote><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>$ oc rsh -n openshift-windows-machine-config-operator deployment/winc-ssh
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>sh-4.4$ sshcmd.sh 10.0.32.6 capi
+</span></span><span style=display:flex><span>Could not create directory <span style=color:#cd5555>&#39;/.ssh&#39;</span>.
+</span></span><span style=display:flex><span>Warning: Permanently added <span style=color:#cd5555>&#39;10.0.32.6&#39;</span> (ECDSA) to the list of known hosts.
+</span></span><span style=display:flex><span>Windows PowerShell
+</span></span><span style=display:flex><span>Copyright (C) Microsoft Corporation. All rights reserved.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>PS C:<span style=color:#cd5555>\U</span>sers<span style=color:#cd5555>\c</span>api&gt;
+</span></span></code></pre></div><p>Now we can use the docker command to see what containers are running locally.</p><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>PS C:<span style=color:#cd5555>\U</span>sers<span style=color:#cd5555>\c</span>api&gt; docker ps -a
+</span></span><span style=display:flex><span>CONTAINER ID        IMAGE                                          COMMAND                   CREATED             STATUS              PORTS               NAMES
+</span></span><span style=display:flex><span>3ae2156a70ed        quay.io/donschenck/netcandystore               <span style=color:#cd5555>&#34;C:\\ServiceMonitor.e…&#34;</span>   <span style=color:#b452cd>2</span> hours ago         Up <span style=color:#b452cd>2</span> hours                              k8s_netcandystore_netcandystore-5b989b4bdd-x4pt9_netcandystore_49c2f119-5ce8-4a75-aeee-5be53ac748c1_0
+</span></span><span style=display:flex><span>3c5ee98c833c        mcr.microsoft.com/oss/kubernetes/pause:1.3.0   <span style=color:#cd5555>&#34;cmd /S /C pauseloop…&#34;</span>    <span style=color:#b452cd>2</span> hours ago         Up <span style=color:#b452cd>2</span> hours                              k8s_POD_netcandystore-5b989b4bdd-x4pt9_netcandystore_49c2f119-5ce8-4a75-aeee-5be53ac748c1_0
+</span></span></code></pre></div><p>By the way, I mentioned those images are large, but how big are they? Large. They are large.</p><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>PS C:<span style=color:#cd5555>\U</span>sers<span style=color:#cd5555>\c</span>api&gt; docker images
+</span></span><span style=display:flex><span>REPOSITORY                               TAG              IMAGE ID          CREATED             SIZE
+</span></span><span style=display:flex><span>mcr.microsoft.com/windows/servercore     ltsc2019         3a7f23e29bd7      <span style=color:#b452cd>2</span> weeks ago         5.28GB
+</span></span><span style=display:flex><span>mcr.microsoft.com/windows                <span style=color:#b452cd>1809</span>             08b77c4924fc      <span style=color:#b452cd>2</span> weeks ago         14.3GB
+</span></span><span style=display:flex><span>mcr.microsoft.com/windows/nanoserver     <span style=color:#b452cd>1809</span>             ad675c9cb2d5      <span style=color:#b452cd>2</span> weeks ago         252MB
+</span></span><span style=display:flex><span>quay.io/donschenck/netcandystore         2021mar8.1       7e8c294b169d      <span style=color:#b452cd>2</span> months ago        8.09GB
+</span></span><span style=display:flex><span>mcr.microsoft.com/oss/kubernetes/pause   1.3.0            e2b9b3d368da      <span style=color:#b452cd>15</span> months ago       256MB
+</span></span></code></pre></div><h2 id=exploring-the-openshift-developer-topology-view>Exploring the OpenShift Developer Topology View</h2><p>Before we leave the CLI, let&rsquo;s take apply some metadata that will enable the developer view of the OpenShift console to provide some visual context.
+By applying <a href=https://kubernetes.io/docs/concepts/overview/working-with-objects/common-labels/ title="Kubernetes Recommended Labels">particular labels</a> and <a href=https://docs.openshift.com/container-platform/4.7/applications/application_life_cycle_management/odc-viewing-application-composition-using-topology-view.html#odc-labels-and-annotations-used-for-topology-view_viewing-application-composition-using-topology-view title="Topology Labels and Annotations">annotations</a> to our deployment resources we can enhance the visual representation of our application in the <a href=https://docs.openshift.com/container-platform/4.7/applications/application_life_cycle_management/odc-viewing-application-composition-using-topology-view.html title="OpenShift Application Topology View">topology view</a>.</p><div class=highlight><pre tabindex=0 style=background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#228b22># this pod is on windows</span>
+</span></span><span style=display:flex><span>$ oc label deployment/netcandystore <span style=color:#cd5555>\
+</span></span></span><span style=display:flex><span><span style=color:#cd5555></span>  app.kubernetes.io/name=windows --overwrite
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#228b22># it connects to a microservice</span>
+</span></span><span style=display:flex><span>$ oc annotate deployment/netcandystore <span style=color:#cd5555>\
+</span></span></span><span style=display:flex><span><span style=color:#cd5555></span>  app.openshift.io/connects-to=<span style=color:#cd5555>&#39;[{&#34;apiVersion&#34;:&#34;apps/v1&#34;,&#34;kind&#34;:&#34;Deployment&#34;,&#34;name&#34;:&#34;getcategories&#34;}]&#39;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#228b22># skipping this, but FYI</span>
+</span></span><span style=display:flex><span><span style=color:#228b22>#app.openshift.io/vcs-uri=&lt;github-url&gt;</span>
+</span></span><span style=display:flex><span><span style=color:#228b22>#app.kubernetes.io/part-of=&lt;appname&gt;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#228b22># this pod is .Net core on linux</span>
+</span></span><span style=display:flex><span>$ oc label deployment/getcategories <span style=color:#cd5555>\
+</span></span></span><span style=display:flex><span><span style=color:#cd5555></span>  app.kubernetes.io/name=dotnet --overwrite
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#228b22># it connects to a database</span>
+</span></span><span style=display:flex><span>$ oc annotate deployment/getcategories <span style=color:#cd5555>\
+</span></span></span><span style=display:flex><span><span style=color:#cd5555></span>  app.openshift.io/connects-to=<span style=color:#cd5555>&#39;[{&#34;apiVersion&#34;:&#34;apps.openshift.io/v1&#34;,&#34;kind&#34;:&#34;DeploymentConfig&#34;,&#34;name&#34;:&#34;mssql&#34;}]&#39;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#228b22># this database is MS SQL</span>
+</span></span><span style=display:flex><span>$ oc label deploymentconfig/mssql <span style=color:#cd5555>\
+</span></span></span><span style=display:flex><span><span style=color:#cd5555></span>  app.kubernetes.io/name=mssql --overwrite
+</span></span></code></pre></div><p>Here is the effect of those labels within the Topology View of Deployed App</p><figure><a href=/images/openshift-windows-app-topology-pretty.png><img src=/images/openshift-windows-app-topology-pretty.png width=100%></a></figure><p>And finally, here is the finished product. The Netcandy Store front end application.</p><figure><a href=/images/openshift-windows-app-netcandy.png><img src=/images/openshift-windows-app-netcandy.png width=100%></a></figure><h2 id=summary>Summary</h2><p>OpenShift offers support for legacy Windows applications that may be suitable for containerization. Through a hybrid network configuration and a specialized machine configuration operator, both Linux and Windows workloads can work together in your OpenShift clusters.</p><h3 id=references>References</h3><ul><li><a href=https://github.com/redhat-developer-demos/helm-repo/tree/main/stable/netcandystore title="NetCandy Store Helm Chart">NetCandy Store Helm Chart</a></li><li><a href=https://www.openshift.com/learn/topics/windows-containers title="Windows Containers Tech Topic">OpenShift Tech Topic: Windows Containers</a></li><li><a href=https://kubernetes.io/docs/concepts/overview/working-with-objects/common-labels/ title="Kubernetes Recommended Labels">Kubernetes Recommended Labels</a></li><li><a href=https://docs.openshift.com/container-platform/4.7/applications/application_life_cycle_management/odc-viewing-application-composition-using-topology-view.html title="OpenShift Application Topology View">OpenShift Application Topology View</a></li><li><a href=https://github.com/RedHatWorkshops/windows-containers-quickstart title="Windows Containers Quickstart Workshop">Windows Containers Quickstart Workshop</a></li></ul><p>Guide: <a href=http://people.redhat.com/chernand/windows-containers-quickstart/ns-deploy/>http://people.redhat.com/chernand/windows-containers-quickstart/ns-deploy/</a></p></div><div id=comments><div id=disqus_thread></div><script type=application/javascript>window.disqus_config=function(){},function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById("disqus_thread").innerHTML="Disqus comments not available by default when the website is previewed locally.";return}var t=document,e=t.createElement("script");e.async=!0,e.src="//dlbewleygithubio.disqus.com/embed.js",e.setAttribute("data-timestamp",+new Date),(t.head||t.body).appendChild(e)}()</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript><a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a></div></div><div class=col-md-3><div class="panel panel-default sidebar-menu"><div class=panel-heading><h3 class=panel-title>Search</h3></div><div class=panel-body><form action=//google.com/search method=get accept-charset=utf-8 role=search><div class=input-group><input type=search name=q class=form-control placeholder=Search>
 <input type=hidden name=sitesearch value=http://guifreelife.com/>
-<span class=input-group-btn>
-<button type=submit class="btn btn-template-main"><i class="fas fa-search"></i></button>
-</span>
-</div>
-</form>
-</div>
-</div>
-<div class="panel sidebar-menu">
-<div class=panel-heading>
-<h3 class=panel-title>Tagged</h3>
-</div>
-<div class=panel-body>
-<ul class=tag-cloud>
-<li class=active>
-<a href=/tags/openshift><i class="fas fa-tags"></i> openshift</a>
-</li>
-<li class=active>
-<a href=/tags/OCP4><i class="fas fa-tags"></i> OCP4</a>
-</li>
-<li class=active>
-<a href=/tags/operators><i class="fas fa-tags"></i> operators</a>
-</li>
-<li class=active>
-<a href=/tags/windows><i class="fas fa-tags"></i> windows</a>
-</li>
-</ul>
-</div>
-</div>
-<div class="panel sidebar-menu">
-<div class=panel-heading>
-<h3 class=panel-title>TOC</h3>
-</div>
-<div class=panel-body>
-<nav id=TableOfContents>
-<ul>
-<li><a href=#windows-and-linux-living-in-harmony>Windows and Linux Living in Harmony</a></li>
-<li><a href=#deploying-the-netcandy-store-cross-platform-application>Deploying the NetCandy Store Cross-platform Application</a>
-<ul>
-<li><a href=#speeding-up-application-launch-by-pre-pulling-images>Speeding Up Application Launch by Pre-pulling Images</a></li>
-<li><a href=#exploring-containers-running-on-a-windows-node>Exploring Containers Running on a Windows Node</a></li>
-<li><a href=#exploring-the-openshift-developer-topology-view>Exploring the OpenShift Developer Topology View</a></li>
-<li><a href=#summary>Summary</a>
-<ul>
-<li><a href=#references>References</a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</nav>
-</div>
-</div>
-<div class="panel sidebar-menu">
-<div class=panel-heading>
-<h3 class=panel-title>Tags</h3>
-</div>
-<div class=panel-body>
-<ul class=tag-cloud>
-<li>
-<a href=/tags/AWS><i class="fas fa-tags"></i> AWS</a>
-</li>
-<li>
-<a href=/tags/CDK><i class="fas fa-tags"></i> CDK</a>
-</li>
-<li>
-<a href=/tags/OCP3><i class="fas fa-tags"></i> OCP3</a>
-</li>
-<li>
-<a href=/tags/OCP4><i class="fas fa-tags"></i> OCP4</a>
-</li>
-<li>
-<a href=/tags/RHACM><i class="fas fa-tags"></i> RHACM</a>
-</li>
-<li>
-<a href=/tags/RHACS><i class="fas fa-tags"></i> RHACS</a>
-</li>
-<li>
-<a href=/tags/RHEL><i class="fas fa-tags"></i> RHEL</a>
-</li>
-<li>
-<a href=/tags/ansible><i class="fas fa-tags"></i> ansible</a>
-</li>
-<li>
-<a href=/tags/automation><i class="fas fa-tags"></i> automation</a>
-</li>
-<li>
-<a href=/tags/azure><i class="fas fa-tags"></i> azure</a>
-</li>
-<li>
-<a href=/tags/debugging><i class="fas fa-tags"></i> debugging</a>
-</li>
-<li>
-<a href=/tags/docker><i class="fas fa-tags"></i> docker</a>
-</li>
-<li>
-<a href=/tags/draft><i class="fas fa-tags"></i> draft</a>
-</li>
-<li>
-<a href=/tags/etcd><i class="fas fa-tags"></i> etcd</a>
-</li>
-<li>
-<a href=/tags/git><i class="fas fa-tags"></i> git</a>
-</li>
-<li>
-<a href=/tags/haproxy><i class="fas fa-tags"></i> haproxy</a>
-</li>
-<li>
-<a href=/tags/heat><i class="fas fa-tags"></i> heat</a>
-</li>
-<li>
-<a href=/tags/hybrid-cloud><i class="fas fa-tags"></i> hybrid-cloud</a>
-</li>
-<li>
-<a href=/tags/install><i class="fas fa-tags"></i> install</a>
-</li>
-<li>
-<a href=/tags/kubernetes><i class="fas fa-tags"></i> kubernetes</a>
-</li>
-<li>
-<a href=/tags/mac><i class="fas fa-tags"></i> mac</a>
-</li>
-<li>
-<a href=/tags/metrics><i class="fas fa-tags"></i> metrics</a>
-</li>
-<li>
-<a href=/tags/migration><i class="fas fa-tags"></i> migration</a>
-</li>
-<li>
-<a href=/tags/monitoring><i class="fas fa-tags"></i> monitoring</a>
-</li>
-<li>
-<a href=/tags/networking><i class="fas fa-tags"></i> networking</a>
-</li>
-<li>
-<a href=/tags/openshift><i class="fas fa-tags"></i> openshift</a>
-</li>
-<li>
-<a href=/tags/openstack><i class="fas fa-tags"></i> openstack</a>
-</li>
-<li>
-<a href=/tags/operators><i class="fas fa-tags"></i> operators</a>
-</li>
-<li>
-<a href=/tags/prometheus><i class="fas fa-tags"></i> prometheus</a>
-</li>
-<li>
-<a href=/tags/python><i class="fas fa-tags"></i> python</a>
-</li>
-<li>
-<a href=/tags/router><i class="fas fa-tags"></i> router</a>
-</li>
-<li>
-<a href=/tags/security><i class="fas fa-tags"></i> security</a>
-</li>
-<li>
-<a href=/tags/ssl><i class="fas fa-tags"></i> ssl</a>
-</li>
-<li>
-<a href=/tags/stackrox><i class="fas fa-tags"></i> stackrox</a>
-</li>
-<li>
-<a href=/tags/storage><i class="fas fa-tags"></i> storage</a>
-</li>
-<li>
-<a href=/tags/troubleshooting><i class="fas fa-tags"></i> troubleshooting</a>
-</li>
-<li>
-<a href=/tags/upgrade><i class="fas fa-tags"></i> upgrade</a>
-</li>
-<li>
-<a href=/tags/vagrant><i class="fas fa-tags"></i> vagrant</a>
-</li>
-<li>
-<a href=/tags/virtualization><i class="fas fa-tags"></i> virtualization</a>
-</li>
-<li>
-<a href=/tags/webinar><i class="fas fa-tags"></i> webinar</a>
-</li>
-<li>
-<a href=/tags/windows><i class="fas fa-tags"></i> windows</a>
-</li>
-<li>
-<a href=/tags/zabbix><i class="fas fa-tags"></i> zabbix</a>
-</li>
-<li>
-<a href=/tags/zimbra><i class="fas fa-tags"></i> zimbra</a>
-</li>
-</ul>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<footer id=footer>
-<div class=container>
-<div class="col-md-4 col-sm-6">
-<h4>Share</h4>
-<i class="fab fa-2x fa-twitter" title="Share this on Twitter" onclick="window.open('http://twitter.com/home?status=http://guifreelife.com/blog/2021/07/10/OpenShift-Windows-Containers-part-3/')"></i>
-<i class="fab fa-2x fa-facebook" title="Share this on Facebook" onclick="window.open('http://www.facebook.com/share.php?u=http://guifreelife.com/blog/2021/07/10/OpenShift-Windows-Containers-part-3/')"></i>
-<i class="fab fa-2x fa-linkedin" title="Share this on Linkedin" onclick="window.open('https://www.linkedin.com/shareArticle?mini=true&url=http://guifreelife.com/blog/2021/07/10/OpenShift-Windows-Containers-part-3/&title=&summary=&source=')"></i>
-<i class="fab fa-2x fa-google-plus" title="Share this on Google Currents" onclick="window.open('https://plus.google.com/share?url=http://guifreelife.com/blog/2021/07/10/OpenShift-Windows-Containers-part-3/')"></i>
-<i class="fa fa-2x fa-envelope" title="Share this through Email" onclick="window.open('mailto:?&body=http://guifreelife.com/blog/2021/07/10/OpenShift-Windows-Containers-part-3/')"></i>
-<h4>About us</h4>
-<p>GUI Free Life is the personal, technical blog of Dale Bewley. Comments and opinions are my own and not that of my employers.</p>
-<hr class="hidden-md hidden-lg hidden-sm">
-</div>
-<div class="col-md-4 col-sm-6">
-<h4>Recent posts</h4>
-<div class=blog-entries>
-<div class="item same-height-row clearfix">
-<div class="image same-height-always">
-<a href=http://guifreelife.com/blog/2023/09/22/Storing-OpenShift-Credentials-with-1Password/>
-<img src=/img/banners/mushroom-moss.jpg class=img-responsive alt="Storing OpenShift Credentials with 1Password">
-</a>
-</div>
-<div class="name same-height-always">
-<h5><a href=http://guifreelife.com/blog/2023/09/22/Storing-OpenShift-Credentials-with-1Password/>Storing OpenShift Credentials with 1Password</a></h5>
-</div>
-</div>
-<div class="item same-height-row clearfix">
-<div class="image same-height-always">
-<a href=http://guifreelife.com/blog/2023/04/06/Accessing-Ceph-CLI-with-OpenShift-Data-Foundation/>
-<img src=/images/uncovered-bumper.png class=img-responsive alt="Accessing the Ceph CLI with OpenShift Data Foundation">
-</a>
-</div>
-<div class="name same-height-always">
-<h5><a href=http://guifreelife.com/blog/2023/04/06/Accessing-Ceph-CLI-with-OpenShift-Data-Foundation/>Accessing the Ceph CLI with OpenShift Data Foundation</a></h5>
-</div>
-</div>
-<div class="item same-height-row clearfix">
-<div class="image same-height-always">
-<a href=http://guifreelife.com/blog/2023/03/09/Extracting-CA-Certs-From-Kubeconfig/>
-<img src=/img/banners/banner-buffy-xmas.png class=img-responsive alt="Extracting TLS CA Certificates from Kubeconfig File">
-</a>
-</div>
-<div class="name same-height-always">
-<h5><a href=http://guifreelife.com/blog/2023/03/09/Extracting-CA-Certs-From-Kubeconfig/>Extracting TLS CA Certificates from Kubeconfig File</a></h5>
-</div>
-</div>
-</div>
-<hr class="hidden-md hidden-lg">
-</div>
-<div class="col-md-4 col-sm-6">
-<h4>Contact</h4>
-<p class=text-uppercase><strong>Dale Bewley</strong>
-<br>Oakland
-<br>California
-<br>
-<strong>USA</strong>
-</p>
-<a href=/contact class="btn btn-small btn-template-main">Go to contact page</a>
-<hr class="hidden-md hidden-lg hidden-sm">
-</div>
-</div>
-</footer>
-<div id=copyright>
-<div class=container>
-<div class=col-md-12>
-<p class=pull-left>Copyright (c) 2021, Dale Bewley; all rights reserved.</p>
-<p class=pull-right>
-Template by <a href=https://bootstrapious.com/p/universal-business-e-commerce-template>Bootstrapious</a>.
-Ported to Hugo by <a href=https://github.com/devcows/hugo-universal-theme>DevCows</a>.
-</p>
-</div>
-</div>
-</div>
-</div>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-39TSW9349X"></script>
-<script>var doNotTrack=!1;if(!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date),gtag('config','G-39TSW9349X',{anonymize_ip:!1})}</script>
-<script src=//code.jquery.com/jquery-3.1.1.min.js integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin=anonymous></script>
+<span class=input-group-btn><button type=submit class="btn btn-template-main"><i class="fas fa-search"></i></button></span></div></form></div></div><div class="panel sidebar-menu"><div class=panel-heading><h3 class=panel-title>Tagged</h3></div><div class=panel-body><ul class=tag-cloud><li class=active><a href=/tags/openshift><i class="fas fa-tags"></i> openshift</a></li><li class=active><a href=/tags/OCP4><i class="fas fa-tags"></i> OCP4</a></li><li class=active><a href=/tags/operators><i class="fas fa-tags"></i> operators</a></li><li class=active><a href=/tags/windows><i class="fas fa-tags"></i> windows</a></li></ul></div></div><div class="panel sidebar-menu"><div class=panel-heading><h3 class=panel-title>TOC</h3></div><div class=panel-body><nav id=TableOfContents><ul><li><a href=#windows-and-linux-living-in-harmony>Windows and Linux Living in Harmony</a></li><li><a href=#deploying-the-netcandy-store-cross-platform-application>Deploying the NetCandy Store Cross-platform Application</a><ul><li><a href=#speeding-up-application-launch-by-pre-pulling-images>Speeding Up Application Launch by Pre-pulling Images</a></li><li><a href=#exploring-containers-running-on-a-windows-node>Exploring Containers Running on a Windows Node</a></li><li><a href=#exploring-the-openshift-developer-topology-view>Exploring the OpenShift Developer Topology View</a></li><li><a href=#summary>Summary</a><ul><li><a href=#references>References</a></li></ul></li></ul></li></ul></nav></div></div><div class="panel sidebar-menu"><div class=panel-heading><h3 class=panel-title>Tags</h3></div><div class=panel-body><ul class=tag-cloud><li><a href=/tags/AWS><i class="fas fa-tags"></i> AWS</a></li><li><a href=/tags/CDK><i class="fas fa-tags"></i> CDK</a></li><li><a href=/tags/OCP3><i class="fas fa-tags"></i> OCP3</a></li><li><a href=/tags/OCP4><i class="fas fa-tags"></i> OCP4</a></li><li><a href=/tags/RHACM><i class="fas fa-tags"></i> RHACM</a></li><li><a href=/tags/RHACS><i class="fas fa-tags"></i> RHACS</a></li><li><a href=/tags/RHEL><i class="fas fa-tags"></i> RHEL</a></li><li><a href=/tags/ansible><i class="fas fa-tags"></i> ansible</a></li><li><a href=/tags/automation><i class="fas fa-tags"></i> automation</a></li><li><a href=/tags/azure><i class="fas fa-tags"></i> azure</a></li><li><a href=/tags/debugging><i class="fas fa-tags"></i> debugging</a></li><li><a href=/tags/docker><i class="fas fa-tags"></i> docker</a></li><li><a href=/tags/draft><i class="fas fa-tags"></i> draft</a></li><li><a href=/tags/etcd><i class="fas fa-tags"></i> etcd</a></li><li><a href=/tags/git><i class="fas fa-tags"></i> git</a></li><li><a href=/tags/haproxy><i class="fas fa-tags"></i> haproxy</a></li><li><a href=/tags/heat><i class="fas fa-tags"></i> heat</a></li><li><a href=/tags/hybrid-cloud><i class="fas fa-tags"></i> hybrid-cloud</a></li><li><a href=/tags/install><i class="fas fa-tags"></i> install</a></li><li><a href=/tags/kubernetes><i class="fas fa-tags"></i> kubernetes</a></li><li><a href=/tags/mac><i class="fas fa-tags"></i> mac</a></li><li><a href=/tags/metrics><i class="fas fa-tags"></i> metrics</a></li><li><a href=/tags/migration><i class="fas fa-tags"></i> migration</a></li><li><a href=/tags/monitoring><i class="fas fa-tags"></i> monitoring</a></li><li><a href=/tags/networking><i class="fas fa-tags"></i> networking</a></li><li><a href=/tags/openshift><i class="fas fa-tags"></i> openshift</a></li><li><a href=/tags/openstack><i class="fas fa-tags"></i> openstack</a></li><li><a href=/tags/operators><i class="fas fa-tags"></i> operators</a></li><li><a href=/tags/prometheus><i class="fas fa-tags"></i> prometheus</a></li><li><a href=/tags/python><i class="fas fa-tags"></i> python</a></li><li><a href=/tags/router><i class="fas fa-tags"></i> router</a></li><li><a href=/tags/security><i class="fas fa-tags"></i> security</a></li><li><a href=/tags/ssl><i class="fas fa-tags"></i> ssl</a></li><li><a href=/tags/stackrox><i class="fas fa-tags"></i> stackrox</a></li><li><a href=/tags/storage><i class="fas fa-tags"></i> storage</a></li><li><a href=/tags/troubleshooting><i class="fas fa-tags"></i> troubleshooting</a></li><li><a href=/tags/upgrade><i class="fas fa-tags"></i> upgrade</a></li><li><a href=/tags/vagrant><i class="fas fa-tags"></i> vagrant</a></li><li><a href=/tags/virtualization><i class="fas fa-tags"></i> virtualization</a></li><li><a href=/tags/webinar><i class="fas fa-tags"></i> webinar</a></li><li><a href=/tags/windows><i class="fas fa-tags"></i> windows</a></li><li><a href=/tags/zabbix><i class="fas fa-tags"></i> zabbix</a></li><li><a href=/tags/zimbra><i class="fas fa-tags"></i> zimbra</a></li></ul></div></div></div></div></div></div><footer id=footer><div class=container><div class="col-md-4 col-sm-6"><h4>Share</h4><i class="fab fa-2x fa-twitter" title="Share this on Twitter" onclick='window.open("http://twitter.com/home?status=http://guifreelife.com/blog/2021/07/10/OpenShift-Windows-Containers-part-3/")'></i>
+<i class="fab fa-2x fa-facebook" title="Share this on Facebook" onclick='window.open("http://www.facebook.com/share.php?u=http://guifreelife.com/blog/2021/07/10/OpenShift-Windows-Containers-part-3/")'></i>
+<i class="fab fa-2x fa-linkedin" title="Share this on Linkedin" onclick='window.open("https://www.linkedin.com/shareArticle?mini=true&url=http://guifreelife.com/blog/2021/07/10/OpenShift-Windows-Containers-part-3/&title=&summary=&source=")'></i>
+<i class="fab fa-2x fa-google-plus" title="Share this on Google Currents" onclick='window.open("https://plus.google.com/share?url=http://guifreelife.com/blog/2021/07/10/OpenShift-Windows-Containers-part-3/")'></i>
+<i class="fa fa-2x fa-envelope" title="Share this through Email" onclick='window.open("mailto:?&body=http://guifreelife.com/blog/2021/07/10/OpenShift-Windows-Containers-part-3/")'></i><h4>About us</h4><p>GUI Free Life is the personal, technical blog of Dale Bewley. Comments and opinions are my own and not that of my employers.</p><hr class="hidden-md hidden-lg hidden-sm"></div><div class="col-md-4 col-sm-6"><h4>Recent posts</h4><div class=blog-entries><div class="item same-height-row clearfix"><div class="image same-height-always"><a href=http://guifreelife.com/blog/2024/03/11/Placing-Open-Cluster-Management-Policies-on-Kubernetes/><img src=/images/DALL%c2%b7E%202024-01-30%2014.28.24%20-%20A%20whimsical%20scene%20featuring%20a%20traffic%20cop%20standing%20on%20a%20cloud,%20energetically%20directing%20a%20chaotic%20stream%20of%20various%20floating%20documents%20-%20papers,%20folder.png class=img-responsive alt="Using Placements to Apply Open Cluster Management Policies to Kubernetes Clusters"></a></div><div class="name same-height-always"><h5><a href=http://guifreelife.com/blog/2024/03/11/Placing-Open-Cluster-Management-Policies-on-Kubernetes/>Using Placements to Apply Open Cluster Management Policies to Kubernetes Clusters</a></h5></div></div><div class="item same-height-row clearfix"><div class="image same-height-always"><a href=http://guifreelife.com/blog/2023/09/22/Storing-OpenShift-Credentials-with-1Password/><img src=/img/banners/mushroom-moss.jpg class=img-responsive alt="Storing OpenShift Credentials with 1Password"></a></div><div class="name same-height-always"><h5><a href=http://guifreelife.com/blog/2023/09/22/Storing-OpenShift-Credentials-with-1Password/>Storing OpenShift Credentials with 1Password</a></h5></div></div><div class="item same-height-row clearfix"><div class="image same-height-always"><a href=http://guifreelife.com/blog/2023/04/06/Accessing-Ceph-CLI-with-OpenShift-Data-Foundation/><img src=/images/uncovered-bumper.png class=img-responsive alt="Accessing the Ceph CLI with OpenShift Data Foundation"></a></div><div class="name same-height-always"><h5><a href=http://guifreelife.com/blog/2023/04/06/Accessing-Ceph-CLI-with-OpenShift-Data-Foundation/>Accessing the Ceph CLI with OpenShift Data Foundation</a></h5></div></div></div><hr class="hidden-md hidden-lg"></div><div class="col-md-4 col-sm-6"><h4>Contact</h4><p class=text-uppercase><strong>Dale Bewley</strong><br>Oakland<br>California<br><strong>USA</strong></p><a href=/contact class="btn btn-small btn-template-main">Go to contact page</a><hr class="hidden-md hidden-lg hidden-sm"></div></div></footer><div id=copyright><div class=container><div class=col-md-12><p class=pull-left>Copyright (c) 2021, Dale Bewley; all rights reserved.</p><p class=pull-right>Template by <a href=https://bootstrapious.com/p/universal-business-e-commerce-template>Bootstrapious</a>.
+Ported to Hugo by <a href=https://github.com/devcows/hugo-universal-theme>DevCows</a>.</p></div></div></div></div><script async src="https://www.googletagmanager.com/gtag/js?id=G-39TSW9349X"></script>
+<script>var doNotTrack=!1;if(!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","G-39TSW9349X",{anonymize_ip:!1})}</script><script src=//code.jquery.com/jquery-3.1.1.min.js integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin=anonymous></script>
 <script src=//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js integrity=sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa crossorigin=anonymous></script>
 <script src=//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js></script>
 <script src=//cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/jquery.waypoints.min.js></script>
@@ -632,6 +188,4 @@ Ported to Hugo by <a href=https://github.com/devcows/hugo-universal-theme>DevCow
 <script src=/js/hpneo.gmaps.js></script>
 <script src=/js/gmaps.init.js></script>
 <script src=/js/front.js></script>
-<script src=/js/owl.carousel.min.js></script>
-</body>
-</html>
+<script src=/js/owl.carousel.min.js></script></body></html>
