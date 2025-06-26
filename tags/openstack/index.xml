@@ -1,8 +1,87 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>openstack on GUI Free Life</title><link>http://guifreelife.com/tags/openstack/</link><description>Recent content in openstack on GUI Free Life</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Sat, 15 Feb 2020 00:00:00 +0000</lastBuildDate><atom:link href="http://guifreelife.com/tags/openstack/index.xml" rel="self" type="application/rss+xml"/><item><title>OpenShift 4 on OpenStack Networking and Installation</title><link>http://guifreelife.com/blog/2020/02/15/OpenShift-4-on-OpenStack-Networking-and-Installation/</link><pubDate>Sat, 15 Feb 2020 00:00:00 +0000</pubDate><guid>http://guifreelife.com/blog/2020/02/15/OpenShift-4-on-OpenStack-Networking-and-Installation/</guid><description>OpenShift Containter Platform 4 is much more like Tectonic than OpenShift 3. Particularly when it comes to installation and node management. Rather then building machines and running an Ansible playbook to configure them you now have the option of setting a fewer paramters in an install config running an installer to build and configure the cluster from scratch.
-I would like to illustrate how the basics of the networking might look when installing OpenShift on OpenStack.</description></item><item><title>How to Create and Use OpenStack Heat Orchestration Templates Part 1</title><link>http://guifreelife.com/blog/2018/11/21/OpenStack-Heat-Orchestration-Templates-Howto-Part-1/</link><pubDate>Wed, 21 Nov 2018 00:00:00 +0000</pubDate><guid>http://guifreelife.com/blog/2018/11/21/OpenStack-Heat-Orchestration-Templates-Howto-Part-1/</guid><description>OpenStack enables automated creation of resources such as networks, routers, and servers using Heat Orchestration Templates. If you are new to OpenStack and are using a TripleO based distribution you may have seen them up close and personal without knowing it. What follows is a very basic exploration of Heat.
-Heat templates are written in YAML format, and you can quickly see from the documentation that a basic template will likely have 4 sections:</description></item><item><title>Creating OpenStack Provider Network for Use by a Single Project</title><link>http://guifreelife.com/blog/2018/10/30/OpenStack-Private-Provider-Network/</link><pubDate>Tue, 30 Oct 2018 00:00:00 +0000</pubDate><guid>http://guifreelife.com/blog/2018/10/30/OpenStack-Private-Provider-Network/</guid><description>OpenStack supports &amp;ldquo;provider&amp;rdquo; networks, which are networks that pre-exist in your physical infrastructure and are &amp;ldquo;provided&amp;rdquo; to the cloud users rather than created by the user. Only an admin is permitted to create a provider network.
-A prequisite is the provider network must be plumbed to the external bridge on your controller and nova nodes.
-Here is an Ansible playbook to create a project, place a unshared provider network and subnet in that project.</description></item><item><title>Installing OpenShift on OpenStack</title><link>http://guifreelife.com/blog/2017/08/20/OpenShift-on-OpenStack/</link><pubDate>Sun, 20 Aug 2017 00:00:00 +0000</pubDate><guid>http://guifreelife.com/blog/2017/08/20/OpenShift-on-OpenStack/</guid><description>This is a work in progress
-The OpenShift Container Platform (OCP) can run on many types of infrastructure; from a Docker contrainer, to a single VM, to a fleet of baremetal or VMs on an infrastructure provider such as RHV, VMware, Amazon EC2, Google Compute Engine, or OpenStack Platform (OSP). This post is to document my experimentation with setting up OCP on OSP.
-Doc Overview So where are the docs?</description></item><item><title>OpenStack Network Diagram</title><link>http://guifreelife.com/blog/2017/08/14/OpenStack-Network-Diagram/</link><pubDate>Mon, 14 Aug 2017 00:00:00 +0000</pubDate><guid>http://guifreelife.com/blog/2017/08/14/OpenStack-Network-Diagram/</guid><description>What does the networking for OpenStack look like? Maybe something like this.
-# Network VLAN IP CIDR N1 Provisioning (PXE) V:310 172.23.32.0/20 N2 Internal API V:311 172.23.21.0/24 N3 Storage Network (Front) V:312 172.23.22.0/24 N4 Storage Mgmt (Back) V:313 172.23.23.0/24 N5 External Floating IPs V:179 192.0.179.0/24 N6 Public API V:177 192.0.177.0/24 N7 Overcloud Provisioning (Tenant PXE) V:314 172.23.48.0/20 N8 Provider Network (Tenant VM with physical router) V:175 192.0.175.0/24 N9 Tenant Network (tunnels) V:317 172.</description></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Openstack on GUI Free Life</title><link>http://guifreelife.com/tags/openstack/</link><description>Recent content in Openstack on GUI Free Life</description><generator>Hugo</generator><language>en-us</language><lastBuildDate>Sat, 15 Feb 2020 00:00:00 +0000</lastBuildDate><atom:link href="http://guifreelife.com/tags/openstack/index.xml" rel="self" type="application/rss+xml"/><item><title>OpenShift 4 on OpenStack Networking and Installation</title><link>http://guifreelife.com/blog/2020/02/15/OpenShift-4-on-OpenStack-Networking-and-Installation/</link><pubDate>Sat, 15 Feb 2020 00:00:00 +0000</pubDate><guid>http://guifreelife.com/blog/2020/02/15/OpenShift-4-on-OpenStack-Networking-and-Installation/</guid><description>&lt;p>OpenShift Containter Platform 4 is much more like Tectonic than OpenShift 3. Particularly when it comes to &lt;a href="https://docs.openshift.com/container-platform/4.3/architecture/architecture-installation.html">installation&lt;/a> and node management. Rather then building machines and running &lt;a href="https://github.com/openshift/openshift-ansible/tree/release-3.11">an Ansible playbook&lt;/a> to configure them you now have the option of setting a fewer paramters in an install config running an installer to build and configure the cluster from scratch.&lt;/p>
+&lt;p>I would like to illustrate how the basics of the networking might look when &lt;a href="https://docs.openshift.com/container-platform/4.3/installing/installing_openstack/installing-openstack-installer-custom.html">installing OpenShift on OpenStack&lt;/a>. I also wanted an excuse to try out a new iPad sketch app. These notes are based on recent 4.4 nightly builds on OSP 13 Queens.&lt;/p></description></item><item><title>How to Create and Use OpenStack Heat Orchestration Templates Part 1</title><link>http://guifreelife.com/blog/2018/11/21/OpenStack-Heat-Orchestration-Templates-Howto-Part-1/</link><pubDate>Wed, 21 Nov 2018 00:00:00 +0000</pubDate><guid>http://guifreelife.com/blog/2018/11/21/OpenStack-Heat-Orchestration-Templates-Howto-Part-1/</guid><description>&lt;p>OpenStack enables automated creation of resources such as networks, routers, and servers using &lt;a href="http://docs.openstack.org/developer/heat/template_guide/hot_spec.html">Heat&lt;/a> Orchestration Templates. If you are new to OpenStack and are using a &lt;a href="https://docs.openstack.org/tripleo-docs/latest/">TripleO&lt;/a> based distribution you may have seen them up close and personal without knowing it. What follows is a very basic exploration of Heat.&lt;/p>
+&lt;p>Heat templates are written in YAML format, and you can quickly see from the documentation that a basic template will likely have 4 sections:&lt;/p></description></item><item><title>Creating OpenStack Provider Network for Use by a Single Project</title><link>http://guifreelife.com/blog/2018/10/30/OpenStack-Private-Provider-Network/</link><pubDate>Tue, 30 Oct 2018 00:00:00 +0000</pubDate><guid>http://guifreelife.com/blog/2018/10/30/OpenStack-Private-Provider-Network/</guid><description>&lt;p>OpenStack supports &lt;a href="https://docs.openstack.org/install-guide/launch-instance-networks-provider.html">&amp;ldquo;provider&amp;rdquo; networks&lt;/a>, which are networks that pre-exist in your physical infrastructure and are &amp;ldquo;provided&amp;rdquo; to the cloud users rather than created by the user. Only an admin is permitted to create a provider network.&lt;/p>
+&lt;p>A prequisite is the provider network must be plumbed to the external bridge on your controller and nova nodes.&lt;/p>
+&lt;p>Here is an Ansible playbook to create a project, place a unshared provider network and subnet in that project. Afterwards we will grant access to the members of this project using the openstack client. It &lt;a href="https://docs.ansible.com/ansible/latest/modules/list_of_cloud_modules.html#openstack">does not appear&lt;/a> that Ansible has a OpenStack network RBAC module at this time.&lt;/p></description></item><item><title>Installing OpenShift on OpenStack</title><link>http://guifreelife.com/blog/2017/08/20/OpenShift-on-OpenStack/</link><pubDate>Sun, 20 Aug 2017 00:00:00 +0000</pubDate><guid>http://guifreelife.com/blog/2017/08/20/OpenShift-on-OpenStack/</guid><description>&lt;p>&lt;strong>This is a work in progress&lt;/strong>&lt;/p>
+&lt;p>The OpenShift Container Platform (OCP) can run on many types of infrastructure; from a Docker contrainer, to a single VM, to a fleet of baremetal or VMs on an infrastructure provider such as RHV, VMware, Amazon EC2, Google Compute Engine, or OpenStack Platform (OSP). This post is to document my experimentation with setting up OCP on OSP.&lt;/p>
+&lt;h1 id="doc-overview">Doc Overview&lt;/h1>
+&lt;p>So where are the docs?&lt;/p></description></item><item><title>OpenStack Network Diagram</title><link>http://guifreelife.com/blog/2017/08/14/OpenStack-Network-Diagram/</link><pubDate>Mon, 14 Aug 2017 00:00:00 +0000</pubDate><guid>http://guifreelife.com/blog/2017/08/14/OpenStack-Network-Diagram/</guid><description>&lt;p>What does the networking for OpenStack look like? Maybe something like this.&lt;/p>
+&lt;table>
+ &lt;thead>
+ &lt;tr>
+ &lt;th>#&lt;/th>
+ &lt;th>Network&lt;/th>
+ &lt;th>VLAN&lt;/th>
+ &lt;th>IP CIDR&lt;/th>
+ &lt;/tr>
+ &lt;/thead>
+ &lt;tbody>
+ &lt;tr>
+ &lt;td>N1&lt;/td>
+ &lt;td>Provisioning (PXE)&lt;/td>
+ &lt;td>V:310&lt;/td>
+ &lt;td>172.23.32.0/20&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>N2&lt;/td>
+ &lt;td>Internal API&lt;/td>
+ &lt;td>V:311&lt;/td>
+ &lt;td>172.23.21.0/24&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>N3&lt;/td>
+ &lt;td>Storage Network (Front)&lt;/td>
+ &lt;td>V:312&lt;/td>
+ &lt;td>172.23.22.0/24&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>N4&lt;/td>
+ &lt;td>Storage Mgmt (Back)&lt;/td>
+ &lt;td>V:313&lt;/td>
+ &lt;td>172.23.23.0/24&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>N5&lt;/td>
+ &lt;td>External Floating IPs&lt;/td>
+ &lt;td>V:179&lt;/td>
+ &lt;td>192.0.179.0/24&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>N6&lt;/td>
+ &lt;td>Public API&lt;/td>
+ &lt;td>V:177&lt;/td>
+ &lt;td>192.0.177.0/24&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>N7&lt;/td>
+ &lt;td>Overcloud Provisioning (Tenant PXE)&lt;/td>
+ &lt;td>V:314&lt;/td>
+ &lt;td>172.23.48.0/20&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>N8&lt;/td>
+ &lt;td>Provider Network (Tenant VM with physical router)&lt;/td>
+ &lt;td>V:175&lt;/td>
+ &lt;td>192.0.175.0/24&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>N9&lt;/td>
+ &lt;td>Tenant Network (tunnels)&lt;/td>
+ &lt;td>V:317&lt;/td>
+ &lt;td>172.23.96.0/20&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>N10&lt;/td>
+ &lt;td>IPMI (iDRAC)&lt;/td>
+ &lt;td>V:315&lt;/td>
+ &lt;td>172.23.64.0/20&lt;/td>
+ &lt;/tr>
+ &lt;tr>
+ &lt;td>N11&lt;/td>
+ &lt;td>Tenant IPMI (iDRAC)&lt;/td>
+ &lt;td>V:316&lt;/td>
+ &lt;td>172.23.80.0/20&lt;/td>
+ &lt;/tr>
+ &lt;/tbody>
+&lt;/table>
+&lt;p>&lt;a href="http://guifreelife.com/images/openstack-network-pub.png">&lt;img src="http://guifreelife.com/images/thumb/openstack-network-pub.png" alt="OpenStack Network Diagram">&lt;/a>&lt;/p></description></item></channel></rss>

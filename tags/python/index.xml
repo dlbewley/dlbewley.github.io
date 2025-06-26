@@ -1,4 +1,24 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>python on GUI Free Life</title><link>http://guifreelife.com/tags/python/</link><description>Recent content in python on GUI Free Life</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Sat, 22 Nov 2014 00:00:00 +0000</lastBuildDate><atom:link href="http://guifreelife.com/tags/python/index.xml" rel="self" type="application/rss+xml"/><item><title>Openshift V2 and Flask with Virtualenv on OS X</title><link>http://guifreelife.com/blog/2014/11/22/Openshift-and-Flask-with-Virtualenv-on-OS-X/</link><pubDate>Sat, 22 Nov 2014 00:00:00 +0000</pubDate><guid>http://guifreelife.com/blog/2014/11/22/Openshift-and-Flask-with-Virtualenv-on-OS-X/</guid><description>Create a flask app for Openshift with a matching local python virtualenv to perform local testing.
-In this case we&amp;rsquo;ll use Python 2.7 on Mac OS X 10.9.
-Overview of the steps Install Homebrew Install Python Development Environment on Mac OS X Install rhc client tools. Install and Configure a Python Flask for OpenShift Installing Homebrew Ready the system for Homebrew First unhide ~/Library folder.
-Open Finder Press shift-command-H Press command-J Check Show Library Folder Now Setup shell environment Some of these settings are only relevant to later steps, but go ahead and put them all in now.</description></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Python on GUI Free Life</title><link>http://guifreelife.com/tags/python/</link><description>Recent content in Python on GUI Free Life</description><generator>Hugo</generator><language>en-us</language><lastBuildDate>Sat, 22 Nov 2014 00:00:00 +0000</lastBuildDate><atom:link href="http://guifreelife.com/tags/python/index.xml" rel="self" type="application/rss+xml"/><item><title>Openshift V2 and Flask with Virtualenv on OS X</title><link>http://guifreelife.com/blog/2014/11/22/Openshift-and-Flask-with-Virtualenv-on-OS-X/</link><pubDate>Sat, 22 Nov 2014 00:00:00 +0000</pubDate><guid>http://guifreelife.com/blog/2014/11/22/Openshift-and-Flask-with-Virtualenv-on-OS-X/</guid><description>&lt;p>Create a flask app for Openshift with a matching local python virtualenv to perform local testing.&lt;/p>
+&lt;p>In this case we&amp;rsquo;ll use Python 2.7 on Mac OS X 10.9.&lt;/p>
+&lt;h2 id="overview-of-the-steps">Overview of the steps&lt;/h2>
+&lt;ol>
+&lt;li>Install &lt;a href="http://hackercodex.com/guide/mac-osx-mavericks-10.9-configuration/">Homebrew&lt;/a>&lt;/li>
+&lt;li>Install &lt;a href="http://hackercodex.com/guide/python-development-environment-on-mac-osx/">Python Development Environment on Mac OS X&lt;/a>&lt;/li>
+&lt;li>Install &lt;a href="https://www.openshift.com/developers/rhc-client-tools-install">rhc client tools&lt;/a>.&lt;/li>
+&lt;li>Install &lt;a href="https://www.openshift.com/blogs/how-to-install-and-configure-a-python-flask-dev-environment-deploy-to-openshift">and Configure a Python Flask for OpenShift&lt;/a>&lt;/li>
+&lt;/ol>
+&lt;h1 id="installing-homebrew">Installing Homebrew&lt;/h1>
+&lt;h2 id="ready-the-system-for-homebrew">Ready the system for Homebrew&lt;/h2>
+&lt;ul>
+&lt;li>
+&lt;p>First unhide ~/Library folder.&lt;/p>
+&lt;ol>
+&lt;li>Open Finder&lt;/li>
+&lt;li>Press &lt;em>shift-command-H&lt;/em>&lt;/li>
+&lt;li>Press &lt;em>command-J&lt;/em>&lt;/li>
+&lt;li>Check &lt;em>Show Library Folder&lt;/em>&lt;/li>
+&lt;/ol>
+&lt;/li>
+&lt;li>
+&lt;p>Now Setup shell environment
+Some of these settings are only relevant to later steps, but go ahead and put them all in now.&lt;/p></description></item></channel></rss>

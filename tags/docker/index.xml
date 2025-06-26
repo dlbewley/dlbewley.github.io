@@ -1,11 +1,46 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>docker on GUI Free Life</title><link>http://guifreelife.com/tags/docker/</link><description>Recent content in docker on GUI Free Life</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Wed, 09 Aug 2017 00:00:00 +0000</lastBuildDate><atom:link href="http://guifreelife.com/tags/docker/index.xml" rel="self" type="application/rss+xml"/><item><title>How to push an image to an unexposed OpenShift Docker registry</title><link>http://guifreelife.com/blog/2017/08/09/Pushing-To-OpenShift-Registry/</link><pubDate>Wed, 09 Aug 2017 00:00:00 +0000</pubDate><guid>http://guifreelife.com/blog/2017/08/09/Pushing-To-OpenShift-Registry/</guid><description>How do I push an image to the OpenShift Docker registry if it is not exposed outside the cluster?
-Login to a member node
-Get on a machine that has docker and participates in the cluster SDN or can somehow access that network. (eg. 172.30.0.0/16)
-Get the IP of the registry
-oc get svc docker-registry -n default --template &amp;#34;{{ .spec.clusterIP }}&amp;#34; SVC_REGISTRY=$(oc get svc docker-registry -n default --template &amp;#34;{{ .spec.clusterIP }}&amp;#34;) Get a token for your session</description></item><item><title>How to List Tags On Redhat Registry Images</title><link>http://guifreelife.com/blog/2016/07/11/List-Tags-On-Redhat-Registry-Images/</link><pubDate>Mon, 11 Jul 2016 00:00:00 +0000</pubDate><guid>http://guifreelife.com/blog/2016/07/11/List-Tags-On-Redhat-Registry-Images/</guid><description>Ever gone to RedHat&amp;rsquo;s container registry to search for an image and been left wondering what versions exist? Ever been frustrated by the inconsistent tag format? Is there a v or is there not a v? Me too.
-Docker Hub has progressed to v2, while the RedHat registry is still v1 at the moment. As long as you use the right syntax, you can use curl to query the registry API and list the tags like this:</description></item><item><title>Resources for Learning About Docker</title><link>http://guifreelife.com/blog/2015/04/19/Resources-for-Learning-Docker/</link><pubDate>Sun, 19 Apr 2015 00:00:00 +0000</pubDate><guid>http://guifreelife.com/blog/2015/04/19/Resources-for-Learning-Docker/</guid><description>Tutorials Docker&amp;rsquo;s 10min Tutorial
-Andrew Baker&amp;rsquo;s Introduction to Docker
-Red Hat Workhops
-Docker and Kubernetes Training - Christian Posta Blog
-Intro Day 1 Day 2 Day 3 Day 4 Books As of April 2015, O&amp;rsquo;Reilly has at least 3 books on Docker pending publication. The first two are available in pre-release form now.
-Using Docker My exercises from the book: identidock Docker Cookbook Docker: Up and Running Blogs Docker Blog Docker Weekly Newsletter Rancher Blog posts some great overviews like this one and this one on monitoring ClusterHQ Blog from makers of Flocker container live migration Videos O&amp;rsquo;Reilly Introduction to Docker</description></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Docker on GUI Free Life</title><link>http://guifreelife.com/tags/docker/</link><description>Recent content in Docker on GUI Free Life</description><generator>Hugo</generator><language>en-us</language><lastBuildDate>Wed, 09 Aug 2017 00:00:00 +0000</lastBuildDate><atom:link href="http://guifreelife.com/tags/docker/index.xml" rel="self" type="application/rss+xml"/><item><title>How to push an image to an unexposed OpenShift Docker registry</title><link>http://guifreelife.com/blog/2017/08/09/Pushing-To-OpenShift-Registry/</link><pubDate>Wed, 09 Aug 2017 00:00:00 +0000</pubDate><guid>http://guifreelife.com/blog/2017/08/09/Pushing-To-OpenShift-Registry/</guid><description>&lt;p>How do I push an image to the OpenShift Docker registry if it is not exposed outside the cluster?&lt;/p>
+&lt;p>&lt;strong>Login to a member node&lt;/strong>&lt;/p>
+&lt;p>Get on a machine that has docker and participates in the cluster SDN or can somehow access that network. (eg. &lt;code>172.30.0.0/16&lt;/code>)&lt;/p>
+&lt;p>&lt;strong>Get the IP of the registry&lt;/strong>&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>oc get svc docker-registry -n default --template &lt;span style="color:#cd5555">&amp;#34;{{ .spec.clusterIP }}&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#00688b">SVC_REGISTRY&lt;/span>=&lt;span style="color:#8b008b;font-weight:bold">$(&lt;/span>oc get svc docker-registry -n default --template &lt;span style="color:#cd5555">&amp;#34;{{ .spec.clusterIP }}&amp;#34;&lt;/span>&lt;span style="color:#8b008b;font-weight:bold">)&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;strong>Get a token for your session&lt;/strong>&lt;/p></description></item><item><title>How to List Tags On Redhat Registry Images</title><link>http://guifreelife.com/blog/2016/07/11/List-Tags-On-Redhat-Registry-Images/</link><pubDate>Mon, 11 Jul 2016 00:00:00 +0000</pubDate><guid>http://guifreelife.com/blog/2016/07/11/List-Tags-On-Redhat-Registry-Images/</guid><description>&lt;p>Ever gone to &lt;a href="https://access.redhat.com/search/#/container-images">RedHat&amp;rsquo;s container registry&lt;/a> to search for an image and been left wondering what versions exist? Ever been frustrated by the inconsistent tag format? Is there a &lt;em>v&lt;/em> or is there not a &lt;em>v&lt;/em>? Me too.&lt;/p>
+&lt;p>Docker Hub has progressed to &lt;a href="https://docs.docker.com/registry/spec/api/">v2&lt;/a>, while the RedHat registry is still &lt;a href="https://docs.docker.com/v1.6/reference/api/registry_api/">v1&lt;/a> at the moment. As long as you use the right syntax, you can use curl to query the registry API and &lt;a href="https://docs.docker.com/v1.6/reference/api/registry_api/#list-repository-tags">list the tags&lt;/a> like this:&lt;/p></description></item><item><title>Resources for Learning About Docker</title><link>http://guifreelife.com/blog/2015/04/19/Resources-for-Learning-Docker/</link><pubDate>Sun, 19 Apr 2015 00:00:00 +0000</pubDate><guid>http://guifreelife.com/blog/2015/04/19/Resources-for-Learning-Docker/</guid><description>&lt;h1 id="tutorials">Tutorials&lt;/h1>
+&lt;ul>
+&lt;li>
+&lt;p>&lt;a href="https://docker.com/tryit/">Docker&amp;rsquo;s 10min Tutorial&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;a href="http://docker.atbaker.me/exercises/exercise_0.html">Andrew Baker&amp;rsquo;s Introduction to Docker&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;a href="https://github.com/RedHatWorkshops">Red Hat Workhops&lt;/a>&lt;/p>
+&lt;p>&lt;em>Docker and Kubernetes Training - Christian Posta&lt;/em> &lt;a href="http://blog.christianposta.com/kubernetes/3-day-docker-and-kubernetes-training/">Blog&lt;/a>&lt;/p>
+&lt;ul>
+&lt;li>&lt;a href="http://redhatworkshops.github.io/slides/docker/generated/intro.html">Intro&lt;/a>&lt;/li>
+&lt;li>&lt;a href="http://redhatworkshops.github.io/slides/docker/generated/day1.html">Day 1&lt;/a>&lt;/li>
+&lt;li>&lt;a href="http://redhatworkshops.github.io/slides/docker/generated/day2.html">Day 2&lt;/a>&lt;/li>
+&lt;li>&lt;a href="http://redhatworkshops.github.io/slides/docker/generated/day3.html">Day 3&lt;/a>&lt;/li>
+&lt;li>&lt;a href="http://redhatworkshops.github.io/slides/docker/generated/day4.html">Day 4&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h1 id="books">Books&lt;/h1>
+&lt;p>As of April 2015, O&amp;rsquo;Reilly has at least 3 books on Docker pending publication. The first two are available in pre-release form now.&lt;/p>
+&lt;ul>
+&lt;li>&lt;img src="http://akamaicovers.oreilly.com/images/0636920035671/bkt.gif" alt="cover"> &lt;a href="http://shop.oreilly.com/product/0636920035671.do">Using Docker&lt;/a>
+My exercises from the book: &lt;a href="https://github.com/dlbewley/identidock">identidock&lt;/a>&lt;/li>
+&lt;li>&lt;img src="http://akamaicovers.oreilly.com/images/0636920036791/bkt.gif" alt="cover"> &lt;a href="http://shop.oreilly.com/product/0636920036791.do">Docker Cookbook&lt;/a>&lt;/li>
+&lt;li>&lt;img src="http://akamaicovers.oreilly.com/images/0636920036142/bkt.gif" alt="cover"> &lt;a href="http://shop.oreilly.com/product/0636920036142.do">Docker: Up and Running&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;h1 id="blogs">Blogs&lt;/h1>
+&lt;ul>
+&lt;li>&lt;a href="https://blog.docker.com">Docker Blog&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://blog.docker.com/docker-weekly-archives/">Docker Weekly Newsletter&lt;/a>&lt;/li>
+&lt;li>&lt;a href="http://rancher.com/blog/">Rancher Blog&lt;/a> posts some great overviews like &lt;a href="http://rancher.com/comparing-monitoring-options-for-docker-deployments/">this one&lt;/a> and &lt;a href="http://rancher.com/docker-monitoring-continued-prometheus-and-sysdig/">this one&lt;/a> on monitoring&lt;/li>
+&lt;li>&lt;a href="https://clusterhq.com/blog/">ClusterHQ Blog&lt;/a> from makers of &lt;a href="https://docs.clusterhq.com/en/latest/gettingstarted/">Flocker&lt;/a> container live migration&lt;/li>
+&lt;/ul>
+&lt;h1 id="videos">Videos&lt;/h1>
+&lt;ul>
+&lt;li>&lt;img src="http://akamaicovers.oreilly.com/images/0636920035732/thumb.gif" alt="cover"> &lt;a href="http://shop.oreilly.com/product/0636920035732.do">O&amp;rsquo;Reilly Introduction to Docker&lt;/a>&lt;/li>
+&lt;/ul></description></item></channel></rss>

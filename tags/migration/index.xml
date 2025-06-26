@@ -1,4 +1,18 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>migration on GUI Free Life</title><link>http://guifreelife.com/tags/migration/</link><description>Recent content in migration on GUI Free Life</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Fri, 08 Feb 2019 00:00:00 +0000</lastBuildDate><atom:link href="http://guifreelife.com/tags/migration/index.xml" rel="self" type="application/rss+xml"/><item><title>Migration of Etcd to Masters for OpenShift 3.9 to 3.10 Upgrade</title><link>http://guifreelife.com/blog/2019/02/08/Migration-of-Etcd-to-Masters-for-OpenShift-3.9-Upgrade-to-3.10/</link><pubDate>Fri, 08 Feb 2019 00:00:00 +0000</pubDate><guid>http://guifreelife.com/blog/2019/02/08/Migration-of-Etcd-to-Masters-for-OpenShift-3.9-Upgrade-to-3.10/</guid><description>As of OpenShift Container Platform 3.10 etcd is expected to run in static pods on the master nodes in the control plane. You may have a deployed an HA cluster with dedicated etcd nodes managed with systemd. How do you migrate the this new architecture?
-Assumptions:
-You are running OCP 3.9 You have multiple Master nodes You have dedicated Etcd nodes You are running RHEL, not Atomic nodes Outline:
-Backup etcd Scale up Etcd cluster to include Master nodes Configure Openshift Masters to ignore the old Etcd nodes Scale down etcd cluster to remove old Etcd nodes Detailed Steps Follow along in this document https://docs.</description></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Migration on GUI Free Life</title><link>http://guifreelife.com/tags/migration/</link><description>Recent content in Migration on GUI Free Life</description><generator>Hugo</generator><language>en-us</language><lastBuildDate>Fri, 08 Feb 2019 00:00:00 +0000</lastBuildDate><atom:link href="http://guifreelife.com/tags/migration/index.xml" rel="self" type="application/rss+xml"/><item><title>Migration of Etcd to Masters for OpenShift 3.9 to 3.10 Upgrade</title><link>http://guifreelife.com/blog/2019/02/08/Migration-of-Etcd-to-Masters-for-OpenShift-3.9-Upgrade-to-3.10/</link><pubDate>Fri, 08 Feb 2019 00:00:00 +0000</pubDate><guid>http://guifreelife.com/blog/2019/02/08/Migration-of-Etcd-to-Masters-for-OpenShift-3.9-Upgrade-to-3.10/</guid><description>&lt;p>As of OpenShift Container Platform 3.10 etcd is expected to run in &lt;a href="https://docs.openshift.com/container-platform/3.10/release_notes/ocp_3_10_release_notes.html#ocp-310-control-plane-changes">static pods&lt;/a> on the master nodes in the control plane. You may have a deployed an HA cluster with dedicated etcd nodes managed with systemd. How do you migrate the this new architecture?&lt;/p>
+&lt;p>&lt;strong>Assumptions:&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>You are running OCP 3.9&lt;/li>
+&lt;li>You have multiple Master nodes&lt;/li>
+&lt;li>You have dedicated Etcd nodes&lt;/li>
+&lt;li>You are running RHEL, not Atomic nodes&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>Outline:&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>Backup etcd&lt;/li>
+&lt;li>Scale up Etcd cluster to include Master nodes&lt;/li>
+&lt;li>Configure Openshift Masters to ignore the old Etcd nodes&lt;/li>
+&lt;li>Scale down etcd cluster to remove old Etcd nodes&lt;/li>
+&lt;/ul>
+&lt;h1 id="detailed-steps">Detailed Steps&lt;/h1>
+&lt;p>Follow along in this document &lt;a href="https://docs.openshift.com/container-platform/3.9/admin_guide/assembly_replace-etcd-member.html">https://docs.openshift.com/container-platform/3.9/admin_guide/assembly_replace-etcd-member.html&lt;/a>
+You may find &lt;a href="http://guifreelife.com/blog/2019/02/08/Etcd-Shortcut-With-Peer-Auth">some etcd aliases handy&lt;/a> before proceeding.&lt;/p></description></item></channel></rss>

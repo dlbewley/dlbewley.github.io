@@ -1,5 +1,59 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>haproxy on GUI Free Life</title><link>http://guifreelife.com/tags/haproxy/</link><description>Recent content in haproxy on GUI Free Life</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Sun, 29 Jan 2017 00:00:00 +0000</lastBuildDate><atom:link href="http://guifreelife.com/tags/haproxy/index.xml" rel="self" type="application/rss+xml"/><item><title>Configuring OpenShift with Multiple Sharded Routers</title><link>http://guifreelife.com/blog/2017/01/29/OpenShift-Multiple-Sharded-Routers/</link><pubDate>Sun, 29 Jan 2017 00:00:00 +0000</pubDate><guid>http://guifreelife.com/blog/2017/01/29/OpenShift-Multiple-Sharded-Routers/</guid><description>I needed to host a service that would be consumed by a closed client that insists on speaking HTTPS on port 50,000. To solve this, I added a 2nd router deployment and used the OpenShift router sharding feature to selectively enable routes on the 2nd router by way of selectors.
-To summarize:
-Existing HA router:
-HTTP 80 HTTPS 443 Haproxy Stats 1,936 Added HA router:
-HTTP 49,999 HTTPS 50,000 Haproxy Stats 51,936 How To Open infra node firewalls Open firewall on infra nodes where router will run to allow new http and https port iptables -A OS_FIREWALL_ALLOW -m tcp -p tcp --dport 49999 -j ACCEPT iptables -A OS_FIREWALL_ALLOW -m tcp -p tcp --dport 50000 -j ACCEPT This can also be done with Ansible and the os_firewall role in your playbook.</description></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Haproxy on GUI Free Life</title><link>http://guifreelife.com/tags/haproxy/</link><description>Recent content in Haproxy on GUI Free Life</description><generator>Hugo</generator><language>en-us</language><lastBuildDate>Sun, 29 Jan 2017 00:00:00 +0000</lastBuildDate><atom:link href="http://guifreelife.com/tags/haproxy/index.xml" rel="self" type="application/rss+xml"/><item><title>Configuring OpenShift with Multiple Sharded Routers</title><link>http://guifreelife.com/blog/2017/01/29/OpenShift-Multiple-Sharded-Routers/</link><pubDate>Sun, 29 Jan 2017 00:00:00 +0000</pubDate><guid>http://guifreelife.com/blog/2017/01/29/OpenShift-Multiple-Sharded-Routers/</guid><description>&lt;p>I needed to host a service that would be consumed by a &lt;a href="http://www.teradici.com/">closed client&lt;/a> that insists on speaking HTTPS on port 50,000. To solve this, I added a 2nd router deployment and used the OpenShift router sharding feature to selectively enable routes on the 2nd router by way of selectors.&lt;/p>
+&lt;p>To summarize:&lt;/p>
+&lt;p>&lt;em>&lt;a href="http://guifreelife.com/blog/2016/03/01/OpenShift-3-HA-Routing">Existing HA router&lt;/a>:&lt;/em>&lt;/p>
+&lt;ul>
+&lt;li>HTTP 80&lt;/li>
+&lt;li>HTTPS 443&lt;/li>
+&lt;li>Haproxy Stats 1,936&lt;/li>
+&lt;/ul>
+&lt;p>&lt;em>Added HA router:&lt;/em>&lt;/p>
+&lt;ul>
+&lt;li>HTTP 49,999&lt;/li>
+&lt;li>HTTPS 50,000&lt;/li>
+&lt;li>Haproxy Stats 51,936&lt;/li>
+&lt;/ul>
+&lt;h1 id="how-to">How To&lt;/h1>
+&lt;h2 id="open-infra-node-firewalls">Open infra node firewalls&lt;/h2>
+&lt;ul>
+&lt;li>Open firewall on infra nodes where router will run to allow new http and https port&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span> iptables -A OS_FIREWALL_ALLOW -m tcp -p tcp --dport &lt;span style="color:#b452cd">49999&lt;/span> -j ACCEPT
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> iptables -A OS_FIREWALL_ALLOW -m tcp -p tcp --dport &lt;span style="color:#b452cd">50000&lt;/span> -j ACCEPT
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;ul>
+&lt;li>This can also be done with Ansible and the &lt;a href="https://github.com/openshift/openshift-ansible/tree/master/roles/os_firewall">os_firewall role&lt;/a> in your playbook. (&lt;em>untested&lt;/em>)&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-yaml" data-lang="yaml">&lt;span style="display:flex;">&lt;span>- &lt;span style="color:#8b008b;font-weight:bold">hosts&lt;/span>:&lt;span style="color:#bbb"> &lt;/span>infra-nodes&lt;span style="color:#bbb">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#bbb">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#bbb"> &lt;/span>&lt;span style="color:#8b008b;font-weight:bold">vars&lt;/span>:&lt;span style="color:#bbb">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#bbb"> &lt;/span>&lt;span style="color:#8b008b;font-weight:bold">os_firewall_use_firewalld&lt;/span>:&lt;span style="color:#bbb"> &lt;/span>&lt;span style="color:#8b008b;font-weight:bold">False&lt;/span>&lt;span style="color:#bbb">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#bbb"> &lt;/span>&lt;span style="color:#8b008b;font-weight:bold">os_firewall_allow&lt;/span>:&lt;span style="color:#bbb">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#bbb"> &lt;/span>- &lt;span style="color:#8b008b;font-weight:bold">service&lt;/span>:&lt;span style="color:#bbb"> &lt;/span>teradici-http&lt;span style="color:#bbb">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#bbb"> &lt;/span>&lt;span style="color:#8b008b;font-weight:bold">port&lt;/span>:&lt;span style="color:#bbb"> &lt;/span>&lt;span style="color:#b452cd">49999&lt;/span>/tcp&lt;span style="color:#bbb">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#bbb"> &lt;/span>- &lt;span style="color:#8b008b;font-weight:bold">service&lt;/span>:&lt;span style="color:#bbb"> &lt;/span>teradici-https&lt;span style="color:#bbb">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#bbb"> &lt;/span>&lt;span style="color:#8b008b;font-weight:bold">port&lt;/span>:&lt;span style="color:#bbb"> &lt;/span>&lt;span style="color:#b452cd">50000&lt;/span>/tcp&lt;span style="color:#bbb">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#bbb">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#bbb"> &lt;/span>&lt;span style="color:#8b008b;font-weight:bold">roles&lt;/span>:&lt;span style="color:#bbb">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#bbb"> &lt;/span>- os_firewall&lt;span style="color:#bbb">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="create-a-router">Create a router&lt;/h2>
+&lt;ul>
+&lt;li>Create a router called &lt;em>ha-router-teradici&lt;/em> with &lt;code>oa adm router&lt;/code> or &lt;code>oadm router&lt;/code> on these ports and also make sure the stats port does not clash with existing router on port 1936&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>[root@ose-test-master-01 ~]&lt;span style="color:#228b22"># oc get nodes --show-labels&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>NAME STATUS AGE LABELS
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>ose-test-master-01.example.com Ready 180d kubernetes.io/hostname=ose-test-master-01.example.com,region=master,zone=rhev
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>ose-test-master-02.example.com Ready 180d kubernetes.io/hostname=ose-test-master-02.example.com,region=master,zone=rhev
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>ose-test-node-01.example.com Ready 180d ha-router=primary,kubernetes.io/hostname=ose-test-node-01.example.com,region=infra,zone=rhev
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>ose-test-node-02.example.com Ready 180d ha-router=primary,kubernetes.io/hostname=ose-test-node-02.example.com,region=infra,zone=rhev
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>ose-test-node-03.example.com Ready 180d kubernetes.io/hostname=ose-test-node-03.example.com,region=primary,zone=rhev
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>ose-test-node-04.example.com Ready 180d kubernetes.io/hostname=ose-test-node-04.example.com,region=primary,zone=rhev
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>[root@ose-test-master-01 ~]&lt;span style="color:#228b22"># oadm router ha-router-teradici \&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> --ports=&lt;span style="color:#cd5555">&amp;#39;49999:49999,50000:50000&amp;#39;&lt;/span> &lt;span style="color:#cd5555">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#cd5555">&lt;/span> --stats-port=&lt;span style="color:#b452cd">51936&lt;/span> &lt;span style="color:#cd5555">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#cd5555">&lt;/span> --replicas=&lt;span style="color:#b452cd">2&lt;/span> &lt;span style="color:#cd5555">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#cd5555">&lt;/span> --selector=&lt;span style="color:#cd5555">&amp;#34;ha-router=primary&amp;#34;&lt;/span> &lt;span style="color:#cd5555">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#cd5555">&lt;/span> --selector=&lt;span style="color:#cd5555">&amp;#34;region=infra&amp;#34;&lt;/span> &lt;span style="color:#cd5555">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#cd5555">&lt;/span> --labels=&lt;span style="color:#cd5555">&amp;#34;ha-router=teradici&amp;#34;&lt;/span> &lt;span style="color:#cd5555">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#cd5555">&lt;/span> --default-cert=201602_router_wildcard.os.example.com.pem &lt;span style="color:#cd5555">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#cd5555">&lt;/span> --service-account=router
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;em>GOOD&lt;/em>: I see that the ports are set properly in the haproxy.config and the service objects&lt;/p></description></item></channel></rss>

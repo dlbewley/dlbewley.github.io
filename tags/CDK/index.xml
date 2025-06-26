@@ -1,8 +1,66 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>CDK on GUI Free Life</title><link>http://guifreelife.com/tags/CDK/</link><description>Recent content in CDK on GUI Free Life</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Thu, 16 Jun 2016 00:00:00 +0000</lastBuildDate><atom:link href="http://guifreelife.com/tags/CDK/index.xml" rel="self" type="application/rss+xml"/><item><title>Deploy Hawkular Metrics in CDK 2.1 OpenShift 3.2</title><link>http://guifreelife.com/blog/2016/06/16/Deploy-Hawkular-Metrics-in-CDK-2.0-OpenShift-3.1/</link><pubDate>Thu, 16 Jun 2016 00:00:00 +0000</pubDate><guid>http://guifreelife.com/blog/2016/06/16/Deploy-Hawkular-Metrics-in-CDK-2.0-OpenShift-3.1/</guid><description>Update! I failed with CDK 2.0, but CDK 2.1 works with some fiddling.
-In my last post I installed Red Hat Container Developer Kit to deploy OpenShift Enterprise using Vagrant. But now I want to add Hawkular Metrics to that deployment.
-Deploy Metrics Refer to the docs for deploying metrics in OSE.
-Login to the vagrant CDK VM before continuing
-$ cd ~/cdk/components/rhel/rhel-ose/ $ vagrant ssh $ oc login Authentication required for https://127.</description></item><item><title>Getting Started With RedHat Container Development Kit</title><link>http://guifreelife.com/blog/2016/06/16/Getting-Started-With-RedHat-Container-Development-Kit/</link><pubDate>Thu, 16 Jun 2016 00:00:00 +0000</pubDate><guid>http://guifreelife.com/blog/2016/06/16/Getting-Started-With-RedHat-Container-Development-Kit/</guid><description>The RedHat Container Developer Kit allows you to deploy OpenShift on your laptop for easier testing and development. Here is how to deploy it.
-Register as a RedHat Developer Obtain a RH login
-Place credentials in ~/.vagrant.d/Vagrantfile to enable updates for VMs by automatically registering with RedHat Subscription Manager
-Vagrant.configure(&amp;#39;2&amp;#39;) do |config| config.registration.username = &amp;#39;&amp;lt;your Red Hat username&amp;gt;&amp;#39; config.registration.password = &amp;#39;&amp;lt;your Red Hat password&amp;gt;&amp;#39; end Mac OS X Prereqs Install pre-reqs:</description></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>CDK on GUI Free Life</title><link>http://guifreelife.com/tags/CDK/</link><description>Recent content in CDK on GUI Free Life</description><generator>Hugo</generator><language>en-us</language><lastBuildDate>Thu, 16 Jun 2016 00:00:00 +0000</lastBuildDate><atom:link href="http://guifreelife.com/tags/CDK/index.xml" rel="self" type="application/rss+xml"/><item><title>Deploy Hawkular Metrics in CDK 2.1 OpenShift 3.2</title><link>http://guifreelife.com/blog/2016/06/16/Deploy-Hawkular-Metrics-in-CDK-2.0-OpenShift-3.1/</link><pubDate>Thu, 16 Jun 2016 00:00:00 +0000</pubDate><guid>http://guifreelife.com/blog/2016/06/16/Deploy-Hawkular-Metrics-in-CDK-2.0-OpenShift-3.1/</guid><description>&lt;p>&lt;strong>Update!&lt;/strong> &lt;em>I failed with CDK 2.0, but CDK 2.1 works with some fiddling.&lt;/em>&lt;/p>
+&lt;p>In my &lt;a href="http://guifreelife.com/blog/2016/06/16/Getting-Started-With-RedHat-Container-Development-Kit">last post&lt;/a> I installed Red Hat Container Developer Kit to deploy OpenShift Enterprise using Vagrant. But now I want to add Hawkular Metrics to that deployment.&lt;/p>
+&lt;h1 id="deploy-metrics">Deploy Metrics&lt;/h1>
+&lt;p>Refer to &lt;a href="https://docs.openshift.com/enterprise/3.2/install_config/cluster_metrics.html">the docs&lt;/a> for deploying metrics in OSE.&lt;/p>
+&lt;p>&lt;a href="http://guifreelife.com/images/openshift-cdk-metrics-0.png">&lt;img src="http://guifreelife.com/images/thumb/openshift-cdk-metrics-0.png" alt="OpenShift Metrics">&lt;/a>&lt;/p>
+&lt;p>Login to the vagrant CDK VM before continuing&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>$ &lt;span style="color:#658b00">cd&lt;/span> ~/cdk/components/rhel/rhel-ose/
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>$ vagrant ssh
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>$ oc login
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Authentication required &lt;span style="color:#8b008b;font-weight:bold">for&lt;/span> https://127.0.0.1:8443 (openshift)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Username: admin
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Password: admin
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Login successful.
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>$ oc project openshift-infra
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>$ oc get sa
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>NAME SECRETS AGE
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>build-controller &lt;span style="color:#b452cd">2&lt;/span> 10m
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>builder &lt;span style="color:#b452cd">2&lt;/span> 10m
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>daemonset-controller &lt;span style="color:#b452cd">2&lt;/span> 10m
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>default &lt;span style="color:#b452cd">2&lt;/span> 10m
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>deployer &lt;span style="color:#b452cd">2&lt;/span> 10m
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>deployment-controller &lt;span style="color:#b452cd">2&lt;/span> 10m
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>gc-controller &lt;span style="color:#b452cd">2&lt;/span> 10m
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>hpa-controller &lt;span style="color:#b452cd">2&lt;/span> 10m
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>job-controller &lt;span style="color:#b452cd">2&lt;/span> 10m
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>namespace-controller &lt;span style="color:#b452cd">2&lt;/span> 10m
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>pv-binder-controller &lt;span style="color:#b452cd">2&lt;/span> 10m
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>pv-provisioner-controller &lt;span style="color:#b452cd">2&lt;/span> 10m
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>pv-recycler-controller &lt;span style="color:#b452cd">2&lt;/span> 10m
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>replication-controller &lt;span style="color:#b452cd">2&lt;/span> 10m
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>$ oc create -f - &lt;span style="color:#cd5555">&amp;lt;&amp;lt;API
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#cd5555">apiVersion: v1
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#cd5555">kind: ServiceAccount
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#cd5555">metadata:
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#cd5555"> name: metrics-deployer
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#cd5555"> secrets:
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#cd5555"> - name: metrics-deployer
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#cd5555">API&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>$ oc secrets new metrics-deployer &lt;span style="color:#00688b">nothing&lt;/span>=/dev/null
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>$ oadm policy add-role-to-user edit system:serviceaccount:openshift-infra:metrics-deployer
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>$ oadm policy add-cluster-role-to-user cluster-reader system:serviceaccount:openshift-infra:heapster
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>From your OSE server grab &lt;code>/usr/share/openshift/examples/infrastructure-templates/enterprise/metrics-deployer.yaml&lt;/code> or from &lt;a href="https://raw.githubusercontent.com/openshift/openshift-ansible/master/roles/openshift_examples/files/examples/v1.2/infrastructure-templates/enterprise/metrics-deployer.yaml">here&lt;/a>&lt;/p></description></item><item><title>Getting Started With RedHat Container Development Kit</title><link>http://guifreelife.com/blog/2016/06/16/Getting-Started-With-RedHat-Container-Development-Kit/</link><pubDate>Thu, 16 Jun 2016 00:00:00 +0000</pubDate><guid>http://guifreelife.com/blog/2016/06/16/Getting-Started-With-RedHat-Container-Development-Kit/</guid><description>&lt;p>The RedHat Container Developer Kit allows you to deploy OpenShift on your laptop for easier testing and development. Here is how to deploy it.&lt;/p>
+&lt;p>&lt;a href="http://guifreelife.com/images/openshift-cdk-2.1.png">&lt;img src="http://guifreelife.com/images/thumb/openshift-cdk-2.1.png" alt="OpenShift CDK">&lt;/a>&lt;/p>
+&lt;h1 id="register-as-a-redhat-developer">Register as a RedHat Developer&lt;/h1>
+&lt;ul>
+&lt;li>
+&lt;p>&lt;a href="http://developers.redhat.com/">Obtain a RH login&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Place credentials in &lt;code>~/.vagrant.d/Vagrantfile&lt;/code> to enable updates for VMs by automatically registering with RedHat Subscription Manager&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-ruby" data-lang="ruby">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#00688b">Vagrant&lt;/span>.configure(&lt;span style="color:#cd5555">&amp;#39;2&amp;#39;&lt;/span>) &lt;span style="color:#8b008b;font-weight:bold">do&lt;/span> |config|
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> config.registration.username = &lt;span style="color:#cd5555">&amp;#39;&amp;lt;your Red Hat username&amp;gt;&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> config.registration.password = &lt;span style="color:#cd5555">&amp;#39;&amp;lt;your Red Hat password&amp;gt;&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#8b008b;font-weight:bold">end&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h1 id="mac-os-x-prereqs">Mac OS X Prereqs&lt;/h1>
+&lt;ul>
+&lt;li>
+&lt;p>Install pre-reqs:&lt;/p></description></item></channel></rss>

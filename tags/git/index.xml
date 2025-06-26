@@ -1,3 +1,27 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>git on GUI Free Life</title><link>http://guifreelife.com/tags/git/</link><description>Recent content in git on GUI Free Life</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Wed, 18 Aug 2021 00:00:00 +0000</lastBuildDate><atom:link href="http://guifreelife.com/tags/git/index.xml" rel="self" type="application/rss+xml"/><item><title>Protect Gitignored but Tracked Files</title><link>http://guifreelife.com/blog/2021/08/18/Protect-Gitignored-but-Tracked-Files/</link><pubDate>Wed, 18 Aug 2021 00:00:00 +0000</pubDate><guid>http://guifreelife.com/blog/2021/08/18/Protect-Gitignored-but-Tracked-Files/</guid><description>&lt;p>Sometimes you want to put files in git that you really shouldn&amp;rsquo;t be putting in git.&lt;/p></description></item><item><title>Split an Ansible Git Repo and Retain the Commit History</title><link>http://guifreelife.com/blog/2015/03/15/Split-Ansible-Git-Repo-and-Retain-Commit-History/</link><pubDate>Sun, 15 Mar 2015 00:00:00 +0000</pubDate><guid>http://guifreelife.com/blog/2015/03/15/Split-Ansible-Git-Repo-and-Retain-Commit-History/</guid><description>Starting with a jumbled git repo of various Ansible roles, playbooks, inventories, group_vars, etc. I want to create a new repo out of a selection of the subdirectories and retain the commit history.
-I have an ansible-test repo with a tree that looks roughly like this:
-. ├── adhoc/ │ ├── rolling-reboot.yml │ └── scripts/ ├── README.md └── runtime/ ├── roles/ │ ├── foo-role/ │ └── zimbra/ │ ├── ansible.cfg │ ├── hosts │ ├── tasks/ │ └── .</description></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Git on GUI Free Life</title><link>http://guifreelife.com/tags/git/</link><description>Recent content in Git on GUI Free Life</description><generator>Hugo</generator><language>en-us</language><lastBuildDate>Wed, 18 Aug 2021 00:00:00 +0000</lastBuildDate><atom:link href="http://guifreelife.com/tags/git/index.xml" rel="self" type="application/rss+xml"/><item><title>Protect Gitignored but Tracked Files</title><link>http://guifreelife.com/blog/2021/08/18/Protect-Gitignored-but-Tracked-Files/</link><pubDate>Wed, 18 Aug 2021 00:00:00 +0000</pubDate><guid>http://guifreelife.com/blog/2021/08/18/Protect-Gitignored-but-Tracked-Files/</guid><description>&lt;p>Sometimes you want to put files in git that you really shouldn&amp;rsquo;t be putting in git.&lt;/p></description></item><item><title>Split an Ansible Git Repo and Retain the Commit History</title><link>http://guifreelife.com/blog/2015/03/15/Split-Ansible-Git-Repo-and-Retain-Commit-History/</link><pubDate>Sun, 15 Mar 2015 00:00:00 +0000</pubDate><guid>http://guifreelife.com/blog/2015/03/15/Split-Ansible-Git-Repo-and-Retain-Commit-History/</guid><description>&lt;p>Starting with a jumbled git repo of various &lt;a href="http://www.ansible.com/">Ansible&lt;/a> roles, playbooks, inventories, group_vars, etc. I want to create a new repo out of a selection of the subdirectories and retain the commit history.&lt;/p>
+&lt;p>I have an &lt;code>ansible-test&lt;/code> repo with a tree that looks roughly like this:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="background-color:#eed;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-text" data-lang="text">&lt;span style="display:flex;">&lt;span>.
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>├── adhoc/
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>│   ├── rolling-reboot.yml
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>│   └── scripts/
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>├── README.md
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>└── runtime/
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ├── roles/
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> │   ├── foo-role/
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> │   └── zimbra/
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> │   ├── ansible.cfg
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> │   ├── hosts
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> │   ├── tasks/
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> │   └── ...
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ├── group_vars/
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> │   ├── foo-group
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> │   └── zimbra-prod
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ├── hosts
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ├── host_vars/
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ├── library/
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> │   ├── foo-lib
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> │   ├── zmlocalconfig
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> │   └── zmprov
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ├── foo.yml
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> └── zimbra-playbook.yml
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>I want to split that so that the Zimbra role, it&amp;rsquo;s playbook, and any &lt;em>&amp;lsquo;runtime&amp;rsquo;&lt;/em> context like group_vars, and libraries are managed together in a new repo called &lt;code>playbook-zimbra&lt;/code>.&lt;/p></description></item></channel></rss>
