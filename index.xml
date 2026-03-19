@@ -462,7 +462,34 @@ My exercises from the book: &lt;a href="https://github.com/dlbewley/identidock">
 &lt;/li>
 &lt;li>
 &lt;p>Now Setup shell environment
-Some of these settings are only relevant to later steps, but go ahead and put them all in now.&lt;/p></description></item><item><title>Coming Soon</title><link>http://guifreelife.com/coming-soon/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>http://guifreelife.com/coming-soon/</guid><description>&lt;h1 id="almost-there">Almost there!&lt;/h1>
+Some of these settings are only relevant to later steps, but go ahead and put them all in now.&lt;/p></description></item><item><title>Channel Intro</title><link>http://guifreelife.com/stinger/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>http://guifreelife.com/stinger/</guid><description>&lt;h1 id="gui-free-life--channel-intro">GUI Free Life — Channel Intro&lt;/h1>
+
+
+
+
+&lt;div class="video-container" style="text-align:center; margin:2em 0;">
+ &lt;video controls
+ style="max-width:100%; border-radius:4px; box-shadow:0 4px 16px rgba(0,0,0,.4);"
+ 
+ preload="metadata">
+ &lt;source src="http://guifreelife.com/videos/intro-5s.mp4" type="video/mp4">
+ Your browser does not support the video tag.
+ &lt;/video>
+&lt;/div>
+
+
+
+
+
+&lt;div class="video-container" style="text-align:center; margin:2em 0;">
+ &lt;video controls
+ style="max-width:100%; border-radius:4px; box-shadow:0 4px 16px rgba(0,0,0,.4);"
+ 
+ preload="metadata">
+ &lt;source src="http://guifreelife.com/videos/outro-1s.mp4" type="video/mp4">
+ Your browser does not support the video tag.
+ &lt;/video>
+&lt;/div></description></item><item><title>Coming Soon</title><link>http://guifreelife.com/coming-soon/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>http://guifreelife.com/coming-soon/</guid><description>&lt;h1 id="almost-there">Almost there!&lt;/h1>
 &lt;p>Sorry, but this page is not yet ready.&lt;/p>
 &lt;p>[&lt;img src="http://guifreelife.com/images/hammock-computer.jpg" alt="Hammock Computing">&lt;/p></description></item><item><title>Contact</title><link>http://guifreelife.com/contact/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>http://guifreelife.com/contact/</guid><description>&lt;h2 id="credentials">Credentials&lt;/h2>
 &lt;p>&lt;a href="https://rhtapps.redhat.com/verify?certId=180-184-699%22">Red Hat Certifications&lt;/a>&lt;/p>
