@@ -11,3 +11,21 @@
 .box-simple {
   min-height: 230px;
 }
+
+/*
+ * Prior to adding this, some labels were being forced uppercase.
+ * Mermaid diagrams: SVG <text> and foreignObject labels inherit text-transform from ancestors.
+ * The blog title uses #heading-breadcrumbs h1 { text-transform: uppercase } in style.*.css,
+ * but that h1 is NOT a parent of #post-content — it cannot directly affect diagrams. If labels
+ * still appear uppercased, another inherited rule or Mermaid’s HTML label wrapper is the cause.
+ * Reset here so node labels (e.g. bond0, br-ex) keep their intended casing.
+ */
+#post-content .mermaid,
+#post-content .mermaid svg,
+#post-content .mermaid svg text,
+#post-content .mermaid .nodeLabel,
+#post-content .mermaid .edgeLabel,
+#post-content .mermaid foreignObject,
+#post-content .mermaid foreignObject * {
+  text-transform: none;
+}
