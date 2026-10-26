@@ -50,4 +50,4 @@ Allow: /
 User-agent: Bytespider
 Allow: /
 
-Sitemap: http://guifreelife.com/sitemap.xml
+Sitemap: https://guifreelife.com/sitemap.xml
